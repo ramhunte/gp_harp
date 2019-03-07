@@ -9,7 +9,7 @@ options(scipen = 999) #removed scientific notation
 
 # Hand digitized riffles in the large rivers
 # Summarize as area per noaaid reach
-riff <- list.files(path = "Inputs", pattern = "Riffles", full.names = T) %>%
+riff <- list.files(path = Inputs, pattern = "Riffles", full.names = T) %>%
   read.csv(.) %>%
 
   rename(Subbasin = noaa_sub) %>%

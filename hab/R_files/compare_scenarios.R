@@ -21,7 +21,7 @@ new_file_folder <- paste0("feature/", branch)
 
 compare_hab <- function(hab_old,hab_new){
   
-  sub <- read.csv("Excel_Files/Subbasin_names.csv", header = TRUE) %>%
+  sub <- read.csv("hab/Excel_Files/Subbasin_names.csv", header = TRUE) %>%
     pull(Subbasin)
   
   # Read in old hab scenario
@@ -53,11 +53,11 @@ compare_hab <- function(hab_old,hab_new){
 
 
 # Create folder for images
-save.compare <- file.path('Outputs', 'feature',branch,'diagnostics',species,'comparisons')
+save.compare <- file.path('hab','Outputs', 'feature',branch,'diagnostics',species,'comparisons')
 if (dir.exists(save.compare) == F) {dir.create(save.compare,recursive = T)}
 
 # Loop through the comparison of each hab scenario
-scenarios <- read.csv('Excel_Files/scenarios.csv') %>%
+scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
   filter(scenario != 'Historical.no.beaver') %>%
   pull(scenario) %>%
   gsub('\\.','_',.)
@@ -68,10 +68,10 @@ i <- 1
 for (scenario in scenarios) {
   # Create file paths to scenario csvs
   
-  old <- paste0('Outputs/',old_file_folder,'/hab.scenarios/',species, "/", scenario,".csv")
+  old <- paste0('hab/Outputs/',old_file_folder,'/hab.scenarios/',species, "/", scenario,".csv")
                    
   
-  new <- paste0('Outputs/',new_file_folder,'/hab.scenarios/',species,'/',scenario,".csv")
+  new <- paste0('hab/Outputs/',new_file_folder,'/hab.scenarios/',species,'/',scenario,".csv")
   
   compare <- compare_hab(old,new)
   

@@ -63,45 +63,45 @@ lapply(hist.ef, function(x){
 
 
 #Plots
-if(plt == "N"){
-  
-  # Read in clean DU names
-  DU_names <- read.delim("Excel Files/DU_names.txt", header = TRUE)%>%
-    rename(du = SubBasin)%>%
-    mutate(du = ifelse(du %in% 'Grays Harbor','Grays Harbor tribs',as.character(du)))
-  
-  # Turn into long format for easy plotting
-  ef_plt <- ef%>%
-    rename(Current = ef_surv_current,
-           Historic = ef_surv_hist)%>%
-    mutate(species = ifelse(species == 'FChino','Fall Chinook',
-                            ifelse(species == 'SChino','Spring Chinook',
-                                   ifelse(species == 'Steelh','Steelhead',species))))%>%
-    gather(period,s,Current:Historic)%>%
-    left_join(DU_names)%>%
-    filter(species!='Chum')
-  
-  # Plot
-  ggplot(ef_plt,aes(x=DU_name,y=s,fill=species,alpha=period))+ #streams ordered by highest to lowest e2f survival
-    theme_bw()+
-    facet_grid(~species)+
-    geom_histogram(stat="identity",position=position_dodge(width=0.3))+
-    coord_flip()+
-    theme(text = element_text(size=14),axis.text.x = element_text(angle=90,vjust = -.1))+
-    labs(x="",y="Egg-to-fry survival",alpha="Scenario")+
-    scale_x_discrete(name=NULL,
-                     limits = rev(levels(reorder(DU_names$DU_name,DU_names$DU_num))))+ #oder by Basin_num/cartodbid
-    scale_alpha_manual(values=c(.8,.5),labels=c("Current","Historic"))+
-    scale_y_continuous(limits = c(0,1),breaks = c(0,.5,1))+
-    guides(fill=F)
-  
-  # Save the figure
-  save.path.fig <- file.path('Outputs', format(Sys.time(), '%Y%m%d'), 'figures')
-  if (dir.exists(save.path.fig) == F){dir.create(save.path.fig, recursive = T)}
-  
-  ggsave(file.path(save.path.fig,'EF_survival.jpg'),height=7,width=10,dpi=250)
-  
-}
+# if(plt == "N"){
+#   
+#   # Read in clean DU names
+#   DU_names <- read.delim("Excel Files/DU_names.txt", header = TRUE)%>%
+#     rename(du = SubBasin)%>%
+#     mutate(du = ifelse(du %in% 'Grays Harbor','Grays Harbor tribs',as.character(du)))
+#   
+#   # Turn into long format for easy plotting
+#   ef_plt <- ef%>%
+#     rename(Current = ef_surv_current,
+#            Historic = ef_surv_hist)%>%
+#     mutate(species = ifelse(species == 'FChino','Fall Chinook',
+#                             ifelse(species == 'SChino','Spring Chinook',
+#                                    ifelse(species == 'Steelh','Steelhead',species))))%>%
+#     gather(period,s,Current:Historic)%>%
+#     left_join(DU_names)%>%
+#     filter(species!='Chum')
+#   
+#   # Plot
+#   ggplot(ef_plt,aes(x=DU_name,y=s,fill=species,alpha=period))+ #streams ordered by highest to lowest e2f survival
+#     theme_bw()+
+#     facet_grid(~species)+
+#     geom_histogram(stat="identity",position=position_dodge(width=0.3))+
+#     coord_flip()+
+#     theme(text = element_text(size=14),axis.text.x = element_text(angle=90,vjust = -.1))+
+#     labs(x="",y="Egg-to-fry survival",alpha="Scenario")+
+#     scale_x_discrete(name=NULL,
+#                      limits = rev(levels(reorder(DU_names$DU_name,DU_names$DU_num))))+ #oder by Basin_num/cartodbid
+#     scale_alpha_manual(values=c(.8,.5),labels=c("Current","Historic"))+
+#     scale_y_continuous(limits = c(0,1),breaks = c(0,.5,1))+
+#     guides(fill=F)
+#   
+#   # Save the figure
+#   save.path.fig <- file.path('Outputs', format(Sys.time(), '%Y%m%d'), 'figures')
+#   if (dir.exists(save.path.fig) == F){dir.create(save.path.fig, recursive = T)}
+#   
+#   ggsave(file.path(save.path.fig,'EF_survival.jpg'),height=7,width=10,dpi=250)
+#   
+# }
 
 
 

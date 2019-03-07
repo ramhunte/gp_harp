@@ -4,7 +4,7 @@ slope.class = c(rep("low", times = 6), rep("med", times = 6), rep("high", times 
 pool.perc = c(c(.92, .83, .74, .75, .89, .81), c(.60, .50, .51, .48, .53, .66), c(.31, .35, .54, .34, NA, .35))
 ss.dist = data.frame(lc, slope.class, pool.perc)
 
-SmStream_raw <- list.files(path = "Inputs", pattern = "SmStream", full.names = T) %>% read.csv(.) 
+SmStream_raw <- list.files(path = Inputs, pattern = "SmStream", full.names = T) %>% read.csv(.) 
 
 ss <- SmStream_raw %>%
   select(noaaid) %>%

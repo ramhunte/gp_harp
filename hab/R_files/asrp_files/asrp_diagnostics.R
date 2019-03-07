@@ -9,7 +9,7 @@ if (!branch %in% c("dev", "master")) {
   
   for (scenario in asrp_scenario_nm) {
     
-    sub <- read.csv("Excel_Files/Subbasin_names.csv", header = TRUE) %>%
+    sub <- read.csv("hab/Excel_Files/Subbasin_names.csv", header = TRUE) %>%
       pull(Subbasin)
     
     curr <- Current
@@ -40,7 +40,7 @@ if (!branch %in% c("dev", "master")) {
            x = "",
            caption = fishtype)
     
-    save.compare <- file.path("Outputs","feature", branch, "diagnostics", fishtype,'comparisons')
+    save.compare <- file.path("hab/Outputs","feature", branch, "diagnostics", fishtype,'comparisons')
     if (dir.exists(save.compare) == F) 
       {dir.create(save.compare,recursive = T)}
     

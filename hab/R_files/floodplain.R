@@ -14,7 +14,7 @@ hist_sc <- flowline %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
   select(noaaid, sc_mult, Area_ha, Length_sc, Period, NEAR_DIST, HabUnit, Hist_salm, hist_side)
 
-Floodplain_raw <- list.files(path = "Inputs", pattern = "Floodplain", full.names = T) %>% 
+Floodplain_raw <- list.files(path = Inputs, pattern = "Floodplain", full.names = T) %>% 
   read.csv(.) %>%
   mutate(Length_sc = Shape_Length / 2) %>%
   bind_rows(.,hist_sc) %>%
