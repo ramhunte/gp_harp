@@ -1,0 +1,347 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+```{r, echo=FALSE, include=FALSE}
+library(knitr)
+library(tidyverse)
+load('myEnvironment.RData')
+```
+***
+# **Spawning**
+***
+
+### Small Stream Spawning Capacity
+
+#### Introduction: 
+
+We begin with the SWIFD streamline layer broken into approximately 200m segments.  These segments each have an assigned reach length but are not broken into specific habitat type.
+
+#### 1. Redd Densities:
+
+We assign redd densiy values to stream reaches based on the dominant landcover and slope of each reach:
+
+Landcover/Slope | Redd Density
+----------------|-------------
+< 1% slope| 85 redd/km
+1-3% slope, Forested | 274 redd/km
+1-3% slope, Non-Forested | 12 redd/km
+> 3% slope | 0 redd/km
+
+#### 3. Barriers:
+
+We restrict spawning above barriers based on the passage percentage of all downstream barriers of each reach.  For example, spawning in a reach with 33% passage will be 33% of spawning in that same reach with barriers removed.
+
+#### 4. Spawning Productivity (fecundity)
+
+We use a fecundity for coho of 2500
+
+#### 5. Wood:
+
+In scenarios with historical wood conditions we use the Forested redd density in all reaches previously assigned the Non-Forested redd density
+
+#### 6. Beavers:
+
+In scenarios with historical beaver ponds we convert 15% of each reach to beaver pond habitat.  This limits spawning by 15% in each reach. 
+
+#### 7. Calculate Spawning Capacity:
+
+Spawning capacity = reach length * passage percentage * redd density * fecundity
+
+### Floodplain Spawning Capacity:
+
+Floodplain spawning capacity is restricted to side channel habitat only, and is similar to small stream spawning capacity with the following exceptions:
+
+#### 1. Redd Density:
+
+All floodplain side channels are assumed to have slope < 1% therefore they are assigned a redd density of 85 redd/km
+
+#### 2. Barriers:
+
+* We restrict spawning above barriers based on the passage percentage of all downstream barriers of each side channel.  For example, spawning in a side channel with 33% passage will be 33% of spawning in that same side channel with barriers removed.
+* All barriers restricting floodplain habitat are removed in the scenarios with historical floodplain habitat (Floodplain, Floodplain and Wood, Historical)
+
+***
+***
+
+# **Rearing**
+***
+
+### Small Stream Capacity 
+
+#### Introduction:
+
+We begin with the SWIFD streamline layer broken into approximately 200m segments.  These segments have an assigned reach area (reach length * reach width) but area not broken into specific habitat types (pool, riffle, beaver pond).  We use the NOAA Habitat Model to separate each reach into pool, riffle, and beaver pond habitat, calculate separate summer and winter areas, and augment area by wood and temperature multipliers where appropriate and based on the specific habitat scenario definitions.
+
+
+#### 1. Divide reaches into pool and riffle habitat:
+
+Reaches are divided into pool and riffle habitat using the following pool percentages based on slope and landcover type:
+
+```{r, echo=FALSE, results = 'asis'}
+kable(ss.dist%>%spread(lc, pool.perc)%>%mutate(slope.class = ifelse(slope.class == "low", "<2%", ifelse(slope.class == "med", "2-4%", ">4%")))%>%rename(slope = slope.class)%>%arrange(match(slope, c("<2%", "2-4%", ">4%"))))
+```
+
+Summer pool and riffle areas area calculated using the following equations:
+
+Summer habitat | Area calculation
+---------------|-----------------
+Pool           | reach area * percent pool
+Riffle         | reach area * (1 - percent pool)
+
+
+#### 2. Convert some pool and riffle area into beaver pond area:
+In the Historical and Beaver Pond scenario we reallocate 15% of both the pool and riffle habitat into beaver pond habitat.  We assume 6 beaver ponds per km, and a median pond area of 500 m^2 (Pollock 2004) 
+
+Summer habitat | Area calculation
+---------------|-----------------
+Pool           | reach area * percent pool * .85
+Riffle         | reach area * (1 - percent pool) * .85
+Beaver pond    | reach length * 3 / 10000
+
+* *6 ponds per km and 500 m^2^ per pond translates to 3000 m^2^ per km, or 3 m^2^ per meter of river length*  
+* *reach length multiplied by 3m^2^ per meter of rivre length gives us beaver pond area in m^2^*
+* *Convert to hectares using 10000 m^2^ per hectare*
+
+
+#### 3. Calculate winter area
+We use a winter pool scalar of .43 to convert summer pool area into winter pool area.  The remaining winter area becomes riffle area.  Winter beaver pond area does not change:
+
+Winter habitat | Area calculation
+---------------|-----------------
+Pool           | summer pool area * .43
+Riffle         | summer riffle area + (.57 * summer pool area)
+Beaver pond    | summer beaver pond area
+
+#### 4. Adjust area based on temperature 
+
+We multiply area by a temperature scalar using the following equations:
+
+Temperature | Scalar
+------------|-------------------------
+< 18°C      | 1
+18-24°C     | -(1/6) * temperature + 4 
+> 24°C      | 0
+
+* We use modeled current temperature for the Current, Barrier, Beaver, Fine sediment, LR length, LR bank, Floodplain, and Wood scenarios.
+* We use modeled historical temperature for the Shade and Historical scenarios
+* The temperature scalar is applied to summer area only (not winter area)
+
+#### 5. Adjust area based on the addition of wood
+
+We calculate a wood multiplier at the subbasin level based on bar and bank lengths within a particular subbasin:
+
+* summer wood multiplier = ((bank length * 1.2) + bar length * 2 * 1.02)) / bank length + (bar length * 2))
+    * if no bar or bank length for a subbasin, we use the mean of the wood multipliers across all subbasins, 1.16
+* winter wood multiplier = ((bank length * 1.21) + bar length * 2 * 1.09)) / bank length + (bar length * 2))
+    * if no bar or bank length for a subbasin, we use the mean of the wood multipliers across all subbasins, 1.16
+    
+We multiply area by the wood scalar in the Historical and Wood scenarios only
+    
+#### 6. Barriers
+
+We only restrict rearing habitat above barriers if barriers have a passage rating of 0.  If the passage rating = 0, we set the area to 0.  Otherwise we do not restrict the rearing area
+
+#### 7. Calculate capacity
+
+Capacity = Area * Density
+
+Density is defined as fish/ha and is decribed in the following table:
+
+```{r, echo=FALSE, results = 'asis'}
+kable(density%>%filter(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"))%>%spread(Habitat, Density))
+```
+
+#### 8. Small Stream Capacity review
+
+Scenario| Beaver ponds present? | Temperature scalar| Wood scalar? | Passage barriers present?
+--------|-----------------------|-------------------|--------------|--------------------------
+Current | No | Current | No | Yes
+Barrier | No | Current | No | No
+Beaver  | Yes | Current | No | Yes
+Fine sediment| No | Current | No | Yes
+Floodplain | No | Current | No | Yes
+Historical | Yes| Historical | Yes | No
+LR bank | No | Current | No | Yes
+LR length | No | Current| No | Yes
+Shade | No | Historical | No | Yes
+Wood | No | Current | Yes | Yes
+
+
+### Large River Capacity
+
+We begin with a layer of handmapped, attribute large river lines. We use the NOAA Habitat Model to augment area by wood and temperature multipliers where appropriate and based on the specific habitat scenario definitions.
+
+#### 1. Large river lengthening
+
+We apply a lengthening scalar to large river habitat in the LR length and Historical scenarios to reflect changes in stream meander length. 
+
+* Length scalars are applied at the reach level.  
+* Where length scalars do not exist, large river area does not change.
+* Under Historical and LR length scenarios, large river area = length * length scalar * width
+
+#### 2. Large river bank modification
+
+Modified bank habitat is replaced with natural bank habitat under the LR bank and Historical scenarios.  Natural and modified bank habitats were both handmapped by Jamie, so all we do here is use one or the other depending on the scenario.
+
+#### 3. Adjust area based on temperature 
+
+We multiply area by a temperature scalar using the following equations:
+
+Temperature | Scalar
+------------|-------------------------
+< 18°C      | 1
+18-24°C     | -(1/6) * temperature + 4 
+> 24°C      | 0
+
+#### 4. Adjust area based on the addition of wood
+
+We calculate a wood multiplier at the subbasin level based on bar and bank lengths within a particular subbasin:
+
+* summer wood multiplier = ((bank length * 1.2) + bar length * 2 * 1.02)) / bank length + (bar length * 2))
+    * if no bar or bank length for a subbasin, we use the mean of the wood multipliers across all subbasins, 1.16
+* winter wood multiplier = ((bank length * 1.21) + bar length * 2 * 1.09)) / bank length + (bar length * 2))
+    * if no bar or bank length for a subbasin, we use the mean of the wood multipliers across all subbasins, 1.16
+    
+We multiply area by the wood scalar in the Historical and Wood scenarios only
+
+#### 5. Barriers
+
+We only restrict rearing habitat above barriers if barriers have a passage rating of 0.  If the passage rating = 0, we set the area to 0.  Otherwise we do not restrict the rearing area
+
+#### 6. Calculate capacity
+
+Capacity = Area * Density
+
+Density is defined as fish/ha and is decribed in the following table:
+
+```{r, echo=FALSE, results = 'asis'}
+kable(density%>%filter(Habitat %in% c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand"))%>%spread(Habitat, Density))
+```
+
+#### 8. Large River Capacity Review
+
+Scenario| Large river lengthening? | Large river bank modifications restored? | Temperature scalar | Wood scalar? | Passage barriers present?
+--------|--------------------------|------------------------------------------|--------------------|--------------|--------------------------
+Barrier | No | No | Current | No | No
+Beaver | No | No | Current | No | Yes
+Current | No | No | Current | No | Yes
+Fine Sediment | No | No | Current | No | Yes
+Floodplain | No | No | Current | No | Yes
+Historical | Yes | Yes | Historical | Yes | No
+LR bank | No | Yes | Current | No | Yes
+LR length | Yes | No | Current | No | Yes
+Shade | No | No | Historical | No | Yes
+Wood | No | No | Current | Yes | Yes
+
+### Floodplain Capacity
+#### Introduction
+
+We begin with a layer of handmapped floodplain units.  We attach attributes such as barrier presence using the attributed "flowline" streamline created in the spatial model.  We do not apply temperature or wood scalars to floodplain habitat
+
+#### 1. Side channel habitat
+
+* Side channel habitat is broken into side channel pools and side channel riffles based on the same slope and landcover criteria as small stream pools and riffles
+* We do not convert side channel habitat to beaver pond habitat in any scenarios
+
+#### 2. Calculate winter area
+
+We use a winter pool scalar of .43 to convert summer pool area into winter pool area.  The remaining winter area becomes riffle area. 
+
+Winter habitat | Area calculation
+---------------|-----------------
+Side channel pool           | summer side channel pool area * .43
+Side channel riffle         | summer side channel riffle area + (.57 * summer side channel pool area)
+
+#### 3. Historical side channel
+
+We apply a side channel multiplier to select reaches of the "flowline" streamline to create historical side channel area.  
+* Side channel scalars are applied at the reach level.  
+* Where side channel scalars do not exist,  no new floodplain area is created.
+* Under Historical and Floodplain scenarios, historical side channel length = reach length * side channel scalar * width
+* Pool/riffle ratios are applied to historical side channel habitat
+
+#### 4. Barriers
+
+We only restrict habitat above barriers if barriers have a passage rating of 0.  If the passage rating = 0, we set the area to 0.  Otherwise we do not restrict the rearing area.  Barriers area not applied in the Historical, Barriers, and Floodplain scenarios
+
+#### 5. Calculate Capacity
+
+Capacity = Area * Density
+
+Density is defined as fish/ha and is decribed in the following table:
+
+```{r, echo=FALSE, results = 'asis'}
+kable(density%>%filter(Habitat %in% c("FP_Channel", "FP_Pond_lg", "FP_Pond_sm", "Lake", "Marsh", "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"))%>%spread(Habitat, Density))
+```
+
+#### 6. Review
+
+Scenario | Hist SC addition | Temperature scalar | Wood scalar | Passage barriers present?
+---------|------------------|--------------------|-------------|--------------------------
+Barrier | No | None | None | No
+Beaver | No | None | None | Yes
+Current | No | None | None | Yes
+Fine Sediment | No | None | None | Yes
+Floodplain | Yes | None | None | No
+Historical | Yes | None | None | Yes
+LR bank | No | None | None | No
+LR length | No | None | None | Yes
+Shade | No | None | None | Yes
+Wood | No | None | None | Yes
+
+
+### Productivity
+#### 1. Introduction
+
+Subbasin productivity is calculated as a weighted average of reach level productivites.  Each habitat type has a defined base survival value.  This value is multiplied by the percent of the total capacity that the capacity of that habitat type accounts for, and the sum of these values is the total subbasin productivity 
+
+#### 2. Small stream productivity
+
+Small stream base productivity is defined in the following table:
+
+```{r, echo = FALSE, results = 'asis'}
+kable(survival%>%filter(Habitat %in% c("Pool", "Riffle", "Beaver.Pond")) %>% gather(Wood, Base.survival, surv.base:wood.surv.base) %>% mutate(Wood = ifelse(Wood == "surv.base", "No", "Yes")) %>% spread(Habitat, Base.survival))
+```
+
+* Small stream productivity is broken into four different scenarios: summer productivity with historical wood (Historical and Wood scenarios), summer productivity with current wood (All other scenarios), winter productivity with historical wood, and winter productivity with current wood.
+
+#### 3. Large river and backwater productivity
+
+Large river base productivity is defined in the following table: 
+
+```{r, echo = FALSE, results = 'asis'}
+kable(survival%>%filter(Habitat %in% LgRiver_habs) %>% select(-wood.surv.base) %>%rename(Base.survival = surv.base) %>% spread(Habitat, Base.survival))
+```
+
+* Large river has the same base survival for both current and historical woood scenarios, however large river base survival is multiplied by the subbasin-level wood multiplier in the total productivity calculation (see section 5: Total subbasin level productivity)
+
+#### 4. Floodplain productivity
+
+```{r, echo = FALSE, results = 'asis'}
+kable(survival%>%filter(Habitat %in% Floodplain_habs) %>% select(-wood.surv.base) %>%rename(Base.survival = surv.base) %>% spread(Habitat, Base.survival))
+```
+
+* Floodplain productivity is not affected by wood
+
+#### 5. Total subbasin level productivity
+
+```{r, echo = FALSE, results = 'asis'}
+surv_table <- data.frame(
+Habitat = c("Bank, HM Bank, Bar, Bar-boulder, Bar-gravel, Bar-sand, Backwater", "Pool, Riffle, Beaver Pond", "FP channel, lake, marsh, fp pond lg, fp pond sm, sc pool, sc riffle, slough lg, slough sm"),
+Reach_survival_calculation_summer = c("Base survival * temperature scalar * wood scalar * % of total capacity", "Base survival * temperature scalar * % of total capacity", "Base survival * % of total capacity"),
+Reach_survival_calculation_winter = c("Base survival * wood scalar * % of total capacity", "Base survival * % of total capacity", "Base survival * % of total capacity")
+)
+kable(surv_table)
+```
+
+* % of total capacity = capacity of reach or habitat unit / capacity of reach
+
+##### Total subbasin productivity is equal to the sum of all reach productivities within a subbasin
+
+####6. Productivity special cases
+
+We use a different method to calculate total productivity in the LR bank, LR length and Shade scenarios.  In these cases we use the following equation:
+
+Productivity = LR survival hist ((LR bank, LR Length or shade scenario) - LR survival curr (current scenario) * % LR) + Survival of current scenario

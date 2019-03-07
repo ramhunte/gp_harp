@@ -1,0 +1,145 @@
+data <- bind_rows(ss_2, lr_2, bw2, fp2) %>%
+  left_join(wood_data %>%
+              gather(life.stage, woodmult, woodmult_s:woodmult_w) %>%
+              mutate(life.stage = ifelse(life.stage == "woodmult_s", 
+                                         "summer", 
+                                         "winter")))
+if (fishtype == "steelhead") {
+  data <- data %>%
+    bind_rows(., data %>%
+                mutate(life.stage = ifelse(life.stage == "summer", 
+                                           "summer.2", 
+                                           "winter.2")))}
+
+data <- data %>%
+  left_join(., density) %>%
+  mutate(capacity = Area * Density) %>%
+  left_join(., survival) %>%
+  mutate(surv.base = ifelse(life.stage %in% c("summer", "summer.2"), 
+                            ifelse(hab.scenario == "Historical",
+                                   ifelse(Habitat %in% LgRiver_habs, 
+                                          wood.surv.base * woodmult * hist.tempmult,
+                                          ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
+                                                 wood.surv.base * hist.tempmult,
+                                                 surv.base)),
+                                   ifelse(hab.scenario %in% c("Wood", "FP_wood_comb"),
+                                          ifelse(Habitat %in% LgRiver_habs, 
+                                                 wood.surv.base * woodmult * curr.tempmult,
+                                                 ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
+                                                        wood.surv.base * curr.tempmult,
+                                                        surv.base)),
+                                          ifelse(hab.scenario == "Shade",
+                                                 ifelse(Habitat %in% c(LgRiver_habs, "Pool", "Riffle", "Beaver.Pond"), 
+                                                        surv.base * hist.tempmult,
+                                                        surv.base),
+                                                 ifelse(Habitat %in% c(LgRiver_habs, "Pool", "Riffle", "Beaver.Pond"), 
+                                                        surv.base * curr.tempmult,
+                                                        surv.base)))),
+                            ifelse(hab.scenario %in% c("Historical", "Wood"),
+                                   ifelse(Habitat %in% LgRiver_habs, 
+                                          wood.surv.base * woodmult,
+                                          ifelse(Habitat %in% c("Pool", "Riffle"), 
+                                                 wood.surv.base,
+                                                 surv.base)),
+                                   surv.base))) %>%
+  group_by(Subbasin_num, hab.scenario, life.stage) %>%
+  mutate(cap.sum.sub = sum(capacity, na.rm = T),
+         cap.perc = capacity / cap.sum.sub,
+         survival = cap.perc * surv.base) %>%
+  ungroup()
+
+data.lr <- data
+
+data <- data %>%
+  left_join(., data.lr %>%
+              filter(Habitat %in% LgRiver_habs,
+                     life.stage %in% c("summer", "summer.2")) %>%
+              group_by(Subbasin_num, hab.scenario, life.stage) %>%
+              summarize(survival = sum(survival, na.rm = T),
+                        cap.perc = sum(cap.perc, na.rm = T)) %>%
+              group_by(Subbasin_num, life.stage) %>%
+              mutate(survival.curr = ifelse(hab.scenario == "Current", survival, 0),
+                     survival.curr = sum(survival.curr, na.rm = T),
+                     surv.adj = (survival - survival.curr) * cap.perc) %>%
+              select(Subbasin_num, hab.scenario, surv.adj)) %>%
+  group_by(Subbasin_num, hab.scenario, life.stage) %>%
+  summarize(capacity = sum(capacity, na.rm = T),
+            survival = sum(survival, na.rm = T),
+            surv.adj = unique(surv.adj, na.rm = T)) %>%
+  group_by(Subbasin_num, life.stage) %>%
+  mutate(survival.curr = ifelse(hab.scenario == "Current", 
+                                survival, 
+                                0),
+         survival.curr = sum(survival.curr, na.rm = T),
+         survival = ifelse(life.stage %in% c("summer", "summer.2"),
+                           ifelse(hab.scenario %in% c("LR_bank", "LR_length", "Shade"),
+                                  ifelse(Subbasin_num %in% mainstem.subs, 
+                                         survival.curr + surv.adj, 
+                                         survival),
+                                  survival),
+                           survival)) %>%
+  select(hab.scenario, Subbasin_num, life.stage, capacity, survival) %>%
+  bind_rows(spawn_tot) %>%
+  bind_rows(prespawn.surv) %>%
+  bind_rows(ef.surv) %>%
+  ungroup()
+
+
+scenarios <- unique(data$hab.scenario)
+life.stage.nm <- c("egg.to.fry.survival", "adults.capacity", "eggs.capacity", "prespawn.survival", "summer.capacity", "summer.survival", 
+                   "winter.capacity", "winter.survival", "summer.2.capacity", "summer.2.survival", "winter.2.capacity", "winter.2.survival")
+
+life.stage <- life.stage.nm
+stage_nm <- c("eggtofry_surv", "adults", "eggs", "prespawn_surv", "capacity_s", "surv_s", "capacity_w", "surv_w", "capacity_s_2", "surv_s_2", 
+              "capacity_w_2", "surv_w_2")
+stage_nums <- c(1, 2, 3, 12, 4, 5, 6, 7, 8, 9, 10, 11)
+ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
+
+if (branch == "dev") {
+  if (dir.exists(file.path("Outputs", branch, "hab.scenarios", fishtype)) == F) {
+    dir.create(path = file.path("Outputs", branch, "hab.scenarios", fishtype), recursive = TRUE)
+  }
+  Outputs_dir = file.path("Outputs", branch, "hab.scenarios", fishtype)
+} else if (branch == "master") {
+  if (dir.exists(file.path("Outputs", branch, version, "hab.scenarios", fishtype)) == F) {
+    dir.create(path = file.path("Outputs", branch, version, "hab.scenarios", fishtype), recursive = TRUE)
+  }
+  Outputs_dir = file.path("Outputs", branch, version, "hab.scenarios", fishtype)
+} else {
+  if (dir.exists(file.path("Outputs", "feature", branch, "hab.scenarios", fishtype)) == F) {
+    dir.create(path = file.path("Outputs", "feature", branch, "hab.scenarios", fishtype), recursive = TRUE)
+  }
+  Outputs_dir = file.path("Outputs", "feature", branch, "hab.scenarios",fishtype)
+}
+
+data.spread <- lapply(scenarios, function(x){
+  y <- data %>%
+    filter(hab.scenario == x,
+           Subbasin_num %in% c(1:63),
+           !Subbasin_num %in% c(50,51)) %>%
+    select(-1) %>%
+    gather(life.stage2, num, capacity:survival) %>%
+    unite(life.stage, life.stage2, col = life.stage, sep = ".") %>%
+    left_join(., ls.to.names) %>%
+    full_join(., subbasin_names %>%
+                select(Subbasin_num)) %>%
+    spread(Subbasin_num, num) %>%
+    filter(life.stage %in% life.stage.nm) %>%
+    arrange(stage_nums) %>%
+    
+    select(-life.stage, -stage_nums)
+  if (fishtype == "coho") {
+    y <- y %>% 
+      filter(!stage_nm %in% c("capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
+  }
+  if (fishtype == "spring_chinook") {
+    y <- y %>% 
+      filter(!stage_nm %in% c("capacity_w", "surv_w", "capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
+  }
+  if (fishtype == "fall_chinook") {
+    y <- y %>% 
+      filter(!stage_nm %in% c("capacity_w", "surv_w", "capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
+  }
+  write.csv(y, file = paste0(Outputs_dir, "/", x, ".csv"))
+}) %>%
+  do.call('rbind',.)

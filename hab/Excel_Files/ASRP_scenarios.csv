@@ -1,0 +1,145 @@
+EDR,GSU,LW,Barriers,Floodplain,Beaver,Riparian,rest_perc_f,rest_perc_nf,primary_cr_only,Analog_name,Notes,Scenario_num
+Grays Harbor Tributaries,Lower Humptulips MS,y,y,y,n,y,0.33,0.33,n,Lower Humptulips,,scenario_1
+Grays Harbor Tributaries,Middle Humptulips MS,y,y,y,n,y,0.33,0.33,n,Middle Humptulips,,scenario_1
+Grays Harbor Tributaries,EF Humptulips MS,y,y,n,n,y,0.33,0.33,n,EF Humptulips,,scenario_1
+Grays Harbor Tributaries,WF Humptulips MS,y,y,n,n,y,0.33,0.33,n,WF Humptulips,,scenario_1
+Grays Harbor Tributaries,EF Hoquiam MS,y,y,y,n,y,0.33,0.33,n,EF Hoquiam,,scenario_1
+Grays Harbor Tributaries,Lower Wishkah MS,y,y,y,n,y,0.33,0.33,n,Lower Wishkah,,scenario_1
+Grays Harbor Tributaries,,y,y,y,n,y,0.33,0.33,n,Upper Wishkah,Is this included in lower Wishkah MS?,scenario_1
+Olympic Mountains ,Lower Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower Satsop Mainstem,,scenario_1
+Olympic Mountains ,Lower EF Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower EF Satsop,,scenario_1
+Olympic Mountains ,Lower MF Satsop MS,y,y,y,n,y,0.33,0.3,n,Lower MF Satsop ,,scenario_1
+Olympic Mountains ,Lower WF Satsop MS,y,y,y,n,y,0.33,0.3,n,Lower WF Satsop,,scenario_1
+Olympic Mountains ,Decker Creek,y,y,n,y,y,0.33,0.3,y,Decker Creek,,scenario_1
+Olympic Mountains ,Bingham Creek,y,y,n,y,y,0.33,0.3,y,Bingham Creek,,scenario_1
+Olympic Mountains ,Upper WF Satsop MS,y,y,n,y,y,0.33,0.3,n,Upper WF Satsop,,scenario_1
+Olympic Mountains ,Upper MF Satsop MS,y,y,y,y,y,0.33,0.3,n,Upper MF Satsop,,scenario_1
+Olympic Mountains ,Upper EF Satsop MS,y,y,n,y,y,0.33,0.3,n,Upper EF Satsop,,scenario_1
+Olympic Mountains ,Lower Wynoochee MS,y,y,y,n,y,0.33,0.3,n,Lower Wynoochee,,scenario_1
+Olympic Mountains ,Middle Wynoochee MS,y,y,y,n,y,0.33,0.3,n,Middle Wynoochee,,scenario_1
+Black Hills ,Cedar (BH) Cr,n,y,y,y,y,0.33,0.3,y,Cedar Creek,,scenario_1
+Black River,Lower Black MS,y,y,y,y,y,0.33,0.3,n,Lower Black River,,scenario_1
+Black River,Upper Black MS,y,y,y,y,y,0.33,0.3,n,Upper Black River,,scenario_1
+Black River,,y,y,y,n,y,0.33,0.33,n,Dempsey Creek,,scenario_1
+Cascade Mountains,Lower Skookumchuck,y,y,y,y,y,0.5,0.5,n,Lower Skookumchuck,,scenario_1
+Cascade Mountains,Lower Newaukum MS,y,y,y,n,y,0.5,0.5,n,Lower Newaukum,,scenario_1
+Cascade Mountains,SF Newaukum MS,y,y,y,y,y,0.5,0.5,n,SF Newaukum,,scenario_1
+Cascade Mountains,NF Newaukum MS,y,y,y,y,y,0.5,0.5,n,NF Newaukum,,scenario_1
+Willapa Hills,Elk Cr,y,y,y,n,y,0.3,0.3,y,Elk Creek,,scenario_1
+Willapa Hills,Chehalis Abv Crim MS,y,y,n,n,y,0.5,0.5,n,Chehalis above Crim,,scenario_1
+Willapa Hills,Chehalis RB Falls to Crim MS,y,y,y,n,y,0.5,0.5,n,Chehalis RB Falls to Crim,,scenario_1
+Willapa Hills,EF Chehalis MS,y,y,y,y,y,0.33,0.33,n,EF Chehalis,,scenario_1
+Willapa Hills,WF Chehalis MS,y,y,y,y,y,0.33,0.33,n,WF Chehalis,,scenario_1
+Willapa Hills,Crim Creek (UC),y,y,n,n,y,0.33,0.33,y,Crim Creek,,scenario_1
+Willapa Hills,Stillman (SFC) Cr,y,y,y,y,y,0.33,0.33,y,Stillman Creek,,scenario_1
+Willapa Hills,Upper SF Chehalis MS,y,y,y,n,y,0.33,0.33,n,Upper SF Chehalis,,scenario_1
+Chehalis River ,Lower Chehalis MS,y,y,y,n,y,0.2,0.2,n,"Lower Chehalis, Satsop to Porter; Lower Chehalis, Porter to Black; Lower Chehalis, Black to Skook",All 3 lower chehalis mainstem included in one GSU in our shapefile,scenario_1
+Chehalis River ,Tidal Zone,y,y,y,n,y,0.2,0.2,n,Tidal Zone,,scenario_1
+,Lower Humptulips MS,y,y,y,n,y,0.33,0.33,n,Lower Humptulips,,scenario_2
+,Middle Humptulips MS,y,y,y,n,y,0.33,0.33,n,Middle Humptulips,,scenario_2
+,EF Humptulips MS,y,y,n,n,y,0.5,0.5,n,EF Humptulips,,scenario_2
+,WF Humptulips MS,y,y,n,n,y,0.5,0.5,n,WF Humptulips,,scenario_2
+,Big (Hump) Cr,y,y,y,y,y,0.33,0.33,y,Big Creek (Hump),,scenario_2
+,Stevens Cr,y,y,y,n,y,0.33,0.33,y,Stevens Creek,,scenario_2
+,Deep (Hump) Cr,y,y,n,y,y,0.33,0.33,n,Deep Creek,,scenario_2
+,Johns (GH) R,y,y,y,y,y,0.33,0.33,y,Johns River,,scenario_2
+,EF Hoquiam MS,y,y,y,n,y,0.33,0.33,n,EF Hoquiam,,scenario_2
+,Lower Wishkah MS,y,y,y,n,y,0.33,0.33,n,Lower Wishkah,,scenario_2
+,,y,y,y,y,y,0.33,0.33,n,Upper Wishkah,Is this included in lower Wishkah MS?,scenario_2
+,Lower Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower Satsop Mainstem,,scenario_2
+,Lower EF Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower EF Satsop,,scenario_2
+,Lower MF Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower MF Satsop ,,scenario_2
+,Lower WF Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower WF Satsop,,scenario_2
+,Decker Creek,y,y,y,y,y,0.5,0.5,y,Decker Creek,,scenario_2
+,Bingham Creek,y,y,y,y,y,0.5,0.5,y,Bingham Creek,,scenario_2
+,Upper WF Satsop MS,y,y,n,y,y,0.33,0.33,n,Upper WF Satsop,,scenario_2
+,Upper MF Satsop MS,y,y,y,y,y,0.33,0.33,n,Upper MF Satsop,,scenario_2
+,Upper EF Satsop MS,y,y,y,y,y,0.5,0.5,n,Upper EF Satsop,,scenario_2
+,Lower WF Satsop Tribs,y,y,n,n,y,0.33,0.33,n,Lower WF Satsop Tribs,,scenario_2
+,Lower Wynoochee MS,y,y,y,n,y,0.33,0.33,n,Lower Wynoochee,,scenario_2
+,Middle Wynoochee MS,y,y,y,n,y,0.5,0.5,n,Middle Wynoochee,,scenario_2
+,Cloquallum Cr,y,y,y,y,y,0.5,0.5,y,Cloquallum Creek,,scenario_2
+,Porter Cr,y,y,n,y,y,0.33,0.33,y,Porter Creek,,scenario_2
+,Cedar (BH) Cr,y,y,y,y,y,0.33,0.33,y,Cedar Creek,,scenario_2
+,Lower Black MS,y,y,y,y,y,0.5,0.5,n,Lower Black River,,scenario_2
+,Upper Black River,y,y,y,y,y,0.33,0.33,n,Upper Black River,,scenario_2
+,,y,y,y,n,y,0.33,0.33,n,Dempsey Creek,can't find this in GSU shapefile,scenario_2
+,Scatter Cr,y,y,y,n,y,0.33,0.33,y,Scatter Creek,,scenario_2
+,Beaver Cr,y,y,y,n,y,0.5,0.5,y,Beaver Creek,,scenario_2
+,Lincoln Cr,y,y,y,y,y,0.5,0.5,y,Lincoln Creek,,scenario_2
+,Lower Skookumchuck,y,y,y,n,y,0.5,0.5,n,Lower Skookumchuck,,scenario_2
+,Lower Newaukum MS,y,y,y,n,y,0.5,0.5,n,Lower Newaukum,,scenario_2
+,SF Newaukum MS,y,y,y,y,y,0.5,0.5,n,SF Newaukum,,scenario_2
+,NF Newaukum MS,y,y,y,y,y,0.5,0.5,n,NF Newaukum,,scenario_2
+,Elk Cr,y,y,y,y,y,0.5,0.5,y,Elk Creek,,scenario_2
+,Chehalis Abv Crim MS,y,y,n,n,y,0.5,0.5,n,Chehalis above Crim,,scenario_2
+,Chehalis RB Falls to Crim MS,y,y,y,n,y,0.5,0.5,n,Chehalis RB Falls to Crim,,scenario_2
+,EF Chehalis MS,y,y,y,y,y,0.5,0.5,n,EF Chehalis,,scenario_2
+,WF Chehalis MS,y,y,y,y,y,0.5,0.5,n,WF Chehalis,,scenario_2
+,Crim Creek (UC),y,y,n,n,y,0.5,0.5,y,Crim Creek,,scenario_2
+,Stillman (SFC) Cr,y,y,y,y,y,0.33,0.33,y,Stillman Creek,,scenario_2
+,Upper SF Chehalis MS,y,y,y,n,y,0.5,0.5,n,Upper SF Chehalis,,scenario_2
+,Lower Chehalis MS,y,y,y,n,y,0.2,0.2,n,"Lower Chehalis, Satsop to Porter; Lower Chehalis, Porter to Black; Lower Chehalis, Black to Skook",,scenario_2
+,Tidal Zone,y,y,y,n,y,0.2,0.2,n,Tidal Zone,,scenario_2
+,Lower Humptulips MS,y,y,y,n,y,0.5,0.5,n,Lower Humptulips,,scenario_3
+,Middle Humptulips MS,y,y,y,n,y,0.5,0.5,n,Middle Humptulips,,scenario_3
+,EF Humptulips MS,y,y,n,n,y,0.5,0.5,n,EF Humptulips,,scenario_3
+,WF Humptulips MS,y,y,n,n,y,0.5,0.5,n,WF Humptulips,,scenario_3
+,Big (Hump) Cr,y,y,y,y,y,0.5,0.5,y,Big Creek (Hump),,scenario_3
+,Stevens Cr,y,y,y,n,y,0.5,0.5,y,Stevens Creek,,scenario_3
+,Deep (Hump) Cr,y,y,n,n,y,0.33,0.33,n,Deep Creek,,scenario_3
+,Johns (GH) R,y,y,y,y,y,0.5,0.5,y,Johns River,,scenario_3
+,EF Hoquiam MS,y,y,y,n,y,0.33,0.33,n,EF Hoquiam,,scenario_3
+,Lower Wishkah MS,y,y,y,n,y,0.33,0.33,n,Lower Wishkah,,scenario_3
+,,y,y,y,n,y,0.5,0.5,n,Upper Wishkah,no gsu for upper wishkah.  I believe this is incorporated into lower wishkah,scenario_3
+,Lower Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower Satsop Mainstem,,scenario_3
+,Lower EF Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower EF Satsop,,scenario_3
+,Lower MF Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower MF Satsop ,,scenario_3
+,Lower WF Satsop MS,y,y,y,n,y,0.5,0.5,n,Lower WF Satsop,,scenario_3
+,Decker Creek,y,y,y,y,y,0.5,0.5,y,Decker Creek,,scenario_3
+,Bingham Creek,y,y,y,y,y,0.5,0.5,y,Bingham Creek,,scenario_3
+,Upper WF Satsop MS,y,y,n,y,y,0.33,0.33,n,Upper WF Satsop,,scenario_3
+,Upper MF Satsop MS,y,y,y,y,y,0.33,0.33,n,Upper MF Satsop,,scenario_3
+,Upper EF Satsop MS,y,y,y,y,y,0.75,0.75,n,Upper EF Satsop,,scenario_3
+,Lower WF Satsop Tribs,y,y,n,n,y,0.33,0.33,n,Lower WF Satsop Tribs,,scenario_3
+,Canyon R,y,y,n,n,y,0.5,0.5,n,Canyon River,,scenario_3
+,Dry Run Cr,y,y,n,n,y,0.5,0.5,y,Dry Run Creek,,scenario_3
+,Lower Wynoochee MS,y,y,y,n,y,0.33,0.33,n,Lower Wynoochee,,scenario_3
+,Middle Wynoochee MS,y,y,y,n,y,0.5,0.5,n,Middle Wynoochee,,scenario_3
+,Black (Wyn) Cr,y,y,y,y,y,0.5,0.5,y,Black Creek (Wyn),,scenario_3
+,Wynoochee Reservoir,y,y,n,n,y,0.33,0.33,y,Wynoochee Reservoir,,scenario_3
+,Upper Wynoochee,y,y,n,n,y,0.33,0.33,y,Upper Wynoochee,only below falls,scenario_3
+,Cloquallum Cr,y,y,y,y,y,0.5,0.5,y,Cloquallum Creek,,scenario_3
+,Porter Cr,y,y,n,y,y,0.33,0.33,y,Porter Creek,,scenario_3
+,Cedar (BH) Cr,y,y,y,y,y,0.33,0.33,y,Cedar Creek,,scenario_3
+,Lower Black MS,y,y,y,y,y,0.5,0.5,n,Lower Black River,,scenario_3
+,Upper Black MS,y,y,y,y,y,0.33,0.33,n,Upper Black River,,scenario_3
+,,y,y,y,n,y,0.33,0.33,n,Dempsey Creek,not in gsu layer,scenario_3
+,Scatter Cr,y,y,y,n,y,0.33,0.33,y,Scatter Creek,,scenario_3
+,Beaver Cr,y,y,y,n,y,0.5,0.5,y,Beaver Creek,,scenario_3
+,Waddell Creek,y,y,n,n,y,0.5,0.5,y,Waddell Creek,,scenario_3
+,Lincoln Cr,y,y,y,y,y,0.5,0.5,y,Lincoln Creek,,scenario_3
+,Garrard Cr,y,y,y,y,y,0.5,0.5,y,Garrard Creek,,scenario_3
+,,y,y,y,y,y,0.5,0.5,y,Rock Creek,there are two different rock creeks.  Need to figure out which one we should be using,scenario_3
+,Bunker Creek,y,y,y,y,y,0.5,0.5,y,Bunker Creek,,scenario_3
+,Lower Skookumchuck,y,y,y,n,y,0.5,0.5,n,Lower Skookumchuck,,scenario_3
+,Upper Skookumchuck,y,y,y,y,y,0.5,0.5,y,Upper Skookumchuck,,scenario_3
+,Hanaford Cr,y,y,y,y,y,0.5,0.5,y,Hanaford Creek,,scenario_3
+,Lower Newaukum MS,y,y,y,n,y,0.5,0.5,n,Lower Newaukum,,scenario_3
+,SF Newaukum MS,y,y,y,y,y,0.5,0.5,n,SF Newaukum,,scenario_3
+,NF Newaukum MS,y,y,y,y,y,0.5,0.5,n,NF Newaukum,,scenario_3
+,Stearns Cr,y,y,y,y,y,0.5,0.5,y,Stearns Creek,,scenario_3
+,Elk Cr,y,y,y,y,y,0.5,0.5,y,Elk Creek,,scenario_3
+,Chehalis Abv Crim MS,y,y,n,n,y,0.75,0.75,n,Chehalis Above Crim,,scenario_3
+,Chehalis RB Falls to Crim MS,y,y,y,n,y,0.5,0.5,n,Chehalis RB Falls to Crim,,scenario_3
+,EF Chehalis MS,y,y,y,y,y,0.75,0.75,n,EF Chehalis,,scenario_3
+,WF Chehalis MS,y,y,y,y,y,0.75,0.75,n,WF Chehalis,,scenario_3
+,Crim Creek (UC),y,y,n,y,y,0.5,0.5,y,Crim Creek,,scenario_3
+,Thrash Creek (UC),y,y,n,n,y,0.5,0.5,y,Thrash Creek,,scenario_3
+,Big (UC) Creek,y,y,n,n,y,0.5,0.5,n,Big Creek (UC),,scenario_3
+,Stillman (SFC) Cr,y,y,y,y,y,0.33,0.33,n,Stillman Creek,,scenario_3
+,Lake (SFC) Cr,y,y,y,y,y,0.5,0.5,y,Lake Creek,,scenario_3
+,Lower SF Chehalis MS,y,y,y,n,y,0.2,0.2,n,Lower SF Chehalis,,scenario_3
+,Upper SF Chehalis MS,y,y,y,y,y,0.5,0.5,n,Upper SF Chehalis,,scenario_3
+,Middle Chehalis,y,y,y,n,y,0.33,0.33,n,"3 GSUs in sheet, only one in our layer",,scenario_3
+,Lower Chehalis MS,y,y,y,n,y,0.33,0.33,n,"Lower Chehalis, Satsop to Porter; Lower Chehalis, Porter to Black; Lower Chehalis, Black to Skook",look into differences beetween our gSUs and list given to us,scenario_3
