@@ -56,7 +56,7 @@ years <- 100
 
 # Load functions ----
 
-source("scripts/funcs.R")
+source("lcm/scripts/funcs.R")
 
 
 
@@ -67,7 +67,7 @@ invisible(pkgCheck("tidyverse"))
 
 # Load scenario names, initialize arrays and load parameter settings ------
 
-source("scripts/initialize.R")
+source("lcm/scripts/initialize.R")
 
 
 
@@ -96,14 +96,14 @@ if (sensitivity.mode == "no") {
 }
 
 #Read in model parameter values
-source(paste0('params/params.',pop,".R"))
+source(paste0('lcm/params/params.',pop,".R"))
 
 # Habitat scenarios -----
 for (n in 1:length(scenario.file)) {
   # loop across hab scenarios
   
   #Assign variables from habitat scenario files
-  source("scripts/assign.dat.R")
+  source("lcm/scripts/assign.dat.R")
   
   for (j in 1:runs) {
     # loop across model runs
@@ -116,8 +116,8 @@ for (n in 1:length(scenario.file)) {
       #   Values called for sensitivity
       #   this input file overrides or augments previously defined params:
       if (sensitivity.mode == "yes") {
-        source("scripts/sensitivity.R")
-        source("scripts/assign.dat.R")
+        source("lcm/scripts/sensitivity.R")
+        source("lcm/scripts/assign.dat.R")
         
       } #End if() sensitivty mode
       
@@ -307,7 +307,7 @@ for (n in 1:length(scenario.file)) {
 # Call the plots ---------------------------------------------------------------------------------------------------------
 
 # Create a directory for today's outputs
-out.path <- file.path('lcm_outputs',format(Sys.time(), "%Y%m%d"), pop)
+out.path <- file.path('lcm/lcm_outputs',format(Sys.time(), "%Y%m%d"), pop)
 if (dir.exists(out.path) == F) {dir.create(out.path, recursive = T)}
 
 
@@ -329,7 +329,7 @@ abundance_by_subbasin <- model.all[ ,50:100, summary.stages, , ] %>%
   as.data.frame.table() %>%
   rename(lifestage = Var1, Subbasin = Var2, scenario = Var3, n = Freq) %>%
   spread(lifestage, n) %>%
-  mutate(scenario = factor(scenario, levels = read.csv('data/scenarios.csv')$scenario)) %>%
+  mutate(scenario = factor(scenario, levels = read.csv('lcm/data/scenarios.csv')$scenario)) %>%
   filter(scenario != 'Historical.no.beaver') %>%
   arrange(scenario) %>%
   rename(natal.basin = Subbasin)
@@ -342,19 +342,19 @@ write.csv(abundance_by_subbasin, file.path(out.path, csv.name))
 # Call bar, box or sensitivity plots
 packages.plots <- c("grid","scales")
 invisible(lapply(packages.plots,pkgCheck))
-source("scripts/plots.R")
+source("lcm/scripts/plots.R")
 
 
 # Call spatial plots
 # if (save.plots == "yes" & sensitivity.mode == "no"){
 #   packages.spatial.plots <- c("gridExtra","rgdal", "rgeos", "maptools","TeachingDemos")
 #   invisible(lapply(packages.spatial.plots,pkgCheck))
-#   source("scripts/spatial.plots.R")
+#   source("lcm/scripts/spatial.plots.R")
 # } 
 
 
 # Call diagnostic plots
 if (diag.plots == 'yes') {
-  source("scripts/diagnostic.plots.R")
+  source("lcm/scripts/diagnostic.plots.R")
 } 
 

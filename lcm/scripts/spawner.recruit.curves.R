@@ -205,7 +205,7 @@ bh.dat.nested <- list(
   # 2. Spawner-recruit data at the EDR-sceanrio level
   sr_dat %>%
     ungroup %>%
-    left_join(read.csv('data/subbasin_names.csv')) %>%
+    left_join(read.csv('lcm/data/subbasin_names.csv')) %>%
     group_by(scenario, EcoRegion, runs) %>%
     summarize(n.init = sum(n.init, na.rm = T),
               recruits = sum(recruits, na.rm = T)) %>%
@@ -334,7 +334,7 @@ fish.abundance %>%
   
 # Write csv per EDR
 fish.abundance %>%
-  left_join(read.csv('data/subbasin_names.csv')) %>%
+  left_join(read.csv('lcm/data/subbasin_names.csv')) %>%
   group_by(Var1, scenario, EcoRegion) %>%
   summarize(n = sum(n, na.rm = T)) %>%
   ungroup() %>%

@@ -1,4 +1,8 @@
+# Files to ignore
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# Directories to ignore
+lcm/lcm_outputs/

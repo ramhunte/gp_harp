@@ -1,7 +1,7 @@
 
 
 # Read in habitat scenario file
-dat <- read.csv(file.path('hab.scenarios',pop,habitat.file[n]), header=TRUE, row.names = 2)
+dat <- read.csv(file.path('lcm','hab.scenarios',pop,habitat.file[n]), header=TRUE, row.names = 2)
 
 
 

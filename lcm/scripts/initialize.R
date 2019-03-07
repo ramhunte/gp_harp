@@ -3,7 +3,7 @@
 
 
 # Path to habitat scenario data ----
-hab.path <- file.path("hab.scenarios",pop)
+hab.path <- file.path('lcm', 'hab.scenarios', pop)
 
 
 # File names that hold habitat senario data ----
@@ -22,7 +22,7 @@ scenario.file <- gsub('_', '\\.', habitat.file) %>%
 
 
 # Subbasin/reach names ----
-reach.names <- read.csv("data/subbasin_names.csv") %>%
+reach.names <- read.csv("lcm/data/subbasin_names.csv") %>%
   select(Subbasin) %>%
   mutate(Subbasin = as.character(Subbasin)) %>%
   unlist(use.names = FALSE)
@@ -224,7 +224,7 @@ ms.reaches <- reach.names[grep("Mainstem", reach.names)]
 trib.reaches <- subset(reach.names,!(reach.names %in% ms.reaches))
 
 if (pop %in% c('spring.chinook', 'fall.chinook')) {
-  gh.trib.reaches <- read.csv("data/subbasin_names.csv") %>%
+  gh.trib.reaches <- read.csv("lcm/data/subbasin_names.csv") %>%
     filter(EcoRegion %in% c('Grays Harbor Tributaries', 'Olympic Mountains')) %>%
     select(Subbasin) %>%
     unlist(use.names = F) %>%

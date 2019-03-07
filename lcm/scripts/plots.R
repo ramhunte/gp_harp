@@ -7,11 +7,11 @@ if (dir.exists(out.path) == F) {dir.create(out.path)}
 
 # Read in file with predefined plot labels and matching colors
 
-plot.params <- read.csv("data/scenarios.csv") %>%
+plot.params <- read.csv("lcm/data/scenarios.csv") %>%
   select(scenario,scenario.label,color) %>%
   mutate_if(is.factor,as.character)
 
-subbasins <- read.csv('data/subbasin_names.csv')
+subbasins <- read.csv('lcm/data/subbasin_names.csv')
 
 
 
@@ -59,7 +59,7 @@ if (sensitivity.mode == 'no') {
   
   # Join oberseved and modeled data
   spawners <- spawners %>%
-    bind_rows(read.csv(paste0("data/",pop,".observed.csv")) %>%
+    bind_rows(read.csv(paste0("lcm/data/",pop,".observed.csv")) %>%
                 mutate(scenario.label = as.character(ifelse(Year > 1980, levs.obs[1], levs.obs[2])),
                        color = "grey90") %>%
                 filter(lifestage == 'total.run') %>%
@@ -155,7 +155,7 @@ if (sensitivity.mode=="no" & save.plots=="yes"){
   if(pop %in% c('coho','fall.chinook', 'steelhead')){
     spawners.edr <- spawners.edr%>%
     rename(Subbasin = Var1, scenario = Var2, n = Freq)%>%
-    left_join(read.csv('data/subbasin_names.csv'))%>%
+    left_join(read.csv('lcm/data/subbasin_names.csv'))%>%
     group_by(scenario,EcoRegion)%>%
     summarize(spawners= sum(n,na.rm = T))%>%
     ungroup()
