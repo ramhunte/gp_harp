@@ -1,15 +1,10 @@
+# Purpose: this script loads one habitat scenario, and creates seperate vectors for each parameter held within the 
+# scenario. For example, the row "eggs" in the csv is assigned to a vector (egg.cap) which is then used in teh subbasin function. 
+
+
 # Read in habitat scenario file ----
 
-if (branch == "master") {
-  dat.path <- paste(master_version, branch, sep = "/")
-} else if (branch == "dev") {
-  dat.path <- branch
-} else {
-  dat.path <- paste0("feature/", branch) 
-}
-
-dat <- read.csv(file.path('hab', 'Outputs', dat.path, "hab.scenarios", fishtype, habitat.file[n]), header = TRUE, row.names = 2)
-# dat <- read.csv(file.path('lcm','hab.scenarios',pop,habitat.file[n]), header=TRUE, row.names = 2)
+dat <- read.csv(file.path(hab.path, habitat.file[n]), header = TRUE, row.names = 2)
 
 
 
