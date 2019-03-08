@@ -26,13 +26,13 @@ movement_scenarios <- lapply(mvmt_gsu_list, function(d){
   barrier_gsu <- asrp_scenarios[asrp_scenarios$Barriers == "q", "GSU"]
   shade_gsu <- asrp_scenarios[asrp_scenarios$Riparian == "q", "GSU"]
   
-  source("R_files/asrp_files/asrp_culvs.R", local = TRUE)
+  source("hab/R_files/asrp_files/asrp_culvs.R", local = TRUE)
   
-  source("R_files/asrp_files/asrp_ss.R", local = TRUE)
+  source("hab/R_files/asrp_files/asrp_ss.R", local = TRUE)
   
-  source("R_files/asrp_files/asrp_lr.R", local = TRUE)
+  source("hab/R_files/asrp_files/asrp_lr.R", local = TRUE)
   
-  source("R_files/asrp_files/asrp_fp.R", local = TRUE)
+  source("hab/R_files/asrp_files/asrp_fp.R", local = TRUE)
   
   mvmt_data <- bind_rows(asrp_ss, asrp_lr, asrp_fp) %>%
     mutate(mvmt_scenario_nm = d) %>%

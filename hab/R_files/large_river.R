@@ -27,7 +27,7 @@ if (fishtype == "spring_chinook") {
     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs,
            Subbasin_num %in% c(1, 3, 5, 12, 18, mainstem.subs))}
 
-source("R_files/wood_script.R")
+source("hab/R_files/wood_script.R")
 
 lr <- LgRiver_raw %>%
   select(Length_m, Unit_width, Area_ha, Period, Subbasin_num, noaaid, curr_temp, hist_temp, pass_tot, species, spawn_dist, both_chk, Habitat, Reach, 

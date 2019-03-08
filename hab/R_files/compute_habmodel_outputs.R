@@ -96,20 +96,20 @@ stage_nums <- c(1, 2, 3, 12, 4, 5, 6, 7, 8, 9, 10, 11)
 ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
 
 if (branch == "dev") {
-  if (dir.exists(file.path("Outputs", branch, "hab.scenarios", fishtype)) == F) {
-    dir.create(path = file.path("Outputs", branch, "hab.scenarios", fishtype), recursive = TRUE)
+  if (dir.exists(file.path("hab/Outputs", branch, "hab.scenarios", fishtype)) == F) {
+    dir.create(path = file.path("hab/Outputs", branch, "hab.scenarios", fishtype), recursive = TRUE)
   }
-  Outputs_dir = file.path("Outputs", branch, "hab.scenarios", fishtype)
+  Outputs_dir = file.path("hab/Outputs", branch, "hab.scenarios", fishtype)
 } else if (branch == "master") {
-  if (dir.exists(file.path("Outputs", branch, version, "hab.scenarios", fishtype)) == F) {
-    dir.create(path = file.path("Outputs", branch, version, "hab.scenarios", fishtype), recursive = TRUE)
+  if (dir.exists(file.path("hab/Outputs", branch, master_version, "hab.scenarios", fishtype)) == F) {
+    dir.create(path = file.path("hab/Outputs", branch, master_version, "hab.scenarios", fishtype), recursive = TRUE)
   }
-  Outputs_dir = file.path("Outputs", branch, version, "hab.scenarios", fishtype)
+  Outputs_dir = file.path("hab/Outputs", branch, master_version, "hab.scenarios", fishtype)
 } else {
-  if (dir.exists(file.path("Outputs", "feature", branch, "hab.scenarios", fishtype)) == F) {
-    dir.create(path = file.path("Outputs", "feature", branch, "hab.scenarios", fishtype), recursive = TRUE)
+  if (dir.exists(file.path("hab/Outputs", "feature", branch, "hab.scenarios", fishtype)) == F) {
+    dir.create(path = file.path("hab/Outputs", "feature", branch, "hab.scenarios", fishtype), recursive = TRUE)
   }
-  Outputs_dir = file.path("Outputs", "feature", branch, "hab.scenarios",fishtype)
+  Outputs_dir = file.path("hab/Outputs", "feature", branch, "hab.scenarios",fishtype)
 }
 
 data.spread <- lapply(scenarios, function(x){

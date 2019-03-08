@@ -1,13 +1,13 @@
-edt_temps <- list.files(path = "Inputs", pattern = "edt_temps", full.names = T) %>% 
+edt_temps <- list.files(path = Inputs, pattern = "edt_temps", full.names = T) %>% 
   read.csv(.) %>%
   select(-X)
 
-psu_temps <- list.files(path = "Inputs", pattern = "psu_temps", full.names = T) %>%
+psu_temps <- list.files(path = Inputs, pattern = "psu_temps", full.names = T) %>%
   read.csv(.) %>%
   select(mdm, Seg)
   
 # Attribute table of chehalis_obstructs_20181013_NAD83
-culvs <- list.files(path = "Inputs", pattern = "culvs_gsu_", full.names = T) %>%
+culvs <- list.files(path = Inputs, pattern = "culvs_gsu_", full.names = T) %>%
   read.csv(.)%>%
   mutate(noaa_culv = as.numeric(row.names(.)),
          FishPass = as.numeric(as.character(FishPass))/100) %>%

@@ -1,9 +1,19 @@
 
 # Initialize the model
 
+# Purpose: this script is used to create vectors of subbasin names, scenario names, lifestages. It also create empty arrays which will be filled
+# with the for() loops, and defines the movement matrix which defines the movement rules. 
+
 
 # Path to habitat scenario data ----
-hab.path <- file.path("hab.scenarios",pop)
+# branch is defined in the hab model or in LCM.sim.R
+if (branch == "master") {
+  hab.path <- file.path('hab','Outputs', branch, master_version, 'hab.scenarios', fishtype)
+} else if (branch == "dev") {
+  hab.path <- file.path('hab','Outputs', branch, 'hab.scenarios', fishtype)
+} else {
+  hab.path <- file.path('hab','Outputs', 'feature', branch, 'hab.scenarios', fishtype) 
+}
 
 
 # File names that hold habitat senario data ----
@@ -22,7 +32,7 @@ scenario.file <- gsub('_', '\\.', habitat.file) %>%
 
 
 # Subbasin/reach names ----
-reach.names <- read.csv("data/subbasin_names.csv") %>%
+reach.names <- read.csv("lcm/data/subbasin_names.csv") %>%
   select(Subbasin) %>%
   mutate(Subbasin = as.character(Subbasin)) %>%
   unlist(use.names = FALSE)
@@ -224,7 +234,7 @@ ms.reaches <- reach.names[grep("Mainstem", reach.names)]
 trib.reaches <- subset(reach.names,!(reach.names %in% ms.reaches))
 
 if (pop %in% c('spring.chinook', 'fall.chinook')) {
-  gh.trib.reaches <- read.csv("data/subbasin_names.csv") %>%
+  gh.trib.reaches <- read.csv("lcm/data/subbasin_names.csv") %>%
     filter(EcoRegion %in% c('Grays Harbor Tributaries', 'Olympic Mountains')) %>%
     select(Subbasin) %>%
     unlist(use.names = F) %>%
