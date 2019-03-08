@@ -4,5 +4,7 @@
 .RData
 .Ruserdata
 
+
 # Directories to ignore
 lcm/lcm_outputs/
+hab/Outputs/feature

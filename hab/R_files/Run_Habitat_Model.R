@@ -17,7 +17,7 @@ branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
 if (branch == "master") {
   version_list <- paste0('v', 1:4)
-  version <- version_list[menu(version_list, title = "which version are you running?", graphics = TRUE)]
+  master_version <- version_list[menu(version_list, title = "which version are you running?", graphics = TRUE)]
 }
 
 Inputs = 'hab/Inputs'

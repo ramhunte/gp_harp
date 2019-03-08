@@ -9,7 +9,7 @@ scenario.years <- c(2040, 2080, 2019)
 if (branch == "dev") {
   Outputs_dir = paste0("hab/Outputs/", branch, "/hab.scenarios/", fishtype)
 } else if (branch == "master") {
-  Outputs_dir = paste0("hab/Outputs/", branch, "/", version, "/hab.scenarios/", fishtype)
+  Outputs_dir = paste0("hab/Outputs/", branch, "/", master_version, "/hab.scenarios/", fishtype)
 } else {
   if (dir.exists(paste0("hab/Outputs/feature/", branch, "/hab.scenarios/", fishtype)) == F) {
     dir.create(path = paste0("hab/Outputs/feature/", branch, "/hab.scenarios/", fishtype), recursive = TRUE)}

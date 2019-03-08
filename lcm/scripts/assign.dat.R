@@ -1,7 +1,15 @@
+# Read in habitat scenario file ----
 
+if (branch == "master") {
+  dat.path <- paste(master_version, branch, sep = "/")
+} else if (branch == "dev") {
+  dat.path <- branch
+} else {
+  dat.path <- paste0("feature/", branch) 
+}
 
-# Read in habitat scenario file
-dat <- read.csv(file.path('lcm','hab.scenarios',pop,habitat.file[n]), header=TRUE, row.names = 2)
+dat <- read.csv(file.path('hab', 'Outputs', dat.path, "hab.scenarios", fishtype, habitat.file[n]), header = TRUE, row.names = 2)
+# dat <- read.csv(file.path('lcm','hab.scenarios',pop,habitat.file[n]), header=TRUE, row.names = 2)
 
 
 
