@@ -1,24 +1,5 @@
 # debug(utils:::unpackPkgZip)
-
-library(tidyverse)
-library(magrittr)
-
 options(scipen = 999)
-
-#### choose species to run ----
-
-# Load a dropdown menu with species
-spp <- c('coho', 'spring_chinook', 'fall_chinook', 'steelhead' 
-         #, 'chum'
-         )
-fishtype <- spp[menu(spp,title = "Choose a species",graphics = TRUE)]
-
-branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
-
-if (branch == "master") {
-  version_list <- paste0('v', 1:4)
-  master_version <- version_list[menu(version_list, title = "which version are you running?", graphics = TRUE)]
-}
 
 Inputs = 'hab/Inputs'
 
