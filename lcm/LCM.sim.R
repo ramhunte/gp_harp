@@ -57,7 +57,7 @@ if (branch == "master") {
 }
 
 } else {
-  pop <- species
+  pop <- species <- fishtype
 }
 
 if (fishtype == "fall_chinook") {
