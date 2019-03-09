@@ -1,9 +1,19 @@
 
 # Initialize the model
 
+# Purpose: this script is used to create vectors of subbasin names, scenario names, lifestages. It also create empty arrays which will be filled
+# with the for() loops, and defines the movement matrix which defines the movement rules. 
+
 
 # Path to habitat scenario data ----
-hab.path <- file.path('lcm', 'hab.scenarios', pop)
+# branch is defined in the hab model or in LCM.sim.R
+if (branch == "master") {
+  hab.path <- file.path('hab','Outputs', branch, master_version, 'hab.scenarios', fishtype)
+} else if (branch == "dev") {
+  hab.path <- file.path('hab','Outputs', branch, 'hab.scenarios', fishtype)
+} else {
+  hab.path <- file.path('hab','Outputs', 'feature', branch, 'hab.scenarios', fishtype) 
+}
 
 
 # File names that hold habitat senario data ----
