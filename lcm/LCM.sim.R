@@ -40,7 +40,14 @@ diag.plots <- 'no'
 
 #--------   Use caution when adjusting code below here   -----------------------------------------------------------------
 
-  pop <- species <- fishtype
+
+
+# Define which species to run ----
+
+pop <- species <- fishtype
+
+
+# Convert fishtype (Hab model) to pop and species (LCM)
 
 if (fishtype == "fall_chinook") {
   species <- pop <- "fall.chinook"
