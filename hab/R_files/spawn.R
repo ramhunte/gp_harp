@@ -1,12 +1,12 @@
 fp_spawn <- fp %>%
   filter(Habitat == "Side_Channel",
          ifelse(Period == "Hist",
-                spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% c(52:63),
-                spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% c(52:63)))
+                spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs,
+                spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs))
 
 if (fishtype == "spring_chinook") {
   fp_spawn <- fp_spawn %>%
-    filter(Subbasin_num %in% c(1, 3, 5, 12, 18 , 52:63))
+    filter(Subbasin_num %in% schino_subs)
 }
 
 fps <- fp_spawn %>%

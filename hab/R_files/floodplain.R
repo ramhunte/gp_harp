@@ -159,7 +159,7 @@ if (fishtype == "spring_chinook") {
            ifelse(hab.scenario %in% c("Current", "Beaver", "Barriers", "Fine_sediment", "LR_bank", "LR_length", "Shade", "Wood"), 
                   spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & ET_ID > 0,
                   spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs),
-           Subbasin_num %in% c(1, 3, 5, 12, 18, 52:63))
+           Subbasin_num %in% schino_subs)
 } else{
   fp2 %<>%
     filter(Hist_salm == "Hist salmon",
@@ -172,7 +172,7 @@ if (fishtype == "spring_chinook") {
 if (fishtype == "spring_chinook") {
   fp2 <- fp2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .19, 
+                                   schino_mult, 
                                    1),
            Area = Area * chinook_scalar)
 }
@@ -180,7 +180,7 @@ if (fishtype == "spring_chinook") {
 if (fishtype == "fall_chinook") {
   fp2 <- fp2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .81, 
+                                   fchino_mult, 
                                    1),
            Area * chinook_scalar)
 }

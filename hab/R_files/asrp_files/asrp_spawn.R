@@ -34,7 +34,7 @@ asrp_spawn_fp <- asrp_fp_raw %>%
                        Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity))
 if (fishtype == "spring_chinook") {
   asrp_spawn_fp %<>%
-    filter(Subbasin_num %in% c(1, 3, 5, 12, 18, 52:63))
+    filter(Subbasin_num %in% schino_subs)
 } 
 
 asrp_spawn_lr <- lgr_sp_area_asrp %>%

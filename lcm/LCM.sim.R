@@ -40,25 +40,7 @@ diag.plots <- 'no'
 
 #--------   Use caution when adjusting code below here   -----------------------------------------------------------------
 
-if (choose_model_run == "lcm") {
-  
-#Load a dropdown menu with species
-species <- c("fall.chinook",
-"spring.chinook",
-"coho",
-"steelhead")
-pop <- species[menu(species, title = "Choose a species", graphics = TRUE)]
-
-branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
-
-if (branch == "master") {
-  version_list <- paste0('v', 1:4)
-  master_version <- version_list[menu(version_list, title = "which version are you running?", graphics = TRUE)]
-}
-
-} else {
   pop <- species <- fishtype
-}
 
 if (fishtype == "fall_chinook") {
   species <- pop <- "fall.chinook"

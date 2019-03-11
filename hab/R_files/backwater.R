@@ -107,7 +107,7 @@ bw2 <- bw1 %>%
 if (fishtype == "spring_chinook") {
   bw2 <- bw2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .19, 
+                                   schino_mult, 
                                    1),
            Area = Area * chinook_scalar)
 }
@@ -115,7 +115,7 @@ if (fishtype == "spring_chinook") {
 if (fishtype == "fall_chinook") {
   bw2 <- bw2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .81, 
+                                   fchino_mult, 
                                    1),
            Area = Area * chinook_scalar)
 }

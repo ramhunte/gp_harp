@@ -54,12 +54,12 @@ if (fishtype == "spring_chinook") {
   asrp_lr %<>%
     rename(Area_nochino = Area) %>%
     mutate(Area = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                         Area_nochino * .19,
+                         Area_nochino * schino_mult,
                          Area_nochino))
 } else if (fishtype == "fall_chinook") {
   asrp_lr %<>%
     rename(Area_nochino = Area) %>%
     mutate(Area = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                         Area_nochino * .81,
+                         Area_nochino * fchino_mult,
                          Area_nochino))
 }

@@ -4,7 +4,7 @@ if (fishtype == "spring_chinook") {
            hist_temp > 0,
            ifelse(Habitat == "LgRiver",
                   spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs,
-                  spawn_dist == "Yes" & Subbasin_num %in% c(1, 3, 5, 12, 18, 52:63))) %>%
+                  spawn_dist == "Yes" & Subbasin_num %in% schino_subs)) %>%
     mutate(prespawn_temp_curr = ifelse(!is.na(mdm), 
                                        mdm,
                                        ifelse(!is.na(edt_mdm_temp), 

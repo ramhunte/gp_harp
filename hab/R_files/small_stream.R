@@ -110,7 +110,7 @@ ss_2 <- ss_1 %>%
                      Beaver.Pond = (Shape_Length * 3)/10000 * curr.tempmult,
                      winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * .85,
                      winter.riffle = Area_ha * (1 - pool.perc) * .85 + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * .85),
-                     winter.beaver.pond = (Shape_Length * 3)/10000) %>%  ##### does tempmult apply for beaver ponds?
+                     winter.beaver.pond = (Shape_Length * 3) / 10000) %>%  ##### does tempmult apply for beaver ponds?
               gather(Habitat, Area, Pool:winter.beaver.pond) %>%
               mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                          "summer", 
@@ -157,7 +157,7 @@ ss_2 <- ss_1 %>%
 if (fishtype == "spring_chinook") {
   ss_2 <- ss_2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .19, 
+                                   schino_mult, 
                                    1),
            Area = Area * chinook_scalar)
 }
@@ -165,7 +165,7 @@ if (fishtype == "spring_chinook") {
 if (fishtype == "fall_chinook") {
   ss_2 <- ss_2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .81, 
+                                   fchino_mult, 
                                    1),
            Area = Area * chinook_scalar)
 }
