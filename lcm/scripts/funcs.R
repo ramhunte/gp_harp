@@ -119,7 +119,7 @@ if (pop == "coho") {
     pre.fry <- eggs * egg.fry.surv # Eggs --> freshly emerged fry
     
     # Spring distribution
-    fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix * percent.fry.migrants)
+    fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix.spring * percent.fry.migrants)
   
     parr <- BH.func(fry.distributed['after_movement', ] * fry.colonization, p = parr.surv, c = parr.cap)# summer parr
     parr.distributed <- distribute.fish(fish.in = parr, move.matrix * redist) # Fall distribution into mainstem fixed by scenario
