@@ -23,7 +23,10 @@ schino_subs = c(1, 3, 5, 12, 18, 52:63)
 schino_mult = .19 # fall chinook and spring chinook multipliers are used when both spring and fall chinook exist within the same reach
 fchino_mult = .81
 
-
+hist_beaver_mult = .85 # This comes from the fact that in historical beaver scenarios, beaver ponds take up 15% of all trib reaches
+hist_pond_area_per_m = 3 # m^2 per m
+curr_beaver_mult = .98625 # This comes from the fact that in current beaver scenarios, beaver ponds take up 1.375% of all trib reaches
+curr_pond_area_per_m = .3
 
 # Create list of Diagnostic scenarios
 diag_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%

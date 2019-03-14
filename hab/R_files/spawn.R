@@ -52,10 +52,10 @@ filter(slope < .03)
 ss_sp <- ss_spawn %>%
   mutate(hab.scenario = "Current",
          eggs = ifelse(slope < .01, 
-                       Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity,
+                       Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
                        ifelse(lc == "Forest", 
-                              Shape_Length * pass_tot * F_redd_density / 1000 * fecundity, 
-                              Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity)))
+                              Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * curr_beaver_mult, 
+                              Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity * curr_beaver_mult)))
 
 ss_sp1 <- ss_sp %>%
   bind_rows(., ss_sp %>%
@@ -71,32 +71,32 @@ ss_sp1 <- ss_sp %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Barriers",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity,
+                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
                                    ifelse(lc == "Forest", 
-                                          Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity,
-                                          Shape_Length * pass_tot_natural * NF_redd_density / 1000 * fecundity)))) %>%
+                                          Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity * curr_beaver_mult,
+                                          Shape_Length * pass_tot_natural * NF_redd_density / 1000 * fecundity * curr_beaver_mult)))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Wood",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity,
-                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity))) %>%
+                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
+                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * curr_beaver_mult))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "FP_wood_comb",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity,
-                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity))) %>%
+                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
+                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * curr_beaver_mult))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Beaver",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * .85,
+                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * hist_beaver_mult,
                                    ifelse(lc == "Forest", 
-                                          Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * .85,
-                                          Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity * .85)))) %>%
+                                          Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * hist_beaver_mult,
+                                          Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity * hist_beaver_mult)))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Historical",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity * .85,
-                                   Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity * .85))) %>%
+                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity * hist_beaver_mult,
+                                   Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity * hist_beaver_mult))) %>%
   mutate(adults = eggs / fecundity * adult_per_redd)
   
 

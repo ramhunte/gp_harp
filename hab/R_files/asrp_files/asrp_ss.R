@@ -43,46 +43,62 @@ asrp_ss <- asrp_ss_raw %>%
                                 1),    # set tempmult to 1 for chinook so that temperature does not have an effect on rearing capacity and survival
          Pool = ifelse(GSU %in% beaver_gsu,
                        ifelse(forest == "y",
-                              Area_ha * pool.perc.asrp * tempmult.asrp * woodmult_s_asrp * (1 - (.15 * rest_perc_f * beaver_intensity_scalar_f)),
-                              Area_ha * pool.perc.asrp * tempmult.asrp * woodmult_s_asrp * (1 - (.15 * rest_perc_nf * beaver_intensity_scalar_nf))),
-                       Area_ha * pool.perc.asrp * tempmult.asrp * woodmult_s_asrp),
+                              Area_ha * pool.perc.asrp * tempmult.asrp * woodmult_s_asrp * (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_f * 
+                                                                                                                  beaver_intensity_scalar_f)),
+                              Area_ha * pool.perc.asrp * tempmult.asrp * woodmult_s_asrp * (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_nf * 
+                                                                                                                  beaver_intensity_scalar_nf))),
+                       Area_ha * pool.perc.asrp * tempmult.asrp * woodmult_s_asrp * curr_beaver_mult),
          Riffle = ifelse(GSU %in% beaver_gsu,
                          ifelse(forest == "y",
-                                Area_ha * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp * (1 - (.15 * rest_perc_f * beaver_intensity_scalar_f)),
-                                Area_ha * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp * (1 - (.15 * rest_perc_nf * 
-                                                                                                      beaver_intensity_scalar_nf))),
-                         Area_ha * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp),
+                                Area_ha * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp * 
+                                  (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_f * beaver_intensity_scalar_f)),
+                                Area_ha * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp * 
+                                  (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_nf * beaver_intensity_scalar_nf))),
+                         Area_ha * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp * curr_beaver_mult),
          Beaver.Pond = ifelse(GSU %in% beaver_gsu,
                               ifelse(forest == "y",
-                                     (Shape_Length * 3) / 10000 * tempmult.asrp * woodmult_s_asrp * rest_perc_f * beaver_intensity_scalar_f,
-                                     (Shape_Length * 3)/10000 * tempmult.asrp * woodmult_s_asrp * rest_perc_nf * beaver_intensity_scalar_nf),
-                              0),
+                                     ((Shape_Length * curr_pond_area_per_m / 10000) + (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 
+                                                                                         10000 * rest_perc_f * beaver_intensity_scalar_f)) * # 3 m^2 / m in historical - .3 m^2 in current = 2.7 m^2 diff between historical and current
+                                       tempmult.asrp * woodmult_s_asrp,
+                                     ((Shape_Length * curr_pond_area_per_m / 10000) + (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 
+                                                                                         10000 * rest_perc_nf * beaver_intensity_scalar_nf)) * 
+                                       tempmult.asrp * woodmult_s_asrp),
+                              (Shape_Length * curr_pond_area_per_m) / 10000 * tempmult.asrp * woodmult_s_asrp),
          winter.pool = ifelse(GSU %in% beaver_gsu,
                               ifelse(forest == "y",
-                                     Area_ha * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp * (1 - (.15 * rest_perc_f * 
-                                                                                                                    beaver_intensity_scalar_f)),
-                                     Area_ha * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp * (1 - (.15 * rest_perc_nf * 
-                                                                                                                    beaver_intensity_scalar_nf))),
-                              Area_ha * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp),
+                                     Area_ha * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp * 
+                                       (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_f * beaver_intensity_scalar_f)),
+                                     Area_ha * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp * 
+                                       (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_nf * beaver_intensity_scalar_nf))),
+                              Area_ha * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp * curr_beaver_mult),
          winter.riffle = ifelse(GSU %in% beaver_gsu,
                                 ifelse(forest == "y",
-                                       (Area_ha * (1 - pool.perc.asrp) * (1 - (.15 * rest_perc_f * beaver_intensity_scalar_f)) + 
-                                          ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * ((1 - (.15 * rest_perc_f * 
-                                                                                                          beaver_intensity_scalar_f))))),
-                                       (Area_ha * (1 - pool.perc.asrp) * (1 - (.15 * rest_perc_nf * beaver_intensity_scalar_nf)) + 
-                                          ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * ((1 - (.15 * rest_perc_nf * 
-                                                                                                          beaver_intensity_scalar_nf)))))),
-                                (Area_ha * (1 - pool.perc.asrp) + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc)) * woodmult_w_asrp),
+                                       (Area_ha * (1 - pool.perc.asrp) * 
+                                          (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_f * beaver_intensity_scalar_f)) + 
+                                          ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * 
+                                             ((curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_f * beaver_intensity_scalar_f))))),
+                                       (Area_ha * (1 - pool.perc.asrp) * 
+                                          (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_nf * beaver_intensity_scalar_nf)) + 
+                                          ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * 
+                                             ((curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc_nf * beaver_intensity_scalar_nf)))))),
+                                (Area_ha * (1 - pool.perc.asrp) * curr_beaver_mult + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * 
+                                                                                        curr_beaver_mult)) * woodmult_w_asrp),
          winter.beaver.pond = ifelse(GSU %in% beaver_gsu,
                                      ifelse(forest == "y",
-                                            (Shape_Length * 3) / 10000 * woodmult_w_asrp * rest_perc_f * beaver_intensity_scalar_f,
-                                            (Shape_Length * 3) / 10000 * woodmult_w_asrp * rest_perc_nf * beaver_intensity_scalar_nf),
-                                     0)) %>%
+                                            ((Shape_Length * curr_pond_area_per_m / 10000) + 
+                                               (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 10000 * rest_perc_f * 
+                                                  beaver_intensity_scalar_f)) * woodmult_w_asrp,
+                                            ((Shape_Length * hist_pond_area_per_m / 10000) + 
+                                               (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 10000 * rest_perc_nf * 
+                                                  beaver_intensity_scalar_nf)) * 
+                                              woodmult_w_asrp),
+                                     (Shape_Length * hist_pond_area_per_m) / 10000 * tempmult.asrp * woodmult_s_asrp)) %>%
   gather(Habitat, Area, Pool:winter.beaver.pond) %>%
   mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                              "summer", 
                              "winter"),
-         Habitat = ifelse(Habitat == "winter.pool", "Pool",
+         Habitat = ifelse(Habitat == "winter.pool", 
+                          "Pool",
                           ifelse(Habitat == "winter.riffle", 
                                  "Riffle",
                                  ifelse(Habitat == "winter.beaver.pond", 

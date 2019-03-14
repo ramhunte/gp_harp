@@ -34,83 +34,103 @@ ss_1 <- lapply(ss_curr_scenarios, function(x){
   ss %>%
     left_join(., ss.dist) %>%
     mutate(hab.scenario = x,
-           Pool = Area_ha * pool.perc * curr.tempmult,
-           Riffle = Area_ha * (1 - pool.perc) * curr.tempmult,
-           winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm,
-           winter.riffle = Area_ha * (1 - pool.perc) + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc)) %>%
-    gather(Habitat, Area, Pool:winter.riffle) %>%
-    mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle"), 
+           Pool = Area_ha * pool.perc * curr.tempmult * curr_beaver_mult, # See trello board for discussion of the .985 multiplier.  This is for adding in current beaver ponds
+           Riffle = Area_ha * (1 - pool.perc) * curr.tempmult * curr_beaver_mult,
+           Beaver.Pond = (Shape_Length * curr_pond_area_per_m) / 10000 * curr.tempmult,
+           winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * curr_beaver_mult,
+           winter.riffle = Area_ha * (1 - pool.perc) * curr_beaver_mult + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * curr_beaver_mult),
+           winter.beaver.pond = (Shape_Length * curr_pond_area_per_m) / 10000) %>%
+    gather(Habitat, Area, Pool:winter.beaver.pond) %>%
+    mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                "summer", 
                                "winter"),
-           Habitat = ifelse(Habitat %in% c("Pool", "Riffle"), 
+           Habitat = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                             Habitat, 
                             ifelse(Habitat == "winter.pool", 
-                                   "Pool", 
-                                   "Riffle")))
+                                   "Pool",
+                                   ifelse(Habitat == "winter.riffle",
+                                          "Riffle",
+                                          "Beaver.Pond"))))
 }) %>%
   do.call('rbind',.)
 ss_2 <- ss_1 %>%
   bind_rows(., ss %>%
               left_join(., ss.dist) %>%
               mutate(hab.scenario = "Shade",
-                     Pool = Area_ha * pool.perc * hist.tempmult,
-                     Riffle = Area_ha * (1 - pool.perc) * hist.tempmult,
-                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm,
-                     winter.riffle = Area_ha * (1 - pool.perc) + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc)) %>%
-              gather(Habitat, Area, Pool:winter.riffle) %>%
-              mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle"), 
+                     Pool = Area_ha * pool.perc * hist.tempmult * curr_beaver_mult,
+                     Riffle = Area_ha * (1 - pool.perc) * hist.tempmult * curr_beaver_mult,
+                     Beaver.Pond = (Shape_Length * curr_pond_area_per_m) / 10000 * hist.tempmult,
+                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * curr_beaver_mult,
+                     winter.riffle = Area_ha * (1 - pool.perc) * curr_beaver_mult + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * 
+                                                                                       curr_beaver_mult),
+                     winter.beaver.pond = (Shape_Length * curr_pond_area_per_m) / 10000) %>%
+              gather(Habitat, Area, Pool:winter.beaver.pond) %>%
+              mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                          "summer", 
                                          "winter"),
-                     Habitat = ifelse(Habitat %in% c("Pool", "Riffle"), 
+                     Habitat = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                       Habitat, 
                                       ifelse(Habitat == "winter.pool", 
                                              "Pool", 
-                                             "Riffle")))) %>%
+                                             ifelse(Habitat == "winter.riffle",
+                                                    "Riffle",
+                                                    "Beaver.Pond"))))) %>%
   bind_rows(., ss %>%
               mutate(hab.scenario = "Wood",
                      lc = "Reference") %>%
               left_join(., ss.dist) %>%
               left_join(., wood_data) %>%
-              mutate(Pool = Area_ha * pool.perc * curr.tempmult * woodmult_s,
-                     Riffle = Area_ha * (1 - pool.perc) * curr.tempmult * woodmult_s,
-                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * woodmult_w,
-                     winter.riffle = (Area_ha * (1 - pool.perc) + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc)) * woodmult_w) %>%
-              gather(Habitat, Area, Pool:winter.riffle) %>%
-              mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle"), 
+              mutate(Pool = Area_ha * pool.perc * curr.tempmult * woodmult_s * curr_beaver_mult,
+                     Riffle = Area_ha * (1 - pool.perc) * curr.tempmult * woodmult_s * curr_beaver_mult,
+                     Beaver.Pond = (Shape_Length * curr_pond_area_per_m) / 10000 * curr.tempmult * woodmult_s,
+                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * woodmult_w * curr_beaver_mult,
+                     winter.riffle = (Area_ha * (1 - pool.perc) * curr_beaver_mult + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * 
+                                                                                        curr_beaver_mult)) * woodmult_w,
+                     winter.beaver.pond = (Shape_Length * curr_pond_area_per_m) / 10000 * woodmult_w) %>%
+              gather(Habitat, Area, Pool:winter.beaver.pond) %>%
+              mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                          "summer", 
                                          "winter"),
-                     Habitat = ifelse(Habitat %in% c("Pool", "Riffle"),
+                     Habitat = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"),
                                       Habitat, 
                                       ifelse(Habitat == "winter.pool",
                                              "Pool", 
-                                             "Riffle")))) %>%
+                                             ifelse(Habitat == "winter.riffle",
+                                                    "Riffle",
+                                                    "Beaver.Pond"))))) %>%
   bind_rows(., ss %>%
               mutate(hab.scenario = "FP_wood_comb",
                      lc = "Reference") %>%
               left_join(., ss.dist) %>%
               left_join(., wood_data) %>%
-              mutate(Pool = Area_ha * pool.perc * curr.tempmult * woodmult_s,
-                     Riffle = Area_ha * (1 - pool.perc) * curr.tempmult * woodmult_s,
-                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * woodmult_w,
-                     winter.riffle = (Area_ha * (1 - pool.perc) + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc)) * woodmult_w) %>%
-              gather(Habitat, Area, Pool:winter.riffle) %>%
-              mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle"), 
+              mutate(Pool = Area_ha * pool.perc * curr.tempmult * woodmult_s * curr_beaver_mult,
+                     Riffle = Area_ha * (1 - pool.perc) * curr.tempmult * woodmult_s * curr_beaver_mult,
+                     Beaver.Pond = (Shape_Length * curr_pond_area_per_m) / 10000 * curr.tempmult * woodmult_s,
+                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * woodmult_w * curr_beaver_mult,
+                     winter.riffle = (Area_ha * (1 - pool.perc) * curr_beaver_mult + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * 
+                                                                                        curr_beaver_mult)) * woodmult_w,
+                     winter.beaver.pond = (Shape_Length * curr_pond_area_per_m) / 10000 * woodmult_w) %>%
+              gather(Habitat, Area, Pool:winter.beaver.pond) %>%
+              mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                          "summer", 
                                          "winter"),
-                     Habitat = ifelse(Habitat %in% c("Pool", "Riffle"),
+                     Habitat = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"),
                                       Habitat, 
                                       ifelse(Habitat == "winter.pool", 
                                              "Pool", 
-                                             "Riffle")))) %>%
+                                             ifelse(Habitat == "winter.riffle",
+                                                    "Riffle",
+                                                    "Beaver.Pond"))))) %>%
   bind_rows(., ss %>%
               left_join(., ss.dist) %>%
               mutate(hab.scenario = "Beaver",
-                     Pool = Area_ha * pool.perc * .85 * curr.tempmult,
-                     Riffle = Area_ha * (1 - pool.perc) * .85 * curr.tempmult,
-                     Beaver.Pond = (Shape_Length * 3)/10000 * curr.tempmult,
-                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * .85,
-                     winter.riffle = Area_ha * (1 - pool.perc) * .85 + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * .85),
-                     winter.beaver.pond = (Shape_Length * 3) / 10000) %>%  ##### does tempmult apply for beaver ponds?
+                     Pool = Area_ha * pool.perc * hist_beaver_mult * curr.tempmult,
+                     Riffle = Area_ha * (1 - pool.perc) * hist_beaver_mult * curr.tempmult,
+                     Beaver.Pond = (Shape_Length * hist_pond_area_per_m)/10000 * curr.tempmult,
+                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * hist_beaver_mult,
+                     winter.riffle = Area_ha * (1 - pool.perc) * hist_beaver_mult + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * 
+                                                                                       hist_beaver_mult),
+                     winter.beaver.pond = (Shape_Length * hist_pond_area_per_m) / 10000) %>%  ##### does tempmult apply for beaver ponds?
               gather(Habitat, Area, Pool:winter.beaver.pond) %>%
               mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                          "summer", 
@@ -127,12 +147,13 @@ ss_2 <- ss_1 %>%
                      lc = "Reference") %>%
               left_join(., ss.dist) %>%
               left_join(., wood_data) %>%
-              mutate(Pool = Area_ha * pool.perc * .85 * hist.tempmult * woodmult_s,
-                     Riffle = Area_ha * (1 - pool.perc) * .85 * hist.tempmult * woodmult_s,
-                     Beaver.Pond = (Shape_Length * 3)/10000 * hist.tempmult * woodmult_s,
-                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * woodmult_w * .85,
-                     winter.riffle = (Area_ha * (1 - pool.perc) * .85 + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc * .85)) * woodmult_w,
-                     winter.beaver.pond = (Shape_Length * 3)/10000 * woodmult_w) %>% ##### does tempmult apply for beaver ponds?
+              mutate(Pool = Area_ha * pool.perc * hist_beaver_mult * hist.tempmult * woodmult_s,
+                     Riffle = Area_ha * (1 - pool.perc) * hist_beaver_mult * hist.tempmult * woodmult_s,
+                     Beaver.Pond = (Shape_Length * hist_pond_area_per_m)/10000 * hist.tempmult * woodmult_s,
+                     winter.pool = Area_ha * pool.perc * winter_pool_scalar_warm * woodmult_w * hist_beaver_mult,
+                     winter.riffle = (Area_ha * (1 - pool.perc) * hist_beaver_mult + ((1 - winter_pool_scalar_warm) * Area_ha * pool.perc *
+                                                                                        hist_beaver_mult)) * woodmult_w,
+                     winter.beaver.pond = (Shape_Length * hist_pond_area_per_m)/10000 * woodmult_w) %>% ##### does tempmult apply for beaver ponds?
               gather(Habitat, Area, Pool:winter.beaver.pond) %>%
               mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                                          "summer", 
