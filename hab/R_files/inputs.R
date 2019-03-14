@@ -22,3 +22,12 @@ prespawn_temp_intercept = .06201682 # used to convert 7DADM to MDM
 schino_subs = c(1, 3, 5, 12, 18, 52:63)
 schino_mult = .19 # fall chinook and spring chinook multipliers are used when both spring and fall chinook exist within the same reach
 fchino_mult = .81
+
+
+
+# Create list of Diagnostic scenarios
+diag_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
+  filter(substr(scenario, 1, 4) != 'ASRP') %>%
+  pull(scenario) %>%
+  as.character() %>%
+  gsub('\\.', '_', .) # replace . with _

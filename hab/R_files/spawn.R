@@ -100,35 +100,33 @@ ss_sp1 <- ss_sp %>%
   mutate(adults = eggs / fecundity * adult_per_redd)
   
 
-lr_spawn <- spawning_area 
-
-lrsp <- lr_spawn %>%
+lrsp <- lgr_spawning_area %>% 
   mutate(hab.scenario = "Current",
          eggs = spawn_area_passable / redd_area * fecundity)
 
 lrsp1 <- lrsp %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Fine_sediment")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "LR_bank")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "LR_length")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Shade")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Floodplain")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Beaver")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Wood",
                      eggs = eggs * wood_spawn_mult)) %>%  
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "FP_wood_comb",
                      eggs = eggs * wood_spawn_mult)) %>%
-  bind_rows(lr_spawn %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Barriers",
                      eggs = spawn_area_passable_nat / redd_area * fecundity)) %>%
-  bind_rows(lr_spawn %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Historical",
                      eggs = spawn_area_passable_nat / redd_area * fecundity * wood_spawn_mult)) %>%   
   mutate(adults = eggs / fecundity * adult_per_redd)
@@ -139,7 +137,4 @@ spawn_tot <- bind_rows(fps1, ss_sp1, lrsp1) %>%
             adults = sum(adults, na.rm = T)) %>%
   gather(life.stage, capacity, c(eggs, adults)) %>%
   ungroup()
-  
-  
-  
   

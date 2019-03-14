@@ -1,9 +1,7 @@
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-
-options(scipen = 999) #removed scientific notation
+# Purpose: Read in the hand digitized riffle data
+# The riffle data are used to denote large river reaches that have one or more riffles
+# Using a bankfull width and spawnable length (scaled to bankfull width) calculate a spawning 
+# area per noaaid.
 
 # Read in data ----
 
@@ -53,7 +51,7 @@ fchnk_scale = 0.81 # Fall chinook
 schnk_scale = 0.19 # Spring chinook
 
 
-spawning_area <- lgr %>%
+lgr_spawning_area <- lgr %>%
   left_join(., ave_prcnt_riff) %>% # add riffle areas to reaches
   filter(spawn_dist == "Yes",
          !(BF_width > sthd_sp_thresh & species == 'steelhead'),
@@ -72,15 +70,10 @@ spawning_area <- lgr %>%
                              BF_width*min_length), #Multiply BF width and minimum lengths
          spawn_area_passable = spawn_area*pass_tot,
          spawn_area_passable_nat = spawn_area * pass_tot_natural) %>% #Apply culvert passablility correction to the min spawnable area
-  assign("lgr_sp_area_asrp", . , envir = .GlobalEnv) %>%
-  group_by(Subbasin_num, species) %>%
-  summarize(spawn_area = sum(spawn_area, na.rm = T),
-            spawn_area_passable = sum(spawn_area_passable, na.rm = T),
-            spawn_area_passable_nat = sum(spawn_area_passable_nat, na.rm = T)) %>%
-  ungroup()
+  assign("lgr_sp_area_asrp", . , envir = .GlobalEnv)
 
 if (fishtype == "spring_chinook") {
-  spawning_area <- spawning_area %>%
+  lgr_spawning_area <- lgr_spawning_area %>%
     filter(Subbasin_num %in% schino_subs)
   
   lgr_sp_area_asrp <- lgr_sp_area_asrp %>%
