@@ -74,6 +74,7 @@ distribute.fish <- function(fish.in, move.matrix){
   fish["after_movement", trib.reaches] <- fish["before_movement", trib.reaches] - colSums(fish[move.into.rows, trib.reaches]) 
   fish["after_movement", ms.reaches]   <- fish["before_movement", ms.reaches]   + rowSums(fish[move.into.rows, trib.reaches])
   fish[return.percent.rows, trib.reaches] <- fish[move.into.rows, trib.reaches]  / fish["after_movement", ms.reaches]
+  fish[is.nan(fish)] <- 0 # Fix 0/0 NaNs
   
   fish
 }
