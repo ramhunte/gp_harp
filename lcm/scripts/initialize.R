@@ -109,8 +109,8 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
                   'smolts.fry.migrants',
                   'smolts.non.natal.sub.yr',
                   'smolts.natal.sub.yr'
-                  )
-
+  )
+  
   
   sens.params <- c(
     #"fecundity",
@@ -149,7 +149,7 @@ if (pop == "steelhead") {
                   'age1.smolts',
                   'age1.plus',
                   'age2.smolts'
-                  )
+  )
   
   sens.params <- c(
     #"fecundity",
@@ -210,11 +210,7 @@ model.all <- array(
 # Store recruits referenced to brood year:
 Recruits.preharvest <- Recruits.postharvest <- Spawners <- array(0, years)
 
-
-
-# Create movement matrix ----
-
-
+# Create movement matrices for spring and fall  ----
 
 to.upperms1 <- c(1,2) # 52
 to.upperms2 <- c(3,52) # 53
@@ -251,7 +247,27 @@ move.matrix <- matrix(
   dimnames = list(ms.reaches, reach.names)
 )
 
+# Create spring movmemnt matrix for coho
+if (pop == 'coho') {
+  move.matrix.spring <- move.matrix
+  
+  move.matrix.spring[1, to.upperms1] <- 1
+  move.matrix.spring[2, to.upperms2] <- 1
+  move.matrix.spring[3, to.midms1] <- 1
+  move.matrix.spring[4, to.midms2] <- 1
+  move.matrix.spring[5, to.midms3] <- 1
+  move.matrix.spring[6, to.lowms1] <- 1
+  move.matrix.spring[7, to.lowms2] <- 1
+  move.matrix.spring[8, to.lowms3] <- 1
+  move.matrix.spring[9, to.lowms4] <- 1
+  move.matrix.spring[10, to.lowms5] <- 1
+  move.matrix.spring[11, to.lowms6] <- 1
+  move.matrix.spring[12, to.lowms7] <- 1
+  
+  move.matrix.spring[is.nan(move.matrix.spring)] <- 0
+}
 
+# Create fall movement matrix for all species
 move.matrix[1:length(ms.reaches), to.upperms1] <- 1
 move.matrix[2:length(ms.reaches), to.upperms2] <- 1
 move.matrix[3:length(ms.reaches), to.midms1] <- 1
@@ -268,10 +284,11 @@ move.matrix[12:length(ms.reaches), to.lowms7] <- 1
 move.matrix <-
   t(apply(move.matrix, 1, function(x)
     x / colSums(move.matrix != 0)
-         )
-    ) # Divide each 1 in the move matrix by the count of ms reaches per column
+  )
+  ) # Divide each 1 in the move matrix by the count of ms reaches per column
 
 move.matrix[is.nan(move.matrix)] <- 0
+
 
 
 # Create matrix to be used in the distribute functions ----

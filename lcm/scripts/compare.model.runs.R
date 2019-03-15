@@ -4,17 +4,17 @@
 # This script reaches into those folders, joins the two documnets together, and creates a plot
 
 
-date_v1 <- '20190226_dev'
-date_v2 <- '20190226_age2'
+date_v1 <- '20190312'
+date_v2 <- '20190313'
 
 
 ######## Source the file and choose a species #########
-species_for_comparison <-  species[menu(species, title = "Choose a species", graphics = TRUE)]
+# species_for_comparison <-  species[menu(species, title = "Choose a species", graphics = TRUE)]
 
 ######## Everything below here should run #########
 
-v1 <- file.path("lcm_outputs", date_v1,species_for_comparison, 'edr_plots')
-v2 <- file.path("lcm_outputs", date_v2,species_for_comparison, 'edr_plots')
+v1 <- file.path("lcm/lcm_outputs", date_v1,species_for_comparison, 'edr_plots')
+v2 <- file.path("lcm/lcm_outputs", date_v2,species_for_comparison, 'edr_plots')
 
 
 df <- list.files(v1, pattern = ".csv", full.names = T) %>%
@@ -73,7 +73,7 @@ ggplot(df) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
 
 
-out.path <- file.path('lcm_outputs', date_v2, species_for_comparison, 'comparison')
+out.path <- file.path('lcm/lcm_outputs', date_v2, species_for_comparison, 'comparison')
 if (dir.exists(out.path) == F) {dir.create(out.path, recursive = T)}
 
 ggsave(file.path(out.path,

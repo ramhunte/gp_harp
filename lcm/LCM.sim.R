@@ -40,25 +40,14 @@ diag.plots <- 'no'
 
 #--------   Use caution when adjusting code below here   -----------------------------------------------------------------
 
-if (choose_model_run == "lcm") {
-  
-#Load a dropdown menu with species
-species <- c("fall.chinook",
-"spring.chinook",
-"coho",
-"steelhead")
-pop <- species[menu(species, title = "Choose a species", graphics = TRUE)]
 
-branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
-if (branch == "master") {
-  version_list <- paste0('v', 1:4)
-  master_version <- version_list[menu(version_list, title = "which version are you running?", graphics = TRUE)]
-}
+# Define which species to run ----
 
-} else {
-  pop <- species <- fishtype
-}
+pop <- species <- fishtype
+
+
+# Convert fishtype (Hab model) to pop and species (LCM)
 
 if (fishtype == "fall_chinook") {
   species <- pop <- "fall.chinook"
@@ -372,6 +361,12 @@ source("lcm/scripts/plots.R")
 
 # Call diagnostic plots
 if (diag.plots == 'yes') {
+  print('Creating spawner abundance plots')
   source("lcm/scripts/diagnostic.plots.R")
 } 
 
+
+if (pop == 'coho') {
+  print('Creating spawner recruit (P and C) values and plots')
+  source('lcm/scripts/spawner.recruit.curves.R')
+}

@@ -1,12 +1,12 @@
 fp_spawn <- fp %>%
   filter(Habitat == "Side_Channel",
          ifelse(Period == "Hist",
-                spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% c(52:63),
-                spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% c(52:63)))
+                spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs,
+                spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs))
 
 if (fishtype == "spring_chinook") {
   fp_spawn <- fp_spawn %>%
-    filter(Subbasin_num %in% c(1, 3, 5, 12, 18 , 52:63))
+    filter(Subbasin_num %in% schino_subs)
 }
 
 fps <- fp_spawn %>%
@@ -52,10 +52,10 @@ filter(slope < .03)
 ss_sp <- ss_spawn %>%
   mutate(hab.scenario = "Current",
          eggs = ifelse(slope < .01, 
-                       Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity,
+                       Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
                        ifelse(lc == "Forest", 
-                              Shape_Length * pass_tot * F_redd_density / 1000 * fecundity, 
-                              Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity)))
+                              Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * curr_beaver_mult, 
+                              Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity * curr_beaver_mult)))
 
 ss_sp1 <- ss_sp %>%
   bind_rows(., ss_sp %>%
@@ -71,64 +71,62 @@ ss_sp1 <- ss_sp %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Barriers",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity,
+                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
                                    ifelse(lc == "Forest", 
-                                          Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity,
-                                          Shape_Length * pass_tot_natural * NF_redd_density / 1000 * fecundity)))) %>%
+                                          Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity * curr_beaver_mult,
+                                          Shape_Length * pass_tot_natural * NF_redd_density / 1000 * fecundity * curr_beaver_mult)))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Wood",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity,
-                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity))) %>%
+                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
+                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * curr_beaver_mult))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "FP_wood_comb",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity,
-                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity))) %>%
+                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * curr_beaver_mult,
+                                   Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * curr_beaver_mult))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Beaver",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * .85,
+                                   Shape_Length * pass_tot * PR_redd_density / 1000 * fecundity * hist_beaver_mult,
                                    ifelse(lc == "Forest", 
-                                          Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * .85,
-                                          Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity * .85)))) %>%
+                                          Shape_Length * pass_tot * F_redd_density / 1000 * fecundity * hist_beaver_mult,
+                                          Shape_Length * pass_tot * NF_redd_density / 1000 * fecundity * hist_beaver_mult)))) %>%
   bind_rows(., ss_spawn %>%
               mutate(hab.scenario = "Historical",
                      eggs = ifelse(slope < .01, 
-                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity * .85,
-                                   Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity * .85))) %>%
+                                   Shape_Length * pass_tot_natural * PR_redd_density / 1000 * fecundity * hist_beaver_mult,
+                                   Shape_Length * pass_tot_natural * F_redd_density / 1000 * fecundity * hist_beaver_mult))) %>%
   mutate(adults = eggs / fecundity * adult_per_redd)
   
 
-lr_spawn <- spawning_area 
-
-lrsp <- lr_spawn %>%
+lrsp <- lgr_spawning_area %>% 
   mutate(hab.scenario = "Current",
          eggs = spawn_area_passable / redd_area * fecundity)
 
 lrsp1 <- lrsp %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Fine_sediment")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "LR_bank")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "LR_length")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Shade")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Floodplain")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Beaver")) %>%
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Wood",
                      eggs = eggs * wood_spawn_mult)) %>%  
-  bind_rows(., lrsp %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "FP_wood_comb",
                      eggs = eggs * wood_spawn_mult)) %>%
-  bind_rows(lr_spawn %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Barriers",
                      eggs = spawn_area_passable_nat / redd_area * fecundity)) %>%
-  bind_rows(lr_spawn %>%
+  bind_rows(lrsp %>%
               mutate(hab.scenario = "Historical",
                      eggs = spawn_area_passable_nat / redd_area * fecundity * wood_spawn_mult)) %>%   
   mutate(adults = eggs / fecundity * adult_per_redd)
@@ -139,7 +137,4 @@ spawn_tot <- bind_rows(fps1, ss_sp1, lrsp1) %>%
             adults = sum(adults, na.rm = T)) %>%
   gather(life.stage, capacity, c(eggs, adults)) %>%
   ungroup()
-  
-  
-  
   

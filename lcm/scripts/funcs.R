@@ -74,6 +74,7 @@ distribute.fish <- function(fish.in, move.matrix){
   fish["after_movement", trib.reaches] <- fish["before_movement", trib.reaches] - colSums(fish[move.into.rows, trib.reaches]) 
   fish["after_movement", ms.reaches]   <- fish["before_movement", ms.reaches]   + rowSums(fish[move.into.rows, trib.reaches])
   fish[return.percent.rows, trib.reaches] <- fish[move.into.rows, trib.reaches]  / fish["after_movement", ms.reaches]
+  fish[is.nan(fish)] <- 0 # Fix 0/0 NaNs
   
   fish
 }
@@ -119,7 +120,7 @@ if (pop == "coho") {
     pre.fry <- eggs * egg.fry.surv # Eggs --> freshly emerged fry
     
     # Spring distribution
-    fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix * percent.fry.migrants)
+    fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix.spring * percent.fry.migrants)
   
     parr <- BH.func(fry.distributed['after_movement', ] * fry.colonization, p = parr.surv, c = parr.cap)# summer parr
     parr.distributed <- distribute.fish(fish.in = parr, move.matrix * redist) # Fall distribution into mainstem fixed by scenario

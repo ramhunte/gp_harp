@@ -25,7 +25,7 @@ if (fishtype %in% c("coho", "fall_chinook", "steelhead")) {
 if (fishtype == "spring_chinook") {
   LgRiver_raw = LgRiver_raw %>%
     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs,
-           Subbasin_num %in% c(1, 3, 5, 12, 18, mainstem.subs))}
+           Subbasin_num %in% schino_subs)}
 
 source("hab/R_files/wood_script.R")
 
@@ -129,7 +129,7 @@ lr_2 <- lr_1 %>%
 if (fishtype == "spring_chinook") {
   lr_2 <- lr_2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .19, 
+                                   schino_mult, 
                                    1),
            Area = Area * chinook_scalar)
 }
@@ -137,7 +137,7 @@ if (fishtype == "spring_chinook") {
 if (fishtype == "fall_chinook") {
   lr_2 <- lr_2 %>%
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   .81, 
+                                   fchino_mult, 
                                    1),
            Area = Area * chinook_scalar)
 }
