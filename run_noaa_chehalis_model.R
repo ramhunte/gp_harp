@@ -17,10 +17,6 @@ if (clear_env == 'yes') {
 # begin Noaa Chehalis Model script ----
 
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
-if (branch == "master") {
-  version_list <- paste0('v', 1:4)
-  master_version <- version_list[menu(version_list, title = "which version are you running?", graphics = TRUE)]
-}
 
 spp <- c('coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'all_species')
 fishtype <- spp[menu(spp,title = "Choose a species",graphics = TRUE)]
@@ -32,6 +28,7 @@ if (fishtype == 'all_species') {
     source("lcm/LCM.sim.R")
     print(paste0("finished ", s))
   }
-} else {source("hab/R_files/Run_Habitat_Model.R")
+} else {
+  source("hab/R_files/Run_Habitat_Model.R")
   source("lcm/LCM.sim.R")
 }

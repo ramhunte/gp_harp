@@ -7,14 +7,14 @@
 
 # Path to habitat scenario data ----
 # branch is defined in the hab model or in LCM.sim.R
-if (branch == "master") {
-  hab.path <- file.path('hab','Outputs', branch, master_version, 'hab.scenarios', fishtype)
-} else if (branch == "dev") {
-  hab.path <- file.path('hab','Outputs', branch, 'hab.scenarios', fishtype)
-} else {
-  hab.path <- file.path('hab','Outputs', 'feature', branch, 'hab.scenarios', fishtype) 
-}
-
+# if (branch == "master") {
+#   hab.path <- file.path('hab','Outputs', branch, master_version, 'hab.scenarios', fishtype)
+# } else if (branch == "dev") {
+#   hab.path <- file.path('hab','Outputs', branch, 'hab.scenarios', fishtype)
+# } else {
+#   hab.path <- file.path('hab','Outputs', 'feature', branch, 'hab.scenarios', fishtype) 
+# }
+hab.path <- paste0(outputs_hab)
 
 # File names that hold habitat senario data ----
 habitat.file <- list.files(path = hab.path,pattern = ".csv")

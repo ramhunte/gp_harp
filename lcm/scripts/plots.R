@@ -3,7 +3,7 @@
 options(scipen = 999) # suppress scientific notation
 
 # Create folder to save today's plots in
-if (dir.exists(out.path) == F) {dir.create(out.path)}
+if (dir.exists(outputs_lcm) == F) {dir.create(outputs_lcm)}
 
 # Read in file with predefined plot labels and matching colors
 
@@ -42,7 +42,7 @@ if (sensitivity.mode == 'no') {
                 mutate(scenario = as.character(scenario)) %>%
                 left_join(.,plot.params)) %>%
     select(scenario,scenario.label,habitat.file,n) %>%
-    write.csv(.,file.path(out.path,paste0('spawners_',pop,'_',format(Sys.time(), "%Y%m%d"),'.csv')))
+    write.csv(.,file.path(outputs_lcm,paste0('spawners_',pop,'_',format(Sys.time(), "%Y%m%d"),'.csv')))
   
   # Organize labels to plot
   scenario.label <- plot.params$scenario.label[plot.params$scenario.label %in% unique(spawners$scenario.label)]
@@ -126,7 +126,7 @@ if (sensitivity.mode == 'no') {
   ) #close print()
   
   if (save.plots == "yes") {
-    ggsave(file.path(out.path,paste('spawners',pop,paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),sep = "_")), width = 10, height = 8, dpi = 300)#pdfs 10x10
+    ggsave(file.path(outputs_lcm,paste('spawners',pop,paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),sep = "_")), width = 10, height = 8, dpi = 300)#pdfs 10x10
   } #close save.plots if() statement
   
 } #close if not sensitivity mode if() statement
@@ -140,7 +140,7 @@ if (sensitivity.mode == 'no') {
 if (sensitivity.mode=="no" & save.plots=="yes"){
   library (grid)
   
-  save.path.edr <- file.path(out.path,'edr_plots')
+  save.path.edr <- file.path(outputs_lcm,'edr_plots')
   if (dir.exists(save.path.edr) == F){dir.create(save.path.edr)}
   
   # Create dataframe of total run (geomean of year, mean of runs) grouped by DU and scenario 
@@ -274,7 +274,7 @@ if (sensitivity.mode=="no" & save.plots=="yes"){
          y="Change in Spawners \nfrom Current Scenario",
          caption = paste0('species = ',pop, ' - Habitat file version = ',hab.ver))
   
-  ggsave(file.path(out.path,paste0("Change_by_Scenario_Absolute_",format(Sys.time(), "%Y%m%d"),".jpg")), width = 6.5, height = 8, dpi = 300)
+  ggsave(file.path(outputs_lcm,paste0("Change_by_Scenario_Absolute_",format(Sys.time(), "%Y%m%d"),".jpg")), width = 6.5, height = 8, dpi = 300)
   
   
 } # close save.edr.plots if statement
@@ -371,10 +371,10 @@ if (sensitivity.mode == 'yes'){
     
   )#close print()
   if(save.plots=='yes'){
-    ggsave(file.path(out.path,paste('sensitivity',pop,paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),sep = "_")), width = 10, height = 8, dpi = 300)
+    ggsave(file.path(outputs_lcm,paste('sensitivity',pop,paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),sep = "_")), width = 10, height = 8, dpi = 300)
     # write.csv(rbind(broom::tidy(lm.current)%>%mutate(model = "current"),
     #                 broom::tidy(lm.hist)%>%mutate(model = "historical"))
-    #           ,file.path(out.path,paste('sensitivity_',pop,'_lm.csv')))
+    #           ,file.path(outputs_lcm,paste('sensitivity_',pop,'_lm.csv')))
   } #Close ggsave() if statement
   
 } #close sensitivity plot if() statement

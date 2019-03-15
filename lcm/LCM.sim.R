@@ -313,8 +313,8 @@ for (n in 1:length(scenario.file)) {
 # Call the plots ---------------------------------------------------------------------------------------------------------
 
 # Create a directory for today's outputs
-out.path <- file.path('lcm/lcm_outputs',format(Sys.time(), "%Y%m%d"), pop)
-if (dir.exists(out.path) == F) {dir.create(out.path, recursive = T)}
+outputs_lcm <- file.path("outputs", fishtype, "lcm")
+if (dir.exists(outputs_lcm) == F) {dir.create(outputs_lcm, recursive = T)}
 
 
 # Create summary csv. Spawners per subbasin
@@ -342,7 +342,7 @@ abundance_by_subbasin <- model.all[ ,50:100, summary.stages, , ] %>%
 
 csv.name <- paste0('summary_metrics_subbasin_', format(Sys.time(), "%Y%m%d"),'.csv')
   
-write.csv(abundance_by_subbasin, file.path(out.path, csv.name))
+write.csv(abundance_by_subbasin, file.path(outputs_lcm, csv.name))
 
 
 # Call bar, box or sensitivity plots

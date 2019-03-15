@@ -95,23 +95,6 @@ stage_nm <- c("eggtofry_surv", "adults", "eggs", "prespawn_surv", "capacity_s", 
 stage_nums <- c(1, 2, 3, 12, 4, 5, 6, 7, 8, 9, 10, 11)
 ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
 
-if (branch == "dev") {
-  if (dir.exists(file.path("hab/Outputs", branch, "hab.scenarios", fishtype)) == F) {
-    dir.create(path = file.path("hab/Outputs", branch, "hab.scenarios", fishtype), recursive = TRUE)
-  }
-  Outputs_dir = file.path("hab/Outputs", branch, "hab.scenarios", fishtype)
-} else if (branch == "master") {
-  if (dir.exists(file.path("hab/Outputs", branch, master_version, "hab.scenarios", fishtype)) == F) {
-    dir.create(path = file.path("hab/Outputs", branch, master_version, "hab.scenarios", fishtype), recursive = TRUE)
-  }
-  Outputs_dir = file.path("hab/Outputs", branch, master_version, "hab.scenarios", fishtype)
-} else {
-  if (dir.exists(file.path("hab/Outputs", "feature", branch, "hab.scenarios", fishtype)) == F) {
-    dir.create(path = file.path("hab/Outputs", "feature", branch, "hab.scenarios", fishtype), recursive = TRUE)
-  }
-  Outputs_dir = file.path("hab/Outputs", "feature", branch, "hab.scenarios",fishtype)
-}
-
 data.spread <- lapply(scenarios, function(x){
   y <- data %>%
     filter(hab.scenario == x,
@@ -140,6 +123,6 @@ data.spread <- lapply(scenarios, function(x){
     y <- y %>% 
       filter(!stage_nm %in% c("capacity_w", "surv_w", "capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
   }
-  write.csv(y, file = paste0(Outputs_dir, "/", x, ".csv"))
+  write.csv(y, file = file.path(outputs_hab, paste0(x, ".csv")))
 }) %>%
   do.call('rbind',.)

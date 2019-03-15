@@ -11,8 +11,8 @@
 #################################################
 
 # Create folder to store all of these outputs ---
-out.path.sr <- paste0(out.path,"/spawner-recruit")
-if (dir.exists(out.path.sr) == F) {dir.create(out.path.sr)}
+outputs_lcm.sr <- paste0(outputs_lcm,"/spawner-recruit")
+if (dir.exists(outputs_lcm.sr) == F) {dir.create(outputs_lcm.sr)}
 
 # Create data ----
 # This is where we run the subbasin func with a bunch of n.init values
@@ -243,7 +243,7 @@ sr_dat %>%
   select(-S) %>%
   write.csv(
     file.path(
-      out.path.sr, 
+      outputs_lcm.sr, 
       paste(
         'spawner-recruit_data_subbasin', 
         pop, 
@@ -264,7 +264,7 @@ sr_dat %>%
   select(-S) %>%
   write.csv(
     file.path(
-      out.path.sr, 
+      outputs_lcm.sr, 
       paste(
         'spawner-recruit_data_basinwide', 
         pop, 
@@ -326,7 +326,7 @@ fish.abundance %>%
          Cn = ifelse(spawners == 0, NA, Cn)) %>%
   write.csv(
     file.path(
-      out.path.sr, 
+      outputs_lcm.sr, 
       paste(
         'coho_model_outputs_subbasin', 
         pop, 
@@ -347,7 +347,7 @@ fish.abundance %>%
          Cn = ifelse(spawners == 0, NA, Cn)) %>%
   write.csv(
     file.path(
-      out.path.sr, 
+      outputs_lcm.sr, 
       paste(
         'coho_model_outputs_EDR', 
         pop, 
@@ -368,7 +368,7 @@ fish.abundance %>%
          Cn = ifelse(spawners == 0, NA, Cn)) %>%
   write.csv(
     file.path(
-      out.path.sr, 
+      outputs_lcm.sr, 
       paste(
         'coho_model_outputs_basinwide', 
         pop, 
@@ -412,7 +412,7 @@ print(
 )
 
 ggsave(
-  file.path(out.path.sr, 
+  file.path(outputs_lcm.sr, 
             paste('spawner-recruit-basinwide', 
                   pop,
                   paste0(format(Sys.time(), "%Y%m%d"),'.jpg'), 
@@ -442,7 +442,7 @@ bh.dat.nested[[1]] %>%
   labs(x = 'spawners')
 
 ggsave(
-  file.path(out.path.sr, 
+  file.path(outputs_lcm.sr, 
             paste('spawner-recruit-subset-large', 
                   pop, paste0(format(Sys.time(), "%Y%m%d"),'.jpg'), 
                   sep = "_")
@@ -470,7 +470,7 @@ bh.dat.nested[[1]] %>%
   labs(x = 'spawners')
 
 ggsave(
-  file.path(out.path.sr, 
+  file.path(outputs_lcm.sr, 
             paste('spawner-recruit-subset-small-basins', 
                   pop, 
                   paste0(format(Sys.time(), "%Y%m%d"),'.jpg'), 

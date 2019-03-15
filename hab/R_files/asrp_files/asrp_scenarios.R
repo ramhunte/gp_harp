@@ -6,17 +6,6 @@ asrp_scenarios <- read.csv('hab/Excel_Files/ASRP_scenarios.csv')
 scenario.nums <- c(levels(unique(asrp_scenarios$Scenario_num)), "Current_asrp")
 scenario.years <- c(2040, 2080, 2019)
 
-if (branch == "dev") {
-  Outputs_dir = paste0("hab/Outputs/", branch, "/hab.scenarios/", fishtype)
-} else if (branch == "master") {
-  Outputs_dir = paste0("hab/Outputs/", branch, "/", master_version, "/hab.scenarios/", fishtype)
-} else {
-  if (dir.exists(paste0("hab/Outputs/feature/", branch, "/hab.scenarios/", fishtype)) == F) {
-    dir.create(path = paste0("hab/Outputs/feature/", branch, "/hab.scenarios/", fishtype), recursive = TRUE)}
-  
-  Outputs_dir = paste0("hab/Outputs/feature/", branch, "/hab.scenarios/", fishtype)
-}
-
 # 2. Begin loop of scenario years (Current, 2040 and 2080) ----
 asrp.scenarios.loop1 <- lapply(scenario.years, function(x){
   
@@ -60,7 +49,7 @@ asrp.scenarios.loop1 <- lapply(scenario.years, function(x){
       
       source("hab/R_files/asrp_files/data_organization.R", local = TRUE)
       
-      write.csv(asrp_results, file = paste0(Outputs_dir, "/", "ASRP_", y, "_", x, ".csv"))
+      write.csv(asrp_results, file = file.path(outputs_hab, paste0("ASRP_", y, "_", x, ".csv")))
       
       # asrp_results_df <- asrp_results %>%
       #   mutate(asrp_scenario = y,
@@ -75,12 +64,12 @@ asrp.scenarios.loop1 <- lapply(scenario.years, function(x){
 
 # source("R_files/asrp_files/create_scenario_dataframes.R", local = TRUE)
 
-source("hab/R_files/asrp_files/asrp_diagnostics.R", local = TRUE)
+# source("hab/R_files/asrp_files/asrp_diagnostics.R", local = TRUE)
 
 # files_to_delete <- c("/ASRP_Current_asrp_2040_", "/ASRP_Current_asrp_2080_", "/ASRP_scenario_1_2019_", "/ASRP_scenario_2_2019_", "/ASRP_scenario_3_2019_")
 
 # for (i in files_to_delete) {
-  # file.remove(paste0(Outputs_dir, i, ".csv"))
+  # file.remove(paste0(outputs_hab, i, ".csv"))
 # }
 
 
