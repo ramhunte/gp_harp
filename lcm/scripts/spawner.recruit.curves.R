@@ -59,9 +59,8 @@ N.test <- matrix(
 
 # Proportional allocation of n.init into subbasins
 # Use proportion from Current scenario
-p.init <- read.csv(file.path('hab.scenarios',
-                          pop,
-                          habitat.file[3]),  # Current scenario
+p.init <- read.csv(file.path(hab.path,
+                             'Current.csv'),  # Current scenario
                 header = TRUE
                 ) %>%
   select(-X) %>%
@@ -75,14 +74,15 @@ p.init[is.na(p.init)] <- 0
 
 # Capture all prespawn productivies for later use
 
-filename <- dir(file.path('hab.scenarios',pop),full.names = T)
+filename <- dir(hab.path,full.names = T)
 
 all.scenarios <- filename %>%
   map_dfr(read.csv, h = T, .id = 'name') %>%
   mutate(scenario = filename[as.numeric(name)] %>% 
            basename %>%
            gsub('_','\\.',.) %>%
-           sub('\\.201.*','',.)
+           sub('\\.201.*','',.) %>%
+           sub('.csv', '', .)
          ) %>%
   select(-name, -X)
 
@@ -94,6 +94,8 @@ prespawn_surv <- all.scenarios %>%
   rename(prespawn_surv = value) %>%
   select(scenario, Subbasin, prespawn_surv)
 
+#prespawn_surv[is.na(prespawn_surv)] <- 0
+
 
 # Loop the subbasin func ----
 
@@ -101,7 +103,7 @@ prespawn_surv <- all.scenarios %>%
 for (n in 1:length(scenario.file)) { # loop across hab scenarios
   
   #Assign variables from habitat scenario files
-  source("scripts/assign.dat.R")
+  source("lcm/scripts/assign.dat.R")
   
   for (i in 1:runs) {
     spawner.init <- n.init[i] * p.init
@@ -114,6 +116,7 @@ for (n in 1:length(scenario.file)) { # loop across hab scenarios
     }
   }
 }
+
 
 
 # Clean up data and create spawners - recruits ----

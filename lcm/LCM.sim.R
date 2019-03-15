@@ -361,6 +361,12 @@ source("lcm/scripts/plots.R")
 
 # Call diagnostic plots
 if (diag.plots == 'yes') {
+  print('Creating spawner abundance plots')
   source("lcm/scripts/diagnostic.plots.R")
 } 
 
+
+if (pop == 'coho') {
+  print('Creating spawner recruit (P and C) values and plots')
+  source('lcm/scripts/spawner.recruit.curves.R')
+}
