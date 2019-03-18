@@ -88,11 +88,11 @@ asrp_ss <- asrp_ss_raw %>%
                                             ((Shape_Length * curr_pond_area_per_m / 10000) + 
                                                (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 10000 * rest_perc_f * 
                                                   beaver_intensity_scalar_f)) * woodmult_w_asrp,
-                                            ((Shape_Length * hist_pond_area_per_m / 10000) + 
+                                            ((Shape_Length * curr_pond_area_per_m / 10000) + 
                                                (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 10000 * rest_perc_nf * 
                                                   beaver_intensity_scalar_nf)) * 
                                               woodmult_w_asrp),
-                                     (Shape_Length * hist_pond_area_per_m) / 10000 * tempmult.asrp * woodmult_s_asrp)) %>%
+                                     (Shape_Length * curr_pond_area_per_m) / 10000 * tempmult.asrp * woodmult_s_asrp)) %>%
   gather(Habitat, Area, Pool:winter.beaver.pond) %>%
   mutate(life.stage = ifelse(Habitat %in% c("Pool", "Riffle", "Beaver.Pond"), 
                              "summer", 
