@@ -314,6 +314,7 @@ for (n in 1:length(scenario.file)) {
 
 # Create a directory for today's outputs
 outputs_lcm <- file.path("outputs", fishtype, "lcm")
+
 if (dir.exists(outputs_lcm) == F) {dir.create(outputs_lcm, recursive = T)}
 
 
@@ -340,7 +341,7 @@ abundance_by_subbasin <- model.all[ ,50:100, summary.stages, , ] %>%
   arrange(scenario) %>%
   rename(natal.basin = Subbasin)
 
-csv.name <- paste0('summary_metrics_subbasin_', format(Sys.time(), "%Y%m%d"),'.csv')
+csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
   
 write.csv(abundance_by_subbasin, file.path(outputs_lcm, csv.name))
 

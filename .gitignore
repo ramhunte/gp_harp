@@ -3,7 +3,9 @@
 .Rhistory
 .RData
 .Ruserdata
-.jpg
+
+# File types to ignore
+*.jpg
 
 
 # Directories to ignore

@@ -42,7 +42,7 @@ if (sensitivity.mode == 'no') {
                 mutate(scenario = as.character(scenario)) %>%
                 left_join(.,plot.params)) %>%
     select(scenario,scenario.label,habitat.file,n) %>%
-    write.csv(.,file.path(outputs_lcm,paste0('spawners_',pop,'_',format(Sys.time(), "%Y%m%d"),'.csv')))
+    write.csv(.,file.path(outputs_lcm,paste0('spawners_',pop,'.csv')))
   
   # Organize labels to plot
   scenario.label <- plot.params$scenario.label[plot.params$scenario.label %in% unique(spawners$scenario.label)]
@@ -126,7 +126,7 @@ if (sensitivity.mode == 'no') {
   ) #close print()
   
   if (save.plots == "yes") {
-    ggsave(file.path(outputs_lcm,paste('spawners',pop,paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),sep = "_")), width = 10, height = 8, dpi = 300)#pdfs 10x10
+    ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
   } #close save.plots if() statement
   
 } #close if not sensitivity mode if() statement
@@ -194,21 +194,26 @@ if (sensitivity.mode=="no" & save.plots=="yes"){
   spawners.edr%>%
     left_join(.,data.frame(habitat.file,scenario = scenario.file)%>%
                 mutate(scenario = as.character(scenario)))%>%
-    write.csv(.,file.path(save.path.edr,paste0('Total_Run_by_EDR_',pop,'_',format(Sys.time(), "%Y%m%d"),'.csv')))
+    write.csv(.,file.path(save.path.edr,paste0('Total_Run_by_EDR_',pop,'.csv')))
   
   # Organize labels
   spawners.edr$scenario.label <- factor(spawners.edr$scenario.label, levels = scenario.label)
-  dont.plot <- c('Current',"Historical.no.beaver")
+  dont.plot <- c('Current',"Historical.no.beaver", 'ASRP.Current.asrp')
   plot.scenario <- levels(as.factor(spawners.edr$scenario))
   plot.scenario <- setdiff(plot.scenario,dont.plot)
-  plot.scenario.labs <- unique(spawners.edr$scenario.label[spawners.edr$scenario.label != 'Current'])
+  plot.scenario.labs <- spawners.edr %>%
+    filter(!scenario %in% dont.plot) %>%
+    pull(scenario.label) %>%
+    unique
+  
+  unique(spawners.edr$scenario.label[spawners.edr$scenario.label != 'Current'])
   
   
   #total.run.du$du <- factor(total.run.du$du,levels = reach.names)
   
   for (i in 1:(length(plot.scenario.labs))){
     
-    jpeg(paste0(save.path.edr,'/edr_plots_',pop,'_',plot.scenario[i],'_',format(Sys.time(), "%Y%m%d"),".jpg"),
+    jpeg(paste0(save.path.edr,'/edr_plots_',pop,'_',plot.scenario[i],".jpg"),
          width = 6, height = 6, units = 'in', res = 300) # 300 dpi for digital report. Maybe 600 for print report
     
     df <- spawners.edr%>%
@@ -274,7 +279,7 @@ if (sensitivity.mode=="no" & save.plots=="yes"){
          y="Change in Spawners \nfrom Current Scenario",
          caption = paste0('species = ',pop, ' - Habitat file version = ',hab.ver))
   
-  ggsave(file.path(outputs_lcm,paste0("Change_by_Scenario_Absolute_",format(Sys.time(), "%Y%m%d"),".jpg")), width = 6.5, height = 8, dpi = 300)
+  ggsave(file.path(outputs_lcm,paste0("Change_by_Scenario_Absolute",".jpg")), width = 6.5, height = 8, dpi = 300)
   
   
 } # close save.edr.plots if statement
@@ -371,7 +376,7 @@ if (sensitivity.mode == 'yes'){
     
   )#close print()
   if(save.plots=='yes'){
-    ggsave(file.path(outputs_lcm,paste('sensitivity',pop,paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),sep = "_")), width = 10, height = 8, dpi = 300)
+    ggsave(file.path(outputs_lcm,paste('sensitivity',pop,'.jpg'),sep = "_"), width = 10, height = 8, dpi = 300)
     # write.csv(rbind(broom::tidy(lm.current)%>%mutate(model = "current"),
     #                 broom::tidy(lm.hist)%>%mutate(model = "historical"))
     #           ,file.path(outputs_lcm,paste('sensitivity_',pop,'_lm.csv')))

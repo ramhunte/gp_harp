@@ -235,43 +235,43 @@ bh.dat.nested <- list(
 
 
 # Write the raw S-R data to a csv ----
-sr_dat %>%
-  ungroup %>%
-  select(scenario, Subbasin, n.init, recruits) %>%
-  rename(spawners = n.init) %>%
-  mutate(S = as.numeric(as.character(spawners))) %>%
-  select(-S) %>%
-  write.csv(
-    file.path(
-      outputs_lcm.sr, 
-      paste(
-        'spawner-recruit_data_subbasin', 
-        pop, 
-        paste0(format(Sys.time(), "%Y%m%d"),'.csv'), sep = "_"
-      )
-    )
-  )
-
-sr_dat %>%
-  ungroup %>%
-  group_by(scenario, runs) %>%
-  summarize(n.init = sum(n.init, na.rm = T),
-            recruits = sum(recruits, na.rm = T)) %>%
-  ungroup %>%
-  select(scenario, n.init, recruits) %>%
-  rename(spawners = n.init) %>%
-  mutate(S = as.numeric(as.character(spawners))) %>%
-  select(-S) %>%
-  write.csv(
-    file.path(
-      outputs_lcm.sr, 
-      paste(
-        'spawner-recruit_data_basinwide', 
-        pop, 
-        paste0(format(Sys.time(), "%Y%m%d"),'.csv'), sep = "_"
-      )
-    )
-  )
+# sr_dat %>%
+#   ungroup %>%
+#   select(scenario, Subbasin, n.init, recruits) %>%
+#   rename(spawners = n.init) %>%
+#   mutate(S = as.numeric(as.character(spawners))) %>%
+#   select(-S) %>%
+#   write.csv(
+#     file.path(
+#       outputs_lcm.sr, 
+#       paste0(
+#         'spawner-recruit_data_subbasin_', 
+#         pop, 
+#         '.csv'
+#       )
+#     )
+#   )
+# 
+# sr_dat %>%
+#   ungroup %>%
+#   group_by(scenario, runs) %>%
+#   summarize(n.init = sum(n.init, na.rm = T),
+#             recruits = sum(recruits, na.rm = T)) %>%
+#   ungroup %>%
+#   select(scenario, n.init, recruits) %>%
+#   rename(spawners = n.init) %>%
+#   mutate(S = as.numeric(as.character(spawners))) %>%
+#   select(-S) %>%
+#   write.csv(
+#     file.path(
+#       outputs_lcm.sr, 
+#       paste0(
+#         'spawner-recruit_data_basinwide_', 
+#         pop, 
+#         '.csv'
+#       )
+#     )
+#   )
 
 # Fit the data with a BH curve ----
 
@@ -327,10 +327,10 @@ fish.abundance %>%
   write.csv(
     file.path(
       outputs_lcm.sr, 
-      paste(
-        'coho_model_outputs_subbasin', 
+      paste0(
+        'model_outputs_subbasin_', 
         pop, 
-        paste0(format(Sys.time(), "%Y%m%d"),'.csv'), sep = "_"
+        '.csv'
       )
     )
   )
@@ -348,10 +348,10 @@ fish.abundance %>%
   write.csv(
     file.path(
       outputs_lcm.sr, 
-      paste(
-        'coho_model_outputs_EDR', 
+      paste0(
+        'model_outputs_EDR_', 
         pop, 
-        paste0(format(Sys.time(), "%Y%m%d"),'.csv'), sep = "_"
+        '.csv'
       )
     )
   )
@@ -370,9 +370,9 @@ fish.abundance %>%
     file.path(
       outputs_lcm.sr, 
       paste(
-        'coho_model_outputs_basinwide', 
+        'model_outputs_basinwide_', 
         pop, 
-        paste0(format(Sys.time(), "%Y%m%d"),'.csv'), sep = "_"
+        '.csv'
       )
     )
   )
@@ -413,10 +413,9 @@ print(
 
 ggsave(
   file.path(outputs_lcm.sr, 
-            paste('spawner-recruit-basinwide', 
+            paste('spawner-recruit-basinwide_', 
                   pop,
-                  paste0(format(Sys.time(), "%Y%m%d"),'.jpg'), 
-                  sep = "_")
+                  '.jpg')
             ),
   width = 20,
   height = 10,
@@ -443,9 +442,8 @@ bh.dat.nested[[1]] %>%
 
 ggsave(
   file.path(outputs_lcm.sr, 
-            paste('spawner-recruit-subset-large', 
-                  pop, paste0(format(Sys.time(), "%Y%m%d"),'.jpg'), 
-                  sep = "_")
+            paste('spawner-recruit-subset-large_', 
+                  pop, '.jpg')
             ),
   width = 10,
   height = 8,
@@ -471,10 +469,9 @@ bh.dat.nested[[1]] %>%
 
 ggsave(
   file.path(outputs_lcm.sr, 
-            paste('spawner-recruit-subset-small-basins', 
+            paste('spawner-recruit-subset-small_', 
                   pop, 
-                  paste0(format(Sys.time(), "%Y%m%d"),'.jpg'), 
-                  sep = "_")
+                  '.jpg')
             ),
   width = 10,
   height = 8,
@@ -483,13 +480,13 @@ ggsave(
 
 
 
-bh.dat.nested[[2]] %>%
-  left_join(bh.results.edr) %>%
-  mutate(pred = pmap(list(data, Pn, Cn), predict_bh)) %>%
-  select(scenario, EcoRegion, data, pred) %>%
-  unnest %>%
-  ggplot +
-  geom_point(aes(S, recruits, color = scenario)) +
-  geom_line(aes(S, pred, color = scenario)) +
-  facet_wrap(~EcoRegion, scales = 'free') +
-  labs(x = 'spawners')
+# bh.dat.nested[[2]] %>%
+#   left_join(bh.results.edr) %>%
+#   mutate(pred = pmap(list(data, Pn, Cn), predict_bh)) %>%
+#   select(scenario, EcoRegion, data, pred) %>%
+#   unnest %>%
+#   ggplot +
+#   geom_point(aes(S, recruits, color = scenario)) +
+#   geom_line(aes(S, pred, color = scenario)) +
+#   facet_wrap(~EcoRegion, scales = 'free') +
+#   labs(x = 'spawners')
