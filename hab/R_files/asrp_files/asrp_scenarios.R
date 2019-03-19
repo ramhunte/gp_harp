@@ -49,7 +49,8 @@ asrp.scenarios.loop1 <- lapply(scenario.years, function(x){
       
       source("hab/R_files/asrp_files/data_organization.R", local = TRUE)
       
-      write.csv(asrp_results, file = file.path(outputs_hab, paste0("ASRP_", y, "_", x, ".csv")))
+      
+      # write.csv(asrp_results, file = file.path(outputs_hab, paste0("ASRP_", y, "_", x, ".csv")))
       
       # asrp_results_df <- asrp_results %>%
       #   mutate(asrp_scenario = y,
@@ -61,6 +62,8 @@ asrp.scenarios.loop1 <- lapply(scenario.years, function(x){
     do.call('rbind',.)
   }) %>%
   do.call('rbind',.) 
+
+write.csv(data, file.path(outputs_hab, "outputs_long", "habmodel_outputs.csv"))
 
 # source("R_files/asrp_files/create_scenario_dataframes.R", local = TRUE)
 

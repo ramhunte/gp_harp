@@ -24,7 +24,7 @@ asrp_prod <- asrp_cap %>%
   group_by(Subbasin_num, life.stage) %>%
   mutate(cap.sum.sub = sum(capacity, na.rm = T),
          cap.perc = capacity / cap.sum.sub,
-         productivity = cap.perc * surv.base.asrp) %>%
+         survival = cap.perc * surv.base.asrp) %>%
   summarize(capacity = sum(capacity, na.rm = T),
-            productivity = sum(productivity, na.rm = T)) %>%
+            survival = sum(survival, na.rm = T)) %>%
   ungroup()

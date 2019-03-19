@@ -126,3 +126,9 @@ data.spread <- lapply(scenarios, function(x){
   write.csv(y, file = file.path(outputs_hab, paste0(x, ".csv")))
 }) %>%
   do.call('rbind',.)
+
+if (dir.exists(file.path(outputs_hab, "outputs_long")) == F) {
+  dir.create(file.path(outputs_hab, "outputs_long"), recursive = T)
+}
+
+# write.csv(data, file.path(outputs_hab, "outputs_long", "habmodel_outputs.csv"))

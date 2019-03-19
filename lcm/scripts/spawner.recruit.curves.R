@@ -74,7 +74,7 @@ p.init[is.na(p.init)] <- 0
 
 # Capture all prespawn productivies for later use
 
-filename <- dir(hab.path,full.names = T)
+filename <- dir(hab.path,pattern = ".csv", full.names = T)
 
 all.scenarios <- filename %>%
   map_dfr(read.csv, h = T, .id = 'name') %>%

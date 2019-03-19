@@ -1,7 +1,13 @@
 asrp_results_inputs <- bind_rows(asrp_prod, asrp_spawn_tot,prespawn_asrp, ef.surv %>%
                                    filter(hab.scenario == "Current") %>%
-                                   select( -hab.scenario) %>%
-                                   rename(productivity = survival))
+                                   select( -hab.scenario)) %>%
+  mutate(hab.scenario = paste0(y, "_", x))
+
+data %<>% bind_rows(asrp_results_inputs)
+assign('data', data , envir = .GlobalEnv)
+
+
+
 
 life.stage.nm <- c("egg.to.fry.productivity", "adults.capacity", "eggs.capacity", "prespawn.productivity", "summer.capacity", "summer.productivity", 
                    "winter.capacity", "winter.productivity","winter.movement", "summer.2.capacity", "summer.2.productivity", "winter.2.capacity", 
