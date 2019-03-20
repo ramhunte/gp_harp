@@ -368,7 +368,13 @@ if (diag.plots == 'yes') {
 } 
 
 
+# Call S-R curve plots (currently only working for coho 3/19/2019)
 if (pop == 'coho') {
   print('Creating spawner recruit (P and C) values and plots')
   source('lcm/scripts/spawner.recruit.curves.R')
 }
+
+
+# Call comparison plots
+print('Compare current run to dev branch')
+source('lcm/scripts/compare.model.runs.R')
