@@ -22,6 +22,9 @@ branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 spp <- c('coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'all_species')
 fishtype <- spp[menu(spp,title = "Choose a species",graphics = TRUE)]
 
+run_asrp_query <- c('yes', 'no')
+run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Would you like to run asrp scenarios?", graphics = TRUE)]
+
 if (fishtype == 'all_species') {
   for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')) {
     fishtype = s
