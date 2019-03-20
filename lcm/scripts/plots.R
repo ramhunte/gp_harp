@@ -119,7 +119,7 @@ if (sensitivity.mode == 'no') {
                          expand = c(0, 0,.05,0)) +
       labs(x = NULL,
            y = paste0('Spawners'),
-      caption = paste0('Habitat file version = ',hab.ver)
+      caption = paste0('Model version = ',hab.ver)
       ) +
       theme(axis.text.x = element_text(angle = 45,hjust = 1),
             text = element_text( size = 16))
@@ -247,7 +247,7 @@ if (sensitivity.mode=="no" & save.plots=="yes"){
       scale_y_continuous(label=comma)+
       labs(x=NULL,
            y='Change in Spawners\nfrom Current Scenario',
-           caption = paste0('Habitat file version = ',hab.ver)
+           caption = paste0('Model version = ',hab.ver)
            )+
       annotate("text",x = 0,y = Inf, vjust=1.02, hjust=-0.05,
               label=paste0("Total = +",format(round(df%>%
@@ -277,7 +277,7 @@ if (sensitivity.mode=="no" & save.plots=="yes"){
     scale_y_continuous(label=comma)+
     labs(x=NULL,
          y="Change in Spawners \nfrom Current Scenario",
-         caption = paste0('species = ',pop, ' - Habitat file version = ',hab.ver))
+         caption = paste0('species = ',pop, ' - Model version = ',hab.ver))
   
   ggsave(file.path(outputs_lcm,paste0("Change_by_Scenario_Absolute",".jpg")), width = 6.5, height = 8, dpi = 300)
   

@@ -18,6 +18,7 @@ if (clear_env == 'yes') {
 
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
+
 spp <- c('coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'all_species')
 fishtype <- spp[menu(spp,title = "Choose a species",graphics = TRUE)]
 
