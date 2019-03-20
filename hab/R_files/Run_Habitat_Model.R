@@ -16,7 +16,6 @@ if (dir.exists(outputs_hab) == F) {
   dir.create(outputs_hab, recursive = TRUE)
 }
 
-  
 source("hab/R_files/inputs.R")
 source("hab/R_files/functions.R")
 source("hab/R_files/flowline.R")
@@ -30,7 +29,6 @@ source("hab/R_files/prespawn.R")
 source("hab/R_files/EggToFry_Survival.R")
 source("hab/R_files/compute_habmodel_outputs.R")
 source("hab/R_files/asrp_files/asrp_scenarios.R")
-# if (!branch %in% c("dev", "master")) {
-  # source("hab/R_files/compare_scenarios.R")
-# }
+source("hab/R_files/compare_scenarios.R")
+
 # save.image(file ='R files/myEnvironment.RData')
