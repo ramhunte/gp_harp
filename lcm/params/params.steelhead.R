@@ -110,7 +110,7 @@ SAR <- bay.surv * so.weighted %>% round(3)
 
 
 # Harvest rate -------------------------------------------------------------------------------------------------------------
-Hr <- 0.16 # latest estimate (from Eric Walther, May 2017; average)
+Hr <- 0 #.16 # latest estimate (from Eric Walther, May 2017; average)
 # harvest adjustment
 hr.adj <- 1.0 # rep(1.0, num.reaches)
 

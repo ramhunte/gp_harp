@@ -255,10 +255,11 @@ for (n in 1:length(scenario.file)) {
   
   # Spawners + harvest (spawners with no harvest, but yes prespawn mortality)
   spawn.hr <- model.all[, , 'spawners', , scenario.file[n]] %>%
-    apply(., c(1:3), function(x)
-      x / (1 - Hr)) %>% # Add harvest back in (spawners + harvest)
-    apply(., c(1, 2), sum) %>%
-    apply(., 1, geo.mean) %>%
+    # apply(., c(1:3), function(x)
+    #   x / (1 - Hr)) %>% # Add harvest back in (spawners + harvest)
+    apply(., c(1,3), geo.mean) %>%
+    apply(., 1, sum) %>%
+    
     mean()
   
   if (pop == "fall.chinook" | pop == "spring.chinook" | pop == "coho") {
