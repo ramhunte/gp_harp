@@ -131,4 +131,8 @@ if (dir.exists(file.path(outputs_hab, "outputs_long")) == F) {
   dir.create(file.path(outputs_hab, "outputs_long"), recursive = T)
 }
 
+if (run_asrp == "no") {
+  write.csv(data, file.path(outputs_hab, "outputs_long", "habmodel_outputs.csv"))
+}
+
 # write.csv(data, file.path(outputs_hab, "outputs_long", "habmodel_outputs.csv"))

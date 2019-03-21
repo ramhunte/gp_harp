@@ -376,5 +376,9 @@ if (pop == 'coho') {
 
 
 # Call comparison plots
-print('Compare current run to dev branch')
-source('lcm/scripts/compare.model.runs.R')
+if (run_asrp == "yes") {
+  if (!branch %in% c('dev','master')) {
+    print('Compare current run to dev branch')
+    source('lcm/scripts/compare.model.runs.R')
+  }
+}
