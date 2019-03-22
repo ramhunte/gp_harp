@@ -1,6 +1,7 @@
 # Purpose: This script is where prespawn productivity is calculated
 # For all species we augment prespawn by the passage percent (barrier impact on prod)
 # For spring chinook, we use temperature to augment prespawn
+# For coho, use mean % impervious (mn_imperv) to augment prespawn
 
 
 
@@ -24,7 +25,7 @@ if (fishtype == "spring_chinook") {
               pass_tot_natural = mean(pass_tot_natural, na.rm = T)) %>%
     ungroup()
   
-  curr.prespawn <- c("Barriers", "Beaver", "Current", "Fine_sediment", 
+  curr.prespawn <- c("Beaver", "Current", "Fine_sediment", 
                      "Floodplain", "LR_bank", "LR_length", "Wood", "FP_wood_comb")
   
   prespawn.surv <- lapply(all_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
@@ -39,21 +40,24 @@ if (fishtype == "spring_chinook") {
     mutate(life.stage = "prespawn") %>%
     select(hab.scenario, Subbasin_num, life.stage, survival)
   
-} else {
+} else {# species other than spring chinook
+
   
   prespawn <- flowline %>%
-    filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) 
+    filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
+    mutate(imperv_mult = ifelse(fishtype == 'coho',
+                                calc_coho_imperv(mn_imperv),
+                                1)) # For all species other than coho, use imperv_mult of 1
   
   curr.prespawn <- c("Shade", "Beaver", "Current", "Fine_sediment", 
                      "Floodplain", "LR_bank", "LR_length", "Wood", "FP_wood_comb")
   
-  hist.prespawn <- c("Historical", "Barriers")
-  
   prespawn.surv <- lapply(all_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
     do.call('rbind',.) %>%
     mutate(survival = case_when(
-      hab.scenario %in% curr.prespawn ~ prespawn_surv_raw * pass_tot,
-      hab.scenario %in% hist.prespawn ~ prespawn_surv_raw * pass_tot_natural
+      hab.scenario %in% curr.prespawn ~ prespawn_surv_raw * pass_tot * imperv_mult,
+      hab.scenario  ==  'Barriers'    ~ prespawn_surv_raw * pass_tot_natural * imperv_mult,
+      hab.scenario  ==  'Historical'  ~ prespawn_surv_raw * pass_tot_natural
       )
     ) %>%
     group_by(Subbasin_num, hab.scenario) %>%

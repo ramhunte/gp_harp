@@ -18,7 +18,7 @@
 "17","Barriers","eggs_capacity",0,0,0
 "18","Barriers","eggs_survival",Inf,-Inf,NA
 "19","Barriers","prespawn_capacity",Inf,-Inf,NA
-"20","Barriers","prespawn_survival",0,0,0
+"20","Barriers","prespawn_survival",0.00187724999999941,0.0018772500000005,0.00187724999999997
 "21","Barriers","summer_capacity",0,0,0
 "22","Barriers","summer_survival",0,0,0
 "23","Barriers","winter_capacity",0,0,0
@@ -30,7 +30,7 @@
 "29","Beaver","eggs_capacity",0,0,0
 "30","Beaver","eggs_survival",Inf,-Inf,NA
 "31","Beaver","prespawn_capacity",Inf,-Inf,NA
-"32","Beaver","prespawn_survival",0,0,0
+"32","Beaver","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "33","Beaver","summer_capacity",0,0,0
 "34","Beaver","summer_survival",0,0,0
 "35","Beaver","winter_capacity",0,0,0
@@ -42,7 +42,7 @@
 "41","Current","eggs_capacity",0,0,0
 "42","Current","eggs_survival",Inf,-Inf,NA
 "43","Current","prespawn_capacity",Inf,-Inf,NA
-"44","Current","prespawn_survival",0,0,0
+"44","Current","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "45","Current","summer_capacity",0,0,0
 "46","Current","summer_survival",0,0,0
 "47","Current","winter_capacity",0,0,0
@@ -66,7 +66,7 @@
 "65","Fine_sediment","eggs_capacity",0,0,0
 "66","Fine_sediment","eggs_survival",Inf,-Inf,NA
 "67","Fine_sediment","prespawn_capacity",Inf,-Inf,NA
-"68","Fine_sediment","prespawn_survival",0,0,0
+"68","Fine_sediment","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "69","Fine_sediment","summer_capacity",0,0,0
 "70","Fine_sediment","summer_survival",0,0,0
 "71","Fine_sediment","winter_capacity",0,0,0
@@ -78,7 +78,7 @@
 "77","Floodplain","eggs_capacity",0,0,0
 "78","Floodplain","eggs_survival",Inf,-Inf,NA
 "79","Floodplain","prespawn_capacity",Inf,-Inf,NA
-"80","Floodplain","prespawn_survival",0,0,0
+"80","Floodplain","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "81","Floodplain","summer_capacity",0,0,0
 "82","Floodplain","summer_survival",0,0,0
 "83","Floodplain","winter_capacity",0,0,0
@@ -90,7 +90,7 @@
 "89","FP_wood_comb","eggs_capacity",0,0,0
 "90","FP_wood_comb","eggs_survival",Inf,-Inf,NA
 "91","FP_wood_comb","prespawn_capacity",Inf,-Inf,NA
-"92","FP_wood_comb","prespawn_survival",0,0,0
+"92","FP_wood_comb","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "93","FP_wood_comb","summer_capacity",0,0,0
 "94","FP_wood_comb","summer_survival",0,0,0
 "95","FP_wood_comb","winter_capacity",0,0,0
@@ -114,7 +114,7 @@
 "113","LR_bank","eggs_capacity",0,0,0
 "114","LR_bank","eggs_survival",Inf,-Inf,NA
 "115","LR_bank","prespawn_capacity",Inf,-Inf,NA
-"116","LR_bank","prespawn_survival",0,0,0
+"116","LR_bank","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "117","LR_bank","summer_capacity",0,0,0
 "118","LR_bank","summer_survival",0,0,0
 "119","LR_bank","winter_capacity",0,0,0
@@ -126,7 +126,7 @@
 "125","LR_length","eggs_capacity",0,0,0
 "126","LR_length","eggs_survival",Inf,-Inf,NA
 "127","LR_length","prespawn_capacity",Inf,-Inf,NA
-"128","LR_length","prespawn_survival",0,0,0
+"128","LR_length","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "129","LR_length","summer_capacity",0,0,0
 "130","LR_length","summer_survival",0,0,0
 "131","LR_length","winter_capacity",0,0,0
@@ -210,7 +210,7 @@
 "209","Shade","eggs_capacity",0,0,0
 "210","Shade","eggs_survival",Inf,-Inf,NA
 "211","Shade","prespawn_capacity",Inf,-Inf,NA
-"212","Shade","prespawn_survival",0,0,0
+"212","Shade","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "213","Shade","summer_capacity",0,0,0
 "214","Shade","summer_survival",0,0,0
 "215","Shade","winter_capacity",0,0,0
@@ -222,7 +222,7 @@
 "221","Wood","eggs_capacity",0,0,0
 "222","Wood","eggs_survival",Inf,-Inf,NA
 "223","Wood","prespawn_capacity",Inf,-Inf,NA
-"224","Wood","prespawn_survival",0,0,0
+"224","Wood","prespawn_survival",0.00187724999999839,0.00187725000000205,0.00187725000000004
 "225","Wood","summer_capacity",0,0,0
 "226","Wood","summer_survival",0,0,0
 "227","Wood","winter_capacity",0,0,0
