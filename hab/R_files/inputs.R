@@ -34,3 +34,10 @@ diag_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
   pull(scenario) %>%
   as.character() %>%
   gsub('\\.', '_', .) # replace . with _
+
+
+# List of all scenarios (note: LCM uses a different habitat scenario format)
+all_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
+  pull(scenario) %>%
+  as.character() %>%
+  gsub('\\.', '_', .) # replace . with _
