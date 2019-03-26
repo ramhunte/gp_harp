@@ -59,7 +59,7 @@ labs_df <- df %>%
   bind_rows(df %>%
               group_by(scenario,version) %>%
               summarize(n = sum(total.run)) %>%
-              mutate(prcnt_diff = (n[version == branch]- n) / n[version == branch],
+              mutate(prcnt_diff = (n[version == branch]- n) / n,
                      n = scales::percent(prcnt_diff)) %>%
               filter(version == 'dev') %>%
               mutate(version = 'percent diff')
