@@ -57,8 +57,8 @@
 "56","Current_asrp_2019","prespawn_survival",0,0,0
 "57","Current_asrp_2019","summer_capacity",0,0,0
 "58","Current_asrp_2019","summer_survival",0,0,0
-"59","Current_asrp_2019","winter_capacity",-0.380809189262761,0,-0.0484499676263253
-"60","Current_asrp_2019","winter_survival",-0.273457666396078,0,-0.0269698908900664
+"59","Current_asrp_2019","winter_capacity",0,0,0
+"60","Current_asrp_2019","winter_survival",0,0,0
 "61","Fine_sediment","adults_capacity",0,0,0
 "62","Fine_sediment","adults_survival",Inf,-Inf,NA
 "63","Fine_sediment","egg.to.fry_capacity",Inf,-Inf,NA
@@ -141,8 +141,8 @@
 "140","scenario_1_2040","prespawn_survival",0,0,0
 "141","scenario_1_2040","summer_capacity",0,0,0
 "142","scenario_1_2040","summer_survival",0,0,0
-"143","scenario_1_2040","winter_capacity",-0.588441299760318,0,-0.0886654038717448
-"144","scenario_1_2040","winter_survival",-0.496600587118147,0,-0.0516044821431983
+"143","scenario_1_2040","winter_capacity",0,0,0
+"144","scenario_1_2040","winter_survival",0,0,0
 "145","scenario_1_2080","adults_capacity",0,0,0
 "146","scenario_1_2080","adults_survival",Inf,-Inf,NA
 "147","scenario_1_2080","egg.to.fry_capacity",Inf,-Inf,NA
@@ -153,8 +153,8 @@
 "152","scenario_1_2080","prespawn_survival",0,0,0
 "153","scenario_1_2080","summer_capacity",0,0,0
 "154","scenario_1_2080","summer_survival",0,0,0
-"155","scenario_1_2080","winter_capacity",-0.748854903680714,0,-0.127269568170964
-"156","scenario_1_2080","winter_survival",-0.730928738952745,0,-0.0790885859057605
+"155","scenario_1_2080","winter_capacity",0,0,0
+"156","scenario_1_2080","winter_survival",0,0,0
 "157","scenario_2_2040","adults_capacity",0,0,0
 "158","scenario_2_2040","adults_survival",Inf,-Inf,NA
 "159","scenario_2_2040","egg.to.fry_capacity",Inf,-Inf,NA
@@ -165,8 +165,8 @@
 "164","scenario_2_2040","prespawn_survival",0,0,0
 "165","scenario_2_2040","summer_capacity",0,0,0
 "166","scenario_2_2040","summer_survival",0,0,0
-"167","scenario_2_2040","winter_capacity",-0.588441299760318,0,-0.0885617809201793
-"168","scenario_2_2040","winter_survival",-0.496600587118147,0,-0.0514511581012524
+"167","scenario_2_2040","winter_capacity",0,0,0
+"168","scenario_2_2040","winter_survival",0,0,0
 "169","scenario_2_2080","adults_capacity",0,0,0
 "170","scenario_2_2080","adults_survival",Inf,-Inf,NA
 "171","scenario_2_2080","egg.to.fry_capacity",Inf,-Inf,NA
@@ -177,8 +177,8 @@
 "176","scenario_2_2080","prespawn_survival",0,0,0
 "177","scenario_2_2080","summer_capacity",0,0,0
 "178","scenario_2_2080","summer_survival",0,0,0
-"179","scenario_2_2080","winter_capacity",-0.748854903680714,0,-0.127147098656247
-"180","scenario_2_2080","winter_survival",-0.730928738952745,0,-0.0788919605726334
+"179","scenario_2_2080","winter_capacity",0,0,0
+"180","scenario_2_2080","winter_survival",0,0,0
 "181","scenario_3_2040","adults_capacity",0,0,0
 "182","scenario_3_2040","adults_survival",Inf,-Inf,NA
 "183","scenario_3_2040","egg.to.fry_capacity",Inf,-Inf,NA
@@ -189,8 +189,8 @@
 "188","scenario_3_2040","prespawn_survival",0,0,0
 "189","scenario_3_2040","summer_capacity",0,0,0
 "190","scenario_3_2040","summer_survival",0,0,0
-"191","scenario_3_2040","winter_capacity",-0.588441299760318,0,-0.0786825310714689
-"192","scenario_3_2040","winter_survival",-0.496600587118147,0,-0.0466957251210773
+"191","scenario_3_2040","winter_capacity",0,0,0
+"192","scenario_3_2040","winter_survival",0,0,0
 "193","scenario_3_2080","adults_capacity",0,0,0
 "194","scenario_3_2080","adults_survival",Inf,-Inf,NA
 "195","scenario_3_2080","egg.to.fry_capacity",Inf,-Inf,NA
@@ -201,8 +201,8 @@
 "200","scenario_3_2080","prespawn_survival",0,0,0
 "201","scenario_3_2080","summer_capacity",0,0,0
 "202","scenario_3_2080","summer_survival",0,0,0
-"203","scenario_3_2080","winter_capacity",-0.748854903680714,0,-0.115302286100512
-"204","scenario_3_2080","winter_survival",-0.730928738952745,0,-0.0734194760821816
+"203","scenario_3_2080","winter_capacity",0,0,0
+"204","scenario_3_2080","winter_survival",0,0,0
 "205","Shade","adults_capacity",0,0,0
 "206","Shade","adults_survival",Inf,-Inf,NA
 "207","Shade","egg.to.fry_capacity",Inf,-Inf,NA
