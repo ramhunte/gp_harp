@@ -101,21 +101,22 @@ basemap +
 Adding in new plots for temperature data
 ```{r}
 fl_temps <- fl %>%
-    left_join(., flowline %>% 
-              select(noaaid, temp_diff_2040, temp_diff_2080), by = "noaaid") %>%
+  select(-curr_temp, -hist_temp) %>%
+  left_join(., flowline %>% 
+              select(noaaid, temp_diff_2040, temp_diff_2080, curr_temp, hist_temp), by = "noaaid") %>%
   filter(presence == "Yes") %>%
   gather(year, temp_chg, temp_diff_2040:temp_diff_2080) %>%
   mutate(cc_impact = ifelse(year == "temp_diff_2040",
-                          1.8,
-                          3),
+                            1.8,
+                            3),
          year = ifelse(year == "temp_diff_2040",
                        "chg_2040",
                        "chg_2080"))
 
 temps_no_action <- fl_temps %>%
   mutate(temp_chg = ifelse(can_ang > 170,
-                                 cc_impact,
-                                 temp_chg)) %>%
+                           cc_impact,
+                           temp_chg)) %>%
   mutate(temperature_change = cut(temp_chg,c(-Inf, -2.5, -1.5, -.5, .5, 1.5, 2.5, Inf), na.rm = T)) %>%
   select(temp_chg, temperature_change, year)
 
@@ -145,6 +146,7 @@ temps_scenario_2 <- fl_temps %>%
                                   temp_chg)),
          temperature_change = cut(temp_chg,c(-Inf, -2.5, -1.5, -.5, .5, 1.5, 2.5, Inf), na.rm = T)) %>%
   select(temp_chg, temperature_change, year)
+  
   
   
 # group_by(chg_2040) %>%
@@ -276,4 +278,126 @@ basemap +
   coord_sf(datum = NA)
 
 ggsave("temperature_change_2080_scenario_3.jpg", dpi = 300, width = 15, height = 12)
+```
+
+
+
+```{r}
+fl_temp_non_future <- fl %>%
+  select(-curr_temp, -hist_temp) %>%
+  left_join(., flowline %>% 
+              select(noaaid, curr_temp, hist_temp, temp_diff), by = "noaaid") %>%
+  filter(presence == "Yes") 
+
+curr_temps <- fl_temp_non_future %>%
+    mutate(Temperature = cut(curr_temp, c(-Inf, 18, 21, 24, Inf), na.rm = T)) %>%
+    select(Temperature, curr_temp)
+
+hist_temps <- fl_temp_non_future %>%
+  mutate(temp = cut(hist_temp, c(-Inf, 18, 21, 24, Inf), na.rm = T)) %>% 
+  select(temp, curr_temp)
+
+temp_chg <- fl_temp_non_future %>%
+  mutate(Temperature_Change = cut(temp_diff, c(-Inf, .5, 2, 3.5, Inf), na.rm = T)) %>%
+  select(Temperature_Change, temp_diff)
+
+curr_canang <- fl_temp_non_future %>%
+  mutate(ang = cut(can_ang, c(-Inf, 20, 50, 100, 150, Inf), na.rm = T)) %>%
+  select(ang, can_ang)
+
+hist_canang <- fl_temp_non_future %>%
+  mutate(ang = cut(hist_ang, c(-Inf, 20, 50, 100, 150, Inf), na.rm = T)) %>%
+  select(ang, hist_ang)
+
+canang_chg <- fl_temp_non_future %>%
+  mutate(diff = can_ang - hist_ang,
+         opening_angle_change = cut(diff, c(-Inf, 20, 40, 60, 100, Inf), na.rm = T)) %>%
+  select(opening_angle_change, diff)
+```
+Plot of current temperature
+```{r}
+basemap +
+  geom_sf(data = curr_temps, aes(color = Temperature), lwd = 1.5, show.legend = "line") +
+  scale_colour_manual(values = c("blue", "yellow", "orange", "red")) +
+  # geom_sf_label(show.legend = NA, fun.geometry = "line") +
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20),
+        legend.position = c(.85, .85),
+        # legend.box.margin = margin(30, 10, 10, 10),
+        legend.background = element_rect(fill = "grey", size = .5, linetype = "solid", colour = "black"))+
+  coord_sf(datum = NA)
+
+ggsave("current_temperature.jpg", dpi = 300, width = 15, height = 12)
+```
+Plot of historical temperature
+
+```{r}
+basemap +
+  geom_sf(data = hist_temps, aes(color = temp), lwd = 2) +
+  scale_colour_manual(values = c("blue", "orange", "red")) +
+  # geom_sf_label(show.legend = NA, fun.geometry = "line") + 
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20)) +
+  coord_sf(datum = NA)
+
+ggsave("historical_temperature.jpg", dpi = 300, width = 15, height = 12)
+```
+
+Plot of temperature difference from historical to Current
+
+```{r}
+basemap +
+  geom_sf(data = temp_chg, aes(color = Temperature_Change), lwd = 1.5, show.legend = "line") +
+  scale_colour_manual(values = c("blue", "yellow", "orange", "red")) +
+  # geom_sf_label(show.legend = NA, fun.geometry = "line") +
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20),
+        legend.position = c(.85, .85),
+        # legend.box.margin = margin(30, 10, 10, 10),
+        legend.background = element_rect(fill = "white", size = .5, linetype = "solid", colour = "black"))+
+  coord_sf(datum = NA)
+
+ggsave("temperature_change.jpg", dpi = 300, width = 15, height = 12)
+```
+
+Plot of canopy opening angle
+```{r}
+basemap +
+  geom_sf(data = curr_canang, aes(color = ang), lwd = 2) +
+  scale_colour_manual(values = c("navy", "deepskyblue", "yellow", "orange", "red")) +
+  # geom_sf_label(show.legend = NA, fun.geometry = "line") + 
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20)) +
+  coord_sf(datum = NA)
+
+ggsave("current_canopy_angle.jpg", dpi = 300, width = 15, height = 12)
+```
+
+Plot of hist canopy opening angle
+```{r}
+basemap +
+  geom_sf(data = hist_canang, aes(color = ang), lwd = 2) +
+  scale_colour_manual(values = c("navy", "deepskyblue", "yellow", "orange", "red")) +
+  # geom_sf_label(show.legend = NA, fun.geometry = "line") + 
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20)) +
+  coord_sf(datum = NA)
+
+ggsave("historical_canopy_angle.jpg", dpi = 300, width = 15, height = 12)
+```
+
+Plot of canopy opening angle change
+```{r}
+basemap +
+  geom_sf(data = canang_chg, aes(color = opening_angle_change), lwd = 1.5, show.legend = "line") +
+  scale_colour_manual(values = c("navyblue", "blue", "yellow", "orange", "red")) +
+  # geom_sf_label(show.legend = NA, fun.geometry = "line") +
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20),
+        legend.position = c(.85, .85),
+        # legend.box.margin = margin(30, 10, 10, 10),
+        legend.background = element_rect(fill = "grey", size = .5, linetype = "solid", colour = "black"))+
+  coord_sf(datum = NA)
+
+ggsave("opening_angle_change", dpi = 300, width = 15, height = 12)
 ```
