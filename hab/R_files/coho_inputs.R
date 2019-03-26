@@ -62,4 +62,4 @@ lr_wd_w_bank <- 1.21
 lr_wd_w_bar <- 1.2
 
 # Prespawn survival ----
-prespawn_surv_raw <- .9
+prespawn_surv_raw <- .95
