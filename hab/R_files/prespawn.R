@@ -28,7 +28,7 @@ if (fishtype == "spring_chinook") {
   curr.prespawn <- c("Beaver", "Current", "Fine_sediment", 
                      "Floodplain", "LR_bank", "LR_length", "Wood", "FP_wood_comb")
   
-  prespawn.surv <- lapply(all_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
+  prespawn.surv <- lapply(diag_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
     do.call('rbind',.) %>%
     mutate(survival = case_when(
       hab.scenario %in% curr.prespawn ~ cramer.prespawn(prespawn_temp_curr) * pass_tot,
@@ -52,7 +52,7 @@ if (fishtype == "spring_chinook") {
   curr.prespawn <- c("Shade", "Beaver", "Current", "Fine_sediment", 
                      "Floodplain", "LR_bank", "LR_length", "Wood", "FP_wood_comb")
   
-  prespawn.surv <- lapply(all_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
+  prespawn.surv <- lapply(diag_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
     do.call('rbind',.) %>%
     mutate(survival = case_when(
       hab.scenario %in% curr.prespawn ~ prespawn_surv_raw * pass_tot * imperv_mult,
