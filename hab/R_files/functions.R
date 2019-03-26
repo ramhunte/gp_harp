@@ -118,3 +118,27 @@ temp_func <- function(t = "temperature"){
     t/t #tempmult = 1 for chinook
   }
 }
+
+
+
+
+calc_coho_imperv <- function(imperv) {
+  # Calc impervious area impact on coho prespawn productivity (Feist et al 2011, 2017)
+  # https://trello.com/c/WrGi7d7U/31-model-prespawn-mortality-for-coho-using-impervious-landcover
+  # Calc the mortality, then take 1 - mortality to return the productivity
+  #
+  # Args: 
+  #  imperv: percent imperviousness in decimal form (1% = 0.01)
+  #
+  # Returns:
+  #  ps_mort_imperv: prespawn mortality related to imperviousness in decimal form
+  
+  ps_mort_imperv <- 1.5 * imperv
+  
+  ps_prod_imperv <- ifelse(ps_mort_imperv > 1,
+                           1,
+                           ps_prod_imperv <- 1 - ps_mort_imperv)
+  
+    return(ps_prod_imperv)
+}
+

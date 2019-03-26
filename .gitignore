@@ -4,6 +4,9 @@
 .RData
 .Ruserdata
 
+# File types to ignore
+*.jpg
+
 
 # Directories to ignore
 lcm/lcm_outputs/

@@ -4,41 +4,48 @@
 # This script reaches into those folders, joins the two documnets together, and creates a plot
 
 
-date_v1 <- '20190312'
-date_v2 <- '20190313'
+
+# Create comparison folder ----
+out.path.compare <- file.path(outputs_lcm, 'comparison')
+if (dir.exists(out.path.compare) == F) {dir.create(out.path.compare, recursive = T)}
 
 
-######## Source the file and choose a species #########
-# species_for_comparison <-  species[menu(species, title = "Choose a species", graphics = TRUE)]
 
-######## Everything below here should run #########
-
-v1 <- file.path("lcm/lcm_outputs", date_v1,species_for_comparison, 'edr_plots')
-v2 <- file.path("lcm/lcm_outputs", date_v2,species_for_comparison, 'edr_plots')
+# Path to csv with spawners by EDR ----
+path_to_edr <- file.path('outputs', fishtype, 'lcm', 'edr_plots') %>% 
+  list.files( ., pattern = ".csv", full.names = T) 
 
 
-df <- list.files(v1, pattern = ".csv", full.names = T) %>%
+# Bring file back from dev ----
+shell_cmd <- paste0('git show dev:', path_to_edr, ' > dev_spawners_edr.csv')
+shell(cmd = shell_cmd)
+dev_edr <- read.csv('dev_spawners_edr.csv')
+unlink('dev_spawners_edr.csv') # Delete dev version
+
+
+
+
+df <- path_to_edr %>%
   read.csv() %>%
-  rename(total.run.v1 = spawners,
-         file.v1 = habitat.file) %>%
+  rename(total.run.feature = spawners,
+         file.feature = habitat.file) %>%
   mutate(scenario = ifelse(scenario == 'Temperature','Shade',as.character(scenario))) %>%
-  full_join(list.files(v2,pattern = ".csv",full.names = T) %>%
-              read.csv() %>%
-              rename(total.run.v2 = spawners,
-                     file.v2 = habitat.file) %>%
+  full_join(dev_edr %>%
+              rename(total.run.dev = spawners,
+                     file.dev = habitat.file) %>%
               mutate(scenario = ifelse(scenario == 'Temperature','Shade',as.character(scenario)))
             ,by = c('scenario','EcoRegion')
             ) %>%
   select(scenario, 
          EcoRegion,
-         total.run.v1,
-         total.run.v2
+         total.run.feature,
+         total.run.dev
          ) %>%
-  gather(version, total.run, total.run.v1:total.run.v2) %>%
-  mutate(version = ifelse(version == 'total.run.v1',
-                          date_v1
+  gather(version, total.run, total.run.feature:total.run.dev) %>%
+  mutate(version = ifelse(version == 'total.run.feature',
+                          branch
                           ,
-                          date_v2
+                          'dev'
                           )
          )
   
@@ -48,20 +55,21 @@ labs_df <- df %>%
             max_edr = max(total.run)) %>%
   ungroup %>%
   mutate(max = max(max_edr),
-         y = ifelse(version == date_v1, max + max * .15, max)) %>%
+         y = ifelse(version == branch, max + max * .15, max)) %>%
   bind_rows(df %>%
               group_by(scenario,version) %>%
               summarize(n = sum(total.run)) %>%
-              mutate(prcnt_diff = (n - n[version == date_v1]) / n[version == date_v1],
+              mutate(prcnt_diff = (n[version == branch]- n) / n,
                      n = scales::percent(prcnt_diff)) %>%
-              filter(version == date_v2) %>%
+              filter(version == 'dev') %>%
               mutate(version = 'percent diff')
               
   ) %>%
   mutate(y = ifelse(version == 'percent diff', 
-                    max[version == date_v1] - max[version == date_v1] * .15, 
+                    max[version == branch] - max[version == branch] * .15, 
                     y))
 
+print(
 ggplot(df) +
   theme_bw() +
   geom_bar(aes(EcoRegion,total.run,fill = version),
@@ -69,38 +77,39 @@ ggplot(df) +
   facet_wrap(~scenario) +
   geom_text(data = labs_df, 
             x = 5, 
-            aes(y = y, label = paste("Total = ",n))) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+            aes(y = y, label = paste(version,' - ', n)),
+            size = 2) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)) +
+  labs(caption = paste0(pop, ' - Habitat file version = ', hab.ver),
+       y = 'spawners')
+)
 
 
-out.path <- file.path('lcm/lcm_outputs', date_v2, species_for_comparison, 'comparison')
-if (dir.exists(out.path) == F) {dir.create(out.path, recursive = T)}
-
-ggsave(file.path(out.path,
+ggsave(file.path(out.path.compare,
                  paste('Comparison_Total_run',
-                       species_for_comparison,
+                       pop,
                        paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),
                        sep = "_")),
        width = 10, 
        height = 8, 
        dpi = 300)
 
+# Create output csv
+# df %>%
+#   spread(version, total.run) %>%
+#   write.csv(file.path(out.path.compare,
+#                       paste('LCM_comparison',
+#                             pop,
+#                             paste0(format(Sys.time(), "%Y%m%d"),'.csv'),
+#                             sep = "_")))
 
-df %>%
-  spread(version, total.run) %>%
-  write.csv(file.path(out.path,
-                      paste('LCM_comparison',
-                            species_for_comparison,
-                            paste0(format(Sys.time(), "%Y%m%d"),'.csv'),
-                            sep = "_")))
+# Print summary metrics to the screen
+print(paste0(pop, " --------------- summary of percent differences from HEAD of dev branch -----------------"))
+print(df %>%
+        group_by(scenario,version) %>%
+        summarize(n = sum(total.run, na.rm = T)) %>%
+        spread(version, n) %>%
+        mutate(prcnt_diff = (get(branch) - dev) / dev,
+               prcnt_diff = scales::percent(prcnt_diff))
+      )
 
-
-ave_prcnt_diff <- df %>%
-  group_by(scenario,version) %>%
-  summarize(n = sum(total.run)) %>%
-  mutate(prcnt_diff = (n - n[version == date_v1]) / n[version == date_v1]) %>%
-  ungroup() %>%
-  summarize(prcnt_diff = scales::percent(mean(prcnt_diff))) %>%
-  pull(prcnt_diff)
-
-print(paste0(species_for_comparison, " -- Average Percent Difference = " , ave_prcnt_diff))

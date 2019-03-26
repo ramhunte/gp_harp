@@ -255,10 +255,11 @@ for (n in 1:length(scenario.file)) {
   
   # Spawners + harvest (spawners with no harvest, but yes prespawn mortality)
   spawn.hr <- model.all[, , 'spawners', , scenario.file[n]] %>%
-    apply(., c(1:3), function(x)
-      x / (1 - Hr)) %>% # Add harvest back in (spawners + harvest)
-    apply(., c(1, 2), sum) %>%
-    apply(., 1, geo.mean) %>%
+    # apply(., c(1:3), function(x)
+    #   x / (1 - Hr)) %>% # Add harvest back in (spawners + harvest)
+    apply(., c(1,3), geo.mean) %>%
+    apply(., 1, sum) %>%
+    
     mean()
   
   if (pop == "fall.chinook" | pop == "spring.chinook" | pop == "coho") {
@@ -313,8 +314,9 @@ for (n in 1:length(scenario.file)) {
 # Call the plots ---------------------------------------------------------------------------------------------------------
 
 # Create a directory for today's outputs
-out.path <- file.path('lcm/lcm_outputs',format(Sys.time(), "%Y%m%d"), pop)
-if (dir.exists(out.path) == F) {dir.create(out.path, recursive = T)}
+outputs_lcm <- file.path("outputs", fishtype, "lcm")
+
+if (dir.exists(outputs_lcm) == F) {dir.create(outputs_lcm, recursive = T)}
 
 
 # Create summary csv. Spawners per subbasin
@@ -340,9 +342,9 @@ abundance_by_subbasin <- model.all[ ,50:100, summary.stages, , ] %>%
   arrange(scenario) %>%
   rename(natal.basin = Subbasin)
 
-csv.name <- paste0('summary_metrics_subbasin_', format(Sys.time(), "%Y%m%d"),'.csv')
+csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
   
-write.csv(abundance_by_subbasin, file.path(out.path, csv.name))
+write.csv(abundance_by_subbasin, file.path(outputs_lcm, csv.name))
 
 
 # Call bar, box or sensitivity plots
@@ -366,7 +368,17 @@ if (diag.plots == 'yes') {
 } 
 
 
+# Call S-R curve plots (currently only working for coho 3/19/2019)
 if (pop == 'coho') {
   print('Creating spawner recruit (P and C) values and plots')
   source('lcm/scripts/spawner.recruit.curves.R')
+}
+
+
+# Call comparison plots
+if (run_asrp == "yes") {
+  if (!branch %in% c('dev','master')) {
+    print('Compare current run to dev branch')
+    source('lcm/scripts/compare.model.runs.R')
+  }
 }

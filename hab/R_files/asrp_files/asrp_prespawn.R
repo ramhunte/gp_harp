@@ -27,7 +27,7 @@ if (fishtype == "spring_chinook") {
     summarize(prespawn_temp_asrp = mean(prespawn_temp_asrp, na.rm = T),
               pass_tot_asrp = mean(pass_tot_asrp, na.rm = T)) %>%
     ungroup() %>%
-    mutate(productivity = cramer.prespawn(prespawn_temp_asrp) * pass_tot_asrp) %>%
+    mutate(survival = cramer.prespawn(prespawn_temp_asrp) * pass_tot_asrp) %>%
     select(-prespawn_temp_asrp, -pass_tot_asrp) %>%
     mutate(life.stage = "prespawn")
 } else {
@@ -37,11 +37,11 @@ if (fishtype == "spring_chinook") {
     mutate(pass_tot_asrp = ifelse(GSU %in% barrier_gsu,
                                   pass_tot_natural,
                                   pass_tot),
-           productivity = prespawn_surv_raw * pass_tot_asrp) %>%
+           survival = prespawn_surv_raw * pass_tot_asrp) %>%
     group_by(Subbasin_num) %>%
-    summarize(productivity = mean(productivity, na.rm = T)) %>%
+    summarize(survival = mean(survival, na.rm = T)) %>%
     ungroup() %>%
-    select(Subbasin_num, productivity) %>%
+    select(Subbasin_num, survival) %>%
     mutate(life.stage = "prespawn")
 }
 
