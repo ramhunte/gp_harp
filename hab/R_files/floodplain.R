@@ -56,11 +56,12 @@ fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side cha
                                                                     "FP_Pond_sm"), 
                                                              "error")))))),
          lc = ifelse(lc == "", "Reference", as.character(lc))) %>%
-  left_join(., ss.dist)
+  left_join(., ss.dist) %>% 
+  left_join(., wood_data, by = "Subbasin_num")
 
 assign('asrp_fp_raw', fp , envir = .GlobalEnv) 
 
-fp_curr_scenarios <- c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Wood", "Shade", "Barriers")
+fp_curr_scenarios <- c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Shade", "Barriers")
 
 fp1 <- lapply(fp_curr_scenarios, function(x){
   fp %>%
@@ -126,7 +127,7 @@ fp2 <- fp1 %>%
               gather(life.stage, Area, summer:winter)) %>%
   bind_rows(., fp %>%
               mutate(lc = "Reference") %>%
-              bind_rows(.,fp %>%
+              bind_rows(., fp %>%
                           filter(Habitat == "Side_Channel") %>%
                           mutate(Area_orig = Area_ha,
                                  SC_pool = Area_orig * pool.perc,
@@ -134,13 +135,37 @@ fp2 <- fp1 %>%
                           gather(Habitat, Area_new, SC_pool:SC_riffle) %>%
                           mutate(Area_ha = Area_new)) %>%
               filter(!Habitat == "Side_Channel",
+                     Period %in% c("Both", "Curr")) %>%
+              mutate(hab.scenario = "Wood",
+                     summer = ifelse(Habitat %in% c("SC_pool", "SC_riffle"), 
+                                     Area_ha * woodmult_s,
+                                     Area_ha),
+                     winter = ifelse(Habitat == "SC_pool", 
+                                     Area_ha * winter_pool_scalar_warm * woodmult_w,
+                                     ifelse(Habitat == "SC_riffle",
+                                            (Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc)) * woodmult_w,
+                                            Area_ha))) %>%
+              gather(life.stage, Area, summer:winter)) %>%
+  bind_rows(., fp %>%
+              mutate(lc = "Reference") %>%
+              bind_rows(.,fp %>%
+                          left_join(., wood_data, by = "Subbasin_num") %>%
+                          filter(Habitat == "Side_Channel") %>%
+                          mutate(Area_orig = Area_ha,
+                                 SC_pool = Area_orig * pool.perc ,
+                                 SC_riffle = Area_orig * (1 - pool.perc)) %>%
+                          gather(Habitat, Area_new, SC_pool:SC_riffle) %>%
+                          mutate(Area_ha = Area_new)) %>%
+              filter(!Habitat == "Side_Channel",
                      Period %in% c("Both", "Hist")) %>%
               mutate(hab.scenario = "Historical",
-                     summer = Area_ha,
+                     summer = ifelse(Habitat %in% c("SC_pool", "SC_riffle"),
+                                                    Area_ha * woodmult_s,
+                                                    Area_ha),
                      winter = ifelse(Habitat == "SC_pool", 
-                                     Area_ha * winter_pool_scalar_warm,
+                                     Area_ha * winter_pool_scalar_warm * woodmult_w,
                                      ifelse(Habitat == "SC_riffle", 
-                                            Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc), 
+                                            (Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc)) * woodmult_w, 
                                             Area_ha))) %>%
               gather(life.stage, Area, summer:winter)) %>%
   mutate(Area = ifelse(hab.scenario %in% c("Barriers", "Historical"),

@@ -27,7 +27,17 @@ asrp_fp_precalc1 <- asrp_fp_precalc1 %>%
                       ifelse(Reach %in% primary_cr,
                              GSU,
                              paste0(GSU, "_np")),
-                      as.character(GSU)))
+                      as.character(GSU)),
+         woodmult_s_asrp = ifelse(GSU %in% wood_gsu,
+                                  ifelse(forest == "y",
+                                         1 + ((woodmult_s - 1) * rest_perc_f * wood_intensity_scalar_f),
+                                         1 + ((woodmult_s - 1) * rest_perc_nf * wood_intensity_scalar_nf)),
+                                  1),
+         woodmult_w_asrp = ifelse(GSU %in% wood_gsu,
+                                  ifelse(forest == "y",
+                                         1 + ((woodmult_w - 1) * rest_perc_f * wood_intensity_scalar_f),
+                                         1 + ((woodmult_w - 1) * rest_perc_nf * wood_intensity_scalar_nf)),
+                                  1))
 
 asrp_fp_precalc <- asrp_fp_precalc1 %>%
   bind_rows(., asrp_fp_precalc1 %>%
@@ -106,18 +116,23 @@ asrp_fp <- asrp_fp_curr %>%
   left_join(.,asrp_scenarios %>%
               select(GSU, rest_perc_nf, rest_perc_f), 
             by = "GSU") %>%
+  left_join(., wood_data, by = "Subbasin_num") %>%
   mutate(rest_perc_nf = ifelse(is.na(rest_perc_nf),
                                0,
                                rest_perc_nf),
          Area = ifelse(GSU %in% floodplain_gsu,
                        ifelse(forest == "y",
-                              curr_area + ((hist_area - curr_area * rest_perc_f * fp_intensity_scalar_f)),
-                              curr_area + ((hist_area - curr_area) * rest_perc_nf * fp_intensity_scalar_nf)),
+                              ifelse(life.stage == "summer",
+                                     (curr_area + ((hist_area - curr_area) * rest_perc_f * fp_intensity_scalar_f)) * woodmult_s,
+                                     (curr_area + ((hist_area - curr_area) * rest_perc_f * fp_intensity_scalar_f)) * woodmult_w),
+                              ifelse(life.stage == "summer",
+                                     (curr_area + ((hist_area - curr_area) * rest_perc_nf * fp_intensity_scalar_nf)) * woodmult_s,
+                                     (curr_area + ((hist_area - curr_area) * rest_perc_nf * fp_intensity_scalar_nf)) * woodmult_w)),
                        curr_area)) %>%
   group_by(GSU, Habitat, life.stage, Subbasin_num) %>%
   summarize(Area = sum(Area, na.rm = T )) %>%
   ungroup()
 # %>%
-  # left_join(., density) 
+# left_join(., density) 
 # %>%
-  # mutate(capacity = Area * Density)
+# mutate(capacity = Area * Density)
