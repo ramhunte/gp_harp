@@ -20,7 +20,7 @@ Floodplain_raw <- list.files(path = Inputs, pattern = "Floodplain", full.names =
   read.csv(.) %>%
   mutate(Length_sc = Shape_Length / 2) %>%
   bind_rows(.,hist_sc) %>%
-  select(HabUnit, Area_ha, Period, Hist_salm, noaaid, NEAR_FID, NEAR_DIST, ET_ID, Length_sc, hist_side)
+  select(HabUnit, Area_ha, Period, Hist_salm, noaaid, NEAR_FID, NEAR_DIST, ET_ID, Length_sc, hist_side, wse_intersect)
 
 fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side channel spawning added
   left_join(., list.files(path = Inputs, pattern = "LgRiver", full.names = T) %>%
@@ -39,25 +39,15 @@ fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side cha
                               ifelse(slope >= .02 & slope < .04, 
                                      "med", 
                                      "high")),
-         Habitat = ifelse(HabUnit == "FP channel" | HabUnit == "FP Channel", 
-                          "FP_Channel", 
-                          ifelse(HabUnit == "Side channel", 
-                                 "Side_Channel", 
-                                 ifelse(HabUnit == "Pond", 
-                                        ifelse(Area_ha > .05,
-                                               ifelse(Area_ha > 5, 
-                                                      "Lake", 
-                                                      "FP_Pond_lg"), 
-                                               "FP_Pond_sm"),
-                                        ifelse(HabUnit == "Marsh", 
-                                               "Marsh",
-                                               ifelse(HabUnit == "Lake", 
-                                                      "Lake",
-                                                      ifelse(HabUnit == "Slough", 
-                                                             ifelse(Area_ha > .05, 
-                                                                    "FP_Pond_lg", 
-                                                                    "FP_Pond_sm"), 
-                                                             "error")))))),
+         Habitat = case_when(HabUnit %in% c("FP channel", "FP Channel") ~ "FP_Channel",
+                             HabUnit == "Side channel" ~ "Side_Channel",
+                             HabUnit == "Pond" & (Area_ha >.05 & Area_ha < 5) ~ "FP_Pond_lg",
+                             HabUnit == "Pond" & Area_ha > 5 ~ "Lake",
+                             HabUnit == "Pond" & Area_ha < .05 ~ "FP_Pond_sm",
+                             HabUnit == "Slough" & Area_ha > .05 ~ "FP_Pond_lg",
+                             HabUnit == "Slough" & Area_ha <= .05 ~ "FP_Pond_sm",
+                             HabUnit == "Lake" ~ "Lake",
+                             HabUnit == "Marsh" ~ "Marsh"),
          lc = ifelse(lc == "", "Reference", as.character(lc))) %>%
   left_join(., ss.dist) %>% 
   left_join(., wood_data, by = "Subbasin_num")
@@ -212,21 +202,22 @@ fp2 <- fp1 %>%
                               0, 
                               Area))) %>%
   select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, Hist_salm, species, spawn_dist, both_chk, NEAR_DIST, ET_ID, pass_tot_natural, 
-         curr.tempmult, hist.tempmult)
+         curr.tempmult, hist.tempmult, wse_intersect)
+
 
 
 if (fishtype == "spring_chinook") {
   fp2 <- fp2 %>%
     filter(Hist_salm == "Hist salmon",
            ifelse(hab.scenario %in% c("Current", "Beaver", "Barriers", "Fine_sediment", "LR_bank", "LR_length", "Shade", "Wood"), 
-                  spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & ET_ID > 0,
+                  spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & wse_intersect == "Yes" | spawn_dist == "Yes" & wse_intersect == 'Yes',
                   spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs),
            Subbasin_num %in% schino_subs)
 } else{
   fp2 %<>%
     filter(Hist_salm == "Hist salmon",
            ifelse(hab.scenario %in% c("Current", "Beaver", "Barriers", "Fine_sediment", "LR_bank", "LR_length", "Shade", "Wood"),
-                  spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & ET_ID > 0,
+                  spawn_dist == "Yes" & NEAR_DIST < 5  | Subbasin_num %in% mainstem.subs & wse_intersect == "Yes" | spawn_dist == "Yes" & wse_intersect == 'Yes',
                   spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs))
 }
 
