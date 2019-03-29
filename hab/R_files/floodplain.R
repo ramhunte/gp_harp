@@ -1,5 +1,6 @@
 hist_sc <- flowline %>%
-  select(Reach, Shape_Length, spawn_dist, species, both_chk, Subbasin_num, noaaid) %>%
+  select(Reach, Shape_Length, spawn_dist, species, both_chk, Subbasin_num, noaaid, curr.tempmult, hist.tempmult, curr_temp, hist_temp, tm_2040, 
+         tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang) %>%
   left_join(., lr_length_raw, by = "Reach") %>%
   mutate(sc_mult = ifelse(is.na(sc_mult), 
                           0, 
@@ -12,7 +13,8 @@ hist_sc <- flowline %>%
          Hist_salm = "Hist salmon",
          hist_side = 'y') %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
-  select(noaaid, sc_mult, Area_ha, Length_sc, Period, NEAR_DIST, HabUnit, Hist_salm, hist_side)
+  select(noaaid, sc_mult, Area_ha, Length_sc, Period, NEAR_DIST, HabUnit, Hist_salm, hist_side, curr.tempmult, hist.tempmult, curr_temp, hist_temp, 
+         tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang)
 
 Floodplain_raw <- list.files(path = Inputs, pattern = "Floodplain", full.names = T) %>% 
   read.csv(.) %>%
@@ -29,7 +31,8 @@ fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side cha
                          noaaid, 
                          noaaid_lr)) %>%
   left_join(., flowline %>% 
-              select(spawn_dist, species, both_chk, lc, noaaid, slope, pass_tot, Subbasin_num, pass_tot_natural, Reach), 
+              select(spawn_dist, species, both_chk, lc, noaaid, slope, pass_tot, Subbasin_num, pass_tot_natural, Reach, curr.tempmult, hist.tempmult,
+                     curr_temp, hist_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang), 
             by = "noaaid") %>%
   mutate(slope.class = ifelse(slope < .02, 
                               "low",
@@ -61,7 +64,7 @@ fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side cha
 
 assign('asrp_fp_raw', fp , envir = .GlobalEnv) 
 
-fp_curr_scenarios <- c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Shade", "Barriers")
+fp_curr_scenarios <- c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Barriers")
 
 fp1 <- lapply(fp_curr_scenarios, function(x){
   fp %>%
@@ -76,7 +79,10 @@ fp1 <- lapply(fp_curr_scenarios, function(x){
     filter(!Habitat == "Side_Channel",
            Period %in% c("Both", "Curr")) %>%
     mutate(hab.scenario = x,
-           summer = Area_ha,
+           curr.tempmult = ifelse(Subbasin_num %in% mainstem.subs,
+                                  curr.tempmult,
+                                  1),
+           summer = Area_ha * curr.tempmult,
            winter = ifelse(Habitat == "SC_pool", 
                            Area_ha * winter_pool_scalar_warm,
                            ifelse(Habitat == "SC_riffle",
@@ -87,6 +93,27 @@ fp1 <- lapply(fp_curr_scenarios, function(x){
   do.call('rbind',.)
 
 fp2 <- fp1 %>%
+  bind_rows(., fp %>%
+              bind_rows(.,fp %>%
+                          filter(Habitat == "Side_Channel") %>%
+                          mutate(Area_orig = Area_ha,
+                                 SC_pool = Area_orig * pool.perc,
+                                 SC_riffle = Area_orig * (1 - pool.perc)) %>%
+                          gather(Habitat, Area_new, SC_pool:SC_riffle) %>%
+                          mutate(Area_ha = Area_new)) %>%
+              filter(!Habitat == "Side_Channel",
+                     Period %in% c("Both", "Curr")) %>%
+              mutate(hab.scenario = "Shade",
+                     hist.tempmult = ifelse(Subbasin_num %in% mainstem.subs,
+                                            hist.tempmult,
+                                            1),
+                     summer = Area_ha * hist.tempmult,
+                     winter = ifelse(Habitat == "SC_pool", 
+                                     Area_ha * winter_pool_scalar_warm,
+                                     ifelse(Habitat == "SC_riffle", 
+                                            Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc), 
+                                            Area_ha))) %>%
+              gather(life.stage, Area, summer:winter)) %>%
   bind_rows(., fp %>%
               mutate(lc = "Reference") %>%
               bind_rows(.,fp %>%
@@ -99,7 +126,10 @@ fp2 <- fp1 %>%
               filter(!Habitat == "Side_Channel",
                      Period %in% c("Both", "Hist")) %>%
               mutate(hab.scenario = "Floodplain",
-                     summer = Area_ha,
+                     curr.tempmult = ifelse(Subbasin_num %in% mainstem.subs,
+                                            curr.tempmult,
+                                            1),
+                     summer = Area_ha * curr.tempmult,
                      winter = ifelse(Habitat == "SC_pool", 
                                      Area_ha * winter_pool_scalar_warm,
                                      ifelse(Habitat == "SC_riffle", 
@@ -118,7 +148,10 @@ fp2 <- fp1 %>%
               filter(!Habitat == "Side_Channel",
                      Period %in% c("Both", "Hist")) %>%
               mutate(hab.scenario = "FP_wood_comb",
-                     summer = Area_ha,
+                     curr.tempmult = ifelse(Subbasin_num %in% mainstem.subs,
+                                            curr.tempmult,
+                                            1),
+                     summer = Area_ha * curr.tempmult,
                      winter = ifelse(Habitat == "SC_pool", 
                                      Area_ha * winter_pool_scalar_warm,
                                      ifelse(Habitat == "SC_riffle", 
@@ -159,9 +192,12 @@ fp2 <- fp1 %>%
               filter(!Habitat == "Side_Channel",
                      Period %in% c("Both", "Hist")) %>%
               mutate(hab.scenario = "Historical",
+                     hist.tempmult = ifelse(Subbasin_num %in% mainstem.subs,
+                                            hist.tempmult,
+                                            1),
                      summer = ifelse(Habitat %in% c("SC_pool", "SC_riffle"),
-                                                    Area_ha * woodmult_s,
-                                                    Area_ha),
+                                     Area_ha * hist.tempmult * woodmult_s,
+                                     Area_ha * hist.tempmult),
                      winter = ifelse(Habitat == "SC_pool", 
                                      Area_ha * winter_pool_scalar_warm * woodmult_w,
                                      ifelse(Habitat == "SC_riffle", 
@@ -175,7 +211,8 @@ fp2 <- fp1 %>%
                        ifelse(pass_tot == 0, 
                               0, 
                               Area))) %>%
-  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, Hist_salm, species, spawn_dist, both_chk, NEAR_DIST, ET_ID, pass_tot_natural)
+  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, Hist_salm, species, spawn_dist, both_chk, NEAR_DIST, ET_ID, pass_tot_natural, 
+         curr.tempmult, hist.tempmult)
 
 
 if (fishtype == "spring_chinook") {

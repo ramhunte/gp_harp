@@ -28,6 +28,14 @@ asrp_fp_precalc1 <- asrp_fp_precalc1 %>%
                              GSU,
                              paste0(GSU, "_np")),
                       as.character(GSU)),
+         asrp_temp = ifelse(GSU %in% shade_gsu,
+                            asrp_temp_w_growth,
+                            ifelse(can_ang > 170,
+                                   asrp_temp_cc_only,
+                                   asrp_temp_w_growth)),
+         tempmult.asrp = ifelse(species %in% c("coho", "steelhead") & Subbasin_num %in% mainstem.subs,
+                                temp_func(asrp_temp),
+                                1),
          woodmult_s_asrp = ifelse(GSU %in% wood_gsu,
                                   ifelse(forest == "y",
                                          1 + ((woodmult_s - 1) * rest_perc_f * wood_intensity_scalar_f),
@@ -49,7 +57,7 @@ asrp_fp_precalc <- asrp_fp_precalc1 %>%
               gather(Habitat, Area_new, SC_pool:SC_riffle) %>%
               rename(Area_ha = Area_new)) %>% 
   filter(!Habitat == "Side_Channel") %>%
-  mutate(summer = Area_ha,
+  mutate(summer = Area_ha * tempmult.asrp,
          winter = ifelse(Habitat == "SC_pool",
                          Area_ha * winter_pool_scalar_warm,
                          ifelse(Habitat == "SC_riffle",

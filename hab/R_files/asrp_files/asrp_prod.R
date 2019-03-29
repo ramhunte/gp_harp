@@ -20,7 +20,9 @@ asrp_prod <- asrp_cap %>%
                                                              (surv.base + ((wood.surv.base - surv.base) * rest_perc_f * wood_intensity_scalar_f)),
                                                              (surv.base + ((wood.surv.base - surv.base) * rest_perc_nf * wood_intensity_scalar_nf))),
                                                       surv.base)),
-                                        surv.base))) %>%
+                                        ifelse(life.stage %in% c("summer", "summer.2"),
+                                               surv.base * tempmult.asrp,
+                                               surv.base)))) %>%
   group_by(Subbasin_num, life.stage) %>%
   mutate(cap.sum.sub = sum(capacity, na.rm = T),
          cap.perc = capacity / cap.sum.sub,
