@@ -148,10 +148,9 @@ sr_dat <- model.all.test[, , prod.stages, , ] %>%
 
 
 # Define functions ----
-
-library(FSA)
-
-library(broom) # allows for call of tidy() equation
+#library(FSA), library(broom) 
+# allows for srStarts() and tidy() functions
+invisible(lapply(c('FSA', 'broom'), pkgCheck))
 
 
 # Get the correct form of the BH out of the FSA package

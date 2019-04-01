@@ -53,8 +53,19 @@ branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
 # Load packages ----
 
-library(tidyverse)
-library(magrittr)
+global.pkgs <- c('tidyverse', 'magrittr')
+
+invisible(
+  lapply(global.pkgs, function(x) {
+    if (!require(x, character.only = TRUE))
+    {
+      install.packages(x, dep = TRUE)
+      if (!require(x, character.only = TRUE)) 
+        stop(paste0("Packages ", x, " not found"))
+    }
+  }
+  )
+)
 
 
 
