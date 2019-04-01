@@ -1,3 +1,10 @@
+edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T) %>%
+  read.csv(.) %>%
+  mutate(Reach_low = tolower(Reach)) %>%
+  rename(width_w = X1,
+         width_s = X8) %>%
+  select(Reach_low, width_w, width_s, year)
+
 edt_temps <- list.files(path = Inputs, pattern = "edt_temps", full.names = T) %>% 
   read.csv(.) %>%
   select(-X)
@@ -8,15 +15,16 @@ psu_temps <- list.files(path = Inputs, pattern = "psu_temps", full.names = T) %>
   
 # Attribute table of chehalis_obstructs_20181013_NAD83
 culvs <- list.files(path = Inputs, pattern = "culvs_gsu_", full.names = T) %>%
-  read.csv(.)%>%
+  read.csv(.) %>%
   mutate(noaa_culv = as.numeric(row.names(.)),
          FishPass = as.numeric(as.character(FishPass))/100) %>%
   select(noaa_culv, FeatureTyp,FishPass,OBS_UNIQ)
 
 
-flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>% 
+flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
   read.csv(.) %>%
-  mutate(Subbasin_num = ifelse(Habitat == "LgRiver", noaa_sub_num, noaa_sub_nofp_num),
+  mutate(Reach_low = tolower(Reach),
+         Subbasin_num = ifelse(Habitat == "LgRiver", noaa_sub_num, noaa_sub_nofp_num),
          MWMT = ifelse(Habitat == "LgRiver", MWMT, NA)) %>%
   rename(psu_temp = MWMT) %>%
   left_join(., edt_temps, by = "Reach") %>%
@@ -31,7 +39,27 @@ flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
                            "No")) %>%
   gather(species, spawn_dist, coho:steelhead) %>%
   filter(species == fishtype) %>%
-  mutate(Area_ha = (Shape_Length * wet_width) / 10000, # 10000 is a conversion factor between hectares and m^2.  10000 m^2 per hectare
+  left_join(., edt_width %>%
+              gather(stage, width, width_w:width_s) %>%
+              mutate(stage = case_when(year == 2019 & stage == "width_s" ~ "width_s",
+                                       year == 2019 & stage == "width_w" ~ "width_w",
+                                       year == 1900 & stage == "width_s" ~ "width_s_hist",
+                                       year == 1900 & stage == "width_w" ~ "width_w_hist",
+                                       year == 2040 & stage == "width_s" ~ "width_s_2040",
+                                       year == 2040 & stage == "width_w" ~ "width_w_2040",
+                                       year == 2080 & stage == "width_s" ~ "width_s_2080",
+                                       year == 2080 & stage == "width_w" ~ "width_w_2080")) %>%
+              select(-year) %>%
+              spread(stage, width),
+            by = "Reach_low") %>%
+  mutate(width_s = ifelse(is.na(width_s), 
+                          wet_width, 
+                          width_s),
+         width_w = ifelse(is.na(width_w),
+                          wet_width,
+                          width_w),
+         area_s = (Shape_Length * width_s) / 10000,
+         area_w = (Shape_Length * width_w) / 10000,
          temp_diff_2040 = F2040_temp + cc_2040 - curr_temp,
          temp_diff_2080 = F2080_temp + cc_2080 - curr_temp,
          temp_diff_2040_cc_only = cc_2040,

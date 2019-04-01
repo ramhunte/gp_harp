@@ -128,7 +128,7 @@ lrsp1 <- lrsp %>%
                      eggs = spawn_area_passable_nat / redd_area * fecundity)) %>%
   bind_rows(lrsp %>%
               mutate(hab.scenario = "Historical",
-                     eggs = spawn_area_passable_nat / redd_area * fecundity * wood_spawn_mult)) %>%   
+                     eggs = spawn_area_passable_hist / redd_area * fecundity * wood_spawn_mult)) %>%   
   mutate(adults = eggs / fecundity * adult_per_redd)
 
 spawn_tot <- bind_rows(fps1, ss_sp1, lrsp1) %>%

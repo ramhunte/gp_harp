@@ -11,7 +11,7 @@ F_redd_density = 274
 NF_redd_density = 12
 
 # winter_pool_scalar_cold = .14
-winter_pool_scalar_warm = .43
+winter_pool_scalar_warm = .30
 # winter_riffle_scalar_cold = 1 + (1-winter_pool_scalar_cold)
 # winter_riffle_scalar_warm = 1 + (1-winter_pool_scalar_warm)
 
