@@ -22,9 +22,20 @@ riff <- list.files(path = Inputs, pattern = "Riffles", full.names = T) %>%
 # SWIFD line in the large river segments
 lgr <- flowline %>%
   filter(Habitat == 'LgRiver') %>%
-  select(noaaid, Subbasin_num, BF_width, wet_width, Spawn_Survey, pass_tot, pass_tot_natural, Shape_Length, spawn_dist, species, both_chk, width_w, width_w_hist) %>%
-  gather(Period, width, width_w:width_w_hist) %>%
-  mutate(area_bf_m2 = Shape_Length * width)
+  select(noaaid, Subbasin_num, BF_width, wet_width, Spawn_Survey, pass_tot, pass_tot_natural, Shape_Length, 
+         spawn_dist, species, both_chk, width_w, width_w_hist, width_s, width_s_hist) %>%
+  gather(Period, width, width_w:width_s_hist) %>%
+  filter(ifelse(species == 'spring_chinook', 
+                Period %in% c('width_s', 'width_s_hist'),
+                Period %in% c('width_w', 'width_w_hist'))
+                ) %>%
+  mutate(area_bf_m2 = Shape_Length * width,
+         Period = ifelse(Period %in% c('width_s', 'width_w'),
+                         'Current',
+                         'Historical')) 
+ 
+
+
 
 # This is used to fill in riffle area values for reaches where I could not see the river (Spawn_Survey == N)
 ave_prcnt_riff <- inner_join(riff, lgr) %>%
@@ -71,8 +82,8 @@ lgr_spawning_area <- lgr %>%
                              width*min_length)) %>% #Multiply BF width and minimum lengths
   select(spawn_area, Period, pass_tot, pass_tot_natural, Subbasin_num, noaaid) %>%
   spread(Period, spawn_area) %>%
-  rename(spawn_area = width_w,
-         spawn_area_hist = width_w_hist) %>%
+  rename(spawn_area = Current,
+         spawn_area_hist = Historical) %>%
   mutate(spawn_area_passable = spawn_area * pass_tot,
          spawn_area_passable_nat = spawn_area * pass_tot_natural,
          spawn_area_passable_hist = spawn_area_hist * pass_tot_natural) %>% #Apply culvert passablility correction to the min spawnable area

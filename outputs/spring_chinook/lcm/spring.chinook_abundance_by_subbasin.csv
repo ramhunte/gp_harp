@@ -1,22 +1,22 @@
 "","natal.basin","scenario","spawners","smolts.fry.migrants","smolts.non.natal.sub.yr","smolts.natal.sub.yr"
-"1","Upper Chehalis: Above Proposed Dam","Current",34,676,784,3220
+"1","Upper Chehalis: Above Proposed Dam","Current",34,734,771,3235
 "2","Upper Chehalis: Proposed Dam to Elk Creek","Current",0,0,0,0
 "3","Elk Creek","Current",0,0,0,0
 "4","Unnamed: Willapa Hills 3","Current",0,0,0,0
-"5","South Fork Chehalis","Current",25,780,602,3184
+"5","South Fork Chehalis","Current",23,661,455,2919
 "6","Unnamed: Willapa Hills 2","Current",0,0,0,0
 "7","Unnamed: Willapa Hills 1","Current",0,0,0,0
 "8","Unnamed: Willapa Hills 4","Current",0,0,0,0
 "9","Stearns Creek","Current",0,0,0,0
 "10","Bunker Creek","Current",0,0,0,0
 "11","Unnamed: Central Lowlands 9","Current",0,0,0,0
-"12","Newaukum River","Current",632,96456,61502,13735
+"12","Newaukum River","Current",682,118533,66574,13890
 "13","Dillenbaugh Creek","Current",0,0,0,0
 "14","Unnamed: Central Lowlands 8","Current",0,0,0,0
 "15","Salzer Creek","Current",0,0,0,0
 "16","Unnamed: Cascade Mountains 1","Current",0,0,0,0
 "17","Unnamed: Central Lowlands 7","Current",0,0,0,0
-"18","Skookumchuck River","Current",44,1497,1008,3762
+"18","Skookumchuck River","Current",41,1477,876,3656
 "19","Lincoln Creek","Current",0,0,0,0
 "20","Unnamed: Central Lowlands 6","Current",0,0,0,0
 "21","Unnamed: Black River 1","Current",0,0,0,0
@@ -51,7 +51,7 @@
 "50","Lower Chehalis Estuary","Current",0,0,0,0
 "51","Upper Skookumchuck","Current",0,0,0,0
 "52","Mainstem: Upper Chehalis 1","Current",0,0,0,0
-"53","Mainstem: Upper Chehalis 2","Current",3,172,0,321
+"53","Mainstem: Upper Chehalis 2","Current",3,374,0,435
 "54","Mainstem: Middle Chehalis 1","Current",0,0,0,0
 "55","Mainstem: Middle Chehalis 2","Current",0,0,0,0
 "56","Mainstem: Middle Chehalis 3","Current",0,0,0,0
@@ -62,24 +62,24 @@
 "61","Mainstem: Lower Chehalis 5","Current",2,90,0,689
 "62","Mainstem: Lower Chehalis 6","Current",14,525,0,1792
 "63","Mainstem: Lower Chehalis 7","Current",0,0,0,0
-"64","Upper Chehalis: Above Proposed Dam","Barriers",34,676,784,3220
+"64","Upper Chehalis: Above Proposed Dam","Barriers",34,734,771,3235
 "65","Upper Chehalis: Proposed Dam to Elk Creek","Barriers",0,0,0,0
 "66","Elk Creek","Barriers",0,0,0,0
 "67","Unnamed: Willapa Hills 3","Barriers",0,0,0,0
-"68","South Fork Chehalis","Barriers",25,780,602,3184
+"68","South Fork Chehalis","Barriers",23,661,455,2919
 "69","Unnamed: Willapa Hills 2","Barriers",0,0,0,0
 "70","Unnamed: Willapa Hills 1","Barriers",0,0,0,0
 "71","Unnamed: Willapa Hills 4","Barriers",0,0,0,0
 "72","Stearns Creek","Barriers",0,0,0,0
 "73","Bunker Creek","Barriers",0,0,0,0
 "74","Unnamed: Central Lowlands 9","Barriers",0,0,0,0
-"75","Newaukum River","Barriers",632,96456,61502,13735
+"75","Newaukum River","Barriers",682,118533,66574,13890
 "76","Dillenbaugh Creek","Barriers",0,0,0,0
 "77","Unnamed: Central Lowlands 8","Barriers",0,0,0,0
 "78","Salzer Creek","Barriers",0,0,0,0
 "79","Unnamed: Cascade Mountains 1","Barriers",0,0,0,0
 "80","Unnamed: Central Lowlands 7","Barriers",0,0,0,0
-"81","Skookumchuck River","Barriers",44,1497,1008,3762
+"81","Skookumchuck River","Barriers",41,1477,876,3656
 "82","Lincoln Creek","Barriers",0,0,0,0
 "83","Unnamed: Central Lowlands 6","Barriers",0,0,0,0
 "84","Unnamed: Black River 1","Barriers",0,0,0,0
@@ -114,7 +114,7 @@
 "113","Lower Chehalis Estuary","Barriers",0,0,0,0
 "114","Upper Skookumchuck","Barriers",0,0,0,0
 "115","Mainstem: Upper Chehalis 1","Barriers",0,0,0,0
-"116","Mainstem: Upper Chehalis 2","Barriers",3,172,0,321
+"116","Mainstem: Upper Chehalis 2","Barriers",3,374,0,435
 "117","Mainstem: Middle Chehalis 1","Barriers",0,0,0,0
 "118","Mainstem: Middle Chehalis 2","Barriers",0,0,0,0
 "119","Mainstem: Middle Chehalis 3","Barriers",0,0,0,0
@@ -125,24 +125,24 @@
 "124","Mainstem: Lower Chehalis 5","Barriers",2,90,0,689
 "125","Mainstem: Lower Chehalis 6","Barriers",14,525,0,1792
 "126","Mainstem: Lower Chehalis 7","Barriers",0,0,0,0
-"127","Upper Chehalis: Above Proposed Dam","Fine.sediment",665,321447,54341,8529
+"127","Upper Chehalis: Above Proposed Dam","Fine.sediment",644,316905,52132,8523
 "128","Upper Chehalis: Proposed Dam to Elk Creek","Fine.sediment",0,0,0,0
 "129","Elk Creek","Fine.sediment",0,0,0,0
 "130","Unnamed: Willapa Hills 3","Fine.sediment",0,0,0,0
-"131","South Fork Chehalis","Fine.sediment",139,54627,10286,7883
+"131","South Fork Chehalis","Fine.sediment",117,43211,7825,7637
 "132","Unnamed: Willapa Hills 2","Fine.sediment",0,0,0,0
 "133","Unnamed: Willapa Hills 1","Fine.sediment",0,0,0,0
 "134","Unnamed: Willapa Hills 4","Fine.sediment",0,0,0,0
 "135","Stearns Creek","Fine.sediment",0,0,0,0
 "136","Bunker Creek","Fine.sediment",0,0,0,0
 "137","Unnamed: Central Lowlands 9","Fine.sediment",0,0,0,0
-"138","Newaukum River","Fine.sediment",466,200061,35031,13965
+"138","Newaukum River","Fine.sediment",617,296308,49116,14316
 "139","Dillenbaugh Creek","Fine.sediment",0,0,0,0
 "140","Unnamed: Central Lowlands 8","Fine.sediment",0,0,0,0
 "141","Salzer Creek","Fine.sediment",0,0,0,0
 "142","Unnamed: Cascade Mountains 1","Fine.sediment",0,0,0,0
 "143","Unnamed: Central Lowlands 7","Fine.sediment",0,0,0,0
-"144","Skookumchuck River","Fine.sediment",422,169986,30270,8333
+"144","Skookumchuck River","Fine.sediment",331,129926,22177,8185
 "145","Lincoln Creek","Fine.sediment",0,0,0,0
 "146","Unnamed: Central Lowlands 6","Fine.sediment",0,0,0,0
 "147","Unnamed: Black River 1","Fine.sediment",0,0,0,0
@@ -176,9 +176,9 @@
 "175","Upper Chehalis Estuary","Fine.sediment",0,0,0,0
 "176","Lower Chehalis Estuary","Fine.sediment",0,0,0,0
 "177","Upper Skookumchuck","Fine.sediment",0,0,0,0
-"178","Mainstem: Upper Chehalis 1","Fine.sediment",2,84,0,373
-"179","Mainstem: Upper Chehalis 2","Fine.sediment",8,3972,0,883
-"180","Mainstem: Middle Chehalis 1","Fine.sediment",5,525,0,885
+"178","Mainstem: Upper Chehalis 1","Fine.sediment",3,111,0,423
+"179","Mainstem: Upper Chehalis 2","Fine.sediment",10,5875,0,957
+"180","Mainstem: Middle Chehalis 1","Fine.sediment",4,365,0,764
 "181","Mainstem: Middle Chehalis 2","Fine.sediment",0,0,0,0
 "182","Mainstem: Middle Chehalis 3","Fine.sediment",0,0,0,0
 "183","Mainstem: Lower Chehalis 1","Fine.sediment",0,0,0,0
@@ -188,24 +188,24 @@
 "187","Mainstem: Lower Chehalis 5","Fine.sediment",3,212,0,1024
 "188","Mainstem: Lower Chehalis 6","Fine.sediment",20,1218,0,2568
 "189","Mainstem: Lower Chehalis 7","Fine.sediment",0,0,0,0
-"190","Upper Chehalis: Above Proposed Dam","Wood",55,1923,1716,4675
+"190","Upper Chehalis: Above Proposed Dam","Wood",54,2011,1659,4668
 "191","Upper Chehalis: Proposed Dam to Elk Creek","Wood",0,0,0,0
 "192","Elk Creek","Wood",0,0,0,0
 "193","Unnamed: Willapa Hills 3","Wood",0,0,0,0
-"194","South Fork Chehalis","Wood",48,2852,1667,5460
+"194","South Fork Chehalis","Wood",44,2461,1307,5137
 "195","Unnamed: Willapa Hills 2","Wood",0,0,0,0
 "196","Unnamed: Willapa Hills 1","Wood",0,0,0,0
 "197","Unnamed: Willapa Hills 4","Wood",0,0,0,0
 "198","Stearns Creek","Wood",0,0,0,0
 "199","Bunker Creek","Wood",0,0,0,0
 "200","Unnamed: Central Lowlands 9","Wood",0,0,0,0
-"201","Newaukum River","Wood",811,164007,77793,16758
+"201","Newaukum River","Wood",866,195515,83121,16901
 "202","Dillenbaugh Creek","Wood",0,0,0,0
 "203","Unnamed: Central Lowlands 8","Wood",0,0,0,0
 "204","Salzer Creek","Wood",0,0,0,0
 "205","Unnamed: Cascade Mountains 1","Wood",0,0,0,0
 "206","Unnamed: Central Lowlands 7","Wood",0,0,0,0
-"207","Skookumchuck River","Wood",74,4381,2194,5881
+"207","Skookumchuck River","Wood",70,4230,1899,5737
 "208","Lincoln Creek","Wood",0,0,0,0
 "209","Unnamed: Central Lowlands 6","Wood",0,0,0,0
 "210","Unnamed: Black River 1","Wood",0,0,0,0
@@ -240,7 +240,7 @@
 "239","Lower Chehalis Estuary","Wood",0,0,0,0
 "240","Upper Skookumchuck","Wood",0,0,0,0
 "241","Mainstem: Upper Chehalis 1","Wood",0,0,0,0
-"242","Mainstem: Upper Chehalis 2","Wood",4,341,0,479
+"242","Mainstem: Upper Chehalis 2","Wood",5,630,0,597
 "243","Mainstem: Middle Chehalis 1","Wood",0,0,0,0
 "244","Mainstem: Middle Chehalis 2","Wood",0,0,0,0
 "245","Mainstem: Middle Chehalis 3","Wood",0,0,0,0
@@ -251,24 +251,24 @@
 "250","Mainstem: Lower Chehalis 5","Wood",2,84,0,753
 "251","Mainstem: Lower Chehalis 6","Wood",16,487,0,2002
 "252","Mainstem: Lower Chehalis 7","Wood",0,0,0,0
-"253","Upper Chehalis: Above Proposed Dam","Shade",84,4527,2852,5168
+"253","Upper Chehalis: Above Proposed Dam","Shade",83,4627,2764,5158
 "254","Upper Chehalis: Proposed Dam to Elk Creek","Shade",0,0,0,0
 "255","Elk Creek","Shade",0,0,0,0
 "256","Unnamed: Willapa Hills 3","Shade",0,0,0,0
-"257","South Fork Chehalis","Shade",112,12677,5075,6489
+"257","South Fork Chehalis","Shade",96,10148,3790,6144
 "258","Unnamed: Willapa Hills 2","Shade",0,0,0,0
 "259","Unnamed: Willapa Hills 1","Shade",0,0,0,0
 "260","Unnamed: Willapa Hills 4","Shade",0,0,0,0
 "261","Stearns Creek","Shade",0,0,0,0
 "262","Bunker Creek","Shade",0,0,0,0
 "263","Unnamed: Central Lowlands 9","Shade",0,0,0,0
-"264","Newaukum River","Shade",1121,259033,82620,14374
+"264","Newaukum River","Shade",1192,300040,87463,14458
 "265","Dillenbaugh Creek","Shade",0,0,0,0
 "266","Unnamed: Central Lowlands 8","Shade",0,0,0,0
 "267","Salzer Creek","Shade",0,0,0,0
 "268","Unnamed: Cascade Mountains 1","Shade",0,0,0,0
 "269","Unnamed: Central Lowlands 7","Shade",0,0,0,0
-"270","Skookumchuck River","Shade",88,6723,2260,5306
+"270","Skookumchuck River","Shade",83,6404,1968,5192
 "271","Lincoln Creek","Shade",0,0,0,0
 "272","Unnamed: Central Lowlands 6","Shade",0,0,0,0
 "273","Unnamed: Black River 1","Shade",0,0,0,0
@@ -303,8 +303,8 @@
 "302","Lower Chehalis Estuary","Shade",0,0,0,0
 "303","Upper Skookumchuck","Shade",0,0,0,0
 "304","Mainstem: Upper Chehalis 1","Shade",0,0,0,0
-"305","Mainstem: Upper Chehalis 2","Shade",5,623,0,522
-"306","Mainstem: Middle Chehalis 1","Shade",1,5,0,110
+"305","Mainstem: Upper Chehalis 2","Shade",6,1040,0,618
+"306","Mainstem: Middle Chehalis 1","Shade",0,1,0,56
 "307","Mainstem: Middle Chehalis 2","Shade",0,0,0,0
 "308","Mainstem: Middle Chehalis 3","Shade",0,0,0,0
 "309","Mainstem: Lower Chehalis 1","Shade",0,0,0,0
@@ -314,24 +314,24 @@
 "313","Mainstem: Lower Chehalis 5","Shade",4,90,0,689
 "314","Mainstem: Lower Chehalis 6","Shade",19,525,0,1792
 "315","Mainstem: Lower Chehalis 7","Shade",0,0,0,0
-"316","Upper Chehalis: Above Proposed Dam","LR.bank",34,687,794,3256
+"316","Upper Chehalis: Above Proposed Dam","LR.bank",35,745,781,3272
 "317","Upper Chehalis: Proposed Dam to Elk Creek","LR.bank",0,0,0,0
 "318","Elk Creek","LR.bank",0,0,0,0
 "319","Unnamed: Willapa Hills 3","LR.bank",0,0,0,0
-"320","South Fork Chehalis","LR.bank",26,810,623,3296
+"320","South Fork Chehalis","LR.bank",23,687,471,3021
 "321","Unnamed: Willapa Hills 2","LR.bank",0,0,0,0
 "322","Unnamed: Willapa Hills 1","LR.bank",0,0,0,0
 "323","Unnamed: Willapa Hills 4","LR.bank",0,0,0,0
 "324","Stearns Creek","LR.bank",0,0,0,0
 "325","Bunker Creek","LR.bank",0,0,0,0
 "326","Unnamed: Central Lowlands 9","LR.bank",0,0,0,0
-"327","Newaukum River","LR.bank",667,103219,65455,13945
+"327","Newaukum River","LR.bank",720,126620,70791,14096
 "328","Dillenbaugh Creek","LR.bank",0,0,0,0
 "329","Unnamed: Central Lowlands 8","LR.bank",0,0,0,0
 "330","Salzer Creek","LR.bank",0,0,0,0
 "331","Unnamed: Cascade Mountains 1","LR.bank",0,0,0,0
 "332","Unnamed: Central Lowlands 7","LR.bank",0,0,0,0
-"333","Skookumchuck River","LR.bank",46,1599,1067,3993
+"333","Skookumchuck River","LR.bank",44,1576,927,3883
 "334","Lincoln Creek","LR.bank",0,0,0,0
 "335","Unnamed: Central Lowlands 6","LR.bank",0,0,0,0
 "336","Unnamed: Black River 1","LR.bank",0,0,0,0
@@ -366,7 +366,7 @@
 "365","Lower Chehalis Estuary","LR.bank",0,0,0,0
 "366","Upper Skookumchuck","LR.bank",0,0,0,0
 "367","Mainstem: Upper Chehalis 1","LR.bank",0,0,0,0
-"368","Mainstem: Upper Chehalis 2","LR.bank",3,183,0,343
+"368","Mainstem: Upper Chehalis 2","LR.bank",4,399,0,464
 "369","Mainstem: Middle Chehalis 1","LR.bank",0,0,0,0
 "370","Mainstem: Middle Chehalis 2","LR.bank",0,0,0,0
 "371","Mainstem: Middle Chehalis 3","LR.bank",0,0,0,0
@@ -377,24 +377,24 @@
 "376","Mainstem: Lower Chehalis 5","LR.bank",2,88,0,690
 "377","Mainstem: Lower Chehalis 6","LR.bank",14,486,0,1816
 "378","Mainstem: Lower Chehalis 7","LR.bank",0,0,0,0
-"379","Upper Chehalis: Above Proposed Dam","LR.length",34,680,784,3220
+"379","Upper Chehalis: Above Proposed Dam","LR.length",34,737,771,3236
 "380","Upper Chehalis: Proposed Dam to Elk Creek","LR.length",0,0,0,0
 "381","Elk Creek","LR.length",0,0,0,0
 "382","Unnamed: Willapa Hills 3","LR.length",0,0,0,0
-"383","South Fork Chehalis","LR.length",25,784,603,3185
+"383","South Fork Chehalis","LR.length",23,664,455,2920
 "384","Unnamed: Willapa Hills 2","LR.length",0,0,0,0
 "385","Unnamed: Willapa Hills 1","LR.length",0,0,0,0
 "386","Unnamed: Willapa Hills 4","LR.length",0,0,0,0
 "387","Stearns Creek","LR.length",0,0,0,0
 "388","Bunker Creek","LR.length",0,0,0,0
 "389","Unnamed: Central Lowlands 9","LR.length",0,0,0,0
-"390","Newaukum River","LR.length",657,101572,64402,13789
+"390","Newaukum River","LR.length",709,124657,69680,13939
 "391","Dillenbaugh Creek","LR.length",0,0,0,0
 "392","Unnamed: Central Lowlands 8","LR.length",0,0,0,0
 "393","Salzer Creek","LR.length",0,0,0,0
 "394","Unnamed: Cascade Mountains 1","LR.length",0,0,0,0
 "395","Unnamed: Central Lowlands 7","LR.length",0,0,0,0
-"396","Skookumchuck River","LR.length",56,1940,1290,4854
+"396","Skookumchuck River","LR.length",53,1914,1123,4721
 "397","Lincoln Creek","LR.length",0,0,0,0
 "398","Unnamed: Central Lowlands 6","LR.length",0,0,0,0
 "399","Unnamed: Black River 1","LR.length",0,0,0,0
@@ -429,7 +429,7 @@
 "428","Lower Chehalis Estuary","LR.length",0,0,0,0
 "429","Upper Skookumchuck","LR.length",0,0,0,0
 "430","Mainstem: Upper Chehalis 1","LR.length",0,0,0,0
-"431","Mainstem: Upper Chehalis 2","LR.length",3,172,0,321
+"431","Mainstem: Upper Chehalis 2","LR.length",3,374,0,435
 "432","Mainstem: Middle Chehalis 1","LR.length",0,0,0,0
 "433","Mainstem: Middle Chehalis 2","LR.length",0,0,0,0
 "434","Mainstem: Middle Chehalis 3","LR.length",0,0,0,0
@@ -440,24 +440,24 @@
 "439","Mainstem: Lower Chehalis 5","LR.length",2,90,0,689
 "440","Mainstem: Lower Chehalis 6","LR.length",14,525,0,1792
 "441","Mainstem: Lower Chehalis 7","LR.length",0,0,0,0
-"442","Upper Chehalis: Above Proposed Dam","Beaver",36,758,866,3411
+"442","Upper Chehalis: Above Proposed Dam","Beaver",36,819,849,3424
 "443","Upper Chehalis: Proposed Dam to Elk Creek","Beaver",0,0,0,0
 "444","Elk Creek","Beaver",0,0,0,0
 "445","Unnamed: Willapa Hills 3","Beaver",0,0,0,0
-"446","South Fork Chehalis","Beaver",32,1144,872,3956
+"446","South Fork Chehalis","Beaver",29,979,666,3656
 "447","Unnamed: Willapa Hills 2","Beaver",0,0,0,0
 "448","Unnamed: Willapa Hills 1","Beaver",0,0,0,0
 "449","Unnamed: Willapa Hills 4","Beaver",0,0,0,0
 "450","Stearns Creek","Beaver",0,0,0,0
 "451","Bunker Creek","Beaver",0,0,0,0
 "452","Unnamed: Central Lowlands 9","Beaver",0,0,0,0
-"453","Newaukum River","Beaver",639,97972,61709,14424
+"453","Newaukum River","Beaver",690,120311,66809,14589
 "454","Dillenbaugh Creek","Beaver",0,0,0,0
 "455","Unnamed: Central Lowlands 8","Beaver",0,0,0,0
 "456","Salzer Creek","Beaver",0,0,0,0
 "457","Unnamed: Cascade Mountains 1","Beaver",0,0,0,0
 "458","Unnamed: Central Lowlands 7","Beaver",0,0,0,0
-"459","Skookumchuck River","Beaver",43,1494,994,3751
+"459","Skookumchuck River","Beaver",41,1474,865,3648
 "460","Lincoln Creek","Beaver",0,0,0,0
 "461","Unnamed: Central Lowlands 6","Beaver",0,0,0,0
 "462","Unnamed: Black River 1","Beaver",0,0,0,0
@@ -492,7 +492,7 @@
 "491","Lower Chehalis Estuary","Beaver",0,0,0,0
 "492","Upper Skookumchuck","Beaver",0,0,0,0
 "493","Mainstem: Upper Chehalis 1","Beaver",0,0,0,0
-"494","Mainstem: Upper Chehalis 2","Beaver",3,172,0,321
+"494","Mainstem: Upper Chehalis 2","Beaver",3,374,0,435
 "495","Mainstem: Middle Chehalis 1","Beaver",0,0,0,0
 "496","Mainstem: Middle Chehalis 2","Beaver",0,0,0,0
 "497","Mainstem: Middle Chehalis 3","Beaver",0,0,0,0
@@ -503,24 +503,24 @@
 "502","Mainstem: Lower Chehalis 5","Beaver",2,90,0,689
 "503","Mainstem: Lower Chehalis 6","Beaver",14,525,0,1792
 "504","Mainstem: Lower Chehalis 7","Beaver",0,0,0,0
-"505","Upper Chehalis: Above Proposed Dam","Floodplain",34,699,796,3237
+"505","Upper Chehalis: Above Proposed Dam","Floodplain",34,757,783,3253
 "506","Upper Chehalis: Proposed Dam to Elk Creek","Floodplain",0,0,0,0
 "507","Elk Creek","Floodplain",0,0,0,0
 "508","Unnamed: Willapa Hills 3","Floodplain",0,0,0,0
-"509","South Fork Chehalis","Floodplain",27,867,657,3337
+"509","South Fork Chehalis","Floodplain",24,735,498,3065
 "510","Unnamed: Willapa Hills 2","Floodplain",0,0,0,0
 "511","Unnamed: Willapa Hills 1","Floodplain",0,0,0,0
 "512","Unnamed: Willapa Hills 4","Floodplain",0,0,0,0
 "513","Stearns Creek","Floodplain",0,0,0,0
 "514","Bunker Creek","Floodplain",0,0,0,0
 "515","Unnamed: Central Lowlands 9","Floodplain",0,0,0,0
-"516","Newaukum River","Floodplain",678,106660,66250,14297
+"516","Newaukum River","Floodplain",731,130726,71691,14451
 "517","Dillenbaugh Creek","Floodplain",0,0,0,0
 "518","Unnamed: Central Lowlands 8","Floodplain",0,0,0,0
 "519","Salzer Creek","Floodplain",0,0,0,0
 "520","Unnamed: Cascade Mountains 1","Floodplain",0,0,0,0
 "521","Unnamed: Central Lowlands 7","Floodplain",0,0,0,0
-"522","Skookumchuck River","Floodplain",81,2867,1878,6983
+"522","Skookumchuck River","Floodplain",77,2833,1640,6799
 "523","Lincoln Creek","Floodplain",0,0,0,0
 "524","Unnamed: Central Lowlands 6","Floodplain",0,0,0,0
 "525","Unnamed: Black River 1","Floodplain",0,0,0,0
@@ -555,7 +555,7 @@
 "554","Lower Chehalis Estuary","Floodplain",0,0,0,0
 "555","Upper Skookumchuck","Floodplain",0,0,0,0
 "556","Mainstem: Upper Chehalis 1","Floodplain",0,0,0,0
-"557","Mainstem: Upper Chehalis 2","Floodplain",3,196,0,349
+"557","Mainstem: Upper Chehalis 2","Floodplain",4,414,0,465
 "558","Mainstem: Middle Chehalis 1","Floodplain",0,0,0,0
 "559","Mainstem: Middle Chehalis 2","Floodplain",0,0,0,0
 "560","Mainstem: Middle Chehalis 3","Floodplain",0,0,0,0
@@ -566,24 +566,24 @@
 "565","Mainstem: Lower Chehalis 5","Floodplain",2,90,0,689
 "566","Mainstem: Lower Chehalis 6","Floodplain",14,506,0,1838
 "567","Mainstem: Lower Chehalis 7","Floodplain",0,0,0,0
-"568","Upper Chehalis: Above Proposed Dam","FP.wood.comb",55,1988,1760,4711
+"568","Upper Chehalis: Above Proposed Dam","FP.wood.comb",55,2076,1700,4703
 "569","Upper Chehalis: Proposed Dam to Elk Creek","FP.wood.comb",0,0,0,0
 "570","Elk Creek","FP.wood.comb",0,0,0,0
 "571","Unnamed: Willapa Hills 3","FP.wood.comb",0,0,0,0
-"572","South Fork Chehalis","FP.wood.comb",50,3020,1753,5603
+"572","South Fork Chehalis","FP.wood.comb",45,2601,1373,5271
 "573","Unnamed: Willapa Hills 2","FP.wood.comb",0,0,0,0
 "574","Unnamed: Willapa Hills 1","FP.wood.comb",0,0,0,0
 "575","Unnamed: Willapa Hills 4","FP.wood.comb",0,0,0,0
 "576","Stearns Creek","FP.wood.comb",0,0,0,0
 "577","Bunker Creek","FP.wood.comb",0,0,0,0
 "578","Unnamed: Central Lowlands 9","FP.wood.comb",0,0,0,0
-"579","Newaukum River","FP.wood.comb",854,175954,82124,17296
+"579","Newaukum River","FP.wood.comb",915,210103,87987,17443
 "580","Dillenbaugh Creek","FP.wood.comb",0,0,0,0
 "581","Unnamed: Central Lowlands 8","FP.wood.comb",0,0,0,0
 "582","Salzer Creek","FP.wood.comb",0,0,0,0
 "583","Unnamed: Cascade Mountains 1","FP.wood.comb",0,0,0,0
 "584","Unnamed: Central Lowlands 7","FP.wood.comb",0,0,0,0
-"585","Skookumchuck River","FP.wood.comb",142,8725,4282,11078
+"585","Skookumchuck River","FP.wood.comb",134,8423,3714,10816
 "586","Lincoln Creek","FP.wood.comb",0,0,0,0
 "587","Unnamed: Central Lowlands 6","FP.wood.comb",0,0,0,0
 "588","Unnamed: Black River 1","FP.wood.comb",0,0,0,0
@@ -618,7 +618,7 @@
 "617","Lower Chehalis Estuary","FP.wood.comb",0,0,0,0
 "618","Upper Skookumchuck","FP.wood.comb",0,0,0,0
 "619","Mainstem: Upper Chehalis 1","FP.wood.comb",0,0,0,0
-"620","Mainstem: Upper Chehalis 2","FP.wood.comb",4,368,0,505
+"620","Mainstem: Upper Chehalis 2","FP.wood.comb",5,672,0,625
 "621","Mainstem: Middle Chehalis 1","FP.wood.comb",0,0,0,0
 "622","Mainstem: Middle Chehalis 2","FP.wood.comb",0,0,0,0
 "623","Mainstem: Middle Chehalis 3","FP.wood.comb",0,0,0,0
@@ -629,24 +629,24 @@
 "628","Mainstem: Lower Chehalis 5","FP.wood.comb",2,84,0,753
 "629","Mainstem: Lower Chehalis 6","FP.wood.comb",16,471,0,2037
 "630","Mainstem: Lower Chehalis 7","FP.wood.comb",0,0,0,0
-"631","Upper Chehalis: Above Proposed Dam","Historical",982,598294,57093,9940
+"631","Upper Chehalis: Above Proposed Dam","Historical",992,614254,57288,9946
 "632","Upper Chehalis: Proposed Dam to Elk Creek","Historical",0,0,0,0
 "633","Elk Creek","Historical",0,0,0,0
 "634","Unnamed: Willapa Hills 3","Historical",0,0,0,0
-"635","South Fork Chehalis","Historical",730,459350,44200,12207
+"635","South Fork Chehalis","Historical",557,337063,31615,12052
 "636","Unnamed: Willapa Hills 2","Historical",0,0,0,0
 "637","Unnamed: Willapa Hills 1","Historical",0,0,0,0
 "638","Unnamed: Willapa Hills 4","Historical",0,0,0,0
 "639","Stearns Creek","Historical",0,0,0,0
 "640","Bunker Creek","Historical",0,0,0,0
 "641","Unnamed: Central Lowlands 9","Historical",0,0,0,0
-"642","Newaukum River","Historical",1034,612549,51843,18884
+"642","Newaukum River","Historical",1380,890038,71711,19131
 "643","Dillenbaugh Creek","Historical",0,0,0,0
 "644","Unnamed: Central Lowlands 8","Historical",0,0,0,0
 "645","Salzer Creek","Historical",0,0,0,0
 "646","Unnamed: Cascade Mountains 1","Historical",0,0,0,0
 "647","Unnamed: Central Lowlands 7","Historical",0,0,0,0
-"648","Skookumchuck River","Historical",1100,566451,48271,22551
+"648","Skookumchuck River","Historical",979,499472,40864,22389
 "649","Lincoln Creek","Historical",0,0,0,0
 "650","Unnamed: Central Lowlands 6","Historical",0,0,0,0
 "651","Unnamed: Black River 1","Historical",0,0,0,0
@@ -680,36 +680,36 @@
 "679","Upper Chehalis Estuary","Historical",0,0,0,0
 "680","Lower Chehalis Estuary","Historical",0,0,0,0
 "681","Upper Skookumchuck","Historical",0,0,0,0
-"682","Mainstem: Upper Chehalis 1","Historical",17,2526,0,2069
-"683","Mainstem: Upper Chehalis 2","Historical",22,13750,0,1661
-"684","Mainstem: Middle Chehalis 1","Historical",24,7027,0,3134
-"685","Mainstem: Middle Chehalis 2","Historical",0,0,0,72
+"682","Mainstem: Upper Chehalis 1","Historical",16,2152,0,1961
+"683","Mainstem: Upper Chehalis 2","Historical",22,13797,0,1662
+"684","Mainstem: Middle Chehalis 1","Historical",24,6820,0,3109
+"685","Mainstem: Middle Chehalis 2","Historical",7,199,0,1349
 "686","Mainstem: Middle Chehalis 3","Historical",0,0,0,0
-"687","Mainstem: Lower Chehalis 1","Historical",24,2042,0,3953
-"688","Mainstem: Lower Chehalis 2","Historical",24,2027,0,4048
+"687","Mainstem: Lower Chehalis 1","Historical",24,2043,0,3954
+"688","Mainstem: Lower Chehalis 2","Historical",24,2029,0,4049
 "689","Mainstem: Lower Chehalis 3","Historical",0,0,0,0
 "690","Mainstem: Lower Chehalis 4","Historical",0,0,0,0
 "691","Mainstem: Lower Chehalis 5","Historical",6,187,0,1128
 "692","Mainstem: Lower Chehalis 6","Historical",31,1001,0,2980
 "693","Mainstem: Lower Chehalis 7","Historical",0,0,0,0
-"694","Upper Chehalis: Above Proposed Dam","ASRP.scenario.1.2040",289,19577,21854,5624
+"694","Upper Chehalis: Above Proposed Dam","ASRP.scenario.1.2040",281,19420,21130,5608
 "695","Upper Chehalis: Proposed Dam to Elk Creek","ASRP.scenario.1.2040",0,0,0,0
 "696","Elk Creek","ASRP.scenario.1.2040",0,0,0,0
 "697","Unnamed: Willapa Hills 3","ASRP.scenario.1.2040",0,0,0,0
-"698","South Fork Chehalis","ASRP.scenario.1.2040",2,6,9,432
+"698","South Fork Chehalis","ASRP.scenario.1.2040",2,4,6,346
 "699","Unnamed: Willapa Hills 2","ASRP.scenario.1.2040",0,0,0,0
 "700","Unnamed: Willapa Hills 1","ASRP.scenario.1.2040",0,0,0,0
 "701","Unnamed: Willapa Hills 4","ASRP.scenario.1.2040",0,0,0,0
 "702","Stearns Creek","ASRP.scenario.1.2040",0,0,0,0
 "703","Bunker Creek","ASRP.scenario.1.2040",0,0,0,0
 "704","Unnamed: Central Lowlands 9","ASRP.scenario.1.2040",0,0,0,0
-"705","Newaukum River","ASRP.scenario.1.2040",49,1396,2137,5618
+"705","Newaukum River","ASRP.scenario.1.2040",64,2451,3544,6578
 "706","Dillenbaugh Creek","ASRP.scenario.1.2040",0,0,0,0
 "707","Unnamed: Central Lowlands 8","ASRP.scenario.1.2040",0,0,0,0
 "708","Salzer Creek","ASRP.scenario.1.2040",0,0,0,0
 "709","Unnamed: Cascade Mountains 1","ASRP.scenario.1.2040",0,0,0,0
 "710","Unnamed: Central Lowlands 7","ASRP.scenario.1.2040",0,0,0,0
-"711","Skookumchuck River","ASRP.scenario.1.2040",12,80,120,1508
+"711","Skookumchuck River","ASRP.scenario.1.2040",12,85,120,1520
 "712","Lincoln Creek","ASRP.scenario.1.2040",0,0,0,0
 "713","Unnamed: Central Lowlands 6","ASRP.scenario.1.2040",0,0,0,0
 "714","Unnamed: Black River 1","ASRP.scenario.1.2040",0,0,0,0
@@ -744,7 +744,7 @@
 "743","Lower Chehalis Estuary","ASRP.scenario.1.2040",0,0,0,0
 "744","Upper Skookumchuck","ASRP.scenario.1.2040",0,0,0,0
 "745","Mainstem: Upper Chehalis 1","ASRP.scenario.1.2040",0,0,0,0
-"746","Mainstem: Upper Chehalis 2","ASRP.scenario.1.2040",0,0,0,9
+"746","Mainstem: Upper Chehalis 2","ASRP.scenario.1.2040",0,5,0,50
 "747","Mainstem: Middle Chehalis 1","ASRP.scenario.1.2040",0,0,0,0
 "748","Mainstem: Middle Chehalis 2","ASRP.scenario.1.2040",0,0,0,0
 "749","Mainstem: Middle Chehalis 3","ASRP.scenario.1.2040",0,0,0,0
@@ -755,7 +755,7 @@
 "754","Mainstem: Lower Chehalis 5","ASRP.scenario.1.2040",4,246,0,583
 "755","Mainstem: Lower Chehalis 6","ASRP.scenario.1.2040",11,763,0,1636
 "756","Mainstem: Lower Chehalis 7","ASRP.scenario.1.2040",0,0,0,0
-"757","Upper Chehalis: Above Proposed Dam","ASRP.scenario.1.2080",56,280,2968,3645
+"757","Upper Chehalis: Above Proposed Dam","ASRP.scenario.1.2080",60,365,3384,3781
 "758","Upper Chehalis: Proposed Dam to Elk Creek","ASRP.scenario.1.2080",0,0,0,0
 "759","Elk Creek","ASRP.scenario.1.2080",0,0,0,0
 "760","Unnamed: Willapa Hills 3","ASRP.scenario.1.2080",0,0,0,0
@@ -766,13 +766,13 @@
 "765","Stearns Creek","ASRP.scenario.1.2080",0,0,0,0
 "766","Bunker Creek","ASRP.scenario.1.2080",0,0,0,0
 "767","Unnamed: Central Lowlands 9","ASRP.scenario.1.2080",0,0,0,0
-"768","Newaukum River","ASRP.scenario.1.2080",2,0,5,370
+"768","Newaukum River","ASRP.scenario.1.2080",4,2,23,751
 "769","Dillenbaugh Creek","ASRP.scenario.1.2080",0,0,0,0
 "770","Unnamed: Central Lowlands 8","ASRP.scenario.1.2080",0,0,0,0
 "771","Salzer Creek","ASRP.scenario.1.2080",0,0,0,0
 "772","Unnamed: Cascade Mountains 1","ASRP.scenario.1.2080",0,0,0,0
 "773","Unnamed: Central Lowlands 7","ASRP.scenario.1.2080",0,0,0,0
-"774","Skookumchuck River","ASRP.scenario.1.2080",0,0,0,8
+"774","Skookumchuck River","ASRP.scenario.1.2080",0,0,0,9
 "775","Lincoln Creek","ASRP.scenario.1.2080",0,0,0,0
 "776","Unnamed: Central Lowlands 6","ASRP.scenario.1.2080",0,0,0,0
 "777","Unnamed: Black River 1","ASRP.scenario.1.2080",0,0,0,0
@@ -816,26 +816,26 @@
 "815","Mainstem: Lower Chehalis 3","ASRP.scenario.1.2080",0,0,0,0
 "816","Mainstem: Lower Chehalis 4","ASRP.scenario.1.2080",0,0,0,0
 "817","Mainstem: Lower Chehalis 5","ASRP.scenario.1.2080",3,246,0,583
-"818","Mainstem: Lower Chehalis 6","ASRP.scenario.1.2080",8,711,0,1589
+"818","Mainstem: Lower Chehalis 6","ASRP.scenario.1.2080",8,719,0,1595
 "819","Mainstem: Lower Chehalis 7","ASRP.scenario.1.2080",0,0,0,0
-"820","Upper Chehalis: Above Proposed Dam","ASRP.scenario.2.2040",290,19709,21925,5647
+"820","Upper Chehalis: Above Proposed Dam","ASRP.scenario.2.2040",282,19566,21211,5632
 "821","Upper Chehalis: Proposed Dam to Elk Creek","ASRP.scenario.2.2040",0,0,0,0
 "822","Elk Creek","ASRP.scenario.2.2040",0,0,0,0
 "823","Unnamed: Willapa Hills 3","ASRP.scenario.2.2040",0,0,0,0
-"824","South Fork Chehalis","ASRP.scenario.2.2040",3,7,11,474
+"824","South Fork Chehalis","ASRP.scenario.2.2040",2,5,7,382
 "825","Unnamed: Willapa Hills 2","ASRP.scenario.2.2040",0,0,0,0
 "826","Unnamed: Willapa Hills 1","ASRP.scenario.2.2040",0,0,0,0
 "827","Unnamed: Willapa Hills 4","ASRP.scenario.2.2040",0,0,0,0
 "828","Stearns Creek","ASRP.scenario.2.2040",0,0,0,0
 "829","Bunker Creek","ASRP.scenario.2.2040",0,0,0,0
 "830","Unnamed: Central Lowlands 9","ASRP.scenario.2.2040",0,0,0,0
-"831","Newaukum River","ASRP.scenario.2.2040",49,1395,2127,5611
+"831","Newaukum River","ASRP.scenario.2.2040",64,2445,3524,6569
 "832","Dillenbaugh Creek","ASRP.scenario.2.2040",0,0,0,0
 "833","Unnamed: Central Lowlands 8","ASRP.scenario.2.2040",0,0,0,0
 "834","Salzer Creek","ASRP.scenario.2.2040",0,0,0,0
 "835","Unnamed: Cascade Mountains 1","ASRP.scenario.2.2040",0,0,0,0
 "836","Unnamed: Central Lowlands 7","ASRP.scenario.2.2040",0,0,0,0
-"837","Skookumchuck River","ASRP.scenario.2.2040",12,80,119,1506
+"837","Skookumchuck River","ASRP.scenario.2.2040",12,85,120,1519
 "838","Lincoln Creek","ASRP.scenario.2.2040",0,0,0,0
 "839","Unnamed: Central Lowlands 6","ASRP.scenario.2.2040",0,0,0,0
 "840","Unnamed: Black River 1","ASRP.scenario.2.2040",0,0,0,0
@@ -870,7 +870,7 @@
 "869","Lower Chehalis Estuary","ASRP.scenario.2.2040",0,0,0,0
 "870","Upper Skookumchuck","ASRP.scenario.2.2040",0,0,0,0
 "871","Mainstem: Upper Chehalis 1","ASRP.scenario.2.2040",0,0,0,0
-"872","Mainstem: Upper Chehalis 2","ASRP.scenario.2.2040",0,0,0,9
+"872","Mainstem: Upper Chehalis 2","ASRP.scenario.2.2040",0,5,0,50
 "873","Mainstem: Middle Chehalis 1","ASRP.scenario.2.2040",0,0,0,0
 "874","Mainstem: Middle Chehalis 2","ASRP.scenario.2.2040",0,0,0,0
 "875","Mainstem: Middle Chehalis 3","ASRP.scenario.2.2040",0,0,0,0
@@ -881,7 +881,7 @@
 "880","Mainstem: Lower Chehalis 5","ASRP.scenario.2.2040",4,246,0,583
 "881","Mainstem: Lower Chehalis 6","ASRP.scenario.2.2040",11,763,0,1636
 "882","Mainstem: Lower Chehalis 7","ASRP.scenario.2.2040",0,0,0,0
-"883","Upper Chehalis: Above Proposed Dam","ASRP.scenario.2.2080",57,299,3071,3694
+"883","Upper Chehalis: Above Proposed Dam","ASRP.scenario.2.2080",62,390,3497,3830
 "884","Upper Chehalis: Proposed Dam to Elk Creek","ASRP.scenario.2.2080",0,0,0,0
 "885","Elk Creek","ASRP.scenario.2.2080",0,0,0,0
 "886","Unnamed: Willapa Hills 3","ASRP.scenario.2.2080",0,0,0,0
@@ -892,13 +892,13 @@
 "891","Stearns Creek","ASRP.scenario.2.2080",0,0,0,0
 "892","Bunker Creek","ASRP.scenario.2.2080",0,0,0,0
 "893","Unnamed: Central Lowlands 9","ASRP.scenario.2.2080",0,0,0,0
-"894","Newaukum River","ASRP.scenario.2.2080",2,0,5,369
+"894","Newaukum River","ASRP.scenario.2.2080",4,2,23,750
 "895","Dillenbaugh Creek","ASRP.scenario.2.2080",0,0,0,0
 "896","Unnamed: Central Lowlands 8","ASRP.scenario.2.2080",0,0,0,0
 "897","Salzer Creek","ASRP.scenario.2.2080",0,0,0,0
 "898","Unnamed: Cascade Mountains 1","ASRP.scenario.2.2080",0,0,0,0
 "899","Unnamed: Central Lowlands 7","ASRP.scenario.2.2080",0,0,0,0
-"900","Skookumchuck River","ASRP.scenario.2.2080",0,0,0,8
+"900","Skookumchuck River","ASRP.scenario.2.2080",0,0,0,9
 "901","Lincoln Creek","ASRP.scenario.2.2080",0,0,0,0
 "902","Unnamed: Central Lowlands 6","ASRP.scenario.2.2080",0,0,0,0
 "903","Unnamed: Black River 1","ASRP.scenario.2.2080",0,0,0,0
@@ -942,26 +942,26 @@
 "941","Mainstem: Lower Chehalis 3","ASRP.scenario.2.2080",0,0,0,0
 "942","Mainstem: Lower Chehalis 4","ASRP.scenario.2.2080",0,0,0,0
 "943","Mainstem: Lower Chehalis 5","ASRP.scenario.2.2080",3,246,0,583
-"944","Mainstem: Lower Chehalis 6","ASRP.scenario.2.2080",8,711,0,1589
+"944","Mainstem: Lower Chehalis 6","ASRP.scenario.2.2080",8,719,0,1595
 "945","Mainstem: Lower Chehalis 7","ASRP.scenario.2.2080",0,0,0,0
-"946","Upper Chehalis: Above Proposed Dam","ASRP.scenario.3.2040",283,18162,21301,5659
+"946","Upper Chehalis: Above Proposed Dam","ASRP.scenario.3.2040",276,18133,20686,5646
 "947","Upper Chehalis: Proposed Dam to Elk Creek","ASRP.scenario.3.2040",0,0,0,0
 "948","Elk Creek","ASRP.scenario.3.2040",0,0,0,0
 "949","Unnamed: Willapa Hills 3","ASRP.scenario.3.2040",0,0,0,0
-"950","South Fork Chehalis","ASRP.scenario.3.2040",4,12,19,631
+"950","South Fork Chehalis","ASRP.scenario.3.2040",3,8,13,521
 "951","Unnamed: Willapa Hills 2","ASRP.scenario.3.2040",0,0,0,0
 "952","Unnamed: Willapa Hills 1","ASRP.scenario.3.2040",0,0,0,0
 "953","Unnamed: Willapa Hills 4","ASRP.scenario.3.2040",0,0,0,0
 "954","Stearns Creek","ASRP.scenario.3.2040",0,0,0,0
 "955","Bunker Creek","ASRP.scenario.3.2040",0,0,0,0
 "956","Unnamed: Central Lowlands 9","ASRP.scenario.3.2040",0,0,0,0
-"957","Newaukum River","ASRP.scenario.3.2040",48,1262,2072,5569
+"957","Newaukum River","ASRP.scenario.3.2040",63,2200,3408,6510
 "958","Dillenbaugh Creek","ASRP.scenario.3.2040",0,0,0,0
 "959","Unnamed: Central Lowlands 8","ASRP.scenario.3.2040",0,0,0,0
 "960","Salzer Creek","ASRP.scenario.3.2040",0,0,0,0
 "961","Unnamed: Cascade Mountains 1","ASRP.scenario.3.2040",0,0,0,0
 "962","Unnamed: Central Lowlands 7","ASRP.scenario.3.2040",0,0,0,0
-"963","Skookumchuck River","ASRP.scenario.3.2040",12,72,117,1498
+"963","Skookumchuck River","ASRP.scenario.3.2040",12,77,118,1511
 "964","Lincoln Creek","ASRP.scenario.3.2040",0,0,0,0
 "965","Unnamed: Central Lowlands 6","ASRP.scenario.3.2040",0,0,0,0
 "966","Unnamed: Black River 1","ASRP.scenario.3.2040",0,0,0,0
@@ -996,7 +996,7 @@
 "995","Lower Chehalis Estuary","ASRP.scenario.3.2040",0,0,0,0
 "996","Upper Skookumchuck","ASRP.scenario.3.2040",0,0,0,0
 "997","Mainstem: Upper Chehalis 1","ASRP.scenario.3.2040",0,0,0,0
-"998","Mainstem: Upper Chehalis 2","ASRP.scenario.3.2040",0,0,0,9
+"998","Mainstem: Upper Chehalis 2","ASRP.scenario.3.2040",0,5,0,50
 "999","Mainstem: Middle Chehalis 1","ASRP.scenario.3.2040",0,0,0,0
 "1000","Mainstem: Middle Chehalis 2","ASRP.scenario.3.2040",0,0,0,0
 "1001","Mainstem: Middle Chehalis 3","ASRP.scenario.3.2040",0,0,0,0
@@ -1007,7 +1007,7 @@
 "1006","Mainstem: Lower Chehalis 5","ASRP.scenario.3.2040",4,244,0,579
 "1007","Mainstem: Lower Chehalis 6","ASRP.scenario.3.2040",11,760,0,1632
 "1008","Mainstem: Lower Chehalis 7","ASRP.scenario.3.2040",0,0,0,0
-"1009","Upper Chehalis: Above Proposed Dam","ASRP.scenario.3.2080",54,246,2789,3630
+"1009","Upper Chehalis: Above Proposed Dam","ASRP.scenario.3.2080",58,317,3163,3761
 "1010","Upper Chehalis: Proposed Dam to Elk Creek","ASRP.scenario.3.2080",0,0,0,0
 "1011","Elk Creek","ASRP.scenario.3.2080",0,0,0,0
 "1012","Unnamed: Willapa Hills 3","ASRP.scenario.3.2080",0,0,0,0
@@ -1018,13 +1018,13 @@
 "1017","Stearns Creek","ASRP.scenario.3.2080",0,0,0,0
 "1018","Bunker Creek","ASRP.scenario.3.2080",0,0,0,0
 "1019","Unnamed: Central Lowlands 9","ASRP.scenario.3.2080",0,0,0,0
-"1020","Newaukum River","ASRP.scenario.3.2080",2,0,5,361
+"1020","Newaukum River","ASRP.scenario.3.2080",4,1,21,735
 "1021","Dillenbaugh Creek","ASRP.scenario.3.2080",0,0,0,0
 "1022","Unnamed: Central Lowlands 8","ASRP.scenario.3.2080",0,0,0,0
 "1023","Salzer Creek","ASRP.scenario.3.2080",0,0,0,0
 "1024","Unnamed: Cascade Mountains 1","ASRP.scenario.3.2080",0,0,0,0
 "1025","Unnamed: Central Lowlands 7","ASRP.scenario.3.2080",0,0,0,0
-"1026","Skookumchuck River","ASRP.scenario.3.2080",0,0,0,8
+"1026","Skookumchuck River","ASRP.scenario.3.2080",0,0,0,9
 "1027","Lincoln Creek","ASRP.scenario.3.2080",0,0,0,0
 "1028","Unnamed: Central Lowlands 6","ASRP.scenario.3.2080",0,0,0,0
 "1029","Unnamed: Black River 1","ASRP.scenario.3.2080",0,0,0,0
@@ -1068,5 +1068,5 @@
 "1067","Mainstem: Lower Chehalis 3","ASRP.scenario.3.2080",0,0,0,0
 "1068","Mainstem: Lower Chehalis 4","ASRP.scenario.3.2080",0,0,0,0
 "1069","Mainstem: Lower Chehalis 5","ASRP.scenario.3.2080",3,244,0,579
-"1070","Mainstem: Lower Chehalis 6","ASRP.scenario.3.2080",8,688,0,1565
+"1070","Mainstem: Lower Chehalis 6","ASRP.scenario.3.2080",8,696,0,1573
 "1071","Mainstem: Lower Chehalis 7","ASRP.scenario.3.2080",0,0,0,0
