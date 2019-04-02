@@ -11,7 +11,11 @@ edt_temps <- list.files(path = Inputs, pattern = "edt_temps", full.names = T) %>
 
 psu_temps <- list.files(path = Inputs, pattern = "psu_temps", full.names = T) %>%
   read.csv(.) %>%
-  select(mdm, Seg)
+  select(-X)
+
+temp_gaps <- list.files(path = Inputs, pattern = "temp_gaps", full.names = T) %>% 
+  read.csv(.) %>%
+  select(-notes)
   
 # Attribute table of chehalis_obstructs_20181013_NAD83
 culvs <- list.files(path = Inputs, pattern = "culvs_gsu_", full.names = T) %>%
@@ -26,9 +30,10 @@ flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
   mutate(Reach_low = tolower(Reach),
          Subbasin_num = ifelse(Habitat == "LgRiver", noaa_sub_num, noaa_sub_nofp_num),
          MWMT = ifelse(Habitat == "LgRiver", MWMT, NA)) %>%
-  rename(psu_temp = MWMT) %>%
+  # rename(psu_temp = MWMT) %>%
   left_join(., edt_temps, by = "Reach") %>%
   left_join(., psu_temps, by = "Seg") %>%
+  left_join(., temp_gaps, by = "Reach") %>%
   rename(coho = cohospawn,
          fall_chinook = fallspawn,
          chum = chumspawn,
@@ -65,8 +70,13 @@ flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
          temp_diff_2040_cc_only = cc_2040,
          temp_diff_2080_cc_only = cc_2080,
          temp_diff = curr_temp - hist_temp,
-         curr_temp = ifelse(!is.na(psu_temp), psu_temp,
-                            ifelse(!is.na(edt_temp), edt_temp, 18)), # we are using 18° as a filler in reaches with no psu or edt data.  Therefore capacity will not be decreased in these reaches due to temp
+         curr_temp = ifelse(!is.na(mwmt), 
+                            mwmt,
+                            ifelse(!is.na(edt_temp), 
+                                   edt_temp, 
+                                   ifelse(!is.na(gap_temp_mwmt),
+                                          gap_temp_mwmt,
+                                          -9999))), #set temp to -9999 if no temp exists to help us flag down gaps if we receive new temp data
          hist_temp = curr_temp - temp_diff,
          tm_2040 = curr_temp + temp_diff_2040,
          tm_2080 = curr_temp + temp_diff_2080,
