@@ -189,7 +189,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     pre.fry <- eggs * egg.fry.surv
     
     # Natal fry - All basins
-    natal.fry <- BH.func(S = pre.fry, p = fry.surv, c = sub.yr.cap * 3) # Density dependent survival in fresh (first week after fry), 3x capacity
+    natal.fry <- BH.func(S = pre.fry, p = fry.surv, c = fry.cap) # Density dependent survival in fresh (first week after fry), 3x capacity
     
     # Non natal fry 
     # Upper basin fry migrate to mainstem
