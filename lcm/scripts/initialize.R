@@ -22,6 +22,11 @@ scenario.file <- gsub('_', '\\.', habitat.file) %>%
   sub('\\.csv', '', .) %>%
   sub('\\.201.*', '', .)
 
+# If in sensitivity mode, only run two scenarios
+if (sensitivity.mode == 'yes') {
+  scenario.file <- scenario.file[scenario.file %in% c('Current', 'Historical')]
+}
+
 
 # Subbasin/reach names ----
 reach.names <- read.csv("lcm/data/subbasin_names.csv") %>%
@@ -64,18 +69,13 @@ if (pop == "coho") {
   )
   
   sens.params <- c(
-    #"fecundity",
     "Egg.Capacity",
     "Egg.to.Fry.Survival",
-    "Summer.Survival",
+    "Summer.Productivity",
     "Summer.Capacity",
-    "Winter.Survival",
+    "Winter.Productivity",
     "Winter.Capacity",
-    # "delta.surv",
-    # "bay.surv",
-    # "ocean",
-    #"harvest",
-    #"prespawn",
+    "Prespawn.Survival",
     "geomean")# model output
 } #end if coho
 
@@ -105,16 +105,13 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   
   sens.params <- c(
-    #"fecundity",
     "Egg.Capacity",
     "Egg.to.Fry.Survival",
     "Fry.Survival",
-    "Freshwater.Capacity",
+    "Fry.Capacity",
     "Subyearling.Survival",
-    #"bay.parr.surv.adj",
-    #"bay.fry.surv.adj",
-    # "harvest",
-    # "prespawn",
+    "Subyearling.Capacity",
+    "Prespawn.Survival",
     "geomean")
   
 } # end if chinook
@@ -144,7 +141,6 @@ if (pop == "steelhead") {
   )
   
   sens.params <- c(
-    #"fecundity",
     "Egg.Capacity",
     "Egg.to.Fry.Survival",
     "First.Summer.Survival",
@@ -155,12 +151,7 @@ if (pop == "steelhead") {
     "Second.Summer.Capacity",
     "Second.Winter.Survival",
     "Second.Winter.Capacity",
-    "Respawn.rate",
-    # "delta.surv",
-    # "bay.surv",
-    # "ocean",
-    #"harvest",
-    #"prespawn",
+    "Prespawn.Survival",
     "geomean")# model output
 } #end if steelhead
 

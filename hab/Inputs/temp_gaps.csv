@@ -1,0 +1,25 @@
+Reach,gap_temp_mwmt,gap_temp_mdm,notes
+Chehalis-27,22.95642864,20.58769035,mean of temp from reach above Chehalis-27 and below Chehalis-28
+Chehalis-28,22.95642864,20.58769035,mean of temp from reach above Chehalis-27 and below Chehalis-29
+Chehalis-39,23.75,21.834239,Mean of temp from reaches above and below missing reach in Chehalis-39
+Chehalis-62,24.6085715,22.2413315,Mean of temp from reaches above and below missing reach in Chehalis-62
+Chehalis-86,22.741429,19.342826,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 0/7 .  7 steps from 86-93
+Chehalis-87,22.41047657,19.20675331,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 1/7 .  7 steps from 86-94
+Chehalis-88,22.07952413,19.07068062,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 2/7 .  7 steps from 86-95
+Chehalis-89,21.7485717,18.93460793,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 3/7 .  7 steps from 86-96
+Chehalis-90,21.41761927,18.79853524,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 4/7 .  7 steps from 86-97
+Chehalis-91,21.08666684,18.66246255,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 5/7 .  7 steps from 86-98
+Chehalis-92,20.7557144,18.52638986,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 6/7 .  7 steps from 86-99
+Chehalis-93,20.42476197,18.39031717,Temp below missing from Chehalis-86 - (temp below missing from Chehalis-86 - temp above missing from Chehalis) * 7/7 .  7 steps from 86-100
+Drop Cr-1,16.79907008,15.41347765,"From adjacent Reach, Skookumchuck-16"
+Hanaford-8,16.58368574,15.21221508,"From RB Trib 2327(Hanaford)-1, similar in location, canopy cover."
+RB Trib 0040 (Hump)-1,17.05238128,15.6056888,"From RB Trib 0041 (Hump)-1, similar in location, canopy cover"
+RB Trib 0891-1,20.90517094,18.91336334,"From LB Trib 2359 (RB Trib 0890)_1, similar location and canopy cover"
+RB Trib 2295 (Skookumchuck)-1,19.84618555,18.41178037,"From Hanaford-1, similar location and canopy cover"
+Shaw-3,16.65071496,15.13940281,"From Shaw-2, similar location and canopy cover"
+Shaw (Bunker),22.70571353,20.18032574,"From RB Trib 0968-1, similar location and canopy cover"
+LB Trib 0209 (EF Wishkah)-2,15.98696467,14.42792165,"From LB Trib 0209 (EF Wishkah)-1, adjacent reach with similar landcover"
+LB Trib 0209 (EF Wishkah)-3,15.73571452,14.1866851,"From LB Trib 0209 (EF Wishkah)-4, adjacent reach with similar landcover"
+RB Trib 2025 (LB Trib 2023)-1,16.97571429,15.5278809,"From LB Trib 2023 (Hump)-1, adjacent reach"
+RB Trib 2061 (Hump)-1,16.14857178,14.35876609,"From Chester-1, nearby reach with similar landcover"
+Black River-8,18,15,This is a lake.  Will not be considered in calculation of rearing/spawning area. Adding 18/15 temperatures so that this reach has a temperature but this should have no effect on actual outputs.

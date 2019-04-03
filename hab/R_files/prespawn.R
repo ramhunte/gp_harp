@@ -16,7 +16,7 @@ if (fishtype == "spring_chinook") {
                                        mdm,
                                        ifelse(!is.na(edt_mdm_temp), 
                                               edt_mdm_temp, 
-                                              15)),
+                                              gap_temp_mdm)),
            prespawn_temp_hist = prespawn_temp_curr - temp_diff) %>%
     group_by(Subbasin_num) %>%
     summarize(prespawn_temp_curr = mean(prespawn_temp_curr, na.rm = T),

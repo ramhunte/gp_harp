@@ -10,6 +10,9 @@ asrp_bw <- asrp_bw_raw %>%
 
 asrp_lr <- asrp_lr_raw %>%
   filter(Period %in% c("Curr", "Both")) %>%
+  left_join(., edt_width %>% 
+              filter(year == x),
+            by = "Reach_low") %>%
   bind_rows(., asrp_bw) %>%
   left_join(., wood_data) %>%
   left_join(., fl_to_gsu) %>%
@@ -38,8 +41,8 @@ asrp_lr <- asrp_lr_raw %>%
          tempmult.asrp = ifelse(species %in% c("coho", "steelhead"),
                                 temp_func(asrp_temp),
                                 1),    # set tempmult to 1 for chinook scenarios so that temperature does not restrict rearing capacity and survival
-         summer.area = Area_ha * tempmult.asrp * woodmult_s_asrp,
-         winter.area = Area_ha * woodmult_w_asrp) %>%
+         summer.area = area_s * tempmult.asrp * woodmult_s_asrp,
+         winter.area = area_w * woodmult_w_asrp) %>%
   gather(life.stage, Area, summer.area:winter.area) %>%
   mutate(life.stage = ifelse(life.stage == "summer.area",
                              "summer",

@@ -30,8 +30,8 @@ species_save = "spring.chinook"
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond", "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", 
             "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"), times = 2))
 life.stage = c(rep("summer", times = length(Habitat)/2), rep("winter", times = length(Habitat)/2))
-surv.base = c(rep(.31, times = 8), rep(.46, times = 10), rep(NA, times = 18))
-wood.surv.base = c(rep(.31, times = 6), rep(.52, times = 2), rep(.46, times = 10), rep(NA, times = 18))
+surv.base = c(rep(.31, times = 8), rep(.46, times = 6), .31, .31, .46, .46, rep(NA, times = 18))
+wood.surv.base = c(rep(.31, times = 6), rep(.52, times = 2), rep(.46, times = 6), .52, .52, .46, .46, rep(NA, times = 18))
 survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
 
 LgRiver_habs = c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater")

@@ -86,7 +86,9 @@ if (pop == "fall.chinook" | pop == "spring.chinook"){
   
   # Fry to sub yearling migrant survival and capacity
   fry.surv <- (dat['surv_s',] * fry.surv.adj )^(1/12) # 1 week of freshwater mortality
-  sub.yr.surv <- (fry.surv^11) * sub.yr.surv.adj # 11 more weeks of freshwater mortality
+  fry.cap <- dat['capacity_s',] * 3
+  
+  sub.yr.surv <- (dat['surv_s',] * sub.yr.surv.adj)^(11/12) # 11 more weeks of freshwater mortality
   sub.yr.cap  <- dat['capacity_s',]*sub.yr.cap.adj
   
 } #end if chinook

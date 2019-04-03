@@ -125,9 +125,8 @@ if (sensitivity.mode == 'no') {
             text = element_text( size = 16))
   ) #close print()
   
-  if (save.plots == "yes") {
-    ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
-  } #close save.plots if() statement
+ 
+  ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
   
 } #close if not sensitivity mode if() statement
 
@@ -137,28 +136,31 @@ if (sensitivity.mode == 'no') {
 
 
 # Bar plots of each diagnostic unit --------------
-if (sensitivity.mode=="no" & save.plots=="yes"){
-  library (grid)
+if (sensitivity.mode == "no") {
+  library(grid)
   
   save.path.edr <- file.path(outputs_lcm,'edr_plots')
-  if (dir.exists(save.path.edr) == F){dir.create(save.path.edr)}
+  if (dir.exists(save.path.edr) == F) {dir.create(save.path.edr)}
   
   # Create dataframe of total run (geomean of year, mean of runs) grouped by DU and scenario 
-  spawners.edr <- model.all[,,'spawners',,]%>%
-    apply(.,c(1:4),function(x) x/(1-Hr))%>% # Add harvest back in (spawners + harvest)
-    apply(.,c(1,3,4),geo.mean)%>%
-    apply(.,c(2,3),mean)%>%
-    round(.,0)%>%# round to whole fish
+  spawners.edr <- model.all[, , 'spawners', , ] %>%
+    apply(., c(1:4), function(x)
+      x / (1 - Hr)) %>% # Add harvest back in (spawners + harvest)
+    apply(., c(1, 3, 4), geo.mean) %>%
+    apply(., c(2, 3), mean) %>%
+    round(., 0) %>% # round to whole fish
     as.data.frame.table()
   
   # If coho or fall chinook sum to EDR level
-  if(pop %in% c('coho','fall.chinook', 'steelhead')){
-    spawners.edr <- spawners.edr%>%
-    rename(Subbasin = Var1, scenario = Var2, n = Freq)%>%
-    left_join(read.csv('lcm/data/subbasin_names.csv'))%>%
-    group_by(scenario,EcoRegion)%>%
-    summarize(spawners= sum(n,na.rm = T))%>%
-    ungroup()
+  if (pop %in% c('coho', 'fall.chinook', 'steelhead')) {
+    spawners.edr <- spawners.edr %>%
+      rename(Subbasin = Var1,
+             scenario = Var2,
+             n = Freq) %>%
+      left_join(read.csv('lcm/data/subbasin_names.csv')) %>%
+      group_by(scenario, EcoRegion) %>%
+      summarize(spawners = sum(n, na.rm = T)) %>%
+      ungroup()
   }
   
   # For spring chinook, EcoRegion is actually subbassin
@@ -290,40 +292,45 @@ if (sensitivity.mode=="no" & save.plots=="yes"){
 
 
 # If in sensitivity mode ---------
-if (sensitivity.mode == 'yes'){
+if (sensitivity.mode == 'yes') {
   
-  #Create dataframe with parameter range   
-  param <- as.data.frame.table(sensitivity)%>%
-    rename(run = Var1, parameters = Var2, value = Freq)%>%
-    group_by(parameters)%>%
+  #Create dataframe with parameter range
+  param <- as.data.frame.table(sensitivity) %>%
+    rename(run = Var1,
+           parameters = Var2,
+           value = Freq) %>%
+    group_by(parameters) %>%
     summarize(min = min(value),
-              max= max(value))%>%
-    mutate(min = ifelse(min<2, round(min,2), round(min,0)),
-           max = ifelse(max<2, round(max,2), round(max,0) ),
-           range = "(x0.8 - 1.2)")%>%
-    ungroup()%>%
-    mutate(parameters = as.character(parameters))%>%
-    select(-min,-max)%>%
-    filter(parameters!= 'median')
+              max = max(value)) %>%
+    mutate(
+      min = ifelse(min < 2, round(min, 2), round(min, 0)),
+      max = ifelse(max < 2, round(max, 2), round(max, 0)),
+      range = "(x0.8 - 1.2)"
+    ) %>%
+    ungroup() %>%
+    mutate(parameters = as.character(parameters)) %>%
+    select(-min, -max) %>%
+    filter(parameters != 'median')
   
   
   # Model relative influence of each parameter for 5 scenarios
-  spawn.model <- as.formula(paste("geomean~", paste(colnames(sensitivity[,-length(sens.params),1]), collapse= "+")))
+  spawn.model <- as.formula(paste("geomean~", paste(colnames(sensitivity[, -length(sens.params), 1]), collapse = "+")))
   
   # Standardize the coefficients
-  max.coef<-function(lmobject){
+  max.coef <- function(lmobject) {
     # finds maximum coefficient in lm() fitted object
     # 1. standardizes by dividing coefs by their standard errors
     # 2. finds the maximum absolute coefficient value after standardization
-    max.value<-max(abs(summary(lmobject)$coef[-1,1]/summary(lmobject)$coef[-1,2]))
+    max.value <-
+      max(abs(summary(lmobject)$coef[-1, 1] / summary(lmobject)$coef[-1, 2]))
     max.value
   } #close max.coef() function
   
   
   # Function to create the lm based on the input array and the scenario
   # This function allows for iteration
-  sens.model <- function(array,scenario){  
-    x<- lm(spawn.model, data=as.data.frame(sensitivity[,,scenario]))
+  sens.model <- function(array, scenario) {
+    x <- lm(spawn.model, data = as.data.frame(sensitivity[, , scenario]))
     x
   }
   
@@ -333,54 +340,61 @@ if (sensitivity.mode == 'yes'){
   row.names(sens.df) <- sens.inputs
   
   # Iterate through each scenario and store the lm and put standardized coeffs into sens.df
-  for(s in scenario.file){
-    lm <- paste0('lm.',s) 
-    assign(lm,sens.model(sensitivity,s))
-    sens.df <- cbind(sens.df,summary(get(lm))$coef[-1,1]/summary(get(lm))$coef[-1,2]/max.coef(get(lm)))
+  for (s in scenario.file) {
+    lm <- paste0('lm.', s)
+    assign(lm, sens.model(sensitivity, s))
+    sens.df <- cbind(sens.df, summary(get(lm))$coef[-1, 1] / summary(get(lm))$coef[-1, 2] / max.coef(get(lm)))
   }
   colnames(sens.df) <- scenario.file #rename columns
   
   # Turn sens.df from wide to long format for easier plotting
-  sens.df<- sens.df%>%
-    mutate(parameters = row.names(.))%>%
-    gather(scenario,rel_influence,scenario.file[1]:scenario.file[length(scenario.file)])%>%
-    left_join(param)%>%
-    mutate(range= ifelse(scenario=='Historical',range,NA))%>%
-    left_join(plot.params,by='scenario')
+  sens.df <- sens.df %>%
+    mutate(parameters = row.names(.)) %>%
+    gather(scenario, rel_influence, scenario.file[1]:scenario.file[length(scenario.file)]) %>%
+    left_join(param) %>%
+    mutate(range = ifelse(scenario == 'Historical', range, NA)) %>%
+    left_join(plot.params, by = 'scenario')
   
   
   
   # Create histogram plot
   sens.df$parameters <- factor(sens.df$parameters, levels = rev(sens.params))
-  sens.df$scenario.label <- factor(sens.df$scenario.label, levels = plot.params%>%
-                                                                      filter(scenario %in% sens.df$scenario)%>%
-                                                                      pull(scenario.label)%>%
-                                                                      rev())
+  sens.df$scenario.label <- factor(
+      sens.df$scenario.label,
+      levels = plot.params %>% filter(scenario %in% sens.df$scenario) %>% pull(scenario.label) %>% rev()
+    )
   
-  colors <- plot.params%>%filter(scenario %in% sens.df$scenario)%>%pull(color)%>%rev()
+  colors <- plot.params %>% filter(scenario %in% sens.df$scenario) %>% pull(color) %>% rev()
   
   print(
-    ggplot(sens.df,aes(parameters,rel_influence,fill=scenario.label,label=range))+
-      theme_bw()+
-      geom_bar(stat = 'identity',position = 'dodge',color='black')+
-      coord_flip()+
-      lims(y = c(-1,1))+
-      scale_x_discrete(labels = rev(c(gsub("\\."," ",sens.params[-length(sens.params)]))))+
-      scale_fill_manual(values = colors)+
-      labs(x=NULL,
-           y='Relative influence',
-           title=paste0(gsub("\\."," ",pop),' sensitivity'))+
-      theme(axis.text = element_text(size = rel(1.2)))+
-      guides(fill = guide_legend(reverse = TRUE))+
-      geom_text(aes(y=-1),hjust=0,na.rm = T)
+    ggplot(sens.df, aes(parameters, rel_influence, fill = scenario.label, label = range)) +
+      theme_bw() +
+      geom_bar(stat = 'identity',
+               position = 'dodge',
+               color = 'black') +
+      coord_flip() +
+      lims(y = c(-1, 1)) +
+      scale_x_discrete(labels = rev(c(gsub(
+        "\\.", " ", sens.params[-length(sens.params)]
+      )))) +
+      #scale_fill_manual(values = colors) +
+      labs(x = NULL,
+           y = 'Relative influence',
+           title = paste0(gsub("\\.", " ", pop), ' sensitivity'),
+           fill = "",
+           caption = paste0('Model version = ',hab.ver)) +
+      theme(axis.text = element_text(size = rel(1.2))) +
+      guides(fill = guide_legend(reverse = TRUE)) +
+      geom_text(aes(y = -1), hjust = 0, na.rm = T)
     
   )#close print()
-  if(save.plots=='yes'){
-    ggsave(file.path(outputs_lcm,paste('sensitivity',pop,'.jpg'),sep = "_"), width = 10, height = 8, dpi = 300)
-    # write.csv(rbind(broom::tidy(lm.current)%>%mutate(model = "current"),
-    #                 broom::tidy(lm.hist)%>%mutate(model = "historical"))
-    #           ,file.path(outputs_lcm,paste('sensitivity_',pop,'_lm.csv')))
-  } #Close ggsave() if statement
+  
+  ggsave(file.path(outputs_lcm,paste0('sensitivity_',pop,'.jpg')), width = 10, height = 8, dpi = 300)
+  
+  # write.csv(rbind(broom::tidy(lm.current)%>%mutate(model = "current"),
+  #                 broom::tidy(lm.hist)%>%mutate(model = "historical"))
+  #           ,file.path(outputs_lcm,paste('sensitivity_',pop,'_lm.csv')))
+
   
 } #close sensitivity plot if() statement
 

@@ -10,31 +10,9 @@
 
 # Model control parameters ----
 
-# Choose number of years and number of model iterations
-# Full model run is 100 years x 500 runs. Testing is 100 years x 50 runs
-runs  <- 5
-
-
-# Run model in sensitivity mode? "yes" or "no"
-# Calculate the relative influence of certain parameters
-sensitivity.mode <- 'no'
-
-
-
-# Do you want to save plots? "yes" or "no"
-# If not in sensitivity mode a box plot of spawner abundance will be saved,
-# plots of total run changes per DU and maps of restoration potential will be created
-# If in sensitivity mode, only the sensitivy bar plot will be saved
-save.plots <- 'yes'
-
-
-
-# Do you want to create diagnostic plots?
-# These can be hard to interpret, but are intended to help diagnose model performance
-# Takes ~5 min to generate the plots
-diag.plots <- 'no'
-
-
+# Run model in sensitivity mode? 
+# Running in sensitivity mode will create only one ouput which is the sensitivity plot
+sensitivity.mode <- 'no' # 'yes' or 'no'
  
 
 
@@ -58,7 +36,10 @@ if (fishtype == "fall_chinook") {
 # Number of years the model will run for
 years <- 100
 
+# Number of model runs (iterations)
+runs  <- 5
 
+if (sensitivity.mode == 'yes') {runs <- 100}
 
 # Load functions ----
 
@@ -99,6 +80,8 @@ if (sensitivity.mode == "no") {
     cat("RS.postH", "\t")
   }
   cat("scenario", "\n")
+} else {
+  cat("Running LCM in Sensitivity Mode", "\n")
 }
 
 #Read in model parameter values
@@ -117,16 +100,6 @@ for (n in 1:length(scenario.file)) {
     # Initialize -----
     for (i in 1:10) {
       # Run 10 years to fill initialize matrix
-      
-      #  Sensitivity ----
-      #   Values called for sensitivity
-      #   this input file overrides or augments previously defined params:
-      if (sensitivity.mode == "yes") {
-        source("lcm/scripts/sensitivity.R")
-        source("lcm/scripts/assign.dat.R")
-        
-      } #End if() sensitivty mode
-      
       
       # Initialize loop
       N.init <- pop.init * prop.init
@@ -158,11 +131,17 @@ for (n in 1:length(scenario.file)) {
     #   N <- N.new
     # } # End burn in
     
+    #  Sensitivity ----
+    #  Randomly adjust params from hab scenario:
+    if (sensitivity.mode == "yes") {
+      source("lcm/scripts/sensitivity.R")
+    } #End if() sensitivty mode
+    
     # Main loop --------
     
     for (i in 1:years) {
       
-      N.new <- subbasin(mat=N)
+      N.new <- subbasin(mat = N)
       N <- N.new
       
       # Store all model results in 5 dimensional array: runs (j) x years (i) x lifestage x DUs x scenarios (n)
@@ -205,45 +184,52 @@ for (n in 1:length(scenario.file)) {
     # Fill array with sensitivity results. 
     
     # Calculte the geometric mean of a specific model run
-    tr.geomean <- model.all[j, , 'total.run', , scenario.file[n]] %>%
+    tr.geomean <- model.all[j, , 'spawners', , scenario.file[n]] %>%
       apply(., 1, sum) %>%
-      geo.mean(.)
+      geo.mean
     
     
     # Fill sensitivity arrays
     # runs (j) x params x scenario.file (n)
     
     if (pop == "coho" & sensitivity.mode == "yes") {
-
       sensitivity[j, , n] <- c(
-        #fecund,
         egg.cap.adj,
         egg.fry.surv.adj,
-        sub.yr.surv.adj,
-        sub.yr.cap.adj,
-        ps.surv.adj,
-        ps.cap.adj,
-        #bay.min,        
-        # so.min,
-        #Hr,
-        #S.sb,
+        parr.surv.adj,
+        parr.cap.adj,
+        parr.smolt.surv.adj,
+        parr.smolt.cap.adj,
+        S.up.adj,
         tr.geomean)
     } #ends fill coho sensitivty[] array
 
-    if (pop == "fall.chinook" | pop == "spring.chinook" & sensitivity.mode == "yes") {
-      
+    
+    if (pop %in% c("fall.chinook", "spring.chinook") & sensitivity.mode == "yes") {
       sensitivity[j, , n] <- c(
-        #fecund,
         egg.cap.adj,
         egg.fry.surv.adj,
         fry.surv.adj,
-        sub.yr.cap.adj,
+        fry.cap.adj,
         sub.yr.surv.adj,
-        #fry.migrant.surv.adj,
-        #bay.parr.surv.adj,
-        #bay.fry.surv.adj,
-        #Hr,
-        #S.sb,
+        sub.yr.cap.adj,
+        S.up.adj,
+        tr.geomean)
+    } #ends fill chinook sensitivty[] array
+    
+    if (pop == 'steelhead' & sensitivity.mode == "yes") {
+      sensitivity[j, , n] <- c(
+        egg.cap.adj,
+        egg.fry.surv.adj,
+        parr.surv.adj,
+        parr.cap.adj,
+        first.winter.surv.adj,
+        first.winter.cap.adj,
+        second.summer.surv.adj,
+        second.summer.cap.adj,
+        second.winter.surv.adj,
+        second.winter.cap.adj,
+        S.up.adj,
         tr.geomean)
     } #ends fill chinook sensitivty[] array
 
@@ -320,32 +306,32 @@ if (dir.exists(outputs_lcm) == F) {dir.create(outputs_lcm, recursive = T)}
 
 
 # Create summary csv. Spawners per subbasin
-
-if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smolts')}
-
-if (pop == "fall.chinook" | pop == "spring.chinook") {
-  summary.stages <- c('spawners','smolts.fry.migrants','smolts.non.natal.sub.yr','smolts.natal.sub.yr')
-}
-
-if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}
-
-
-abundance_by_subbasin <- model.all[ ,50:100, summary.stages, , ] %>%
-  apply(c(1,3,4,5),geo.mean) %>% # geomean across years
-  apply(c(2,3,4),mean) %>% # mean of runs
-  round(0) %>%# round to whole fish
-  as.data.frame.table() %>%
-  rename(lifestage = Var1, Subbasin = Var2, scenario = Var3, n = Freq) %>%
-  spread(lifestage, n) %>%
-  mutate(scenario = factor(scenario, levels = read.csv('lcm/data/scenarios.csv')$scenario)) %>%
-  filter(scenario != 'Historical.no.beaver') %>%
-  arrange(scenario) %>%
-  rename(natal.basin = Subbasin)
-
-csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
+if(sensitivity.mode == 'no'){
+  if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smolts')}
   
-write.csv(abundance_by_subbasin, file.path(outputs_lcm, csv.name))
-
+  if (pop == "fall.chinook" | pop == "spring.chinook") {
+    summary.stages <- c('spawners','smolts.fry.migrants','smolts.non.natal.sub.yr','smolts.natal.sub.yr')
+  }
+  
+  if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}
+  
+  
+  abundance_by_subbasin <- model.all[ ,50:100, summary.stages, , ] %>%
+    apply(c(1,3,4,5),geo.mean) %>% # geomean across years
+    apply(c(2,3,4),mean) %>% # mean of runs
+    round(0) %>%# round to whole fish
+    as.data.frame.table() %>%
+    rename(lifestage = Var1, Subbasin = Var2, scenario = Var3, n = Freq) %>%
+    spread(lifestage, n) %>%
+    mutate(scenario = factor(scenario, levels = read.csv('lcm/data/scenarios.csv')$scenario)) %>%
+    filter(scenario != 'Historical.no.beaver') %>%
+    arrange(scenario) %>%
+    rename(natal.basin = Subbasin)
+  
+  csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
+  
+  write.csv(abundance_by_subbasin, file.path(outputs_lcm, csv.name))
+} # end if sensitivity.mode
 
 # Call bar, box or sensitivity plots
 packages.plots <- c("grid","scales")
@@ -360,16 +346,16 @@ source("lcm/scripts/plots.R")
 #   source("lcm/scripts/spatial.plots.R")
 # } 
 
-
-# Call diagnostic plots
-if (diag.plots == 'yes') {
-  print('Creating spawner abundance plots')
-  source("lcm/scripts/diagnostic.plots.R")
-} 
+# 
+# # Call diagnostic plots
+# if (diag.plots == 'yes') {
+#   print('Creating spawner abundance plots')
+#   source("lcm/scripts/diagnostic.plots.R")
+# } 
 
 
 # Call S-R curve plots (currently only working for coho 3/19/2019)
-if (pop == 'coho') {
+if (pop == 'coho' & sensitivity.mode == 'no') {
   print('Creating spawner recruit (P and C) values and plots')
   source('lcm/scripts/spawner.recruit.curves.R')
 }

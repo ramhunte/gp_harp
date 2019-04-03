@@ -11,7 +11,7 @@ F_redd_density = 274
 NF_redd_density = 12
 
 # winter_pool_scalar_cold = .14
-winter_pool_scalar_warm = .43
+winter_pool_scalar_warm = .30
 # winter_riffle_scalar_cold = 1 + (1-winter_pool_scalar_cold)
 # winter_riffle_scalar_warm = 1 + (1-winter_pool_scalar_warm)
 
@@ -33,7 +33,7 @@ Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "B
             "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"), times = 2))
 life.stage = c(rep("summer", times = length(Habitat)/2), rep("winter", times = length(Habitat)/2))
 surv.base = c(rep(.84, times = length(Habitat)/2), rep(.24, times = 6), .24, .24, .68, .4, .4, .68, .68, .68, .24, .24, .4, .4)
-wood.surv.base = c(rep(.84, times = 6), .9, .9, rep(.84, times = 10), rep(.24, times = 6), .4, .4, .68, .4, .4, .68, .68, .68, .4, .4, .4, .4)
+wood.surv.base = c(rep(.84, times = 6), .9, .9, rep(.84, times = 6), .9, .9, .84, .84, rep(.24, times = 6), .4, .4, .68, .4, .4, .68, .68, .68, .4, .4, .4, .4)
 survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
 
 LgRiver_habs = c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater")

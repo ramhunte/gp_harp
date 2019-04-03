@@ -41,3 +41,7 @@ all_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
   pull(scenario) %>%
   as.character() %>%
   gsub('\\.', '_', .) # replace . with _
+
+flowline_raw <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
+  read.csv(.)
+mainstem_reaches <- unique(grep("^Chehalis-", flowline_raw$Reach, value = T))
