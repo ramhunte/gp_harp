@@ -29,8 +29,9 @@ flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
   read.csv(.) %>%
   mutate(Reach_low = tolower(Reach),
          Subbasin_num = ifelse(Habitat == "LgRiver", noaa_sub_num, noaa_sub_nofp_num),
-         MWMT = ifelse(Habitat == "LgRiver", MWMT, NA)) %>%
-  # rename(psu_temp = MWMT) %>%
+         Habitat = case_when(!Reach %in% mainstem_reaches ~ as.character(Habitat),
+                             Reach %in% mainstem_reaches & Subbasin_num == 49 ~ "Tidal",
+                             Reach %in% mainstem_reaches & !Subbasin_num == 49 ~ "LgRiver")) %>%
   left_join(., edt_temps, by = "Reach") %>%
   left_join(., psu_temps, by = "Seg") %>%
   left_join(., temp_gaps, by = "Reach") %>%
@@ -57,7 +58,13 @@ flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
               select(-year) %>%
               spread(stage, width),
             by = "Reach_low") %>%
-  mutate(width_s = ifelse(is.na(width_s), 
+  mutate(mwmt = ifelse(Habitat == "LgRiver",
+                       mwmt,
+                       NA),
+         mdm = ifelse(Habitat == "LgRiver",
+                      mdm,
+                      NA),
+         width_s = ifelse(is.na(width_s), 
                           wet_width, 
                           width_s),
          width_w = ifelse(is.na(width_w),
