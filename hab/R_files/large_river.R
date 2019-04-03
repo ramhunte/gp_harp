@@ -18,16 +18,12 @@ LgRiver_raw = list.files(path = Inputs, pattern = "LgRiver", full.names = T) %>%
                              Habitat == "HM_Bank" ~ 0.089 * width + .33)) %>%
   spread(value, width) %>%
   mutate(area_s = width_s * Length_m / 10000,
-         area_w = width_w * Length_m / 10000)
-
-if (fishtype %in% c("coho", "fall_chinook", "steelhead")) {
-  LgRiver_raw = LgRiver_raw %>%
-    filter(spawn_dist == "Yes" | Subbasin_num == 63)}
+         area_w = width_w * Length_m / 10000) %>%
+  filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
 
 if (fishtype == "spring_chinook") {
-  LgRiver_raw = LgRiver_raw %>%
-    filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs,
-           Subbasin_num %in% schino_subs)}
+  LgRiver_raw <- LgRiver_raw %>%
+    filter(Subbasin_num %in% schino_subs)}
 
 source("hab/R_files/wood_script.R")
 

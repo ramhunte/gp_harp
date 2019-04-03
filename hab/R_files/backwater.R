@@ -18,16 +18,12 @@ bw <- Backwater_raw %>%
               mutate(bw_mult = sc_mult * bw_scalar,
                      Area_ha = bw_mult * (Shape_Length/1000), # bw_mult is in units of A(ha) / km.  Shape_Length is in m, so Shape_Length / 1000 * bw_mult gives unit of ha/km
                      Period = "Hist")) %>%
-  mutate(Habitat = "Backwater")
-
-if (fishtype %in% c("fall_chinook", "steelhead", "coho")) {
-  bw <- bw %>%
-    filter(spawn_dist == "Yes" | Subbasin_num == 63)}
+  mutate(Habitat = "Backwater") %>%
+  filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
 
 if (fishtype == "spring_chinook") {
-   bw = bw %>%
-     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs,
-            Subbasin_num %in% schino_subs)}
+   bw <- bw %>%
+     filter(Subbasin_num %in% schino_subs)}
 
 assign('asrp_bw_raw', bw , envir = .GlobalEnv) 
 

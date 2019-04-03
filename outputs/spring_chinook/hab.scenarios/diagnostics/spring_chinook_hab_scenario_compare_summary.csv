@@ -6,7 +6,7 @@
 "5","Barriers","eggs_capacity",0,0,0
 "6","Barriers","eggs_survival",Inf,-Inf,NA
 "7","Barriers","prespawn_capacity",Inf,-Inf,NA
-"8","Barriers","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"8","Barriers","prespawn_survival",0,0,0
 "9","Barriers","summer_capacity",0,0,0
 "10","Barriers","summer_survival",0,0,0
 "11","Barriers","winter_capacity",Inf,-Inf,NA
@@ -18,7 +18,7 @@
 "17","Beaver","eggs_capacity",0,0,0
 "18","Beaver","eggs_survival",Inf,-Inf,NA
 "19","Beaver","prespawn_capacity",Inf,-Inf,NA
-"20","Beaver","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"20","Beaver","prespawn_survival",0,0,0
 "21","Beaver","summer_capacity",0,0,0
 "22","Beaver","summer_survival",0,0,0
 "23","Beaver","winter_capacity",Inf,-Inf,NA
@@ -30,7 +30,7 @@
 "29","Current","eggs_capacity",0,0,0
 "30","Current","eggs_survival",Inf,-Inf,NA
 "31","Current","prespawn_capacity",Inf,-Inf,NA
-"32","Current","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"32","Current","prespawn_survival",0,0,0
 "33","Current","summer_capacity",0,0,0
 "34","Current","summer_survival",0,0,0
 "35","Current","winter_capacity",Inf,-Inf,NA
@@ -42,7 +42,7 @@
 "41","Current_asrp_2019","eggs_capacity",0,0,0
 "42","Current_asrp_2019","eggs_survival",Inf,-Inf,NA
 "43","Current_asrp_2019","prespawn_capacity",Inf,-Inf,NA
-"44","Current_asrp_2019","prespawn_survival",0,0.0578387813478251,0.00340228125575442
+"44","Current_asrp_2019","prespawn_survival",0,0,0
 "45","Current_asrp_2019","summer_capacity",0,0,0
 "46","Current_asrp_2019","summer_survival",0,0,0
 "47","Current_asrp_2019","winter_capacity",Inf,-Inf,NA
@@ -54,7 +54,7 @@
 "53","Fine_sediment","eggs_capacity",0,0,0
 "54","Fine_sediment","eggs_survival",Inf,-Inf,NA
 "55","Fine_sediment","prespawn_capacity",Inf,-Inf,NA
-"56","Fine_sediment","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"56","Fine_sediment","prespawn_survival",0,0,0
 "57","Fine_sediment","summer_capacity",0,0,0
 "58","Fine_sediment","summer_survival",0,0,0
 "59","Fine_sediment","winter_capacity",Inf,-Inf,NA
@@ -66,7 +66,7 @@
 "65","Floodplain","eggs_capacity",0,0,0
 "66","Floodplain","eggs_survival",Inf,-Inf,NA
 "67","Floodplain","prespawn_capacity",Inf,-Inf,NA
-"68","Floodplain","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"68","Floodplain","prespawn_survival",0,0,0
 "69","Floodplain","summer_capacity",0,0,0
 "70","Floodplain","summer_survival",0,0,0
 "71","Floodplain","winter_capacity",Inf,-Inf,NA
@@ -78,7 +78,7 @@
 "77","FP_wood_comb","eggs_capacity",0,0,0
 "78","FP_wood_comb","eggs_survival",Inf,-Inf,NA
 "79","FP_wood_comb","prespawn_capacity",Inf,-Inf,NA
-"80","FP_wood_comb","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"80","FP_wood_comb","prespawn_survival",0,0,0
 "81","FP_wood_comb","summer_capacity",0,0,0
 "82","FP_wood_comb","summer_survival",0,0,0
 "83","FP_wood_comb","winter_capacity",Inf,-Inf,NA
@@ -90,7 +90,7 @@
 "89","Historical","eggs_capacity",0,0,0
 "90","Historical","eggs_survival",Inf,-Inf,NA
 "91","Historical","prespawn_capacity",Inf,-Inf,NA
-"92","Historical","prespawn_survival",-0.0447574478705083,0,-0.00263279105120637
+"92","Historical","prespawn_survival",0,0,0
 "93","Historical","summer_capacity",0,0,0
 "94","Historical","summer_survival",0,0,0
 "95","Historical","winter_capacity",Inf,-Inf,NA
@@ -102,7 +102,7 @@
 "101","LR_bank","eggs_capacity",0,0,0
 "102","LR_bank","eggs_survival",Inf,-Inf,NA
 "103","LR_bank","prespawn_capacity",Inf,-Inf,NA
-"104","LR_bank","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"104","LR_bank","prespawn_survival",0,0,0
 "105","LR_bank","summer_capacity",0,0,0
 "106","LR_bank","summer_survival",0,0,0
 "107","LR_bank","winter_capacity",Inf,-Inf,NA
@@ -114,7 +114,7 @@
 "113","LR_length","eggs_capacity",0,0,0
 "114","LR_length","eggs_survival",Inf,-Inf,NA
 "115","LR_length","prespawn_capacity",Inf,-Inf,NA
-"116","LR_length","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"116","LR_length","prespawn_survival",0,0,0
 "117","LR_length","summer_capacity",0,0,0
 "118","LR_length","summer_survival",0,0,0
 "119","LR_length","winter_capacity",Inf,-Inf,NA
@@ -126,7 +126,7 @@
 "125","scenario_1_2040","eggs_capacity",0,0,0
 "126","scenario_1_2040","eggs_survival",Inf,-Inf,NA
 "127","scenario_1_2040","prespawn_capacity",Inf,-Inf,NA
-"128","scenario_1_2040","prespawn_survival",0,0.199230851725842,0.011719461866226
+"128","scenario_1_2040","prespawn_survival",0,0,0
 "129","scenario_1_2040","summer_capacity",0,0,0
 "130","scenario_1_2040","summer_survival",0,0,0
 "131","scenario_1_2040","winter_capacity",Inf,-Inf,NA
@@ -138,7 +138,7 @@
 "137","scenario_1_2080","eggs_capacity",0,0,0
 "138","scenario_1_2080","eggs_survival",Inf,-Inf,NA
 "139","scenario_1_2080","prespawn_capacity",Inf,-Inf,NA
-"140","scenario_1_2080","prespawn_survival",0,0.226545817210427,0.0133262245417898
+"140","scenario_1_2080","prespawn_survival",0,0,0
 "141","scenario_1_2080","summer_capacity",0,0,0
 "142","scenario_1_2080","summer_survival",0,0,0
 "143","scenario_1_2080","winter_capacity",Inf,-Inf,NA
@@ -150,7 +150,7 @@
 "149","scenario_2_2040","eggs_capacity",0,0,0
 "150","scenario_2_2040","eggs_survival",Inf,-Inf,NA
 "151","scenario_2_2040","prespawn_capacity",Inf,-Inf,NA
-"152","scenario_2_2040","prespawn_survival",0,0.199230851725842,0.011719461866226
+"152","scenario_2_2040","prespawn_survival",0,0,0
 "153","scenario_2_2040","summer_capacity",0,0,0
 "154","scenario_2_2040","summer_survival",0,0,0
 "155","scenario_2_2040","winter_capacity",Inf,-Inf,NA
@@ -162,7 +162,7 @@
 "161","scenario_2_2080","eggs_capacity",0,0,0
 "162","scenario_2_2080","eggs_survival",Inf,-Inf,NA
 "163","scenario_2_2080","prespawn_capacity",Inf,-Inf,NA
-"164","scenario_2_2080","prespawn_survival",0,0.226545817210427,0.0133262245417898
+"164","scenario_2_2080","prespawn_survival",0,0,0
 "165","scenario_2_2080","summer_capacity",0,0,0
 "166","scenario_2_2080","summer_survival",0,0,0
 "167","scenario_2_2080","winter_capacity",Inf,-Inf,NA
@@ -174,7 +174,7 @@
 "173","scenario_3_2040","eggs_capacity",0,0,0
 "174","scenario_3_2040","eggs_survival",Inf,-Inf,NA
 "175","scenario_3_2040","prespawn_capacity",Inf,-Inf,NA
-"176","scenario_3_2040","prespawn_survival",0,0.199230851725842,0.011719461866226
+"176","scenario_3_2040","prespawn_survival",0,0,0
 "177","scenario_3_2040","summer_capacity",0,0,0
 "178","scenario_3_2040","summer_survival",0,0,0
 "179","scenario_3_2040","winter_capacity",Inf,-Inf,NA
@@ -186,7 +186,7 @@
 "185","scenario_3_2080","eggs_capacity",0,0,0
 "186","scenario_3_2080","eggs_survival",Inf,-Inf,NA
 "187","scenario_3_2080","prespawn_capacity",Inf,-Inf,NA
-"188","scenario_3_2080","prespawn_survival",0,0.226545817210427,0.0133262245417898
+"188","scenario_3_2080","prespawn_survival",0,0,0
 "189","scenario_3_2080","summer_capacity",0,0,0
 "190","scenario_3_2080","summer_survival",0,0,0
 "191","scenario_3_2080","winter_capacity",Inf,-Inf,NA
@@ -198,7 +198,7 @@
 "197","Shade","eggs_capacity",0,0,0
 "198","Shade","eggs_survival",Inf,-Inf,NA
 "199","Shade","prespawn_capacity",Inf,-Inf,NA
-"200","Shade","prespawn_survival",-0.0447574478705083,0,-0.00263279105120637
+"200","Shade","prespawn_survival",0,0,0
 "201","Shade","summer_capacity",0,0,0
 "202","Shade","summer_survival",0,0,0
 "203","Shade","winter_capacity",Inf,-Inf,NA
@@ -210,7 +210,7 @@
 "209","Wood","eggs_capacity",0,0,0
 "210","Wood","eggs_survival",Inf,-Inf,NA
 "211","Wood","prespawn_capacity",Inf,-Inf,NA
-"212","Wood","prespawn_survival",0,0.00000000872048428401866,0.000000000512969663765804
+"212","Wood","prespawn_survival",0,0,0
 "213","Wood","summer_capacity",0,0,0
 "214","Wood","summer_survival",0,0,0
 "215","Wood","winter_capacity",Inf,-Inf,NA
