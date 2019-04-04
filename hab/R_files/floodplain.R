@@ -162,6 +162,9 @@ fp2 <- fp1 %>%
               filter(!Habitat == "Side_Channel",
                      Period %in% c("Both", "Curr")) %>%
               mutate(hab.scenario = "Wood",
+                     curr.tempmult = ifelse(Subbasin_num %in% mainstem.subs,
+                                            curr.tempmult,
+                                            1),
                      summer = ifelse(Habitat %in% c("SC_pool", "SC_riffle"), 
                                      Area_ha * woodmult_s * curr.tempmult,
                                      Area_ha * curr.tempmult),
@@ -174,7 +177,6 @@ fp2 <- fp1 %>%
   bind_rows(., fp %>%
               mutate(lc = "Reference") %>%
               bind_rows(.,fp %>%
-                          left_join(., wood_data, by = "Subbasin_num") %>%
                           filter(Habitat == "Side_Channel") %>%
                           mutate(Area_orig = Area_ha,
                                  SC_pool = Area_orig * pool.perc ,

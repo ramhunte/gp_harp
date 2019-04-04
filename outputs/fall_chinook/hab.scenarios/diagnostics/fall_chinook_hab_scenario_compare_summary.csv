@@ -79,8 +79,8 @@
 "78","FP_wood_comb","eggs_survival",Inf,-Inf,NA
 "79","FP_wood_comb","prespawn_capacity",Inf,-Inf,NA
 "80","FP_wood_comb","prespawn_survival",0,0,0
-"81","FP_wood_comb","summer_capacity",-0.00902294033154071,0,-0.00109919559890742
-"82","FP_wood_comb","summer_survival",-0.00403955788909347,0,-0.000485801693998357
+"81","FP_wood_comb","summer_capacity",0,0,0
+"82","FP_wood_comb","summer_survival",0,0,0
 "83","FP_wood_comb","winter_capacity",Inf,-Inf,NA
 "84","FP_wood_comb","winter_survival",Inf,-Inf,NA
 "85","Historical","adults_capacity",0,0,0
@@ -91,8 +91,8 @@
 "90","Historical","eggs_survival",Inf,-Inf,NA
 "91","Historical","prespawn_capacity",Inf,-Inf,NA
 "92","Historical","prespawn_survival",0,0,0
-"93","Historical","summer_capacity",0,0,0
-"94","Historical","summer_survival",0,0,0
+"93","Historical","summer_capacity",-0.101236469622111,0,-0.0105048117006672
+"94","Historical","summer_survival",-0.0472751274142458,0,-0.00480575234905173
 "95","Historical","winter_capacity",Inf,-Inf,NA
 "96","Historical","winter_survival",Inf,-Inf,NA
 "97","LR_bank","adults_capacity",0,0,0
