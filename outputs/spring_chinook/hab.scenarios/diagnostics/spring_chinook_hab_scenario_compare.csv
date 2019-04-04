@@ -9,7 +9,7 @@
 "8","Fine_sediment",1,"winter_capacity",0,0,0,NA
 "9","Floodplain",1,"summer_capacity",17505.2388590593,17505.2388590593,0,0
 "10","Floodplain",1,"winter_capacity",0,0,0,NA
-"11","FP_wood_comb",1,"summer_capacity",18805.68508863,18805.68508863,0,0
+"11","FP_wood_comb",1,"summer_capacity",18805.68508863,18807.0581399397,-1.3730513096998,-0.0000730125652550652
 "12","FP_wood_comb",1,"winter_capacity",0,0,0,NA
 "13","Historical",1,"summer_capacity",19342.5345123956,19342.5345123956,0,0
 "14","Historical",1,"winter_capacity",0,0,0,NA
@@ -31,7 +31,7 @@
 "30","Fine_sediment",5,"winter_capacity",0,0,0,NA
 "31","Floodplain",5,"summer_capacity",18668.5252492263,18668.5252492263,0,0
 "32","Floodplain",5,"winter_capacity",0,0,0,NA
-"33","FP_wood_comb",5,"summer_capacity",20962.4868228001,20962.4868228001,0,0
+"33","FP_wood_comb",5,"summer_capacity",20962.4868228001,20981.238328292,-18.7515054918986,-0.000894526763470795
 "34","FP_wood_comb",5,"winter_capacity",0,0,0,NA
 "35","Historical",5,"summer_capacity",23261.9206480324,23261.9206480324,0,0
 "36","Historical",5,"winter_capacity",0,0,0,NA
@@ -53,7 +53,7 @@
 "52","Fine_sediment",12,"winter_capacity",0,0,0,NA
 "53","Floodplain",12,"summer_capacity",30902.123852104,30902.123852104,0,0
 "54","Floodplain",12,"winter_capacity",0,0,0,NA
-"55","FP_wood_comb",12,"summer_capacity",34503.1640731574,34503.1640731574,0,0
+"55","FP_wood_comb",12,"summer_capacity",34503.1640731574,34515.2046917082,-12.0406185507964,-0.000348971431294432
 "56","FP_wood_comb",12,"winter_capacity",0,0,0,NA
 "57","Historical",12,"summer_capacity",36154.5543445626,36154.5543445626,0,0
 "58","Historical",12,"winter_capacity",0,0,0,NA
@@ -75,7 +75,7 @@
 "74","Fine_sediment",18,"winter_capacity",0,0,0,NA
 "75","Floodplain",18,"summer_capacity",32331.2166024512,32331.2166024512,0,0
 "76","Floodplain",18,"winter_capacity",0,0,0,NA
-"77","FP_wood_comb",18,"summer_capacity",36900.197233606,36900.197233606,0,0
+"77","FP_wood_comb",18,"summer_capacity",36900.197233606,37087.9824509931,-187.7852173871,-0.00508900308034339
 "78","FP_wood_comb",18,"winter_capacity",0,0,0,NA
 "79","Historical",18,"summer_capacity",44462.895468671,44462.895468671,0,0
 "80","Historical",18,"winter_capacity",0,0,0,NA
@@ -141,7 +141,7 @@
 "140","Fine_sediment",54,"winter_capacity",0,0,0,NA
 "141","Floodplain",54,"summer_capacity",6667.49768040191,6667.49768040191,0,0
 "142","Floodplain",54,"winter_capacity",0,0,0,NA
-"143","FP_wood_comb",54,"summer_capacity",7380.73614128199,7380.73614128199,0,0
+"143","FP_wood_comb",54,"summer_capacity",7380.73614128199,7381.68536022051,-0.949218938520062,-0.000128607624002555
 "144","FP_wood_comb",54,"winter_capacity",0,0,0,NA
 "145","Historical",54,"summer_capacity",10613.1118635309,10613.1118635309,0,0
 "146","Historical",54,"winter_capacity",0,0,0,NA
@@ -163,7 +163,7 @@
 "162","Fine_sediment",55,"winter_capacity",0,0,0,NA
 "163","Floodplain",55,"summer_capacity",18911.3565028236,18911.3565028236,0,0
 "164","Floodplain",55,"winter_capacity",0,0,0,NA
-"165","FP_wood_comb",55,"summer_capacity",20533.5913823137,20533.5913823137,0,0
+"165","FP_wood_comb",55,"summer_capacity",20533.5913823137,20564.8860190535,-31.2946367397999,-0.00152407029813377
 "166","FP_wood_comb",55,"winter_capacity",0,0,0,NA
 "167","Historical",55,"summer_capacity",25166.3965971207,25166.3965971207,0,0
 "168","Historical",55,"winter_capacity",0,0,0,NA
@@ -185,7 +185,7 @@
 "184","Fine_sediment",56,"winter_capacity",0,0,0,NA
 "185","Floodplain",56,"summer_capacity",13040.5366730515,13040.5366730515,0,0
 "186","Floodplain",56,"winter_capacity",0,0,0,NA
-"187","FP_wood_comb",56,"summer_capacity",14657.2992184772,14657.2992184772,0,0
+"187","FP_wood_comb",56,"summer_capacity",14657.2992184772,14662.8119379109,-5.51271943370011,-0.000376107450051282
 "188","FP_wood_comb",56,"winter_capacity",0,0,0,NA
 "189","Historical",56,"summer_capacity",17330.212649367,17330.212649367,0,0
 "190","Historical",56,"winter_capacity",0,0,0,NA
@@ -207,7 +207,7 @@
 "206","Fine_sediment",57,"winter_capacity",0,0,0,NA
 "207","Floodplain",57,"summer_capacity",20937.8548038106,20937.8548038106,0,0
 "208","Floodplain",57,"winter_capacity",0,0,0,NA
-"209","FP_wood_comb",57,"summer_capacity",23160.6781032812,23160.6781032812,0,0
+"209","FP_wood_comb",57,"summer_capacity",23160.6781032812,23190.5678071673,-29.8897038860996,-0.00129053664805544
 "210","FP_wood_comb",57,"winter_capacity",0,0,0,NA
 "211","Historical",57,"summer_capacity",27356.1750777358,27356.1750777358,0,0
 "212","Historical",57,"winter_capacity",0,0,0,NA
@@ -229,7 +229,7 @@
 "228","Fine_sediment",58,"winter_capacity",0,0,0,NA
 "229","Floodplain",58,"summer_capacity",19592.3791263485,19592.3791263485,0,0
 "230","Floodplain",58,"winter_capacity",0,0,0,NA
-"231","FP_wood_comb",58,"summer_capacity",21314.9825761686,21314.9825761686,0,0
+"231","FP_wood_comb",58,"summer_capacity",21314.9825761686,21346.9033167213,-31.9207405526977,-0.00149757291326088
 "232","FP_wood_comb",58,"winter_capacity",0,0,0,NA
 "233","Historical",58,"summer_capacity",29440.3848235866,29440.3848235866,0,0
 "234","Historical",58,"winter_capacity",0,0,0,NA
@@ -251,7 +251,7 @@
 "250","Fine_sediment",59,"winter_capacity",0,0,0,NA
 "251","Floodplain",59,"summer_capacity",17004.6157958258,17004.6157958258,0,0
 "252","Floodplain",59,"winter_capacity",0,0,0,NA
-"253","FP_wood_comb",59,"summer_capacity",18511.7129856127,18511.7129856127,0,0
+"253","FP_wood_comb",59,"summer_capacity",18511.7129856127,18513.3675451043,-1.65455949159877,-0.0000893790592412868
 "254","FP_wood_comb",59,"winter_capacity",0,0,0,NA
 "255","Historical",59,"summer_capacity",21910.0557999631,21910.0557999631,0,0
 "256","Historical",59,"winter_capacity",0,0,0,NA
@@ -273,7 +273,7 @@
 "272","Fine_sediment",60,"winter_capacity",0,0,0,NA
 "273","Floodplain",60,"summer_capacity",14858.141714541,14858.141714541,0,0
 "274","Floodplain",60,"winter_capacity",0,0,0,NA
-"275","FP_wood_comb",60,"summer_capacity",15929.8369744237,15929.8369744237,0,0
+"275","FP_wood_comb",60,"summer_capacity",15929.8369744237,15947.0632232149,-17.2262487911994,-0.0010813826167121
 "276","FP_wood_comb",60,"winter_capacity",0,0,0,NA
 "277","Historical",60,"summer_capacity",18344.5502863266,18344.5502863266,0,0
 "278","Historical",60,"winter_capacity",0,0,0,NA
@@ -295,7 +295,7 @@
 "294","Fine_sediment",61,"winter_capacity",0,0,0,NA
 "295","Floodplain",61,"summer_capacity",16992.7254112463,16992.7254112463,0,0
 "296","Floodplain",61,"winter_capacity",0,0,0,NA
-"297","FP_wood_comb",61,"summer_capacity",18502.9287402005,18502.9287402005,0,0
+"297","FP_wood_comb",61,"summer_capacity",18502.9287402005,18506.788311075,-3.85957087450151,-0.000208592430349472
 "298","FP_wood_comb",61,"winter_capacity",0,0,0,NA
 "299","Historical",61,"summer_capacity",19694.7447807018,19694.7447807018,0,0
 "300","Historical",61,"winter_capacity",0,0,0,NA
@@ -317,7 +317,7 @@
 "316","Fine_sediment",62,"winter_capacity",0,0,0,NA
 "317","Floodplain",62,"summer_capacity",23486.8600354426,23486.8600354426,0,0
 "318","Floodplain",62,"winter_capacity",0,0,0,NA
-"319","FP_wood_comb",62,"summer_capacity",25817.6469128462,25817.6469128462,0,0
+"319","FP_wood_comb",62,"summer_capacity",25817.6469128462,25841.0694790062,-23.4225661599994,-0.000907230865735674
 "320","FP_wood_comb",62,"winter_capacity",0,0,0,NA
 "321","Historical",62,"summer_capacity",28620.7136868435,28620.7136868435,0,0
 "322","Historical",62,"winter_capacity",0,0,0,NA
@@ -339,7 +339,7 @@
 "338","Fine_sediment",63,"winter_capacity",0,0,0,NA
 "339","Floodplain",63,"summer_capacity",45735.5126448344,45735.5126448344,0,0
 "340","Floodplain",63,"winter_capacity",0,0,0,NA
-"341","FP_wood_comb",63,"summer_capacity",50456.5680702316,50456.5680702316,0,0
+"341","FP_wood_comb",63,"summer_capacity",50456.5680702316,50493.2568881108,-36.6888178791996,-0.000727136610403856
 "342","FP_wood_comb",63,"winter_capacity",0,0,0,NA
 "343","Historical",63,"summer_capacity",52238.4798901985,52238.4798901985,0,0
 "344","Historical",63,"winter_capacity",0,0,0,NA
@@ -1662,7 +1662,7 @@
 "1661","Fine_sediment",1,"winter_survival",0,0,0,NA
 "1662","Floodplain",1,"summer_survival",0.310418307751196,0.310418307751196,0,0
 "1663","Floodplain",1,"winter_survival",0,0,0,NA
-"1664","FP_wood_comb",1,"summer_survival",0.339156777321193,0.339156777321193,0,0
+"1664","FP_wood_comb",1,"summer_survival",0.339156777321193,0.339169980184815,-0.0000132028636219972,-0.0000389284970988317
 "1665","FP_wood_comb",1,"winter_survival",0,0,0,NA
 "1666","Historical",1,"summer_survival",0.340855129195751,0.340855129195751,0,0
 "1667","Historical",1,"winter_survival",0,0,0,NA
@@ -1684,7 +1684,7 @@
 "1683","Fine_sediment",5,"winter_survival",0,0,0,NA
 "1684","Floodplain",5,"summer_survival",0.314156893246789,0.314156893246789,0,0
 "1685","Floodplain",5,"winter_survival",0,0,0,NA
-"1686","FP_wood_comb",5,"summer_survival",0.363710122391324,0.363710122391324,0,0
+"1686","FP_wood_comb",5,"summer_survival",0.363710122391324,0.363849802921732,-0.000139680530408026,-0.000384043560541163
 "1687","FP_wood_comb",5,"winter_survival",0,0,0,NA
 "1688","Historical",5,"summer_survival",0.368683147177712,0.368683147177712,0,0
 "1689","Historical",5,"winter_survival",0,0,0,NA
@@ -1706,7 +1706,7 @@
 "1705","Fine_sediment",12,"winter_survival",0,0,0,NA
 "1706","Floodplain",12,"summer_survival",0.318758980697892,0.318758980697892,0,0
 "1707","Floodplain",12,"winter_survival",0,0,0,NA
-"1708","FP_wood_comb",12,"summer_survival",0.368074374135748,0.368074374135748,0,0
+"1708","FP_wood_comb",12,"summer_survival",0.368074374135748,0.368127373343647,-0.0000529992078989738,-0.000143990485682188
 "1709","FP_wood_comb",12,"winter_survival",0,0,0,NA
 "1710","Historical",12,"summer_survival",0.370344154239374,0.370344154239374,0,0
 "1711","Historical",12,"winter_survival",0,0,0,NA
@@ -1728,7 +1728,7 @@
 "1727","Fine_sediment",18,"winter_survival",0,0,0,NA
 "1728","Floodplain",18,"summer_survival",0.311481299103325,0.311481299103325,0,0
 "1729","Floodplain",18,"winter_survival",0,0,0,NA
-"1730","FP_wood_comb",18,"summer_survival",0.362793733642617,0.362793733642617,0,0
+"1730","FP_wood_comb",18,"summer_survival",0.362793733642617,0.363589706110021,-0.000795972467403983,-0.00219400831269066
 "1731","FP_wood_comb",18,"winter_survival",0,0,0,NA
 "1732","Historical",18,"summer_survival",0.356978565217443,0.356978565217443,0,0
 "1733","Historical",18,"winter_survival",0,0,0,NA
@@ -1794,7 +1794,7 @@
 "1793","Fine_sediment",54,"winter_survival",0,0,0,NA
 "1794","Floodplain",54,"summer_survival",0.310159905115698,0.310159905115698,0,0
 "1795","Floodplain",54,"winter_survival",0,0,0,NA
-"1796","FP_wood_comb",54,"summer_survival",0.343565464817875,0.343565464817875,0,0
+"1796","FP_wood_comb",54,"summer_survival",0.343565464817875,0.343588152726399,-0.0000226879085239995,-0.0000660366388572449
 "1797","FP_wood_comb",54,"winter_survival",0,0,0,NA
 "1798","Historical",54,"summer_survival",0.343319219486313,0.343319219486313,0,0
 "1799","Historical",54,"winter_survival",0,0,0,NA
@@ -1816,7 +1816,7 @@
 "1815","Fine_sediment",55,"winter_survival",0,0,0,NA
 "1816","Floodplain",55,"summer_survival",0.319789988384089,0.319789988384089,0,0
 "1817","Floodplain",55,"winter_survival",0,0,0,NA
-"1818","FP_wood_comb",55,"summer_survival",0.349220246152123,0.349220246152123,0,0
+"1818","FP_wood_comb",55,"summer_survival",0.349220246152123,0.349480130420591,-0.000259884268468014,-0.000744184426108004
 "1819","FP_wood_comb",55,"winter_survival",0,0,0,NA
 "1820","Historical",55,"summer_survival",0.344932205532032,0.344932205532032,0,0
 "1821","Historical",55,"winter_survival",0,0,0,NA
@@ -1838,7 +1838,7 @@
 "1837","Fine_sediment",56,"winter_survival",0,0,0,NA
 "1838","Floodplain",56,"summer_survival",0.317757068278029,0.317757068278029,0,0
 "1839","Floodplain",56,"winter_survival",0,0,0,NA
-"1840","FP_wood_comb",56,"summer_survival",0.356183652156592,0.356183652156592,0,0
+"1840","FP_wood_comb",56,"summer_survival",0.356183652156592,0.35624524154123,-0.0000615893846380167,-0.000172914686749687
 "1841","FP_wood_comb",56,"winter_survival",0,0,0,NA
 "1842","Historical",56,"summer_survival",0.35492233484136,0.35492233484136,0,0
 "1843","Historical",56,"winter_survival",0,0,0,NA
@@ -1860,7 +1860,7 @@
 "1859","Fine_sediment",57,"winter_survival",0,0,0,NA
 "1860","Floodplain",57,"summer_survival",0.323176958959224,0.323176958959224,0,0
 "1861","Floodplain",57,"winter_survival",0,0,0,NA
-"1862","FP_wood_comb",57,"summer_survival",0.357471213283701,0.357471213283701,0,0
+"1862","FP_wood_comb",57,"summer_survival",0.357471213283701,0.357680692298976,-0.00020947901527496,-0.000586002473739643
 "1863","FP_wood_comb",57,"winter_survival",0,0,0,NA
 "1864","Historical",57,"summer_survival",0.354192038707868,0.354192038707868,0,0
 "1865","Historical",57,"winter_survival",0,0,0,NA
@@ -1882,7 +1882,7 @@
 "1881","Fine_sediment",58,"winter_survival",0,0,0,NA
 "1882","Floodplain",58,"summer_survival",0.321715731741701,0.321715731741701,0,0
 "1883","Floodplain",58,"winter_survival",0,0,0,NA
-"1884","FP_wood_comb",58,"summer_survival",0.351493209022494,0.351493209022494,0,0
+"1884","FP_wood_comb",58,"summer_survival",0.351493209022494,0.35174518287914,-0.000251973856645993,-0.000716866927092943
 "1885","FP_wood_comb",58,"winter_survival",0,0,0,NA
 "1886","Historical",58,"summer_survival",0.346344410017922,0.346344410017922,0,0
 "1887","Historical",58,"winter_survival",0,0,0,NA
@@ -1904,7 +1904,7 @@
 "1903","Fine_sediment",59,"winter_survival",0,0,0,NA
 "1904","Floodplain",59,"summer_survival",0.314366174259887,0.314366174259887,0,0
 "1905","Floodplain",59,"winter_survival",0,0,0,NA
-"1906","FP_wood_comb",59,"summer_survival",0.341760589046551,0.341760589046551,0,0
+"1906","FP_wood_comb",59,"summer_survival",0.341760589046551,0.341776518493663,-0.0000159294471119842,-0.0000466099592010431
 "1907","FP_wood_comb",59,"winter_survival",0,0,0,NA
 "1908","Historical",59,"summer_survival",0.341078318837418,0.341078318837418,0,0
 "1909","Historical",59,"winter_survival",0,0,0,NA
@@ -1926,7 +1926,7 @@
 "1925","Fine_sediment",60,"winter_survival",0,0,0,NA
 "1926","Floodplain",60,"summer_survival",0.324317243608116,0.324317243608116,0,0
 "1927","Floodplain",60,"winter_survival",0,0,0,NA
-"1928","FP_wood_comb",60,"summer_survival",0.348702181064552,0.348702181064552,0,0
+"1928","FP_wood_comb",60,"summer_survival",0.348702181064552,0.348887219450935,-0.000185038386383007,-0.000530648778330277
 "1929","FP_wood_comb",60,"winter_survival",0,0,0,NA
 "1930","Historical",60,"summer_survival",0.344771086026915,0.344771086026915,0,0
 "1931","Historical",60,"winter_survival",0,0,0,NA
@@ -1948,7 +1948,7 @@
 "1947","Fine_sediment",61,"winter_survival",0,0,0,NA
 "1948","Floodplain",61,"summer_survival",0.31,0.31,0,0
 "1949","Floodplain",61,"winter_survival",0,0,0,NA
-"1950","FP_wood_comb",61,"summer_survival",0.338048166616601,0.338048166616601,0,0
+"1950","FP_wood_comb",61,"summer_survival",0.338048166616601,0.338086112476513,-0.0000379458599120142,-0.000112249861585703
 "1951","FP_wood_comb",61,"winter_survival",0,0,0,NA
 "1952","Historical",61,"summer_survival",0.337621201872435,0.337621201872435,0,0
 "1953","Historical",61,"winter_survival",0,0,0,NA
@@ -1970,7 +1970,7 @@
 "1969","Fine_sediment",62,"winter_survival",0,0,0,NA
 "1970","Floodplain",62,"summer_survival",0.316533845697485,0.316533845697485,0,0
 "1971","Floodplain",62,"winter_survival",0,0,0,NA
-"1972","FP_wood_comb",62,"summer_survival",0.348681318782592,0.348681318782592,0,0
+"1972","FP_wood_comb",62,"summer_survival",0.348681318782592,0.348836603498982,-0.000155284716389981,-0.000445348540415505
 "1973","FP_wood_comb",62,"winter_survival",0,0,0,NA
 "1974","Historical",62,"summer_survival",0.3466885797545,0.3466885797545,0,0
 "1975","Historical",62,"winter_survival",0,0,0,NA
@@ -1992,7 +1992,7 @@
 "1991","Fine_sediment",63,"winter_survival",0,0,0,NA
 "1992","Floodplain",63,"summer_survival",0.313178607481826,0.313178607481826,0,0
 "1993","Floodplain",63,"winter_survival",0,0,0,NA
-"1994","FP_wood_comb",63,"summer_survival",0.34640635234782,0.34640635234782,0,0
+"1994","FP_wood_comb",63,"summer_survival",0.34640635234782,0.346532486927291,-0.000126134579470971,-0.000364123170998671
 "1995","FP_wood_comb",63,"winter_survival",0,0,0,NA
 "1996","Historical",63,"summer_survival",0.345118305411403,0.345118305411403,0,0
 "1997","Historical",63,"winter_survival",0,0,0,NA

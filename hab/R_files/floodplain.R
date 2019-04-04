@@ -17,7 +17,7 @@ hist_sc <- flowline %>%
          tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang)
 
 Floodplain_raw <- list.files(path = Inputs, pattern = "Floodplain", full.names = T) %>% 
-  read.csv(.) %>%
+read.csv(.) %>%
   mutate(Length_sc = Shape_Length / 2) %>%
   bind_rows(.,hist_sc) %>%
   select(HabUnit, Area_ha, Period, Hist_salm, noaaid, NEAR_FID, NEAR_DIST, ET_ID, Length_sc, hist_side, wse_intersect)
@@ -141,11 +141,13 @@ fp2 <- fp1 %>%
                      curr.tempmult = ifelse(Subbasin_num %in% mainstem.subs,
                                             curr.tempmult,
                                             1),
-                     summer = Area_ha * curr.tempmult,
+                     summer = ifelse(Habitat %in% c("SC_pool", "SC_riffle"), 
+                                     Area_ha * woodmult_s * curr.tempmult,
+                                     Area_ha * curr.tempmult),
                      winter = ifelse(Habitat == "SC_pool", 
-                                     Area_ha * winter_pool_scalar_warm,
+                                     Area_ha * winter_pool_scalar_warm * woodmult_w,
                                      ifelse(Habitat == "SC_riffle", 
-                                            Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc), 
+                                            (Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc)) * woodmult_w, 
                                             Area_ha))) %>%
               gather(life.stage, Area, summer:winter)) %>%
   bind_rows(., fp %>%
@@ -161,8 +163,8 @@ fp2 <- fp1 %>%
                      Period %in% c("Both", "Curr")) %>%
               mutate(hab.scenario = "Wood",
                      summer = ifelse(Habitat %in% c("SC_pool", "SC_riffle"), 
-                                     Area_ha * woodmult_s,
-                                     Area_ha),
+                                     Area_ha * woodmult_s * curr.tempmult,
+                                     Area_ha * curr.tempmult),
                      winter = ifelse(Habitat == "SC_pool", 
                                      Area_ha * winter_pool_scalar_warm * woodmult_w,
                                      ifelse(Habitat == "SC_riffle",
