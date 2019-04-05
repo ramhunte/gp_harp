@@ -4,11 +4,7 @@ options(scipen = 999)
 Inputs = 'hab/Inputs'
 
 source(file.path("hab", "R_files",paste0(fishtype, "_inputs.R"))) #source fish specific variables (density, etc)
-
-lr_length_raw <- read.csv("hab/Excel_Files/LR_Length.csv") %>%
-  rename(Reach = reach)
-
-subbasin_names <- read.csv("hab/Excel_Files/Subbasin_names.csv")
+source("hab/R_files/read_in_data.R")
 
 
 outputs_hab <- file.path("outputs", fishtype, "hab.scenarios")

@@ -1,7 +1,3 @@
-Backwater_raw = list.files(path = Inputs, pattern = "Backwater", full.names = T) %>% 
-  read.csv  %>%
-  mutate(Period = "Both")
-
 bw <- Backwater_raw %>%
   left_join(., flowline %>%
               select(noaaid, curr_temp, hist_temp, temp_diff, Reach, curr.tempmult, hist.tempmult, Subbasin_num, species, spawn_dist, both_chk, 
@@ -27,69 +23,38 @@ if (fishtype == "spring_chinook") {
 
 assign('asrp_bw_raw', bw , envir = .GlobalEnv) 
 
-bw_curr_scenarios <- c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Barriers")
+curr_bw_scenarios <- c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Barriers", "Shade", "Wood")
+hist_bw_scenarios <- c("Floodplain", "FP_wood_comb", "Historical")
 
-bw1 <- lapply(bw_curr_scenarios, function(x){
-  bw %>%
+bw_curr <- lapply(curr_bw_scenarios, function(x) {
+  bw %>% 
     filter(Period == "Both") %>%
-    mutate(hab.scenario = x,
-           summer.area = Area_ha * curr.tempmult,
-           winter.area = Area_ha) %>%
-    gather(life.stage, Area, summer.area:winter.area) %>%
-    mutate(life.stage = ifelse(life.stage == "summer.area", 
-                               "summer", 
-                               "winter"))
+    mutate(hab.scenario = x)
 }) %>%
   do.call('rbind',.)
 
-bw2 <- bw1 %>%
-  bind_rows(., bw %>%
-              filter(Period == "Both") %>%
-              mutate(hab.scenario = "Shade",
-                     summer.area = Area_ha * hist.tempmult,
-                     winter.area = Area_ha) %>%
-              gather(life.stage, Area, summer.area:winter.area) %>%
-              mutate(life.stage = ifelse(life.stage == "summer.area", 
-                                         "summer", 
-                                         "winter"))) %>%
-  bind_rows(., bw %>%
-              left_join(., wood_data) %>%
-              filter(Period == "Both") %>%
-              mutate(hab.scenario = "Wood",
-                     summer.area = Area_ha * curr.tempmult * woodmult_s,
-                     winter.area = Area_ha * woodmult_w) %>%
-              gather(life.stage, Area, summer.area:winter.area) %>%
-              mutate(life.stage = ifelse(life.stage == "summer.area", 
-                                         "summer", 
-                                         "winter"))) %>%
-  bind_rows(., bw %>%
-              filter(Period %in% c("Both", "Hist")) %>%
-              mutate(hab.scenario = "Floodplain",
-                     summer.area = Area_ha * curr.tempmult, #* bw_scalar_s,
-                     winter.area = Area_ha) %>% #* bw_scalar_w)%>%
-              gather(life.stage, Area, summer.area:winter.area) %>%
-              mutate(life.stage = ifelse(life.stage == "summer.area", 
-                                         "summer", 
-                                         "winter"))) %>%
-  bind_rows(., bw %>%
-              left_join(., wood_data) %>%
-              filter(Period %in% c("Both", "Hist")) %>%
-              mutate(hab.scenario = "FP_wood_comb",
-                     summer.area = Area_ha * curr.tempmult * woodmult_s, #* bw_scalar_s,
-                     winter.area = Area_ha * woodmult_w) %>% #* bw_scalar_w)%>%
-              gather(life.stage, Area, summer.area:winter.area) %>%
-              mutate(life.stage = ifelse(life.stage == "summer.area", 
-                                         "summer", 
-                                         "winter"))) %>%
-  bind_rows(., bw %>%
-              filter(Period %in% c("Both", "Hist")) %>%
-              left_join(wood_data) %>%
-              mutate(hab.scenario = "Historical",
-                     summer.area = Area_ha * hist.tempmult * woodmult_s,
-                     winter.area = Area_ha * woodmult_w) %>% 
-              gather(life.stage, Area, summer.area:winter.area) %>%
-              mutate(life.stage = ifelse(life.stage == "summer.area", 
-                                         "summer", "winter"))) %>%
+bw_hist <- lapply(hist_bw_scenarios, function(y) {
+  bw %>%
+    filter(Period %in% c("Both", "Hist")) %>%
+    mutate(hab.scenario = y)
+}) %>%
+  do.call('rbind',.)
+
+bw2 <- bind_rows(bw_curr, bw_hist) %>%
+  left_join(., wood_data) %>%
+  mutate(
+    summer = case_when(
+      hab.scenario %in% c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Barriers", "Floodplain") ~ Area_ha * curr.tempmult,
+      hab.scenario == "Shade" ~ Area_ha * hist.tempmult,
+      hab.scenario %in% c("Wood", "FP_wood_comb") ~ Area_ha * curr.tempmult * woodmult_s,
+      hab.scenario == "Historical" ~ Area_ha * hist.tempmult * woodmult_s
+    ),
+    winter = case_when(
+      hab.scenario %in% c("Current", "Beaver", "Fine_sediment", "LR_bank", "LR_length", "Barriers", "Floodplain", "Shade") ~ Area_ha,
+      hab.scenario %in% c("Wood", "FP_wood_comb", "Historical") ~ Area_ha * woodmult_w
+    )
+  ) %>%
+  gather(life.stage, Area, summer:winter) %>%
   mutate(Area = ifelse(hab.scenario %in% c("Barriers", 
                                            "Historical"),
                        ifelse(pass_tot_natural == 0, 
@@ -100,18 +65,9 @@ bw2 <- bw1 %>%
                               Area))) %>%
   select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, curr.tempmult, hist.tempmult, both_chk, pass_tot_natural)
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   bw2 <- bw2 %>%
-    mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   schino_mult, 
-                                   1),
-           Area = Area * chinook_scalar)
-}
-
-if (fishtype == "fall_chinook") {
-  bw2 <- bw2 %>%
-    mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
-                                   fchino_mult, 
-                                   1),
-           Area = Area * chinook_scalar)
+    mutate(Area = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
+                         Area * chino_mult,
+                         Area))
 }

@@ -15,23 +15,25 @@ data <- data %>%
   left_join(., density) %>%
   mutate(capacity = Area * Density) %>%
   left_join(., survival) %>%
-  mutate(surv.base = ifelse(life.stage %in% c("summer", "summer.2"), 
-                            ifelse(hab.scenario == "Historical",
-                                   ifelse(Habitat %in% LgRiver_habs, 
-                                          wood.surv.base * woodmult * hist.tempmult,
-                                          wood.surv.base * hist.tempmult),
-                                   ifelse(hab.scenario %in% c("Wood", "FP_wood_comb"),
-                                          ifelse(Habitat %in% LgRiver_habs, 
-                                                 wood.surv.base * woodmult * curr.tempmult, 
-                                                 wood.surv.base * curr.tempmult),
-                                          ifelse(hab.scenario == "Shade",
-                                                        surv.base * hist.tempmult, 
-                                                        surv.base * curr.tempmult))),
-                            ifelse(hab.scenario %in% c("Historical", "Wood", "FP_wood_comb"),
-                                   ifelse(Habitat %in% LgRiver_habs, 
-                                          wood.surv.base * woodmult,
-                                          wood.surv.base),
-                                   surv.base))) %>%
+  mutate(
+    surv.base.summer = case_when(
+      Habitat %in% LgRiver_habs & hab.scenario == "Historical" ~ surv.base * woodmult * hist.tempmult,
+      !Habitat %in% LgRiver_habs & hab.scenario == "Historical" ~ wood.surv.base * hist.tempmult,
+      Habitat %in% LgRiver_habs & hab.scenario %in% c("Wood", "FP_wood_comb") ~ surv.base * woodmult * curr.tempmult,
+      !Habitat %in% LgRiver_habs & hab.scenario %in% c("Wood", "FP_wood_comb") ~ wood.surv.base * curr.tempmult,
+      hab.scenario == "Shade" ~ surv.base * hist.tempmult,
+      hab.scenario %in% c("Current", "Fine_sediment", "LR_bank", "LR_length", "Barriers", "Beaver", "Floodplain") ~
+        surv.base * curr.tempmult
+    ),
+    surv.base.winter = case_when(
+      Habitat %in% LgRiver_habs & hab.scenario %in% c("Historical", "Wood", "FP_wood_comb") ~ surv.base * woodmult,
+      !Habitat %in% LgRiver_habs & hab.scenario %in% c("Historical", "Wood", "FP_wood_comb") ~ wood.surv.base,
+      hab.scenario %in% c("Current", "Fine_sediment", "LR_bank", "LR_length", "Barriers", "Beaver", "Floodplain", "Shade") ~ surv.base
+    ),
+    surv.base = ifelse(life.stage %in% c("summer", "summer.2"),
+                       surv.base.summer,
+                       surv.base.winter)) %>%
+  select(-surv.base.summer, -surv.base.winter) %>%
   group_by(Subbasin_num, hab.scenario, life.stage) %>%
   mutate(cap.sum.sub = sum(capacity, na.rm = T),
          cap.perc = capacity / cap.sum.sub,
@@ -61,12 +63,9 @@ data <- data %>%
                                 survival, 
                                 0),
          survival.curr = sum(survival.curr, na.rm = T),
-         survival = ifelse(life.stage %in% c("summer", "summer.2"),
-                           ifelse(hab.scenario %in% c("LR_bank", "LR_length", "Shade"),
-                                  ifelse(Subbasin_num %in% mainstem.subs, 
-                                         survival.curr + surv.adj, 
-                                         survival),
-                                  survival),
+         survival = ifelse(life.stage %in% c("summer", "summer.2") & hab.scenario %in% c("LR_bank", "LR_length", "Shade") & 
+                             Subbasin_num %in% mainstem.subs,
+                           survival.curr + surv.adj, 
                            survival)) %>%
   select(hab.scenario, Subbasin_num, life.stage, capacity, survival) %>%
   bind_rows(spawn_tot) %>%
@@ -125,4 +124,3 @@ if (run_asrp == "no") {
   write.csv(data, file.path(outputs_hab, "outputs_long", "habmodel_outputs.csv"))
 }
 
-# write.csv(data, file.path(outputs_hab, "outputs_long", "habmodel_outputs.csv"))

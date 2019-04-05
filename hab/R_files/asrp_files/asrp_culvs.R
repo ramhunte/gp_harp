@@ -1,7 +1,6 @@
 # Attach GSU information to culverts so that we are able to affect passage percentage when barriers are removed from particular GSUs ----
 asrp_culvs <- asrp_culvs_raw %>%
-  left_join(., list.files(path = Inputs, pattern = "culvs_gsu_", full.names = T) %>%
-              read.csv(.) %>%
+  left_join(., culvs %>%
               select(OBS_UNIQ, GSU),  
             by = "OBS_UNIQ") %>%
   mutate(pass_tot_asrp = ifelse(GSU %in% barrier_gsu & !FeatureTyp == "Natural",

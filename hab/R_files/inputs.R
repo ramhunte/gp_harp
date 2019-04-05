@@ -29,7 +29,7 @@ curr_beaver_mult = .98625 # This comes from the fact that in current beaver scen
 curr_pond_area_per_m = .3
 
 # Create list of Diagnostic scenarios
-diag_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
+diag_scenarios <- scenarios %>%
   filter(substr(scenario, 1, 4) != 'ASRP') %>%
   pull(scenario) %>%
   as.character() %>%
@@ -37,11 +37,9 @@ diag_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
 
 
 # List of all scenarios (note: LCM uses a different habitat scenario format)
-all_scenarios <- read.csv('hab/Excel_Files/scenarios.csv') %>%
+all_scenarios <- scenarios %>%
   pull(scenario) %>%
   as.character() %>%
   gsub('\\.', '_', .) # replace . with _
 
-flowline_raw <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
-  read.csv(.)
-mainstem_reaches <- unique(grep("^Chehalis-", flowline_raw$Reach, value = T))
+mainstem_reaches <- unique(grep("^Chehalis-", flowline$Reach, value = T))

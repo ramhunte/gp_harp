@@ -1,8 +1,6 @@
 # Capacity Calculations ----
 
 # 1. Read in ASRP scenarios csv and create list of scenario names and dates to loop through ----
-
-asrp_scenarios <- read.csv('hab/Excel_Files/ASRP_scenarios.csv')
 scenario.nums <- c(levels(unique(asrp_scenarios$Scenario_num)), "Current_asrp")
 scenario.years <- c(2040, 2080, 2019)
 

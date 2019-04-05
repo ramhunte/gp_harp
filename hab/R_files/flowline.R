@@ -1,40 +1,4 @@
-edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T) %>%
-  read.csv(.) %>%
-  mutate(Reach_low = tolower(Reach)) %>%
-  rename(width_w = X1,
-         width_s = X8) %>%
-  select(Reach_low, width_w, width_s, year)
-
-edt_temps <- list.files(path = Inputs, pattern = "edt_temps", full.names = T) %>% 
-  read.csv(.) %>%
-  select(-X)
-
-psu_temps <- list.files(path = Inputs, pattern = "psu_temps", full.names = T) %>%
-  read.csv(.) %>%
-  select(-X)
-
-temp_gaps <- list.files(path = Inputs, pattern = "temp_gaps", full.names = T) %>% 
-  read.csv(.) %>%
-  select(-notes)
-  
-# Attribute table of chehalis_obstructs_20181013_NAD83
-culvs <- list.files(path = Inputs, pattern = "culvs_gsu_", full.names = T) %>%
-  read.csv(.) %>%
-  mutate(noaa_culv = as.numeric(row.names(.)),
-         FishPass = as.numeric(as.character(FishPass))/100) %>%
-  select(noaa_culv, FeatureTyp,FishPass,OBS_UNIQ)
-
-
-flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
-  read.csv(.) %>%
-  mutate(Reach_low = tolower(Reach),
-         Subbasin_num = ifelse(Habitat == "LgRiver", noaa_sub_num, noaa_sub_nofp_num),
-         Habitat = case_when(!Reach %in% mainstem_reaches ~ as.character(Habitat),
-                             Reach %in% mainstem_reaches & Subbasin_num == 49 ~ "Tidal",
-                             Reach %in% mainstem_reaches & !Subbasin_num == 49 ~ "LgRiver")) %>%
-  left_join(., edt_temps, by = "Reach") %>%
-  left_join(., psu_temps, by = "Seg") %>%
-  left_join(., temp_gaps, by = "Reach") %>%
+flowline %<>%
   rename(coho = cohospawn,
          fall_chinook = fallspawn,
          chum = chumspawn,
@@ -42,9 +6,17 @@ flowline <- list.files(path = Inputs, pattern = "flowline", full.names = T) %>%
          steelhead = steelspawn) %>%
   mutate(both_chk = ifelse(fall_chinook == "Yes" & spring_chinook == "Yes",
                            "Yes",
-                           "No")) %>%
+                           "No"),
+         Reach_low = tolower(Reach),
+         Subbasin_num = ifelse(Habitat == "LgRiver", noaa_sub_num, noaa_sub_nofp_num),
+         Habitat = case_when(!Reach %in% mainstem_reaches ~ as.character(Habitat),
+                             Reach %in% mainstem_reaches & Subbasin_num == 49 ~ "Tidal",
+                             Reach %in% mainstem_reaches & !Subbasin_num == 49 ~ "LgRiver")) %>%
   gather(species, spawn_dist, coho:steelhead) %>%
   filter(species == fishtype) %>%
+  left_join(., edt_temps, by = "Reach") %>%
+  left_join(., psu_temps, by = "Seg") %>%
+  left_join(., temp_gaps, by = "Reach") %>%
   left_join(., edt_width %>%
               gather(stage, width, width_w:width_s) %>%
               mutate(stage = case_when(year == 2019 & stage == "width_s" ~ "width_s",
@@ -102,7 +74,8 @@ flowline <- flowline %>%
   unnest(culv_list) %>%
   filter(culv_list != 'None') %>%
   mutate(noaa_culv = as.numeric(culv_list)) %>%
-  left_join(culvs) %>%
+  left_join(., culvs %>%
+              select(-GSU)) %>%
   assign('asrp_culvs_raw', . , envir = .GlobalEnv) %>%
   group_by(noaaid) %>%
   summarize(pass_tot = prod(FishPass),

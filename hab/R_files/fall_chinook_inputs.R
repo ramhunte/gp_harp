@@ -52,4 +52,4 @@ lr_wd_w_bar <- -9999
 # Prespawn survival ----
 prespawn_surv_raw <- 1
 
-
+chino_mult <- .81
