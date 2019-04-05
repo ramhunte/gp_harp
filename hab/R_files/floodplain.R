@@ -239,5 +239,5 @@ if (fishtype == "fall_chinook") {
     mutate(chinook_scalar = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs, 
                                    fchino_mult, 
                                    1),
-           Area * chinook_scalar)
+           Area = Area * chinook_scalar)
 }
