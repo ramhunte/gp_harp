@@ -262,27 +262,6 @@ if (sensitivity.mode == "no") {
     dev.off()
   } # close scenario for loop
   
-  # Figure of change in total run for each scenario, by Eco Region 
-  spawners.edr%>% #spawners.edr object is created in the plots.R script
-    filter(time.period== 'Current',
-           !scenario %in% c('Current', 'ASRP.Current.asrp'),
-           EcoRegion != 'Lower Chehalis Estuary',
-           EcoRegion != 'Upper Skookumchuck')%>%
-    mutate(prcnt.change = ifelse(prcnt.change>5,Inf,prcnt.change))%>%
-    ggplot(aes(scenario.label,spawners.change,fill=scenario.label))+
-    theme_bw()+
-    geom_bar(stat = 'identity',color='black',na.rm = T)+
-    facet_wrap(~EcoRegion,ncol = 3,scales = 'free_y')+
-    theme(axis.text.x = element_text(angle = 90, hjust = 1),
-          axis.title.y = element_text(margin = margin(r = 10)))+
-    scale_fill_manual(values = plot.params$color[2:length(scenario.file) -1],guide=F)+
-    scale_y_continuous(label=comma)+
-    labs(x=NULL,
-         y="Change in Spawners \nfrom Current Scenario",
-         caption = paste0('species = ',pop, ' - Model version = ',hab.ver))
-  
-  ggsave(file.path(outputs_lcm,paste0("Change_by_Scenario_Absolute",".jpg")), width = 6.5, height = 8, dpi = 300)
-  
   
 } # close save.edr.plots if statement
 
