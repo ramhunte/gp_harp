@@ -36,15 +36,19 @@ asrp_fp_precalc1 <- asrp_fp_precalc1 %>%
          tempmult.asrp = ifelse(species %in% c("coho", "steelhead") & Subbasin_num %in% mainstem.subs,
                                 temp_func(asrp_temp),
                                 1),
-         woodmult_s_asrp = ifelse(GSU %in% wood_gsu,
-                                  ifelse(forest == "y",
-                                         1 + ((woodmult_s - 1) * rest_perc_f * wood_intensity_scalar_f),
-                                         1 + ((woodmult_s - 1) * rest_perc_nf * wood_intensity_scalar_nf)),
+         woodmult_s_asrp = ifelse(Habitat == "Side_Channel",
+                                  ifelse(GSU %in% wood_gsu,
+                                         ifelse(forest == "y",
+                                                1 + ((woodmult_s - 1) * rest_perc_f * wood_intensity_scalar_f),
+                                                1 + ((woodmult_s - 1) * rest_perc_nf * wood_intensity_scalar_nf)),
+                                         1),
                                   1),
-         woodmult_w_asrp = ifelse(GSU %in% wood_gsu,
-                                  ifelse(forest == "y",
-                                         1 + ((woodmult_w - 1) * rest_perc_f * wood_intensity_scalar_f),
-                                         1 + ((woodmult_w - 1) * rest_perc_nf * wood_intensity_scalar_nf)),
+         woodmult_w_asrp = ifelse(Habitat == "Side_Channel",
+                                  ifelse(GSU %in% wood_gsu,
+                                         ifelse(forest == "y",
+                                                1 + ((woodmult_w - 1) * rest_perc_f * wood_intensity_scalar_f),
+                                                1 + ((woodmult_w - 1) * rest_perc_nf * wood_intensity_scalar_nf)),
+                                         1),
                                   1))
 
 asrp_fp_precalc <- asrp_fp_precalc1 %>%
@@ -57,69 +61,41 @@ asrp_fp_precalc <- asrp_fp_precalc1 %>%
               gather(Habitat, Area_new, SC_pool:SC_riffle) %>%
               rename(Area_ha = Area_new)) %>% 
   filter(!Habitat == "Side_Channel") %>%
-  mutate(summer = Area_ha * tempmult.asrp,
+  mutate(summer = Area_ha * tempmult.asrp ,
          winter = ifelse(Habitat == "SC_pool",
                          Area_ha * winter_pool_scalar_warm,
                          ifelse(Habitat == "SC_riffle",
-                                Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc),
+                                (Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc)),
                                 Area_ha))) %>%
   gather(life.stage, Area, summer:winter)
+  
+asrp_fp_curr <- asrp_fp_precalc %>%
+  filter(Period %in% c("Curr", "Both"),
+         Hist_salm == "Hist salmon",
+         spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & wse_intersect == "Yes" | spawn_dist == "Yes" & wse_intersect == "Yes")
+
+asrp_fp_hist <- asrp_fp_precalc %>%
+  filter(Period %in% c("Hist", "Both"),
+         Hist_salm == "Hist salmon",
+         spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs)
 
 if (fishtype == "spring_chinook") {
+  asrp_fp_curr %<>% 
+    filter(Subbasin_num %in% schino_subs)
   
-  asrp_fp_curr <- asrp_fp_precalc %>%
-    filter(Period %in% c("Curr", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & ET_ID > 0,
-           Subbasin_num %in% schino_subs)
-  
-  asrp_fp_hist <- asrp_fp_precalc %>%
-    filter(Period %in% c("Hist", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs,
-           Subbasin_num %in% schino_subs)
-} else if (fishtype == "coho") {
-  
-  asrp_fp_curr <- asrp_fp_precalc %>%
-    filter(Period %in% c("Curr", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & ET_ID > 0)
-  
-  asrp_fp_hist <- asrp_fp_precalc %>%
-    filter(Period %in% c("Hist", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs & ET_ID > 0)
-} else if (fishtype == "fall_chinook") {
-  
-  asrp_fp_curr <- asrp_fp_precalc %>%
-    filter(Period %in% c("Curr", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & ET_ID > 0)
-  
-  asrp_fp_hist <- asrp_fp_precalc %>%
-    filter(Period %in% c("Hist", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs & ET_ID > 0)
-} else if (fishtype == "steelhead") {
-  
-  asrp_fp_curr <- asrp_fp_precalc %>%
-    filter(Period %in% c("Curr", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & ET_ID > 0)
-  
-  asrp_fp_hist <- asrp_fp_precalc %>%
-    filter(Period %in% c("Hist", "Both"),
-           Hist_salm == "Hist salmon",
-           spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs & ET_ID > 0)
+  asrp_fp_hist %<>% 
+    filter(Subbasin_num %in% schino_subs)
 }
 
 asrp_fp <- asrp_fp_curr %>%
-  group_by(GSU, Habitat, life.stage, forest, Subbasin_num) %>%
-  summarize(curr_area = sum(Area, na.rm = T)) %>%
+  group_by(noaaid, GSU, Habitat, life.stage, forest, Subbasin_num) %>%
+  summarize(curr_area = sum(Area, na.rm = T),
+            tempmult.asrp = mean(tempmult.asrp, na.rm = T)) %>%
   ungroup() %>%
   left_join(., asrp_fp_hist %>%
-              group_by(GSU, Habitat, life.stage, forest) %>%
-              summarize(hist_area = sum(Area, na.rm = T)) %>%
+              group_by(noaaid, GSU, Habitat, life.stage, forest) %>%
+              summarize(hist_area = sum(Area, na.rm = T),
+                        tempmult.asrp = mean(tempmult.asrp, na.rm = T)) %>%
               ungroup()) %>%
   left_join(.,asrp_scenarios %>%
               select(GSU, rest_perc_nf, rest_perc_f), 
@@ -136,10 +112,7 @@ asrp_fp <- asrp_fp_curr %>%
                               ifelse(life.stage == "summer",
                                      (curr_area + ((hist_area - curr_area) * rest_perc_nf * fp_intensity_scalar_nf)) * woodmult_s,
                                      (curr_area + ((hist_area - curr_area) * rest_perc_nf * fp_intensity_scalar_nf)) * woodmult_w)),
-                       curr_area)) %>%
-  group_by(GSU, Habitat, life.stage, Subbasin_num) %>%
-  summarize(Area = sum(Area, na.rm = T )) %>%
-  ungroup()
+                       curr_area)) 
 # %>%
 # left_join(., density) 
 # %>%

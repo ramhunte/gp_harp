@@ -11,9 +11,9 @@ LgRiver <- LgRiver_raw %>%
   left_join(., flowline %>%
               select(noaaid, curr_temp, hist_temp, temp_diff, curr.tempmult, hist.tempmult, species, spawn_dist, both_chk, Subbasin_num, pass_tot, 
                      Area_km2, pass_tot_natural, tm_2040, tm_2080,tm_2040_cc_only, tm_2080_cc_only, can_ang, Reach_low, width_s, width_w, 
-                     width_s_hist, width_w_hist),
+                     width_s_hist, width_w_hist, width_s_2040, width_s_2080, width_w_2040, width_w_2080),
             by = "noaaid") %>% 
-  gather(value, width, c(width_s, width_w, width_s_hist, width_w_hist)) %>% 
+  gather(value, width, width_s:width_w_2080) %>% 
   mutate(width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width + 2.11,
                            Habitat == "Bank" ~ 0.084 * width + 0.33,
                            Habitat == "HM_Bank" ~ 0.089 * width + .33)) %>%
@@ -27,14 +27,14 @@ if (fishtype == "spring_chinook") {
     filter(Subbasin_num %in% schino_subs)
 }
 
+assign('asrp_lr_raw', LgRiver , envir = .GlobalEnv)
+
 source("hab/R_files/wood_script.R")
 
 lr <- LgRiver %>%
   select(Length_m, Period, Subbasin_num, noaaid, curr_temp, hist_temp, pass_tot, species, spawn_dist, both_chk, Habitat, Reach, 
          Wtrbdy_wau, Area_km2, curr.tempmult, hist.tempmult, pass_tot_natural, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, area_s, 
          area_w, Reach_low, width_s, width_w, width_s_hist, width_w_hist)
-
-assign('asrp_lr_raw', lr , envir = .GlobalEnv)
 
 lr_curr_scenarios <- c("Current", "Beaver", "Fine_sediment", "Floodplain", "Barriers", "LR_length", "Wood", "Shade", "FP_wood_comb")
 lr_hist_scenarios <- c("Historical", "LR_bank")

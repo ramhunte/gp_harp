@@ -13,13 +13,14 @@ if (fishtype == "spring_chinook") {
                                        mdm,
                                        ifelse(!is.na(edt_mdm_temp),
                                               edt_mdm_temp,
-                                              15)),
-           prespawn_temp_hist = prespawn_temp_curr - UQ(as.name(paste0("temp_diff_", x))),
-           prespawn_temp_asrp = ifelse(!GSU %in% shade_gsu & can_ang > 170,
-                                       prespawn_temp_curr + ((UQ(as.name(paste0("temp_diff_", x, "_cc_only"))) * prespawn_temp_slope) - 
-                                                               prespawn_temp_intercept),
-                                       prespawn_temp_curr + ((UQ(as.name(paste0("temp_diff_", x))) * prespawn_temp_slope) - 
-                                                               prespawn_temp_intercept)),
+                                              gap_temp_mdm)),
+           prespawn_temp_asrp = case_when(
+             x == 2019 ~ prespawn_temp_curr, # This case is needed because of the prespawn_temp_intercept
+             !x == 2019 ~ 
+               ifelse(!GSU %in% shade_gsu & can_ang > 170,
+                      prespawn_temp_curr + ((UQ(as.name(paste0("temp_diff_", x, "_cc_only"))) * prespawn_temp_slope) - 
+                                              prespawn_temp_intercept),
+                      prespawn_temp_curr + ((UQ(as.name(paste0("temp_diff_", x))) * prespawn_temp_slope) - prespawn_temp_intercept))),
            pass_tot_asrp = ifelse(GSU %in% barrier_gsu,
                                   pass_tot_natural,
                                   pass_tot)) %>%
@@ -34,10 +35,13 @@ if (fishtype == "spring_chinook") {
   prespawn_asrp <- flowline %>%
     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
     left_join(., fl_to_gsu) %>%
-    mutate(pass_tot_asrp = ifelse(GSU %in% barrier_gsu,
+    mutate(imperv_mult = ifelse(fishtype == "coho",
+                                calc_coho_imperv(mn_imperv),
+                                1),
+           pass_tot_asrp = ifelse(GSU %in% barrier_gsu,
                                   pass_tot_natural,
                                   pass_tot),
-           survival = prespawn_surv_raw * pass_tot_asrp) %>%
+           survival = prespawn_surv_raw * pass_tot_asrp * imperv_mult) %>%
     group_by(Subbasin_num) %>%
     summarize(survival = mean(survival, na.rm = T)) %>%
     ungroup() %>%

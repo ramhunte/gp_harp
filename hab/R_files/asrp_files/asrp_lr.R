@@ -5,22 +5,25 @@ asrp_bw <- asrp_bw_raw %>%
                           ifelse(GSU %in% floodplain_gsu & forest == "n",
                                  Area_ha * rest_perc_nf * fp_intensity_scalar_nf,
                                  0),
-                          Area_ha))
+                          Area_ha),
+         area_s = Area_ha,
+         area_w = Area_ha)
 
 
 asrp_lr <- asrp_lr_raw %>%
+  left_join(., fl_to_gsu) %>%
   filter(Period %in% c("Curr", "Both")) %>%
-  left_join(., edt_width %>% 
-              filter(year == x),
-            by = "Reach_low") %>%
+  rename(width_s_2019 = width_s,
+         width_w_2019 = width_w) %>%
+  mutate(width_s = UQ(as.name(paste0("width_s_", x))),
+         width_w = UQ(as.name(paste0("width_w_", x))),
+         area_s = Length_m * width_s / 10000,
+         area_w = Length_m * width_w / 10000) %>%
   bind_rows(., asrp_bw) %>%
   left_join(., wood_data) %>%
-  left_join(., fl_to_gsu) %>%
   left_join(., asrp_culvs) %>%
-  mutate(GSU = ifelse(primary_cr_only == "y",
-                      ifelse(Reach %in% primary_cr,
-                             GSU,
-                             paste0(GSU, "_np")),
+  mutate(GSU = ifelse(primary_cr_only == "y" & !Reach %in% primary_cr,
+                      paste0(GSU, "_np"),
                       GSU),
          woodmult_s_asrp = ifelse(GSU %in% wood_gsu,
                                   ifelse(forest == "y",

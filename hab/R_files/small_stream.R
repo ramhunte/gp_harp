@@ -9,7 +9,7 @@ SmStream_raw <- flowline %>%
          !fp_overlap == "Yes") %>%
   select(noaaid, curr_temp, hist_temp, temp_diff, curr.tempmult, hist.tempmult, Subbasin_num, pass_tot, Reach, Shape_Length, slope, lc, 
          spawn_dist, species, both_chk, pass_tot_natural, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, area_s, area_w,
-         Reach_low, width_s_hist, width_w_hist)
+         Reach_low, width_s_hist, width_w_hist, wet_width)
 
 ss <- SmStream_raw %>%
   mutate(slope.class = case_when(slope < .02 ~ "low",
