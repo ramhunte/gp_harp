@@ -46,6 +46,9 @@ run_asrp_query <- c('yes', 'no')
 run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", graphics = TRUE)]
 
 
+# Create the spawner-recruit curves?
+run_sr_curves_query <- c('yes', 'no')
+run_sr_curves <- run_sr_curves_query[menu(run_sr_curves_query, title = "Create spawner-recruit curves?", graphics = TRUE)]
 
 # Store branch name ----
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)

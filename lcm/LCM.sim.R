@@ -355,7 +355,7 @@ source("lcm/scripts/plots.R")
 
 
 # Call S-R curve plots (currently only working for coho 3/19/2019)
-if (pop == 'coho' & sensitivity.mode == 'no') {
+if (sensitivity.mode == 'no' & pop != 'steelhead' & run_sr_curves == 'yes') {
   print('Creating spawner recruit (P and C) values and plots')
   source('lcm/scripts/spawner.recruit.curves.R')
 }
