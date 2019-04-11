@@ -106,3 +106,13 @@ spawn_tot <- bind_rows(fps1, ss_sp1, lrsp1) %>%
             adults = sum(adults, na.rm = T)) %>%
   gather(life.stage, capacity, c(eggs, adults)) %>%
   ungroup()
+
+# Create spawning capacity per reach (noaaid) to weight egg to fry surv and prespawn surv ---
+
+egg_cap_weight <- bind_rows(fps1, ss_sp1, lrsp1) %>%
+  group_by(hab.scenario, Subbasin_num, noaaid) %>% 
+  summarize(eggs = sum(eggs, na.rm = T)) %>% # egg cap per noaaid
+  group_by(hab.scenario, Subbasin_num) %>%
+  mutate(eggs_by_sub = sum(eggs), # egg cap per subbasin
+         eggs_weight = eggs / eggs_by_sub) %>% # egg cap weights
+  select(-eggs, -eggs_by_sub)
