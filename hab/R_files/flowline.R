@@ -1,4 +1,4 @@
-flowline %<>%
+flowline_noculv <- flowline %>%
   rename(coho = cohospawn,
          fall_chinook = fallspawn,
          chum = chumspawn,
@@ -67,7 +67,7 @@ flowline %<>%
                           0, # we set canopy opening angle to 0 because the majority of these reaches are far upstream and few of them are clearcut.
                           can_ang))
 
-flowline <- flowline %>% 
+flowline <- flowline_noculv %>% 
   select(noaaid,Reach,culv_list) %>%
   filter(culv_list != "") %>%
   mutate(culv_list = str_split(culv_list,',')) %>%
@@ -76,10 +76,9 @@ flowline <- flowline %>%
   mutate(noaa_culv = as.numeric(culv_list)) %>%
   left_join(., culvs %>%
               select(-GSU)) %>%
-  assign('asrp_culvs_raw', . , envir = .GlobalEnv) %>%
   group_by(noaaid) %>%
   summarize(pass_tot = prod(FishPass),
             pass_tot_natural = prod(ifelse(FeatureTyp == 'Natural',FishPass,1))) %>%
-  right_join(flowline) %>%
+  right_join(flowline_noculv) %>%
   replace_na(list(pass_tot = 1, pass_tot_natural = 1)) %>%
   ungroup()

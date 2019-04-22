@@ -1,14 +1,10 @@
-asrp_results_inputs <- bind_rows(asrp_prod, asrp_spawn_tot,prespawn_asrp, ef.surv %>%
-                                   filter(hab.scenario == "Current") %>%
-                                   select( -hab.scenario)) %>%
-  mutate(hab.scenario = paste0(y, "_", x))
+asrp_results_inputs <- bind_rows(asrp_prod, asrp_spawn_tot,prespawn_asrp, ef.surv.asrp) %>%
+  mutate(hab.scenario = paste0(Scenario_num, '_', year))
 
 data <- data %>%
-  bind_rows(asrp_results_inputs)
+  bind_rows(asrp_results_inputs) %>% 
+  select(-year, -Scenario_num)
 assign('data', data , envir = .GlobalEnv)
-
-
-
 
 life.stage.nm <- c("egg.to.fry.survival", "adults.capacity", "eggs.capacity", "prespawn.survival", "summer.capacity", "summer.survival", 
                    "winter.capacity", "winter.survival","winter.movement", "summer.2.capacity", "summer.2.survival", "winter.2.capacity", 
@@ -22,6 +18,10 @@ ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
 
 asrp_results <- asrp_results_inputs %>%
   left_join(., asrp_mvmt) %>%
+  mutate(movement = ifelse(Scenario_num == "Current_asrp",
+                           11,
+                           movement)) %>%
+  # mutate(movement = 11) %>%
   gather(life.stage2, num, c(capacity, survival, movement)) %>%
   unite(life.stage, life.stage2, col = life.stage, sep = ".") %>%
   left_join(.,ls.to.names) %>%
@@ -32,7 +32,12 @@ asrp_results <- asrp_results_inputs %>%
   spread(Subbasin_num, num) %>%
   filter(life.stage %in% life.stage.nm) %>%
   arrange(stage_nums) %>%
-  select(-life.stage, -stage_nums, -hab.scenario)
+  select(-life.stage, -stage_nums, -hab.scenario) %>%
+  mutate(ASRP = "ASRP") %>%
+  unite(hab.scenario, ASRP, Scenario_num, year, sep = '_') %>%
+  mutate(hab.scenario = ifelse(hab.scenario == "ASRP_Current_asrp_2019",
+                               "ASRP_Current_asrp",
+                               hab.scenario))
 
 if (!fishtype == "coho") {
   asrp_results %<>%
@@ -43,4 +48,12 @@ if (!fishtype == "steelhead") {
   asrp_results %<>%
     filter(!stage_nm %in% c("capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
 }
+
+asrp_results_outputs <- lapply(c("ASRP_Current_asrp", asrp_scenario_names), function(b) {
+  f <- asrp_results %>%
+    filter(hab.scenario == b) %>%
+    ungroup() %>%
+    select(-hab.scenario)
+  write.csv(f, file = file.path(outputs_hab, paste0(b, ".csv")))
+})
 

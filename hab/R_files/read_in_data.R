@@ -59,7 +59,7 @@ Floodplain_raw <- list.files(path = file.path(Inputs, "spatial_model_outputs"), 
   read.csv(.) 
 
 # ASRP scenarios ----
-asrp_scenarios <- read.csv('hab/Inputs/ASRP_scenarios.csv')
+asrp_scenarios_raw <- read.csv('hab/Inputs/ASRP_scenarios.csv')
 
 # Scenarios.  Read in list of all scenarios ----
 scenarios <- read.csv('hab/Inputs/scenarios.csv') 

@@ -124,3 +124,32 @@ if (run_asrp == "no") {
   write.csv(data, file.path(outputs_hab, "outputs_long", "habmodel_outputs.csv"))
 }
 
+rm(bw)
+rm(bw_curr)
+rm(bw_hist)
+
+rm(data.lr)
+
+rm(Floodplain_raw) 
+rm(fp)
+rm(fp_hist)
+rm(fp_curr)
+rm(fp_join)
+rm(fp_spawn)
+rm(fps_curr)
+rm(fps_hist)
+rm(fps1)
+
+rm(LgRiver)
+rm(LgRiver_raw)
+rm(LgRiver_raw_wood)
+rm(lr)
+rm(lr_curr)
+rm(lr_hist)
+rm(lrsp)
+rm(lrsp1)
+
+rm(SmStream_raw)
+rm(ss)
+rm(ss_spawn)
+rm(ss_sp1)

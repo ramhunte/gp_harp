@@ -42,4 +42,10 @@ all_scenarios <- scenarios %>%
   as.character() %>%
   gsub('\\.', '_', .) # replace . with _
 
+asrp_scenario_names <- scenarios %>%
+  filter(substr(scenario, 1, 4) == 'ASRP') %>%
+  pull(scenario) %>%
+  as.character() %>% 
+  gsub('\\.', '_',.)
+
 mainstem_reaches <- unique(grep("^Chehalis-", flowline$Reach, value = T))
