@@ -207,12 +207,12 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     non.natal.sub.yr.redist <- reallocate.fish(non.natal.sub.yr, redist.matrix = non.natal.fry.dist[return.rows,])[2, ] # Re-distribute non-natal subyearlings
     
     # Fry migrants
-    fry.migrants.ms <- (non.natal.fry.dist[2, ] * sub.yr.surv) - non.natal.sub.yr
+    fry.migrants.ms <- (non.natal.fry.dist[2,] * sub.yr.surv) - non.natal.sub.yr # Group 4
     fry.migrants.redist <- reallocate.fish(fry.migrants.ms, redist.matrix = non.natal.fry.dist[return.rows, ])[2, ] # Re-distribute non-natal subyearlings
-    fry.migrants.parr <- (non.natal.fry.dist[2, ] * sub.yr.surv) - non.natal.sub.yr
-    fry.migrants.parr.redist <- reallocate.fish(fry.migrants.parr, redist.matrix = non.natal.fry.dist[return.rows, ])[2, ]
+   
+    fry.migrants.parr <- (natal.fry * sub.yr.surv) - natal.sub.yr # Group 2
     
-    fry.migrants <-  non.natal.fry.to.bay + fry.migrants.redist + fry.migrants.parr.redist
+    fry.migrants <-  non.natal.fry.to.bay + fry.migrants.redist + fry.migrants.parr
     
     
     # Sub yearlings to bay (ds migration, delta, bay, nearshore productivity)
