@@ -196,34 +196,34 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     # GH and MS migrate straight to bay (fry migrants)
     non.natal.fry <- (pre.fry * fry.surv) - natal.fry # Density dependent slice to create non natal fry
     non.natal.fry.to.ms <- c(non.natal.fry[to.ms.reaches], non.natal.fry[to.bay.reaches] * 0)
-    non.natal.fry.to.bay <- c(non.natal.fry[to.ms.reaches] * 0 , non.natal.fry[to.bay.reaches])
+    non.natal.fry.to.bay.grp1 <- c(non.natal.fry[to.ms.reaches] * 0 , non.natal.fry[to.bay.reaches]) # Group 1
     
     # Natal sub yearlings - all basins
-    natal.sub.yr <- BH.func(S = natal.fry, p = sub.yr.surv, c = sub.yr.cap)
+    natal.sub.yr.grp3 <- BH.func(S = natal.fry, p = sub.yr.surv, c = sub.yr.cap) # Group 3
     
     # Non natal subyearlings - only upper watershed fish that migrated to ms reaches
     non.natal.fry.dist <- distribute.fish(non.natal.fry.to.ms, move.matrix) # Distribute non-natal fry
-    non.natal.sub.yr <- BH.func(S = non.natal.fry.dist[2,], p = sub.yr.surv, c = sub.yr.cap - natal.sub.yr) # Run non-natal fry through B-H to get subyearlings
-    non.natal.sub.yr.redist <- reallocate.fish(non.natal.sub.yr, redist.matrix = non.natal.fry.dist[return.rows,])[2, ] # Re-distribute non-natal subyearlings
+    
+    # Run non-natal fry through B-H to get subyearlings
+    non.natal.sub.yr.grp5 <- BH.func(S = non.natal.fry.dist[2,], p = sub.yr.surv, c = sub.yr.cap - natal.sub.yr.grp3) # Group 5
+    non.natal.sub.yr.grp5.redist <- reallocate.fish(non.natal.sub.yr.grp5, redist.matrix = non.natal.fry.dist[return.rows,])[2, ] # Re-distribute non-natal subyearlings
     
     # Fry migrants
-    fry.migrants.ms <- (non.natal.fry.dist[2,] * sub.yr.surv) - non.natal.sub.yr # Group 4
-    fry.migrants.redist <- reallocate.fish(fry.migrants.ms, redist.matrix = non.natal.fry.dist[return.rows, ])[2, ] # Re-distribute non-natal subyearlings
+    natal.fry.migrants.grp2 <- (natal.fry * sub.yr.surv) - natal.sub.yr.grp3 # Group 2
+    
+    non.natal.fry.migrants.grp4 <- (non.natal.fry.dist[2,] * sub.yr.surv) - non.natal.sub.yr.grp5 # Group 4
+    non.natal.fry.migrants.grp4.redist <- reallocate.fish(non.natal.fry.migrants.grp4, redist.matrix = non.natal.fry.dist[return.rows, ])[2, ] # Re-distribute non-natal subyearlings
    
-    fry.migrants.parr <- (natal.fry * sub.yr.surv) - natal.sub.yr # Group 2
+    # Sum all fry migrants and subyearlings
+    fry.migrants <-  non.natal.fry.to.bay.grp1 + non.natal.fry.migrants.grp4.redist + natal.fry.migrants.grp2
+    sub.yr <- natal.sub.yr.grp3 + non.natal.sub.yr.grp5.redist
     
-    fry.migrants <-  non.natal.fry.to.bay + fry.migrants.redist + fry.migrants.parr
-    
-    
-    # Sub yearlings to bay (ds migration, delta, bay, nearshore productivity)
-    natal.sub.yr.bay <- natal.sub.yr * bay.parr.surv
-    non.natal.sub.yr.bay <- non.natal.sub.yr.redist * bay.parr.surv
-    
-    # Fry migrants to bay
+    # Apply bay survival (ds migration, delta, bay, nearshore productivity)
     fry.migrants.bay <- fry.migrants * bay.fry.surv
+    sub.yr.bay <- sub.yr * bay.parr.surv
     
     # Ocean survival
-    mat.new['ocean0', ] <- (fry.migrants.bay + natal.sub.yr.bay + non.natal.sub.yr.bay) # smolts leaving bay, ocean0
+    mat.new['ocean0', ] <- fry.migrants.bay + sub.yr.bay # smolts leaving bay, ocean0
     mat.new['ocean1', ] <- mat[1, ] * So.func(so.1[1], so.1[2]) # 2 year olds, ocean1
     mat.new['ocean2', ] <- mat[2, ] * (1 - b2) * So.func(so.2[1], so.2[2]) # 3 year olds, ocean2
     mat.new['ocean3', ] <- mat[3, ] * (1 - b3) * So.func(so.3[1], so.3[2]) # 4 year olds, ocean3
@@ -238,11 +238,11 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     mat.new['natal.fry', ] <- natal.fry
     mat.new['non.natal.fry', ] <- non.natal.fry
     mat.new['fry.migrants', ] <- fry.migrants
-    mat.new['fry.migrants.ms', ] <- fry.migrants.ms
-    mat.new['non.natal.sub.yr', ] <- non.natal.sub.yr
+    mat.new['fry.migrants.ms', ] <- non.natal.fry.migrants.grp4
+    mat.new['non.natal.sub.yr', ] <- non.natal.sub.yr.grp5
     mat.new['smolts.fry.migrants', ] <- fry.migrants
-    mat.new['smolts.non.natal.sub.yr', ] <- non.natal.sub.yr.redist
-    mat.new['smolts.natal.sub.yr', ] <- natal.sub.yr
+    mat.new['smolts.non.natal.sub.yr', ] <- non.natal.sub.yr.grp5.redist
+    mat.new['smolts.natal.sub.yr', ] <- natal.sub.yr.grp3
     
     
     N <- mat.new
