@@ -82,7 +82,7 @@ fl <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Output
 
 basemap +
   geom_sf(data = fl %>%
-            filter(species == 'EDT_FChino'),
+            filter(species == 'cohospawn'),
           color = 'blue') +
   coord_sf(datum = NA) # Remove gridlines. Must come after last geom_sf()
 
@@ -117,6 +117,12 @@ temps_no_action <- fl_temps %>%
   mutate(temp_chg = ifelse(can_ang > 170,
                            cc_impact,
                            temp_chg)) %>%
+  filter(!is.na(temp_chg)) %>%
+  mutate(temperature_change = cut(temp_chg,c(-Inf, -2.5, -1.5, -.5, .5, 1.5, 2.5, Inf), na.rm = T)) %>%
+  select(temp_chg, temperature_change, year)
+
+temps_no_action_full_growth <- fl_temps %>%
+  filter(!is.na(temp_chg)) %>%
   mutate(temperature_change = cut(temp_chg,c(-Inf, -2.5, -1.5, -.5, .5, 1.5, 2.5, Inf), na.rm = T)) %>%
   select(temp_chg, temperature_change, year)
 
@@ -170,6 +176,23 @@ ggsave("temperature_change_2040_no_action.jpg", dpi = 300, width = 15, height = 
   
   
 ```
+
+Plot of 2040 temperature change no action with growth everywhere
+
+```{r}
+basemap +
+  geom_sf(data = temps_no_action_full_growth %>%
+            filter(year == "chg_2040"),
+          aes(color = temperature_change), lwd = 1.5) +
+  scale_colour_manual(values = c("navy", "blue", "deepskyblue", "azure", "yellow", "orange", "red")) +
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20)) +
+  coord_sf(datum = NA)
+
+ggsave("temperature_change_2040_no_action_full_growth.jpg", dpi = 300, width = 15, height = 12)
+  
+  
+```
 Plot of 2080 temperature change no action
 
 ```{r}
@@ -184,6 +207,23 @@ basemap +
 
 ggsave("temperature_change_2080_no_action.jpg", dpi = 300, width = 15, height = 12)
 
+  
+  
+```
+
+Plot of 2080 temperature change no action with growth everywhere
+
+```{r}
+basemap +
+  geom_sf(data = temps_no_action_full_growth %>%
+            filter(year == "chg_2080"),
+          aes(color = temperature_change), lwd = 1.5) +
+  scale_colour_manual(values = c("navy", "blue", "deepskyblue", "azure", "yellow", "orange", "red")) +
+  theme(legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20)) +
+  coord_sf(datum = NA)
+
+ggsave("temperature_change_2080_no_action_full_growth.jpg", dpi = 300, width = 15, height = 12)
   
   
 ```
