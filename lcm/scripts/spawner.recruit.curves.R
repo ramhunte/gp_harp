@@ -18,14 +18,29 @@ if (dir.exists(outputs_lcm.sr) == F) {dir.create(outputs_lcm.sr)}
 # This is where we run the subbasin func with a bunch of n.init values
 
 # Initializing pop
-n.init <- c(1:9 %o% 10^(2:6)) #seq(10, 1e5, by = 50)
+if (pop == 'coho') {
+  n.init <- c(1:9 %o% 10^(2:6))
+  years <- 3
+  }
 
+if (pop == "spring.chinook") {
+  n.init <- c(seq(10,100, by = 10), 
+              seq(150,2000, by = 50), 
+              seq(2500, 90000, by = 1000)) #c(1:9 %o% 10^(1:5)) # c(seq(10,100, by = 10), seq(150,2000, by = 50), seq(2500, 900000, by = 10000))
+  years <- 6
+  } 
+
+if (pop == "fall.chinook") {
+  n.init <- c(seq(10,100, by = 10), 
+              seq(150,2000, by = 50), 
+              seq(2500, 20000, by = 1000), 
+              seq(20000, 900000, by = 30000)) # c(1:9 %o% 10^(2:5))
+  years <- 6
+  }
 
 # Runs
 runs <- length(n.init)
 
-# Years
-years <- 3
 
 # Build the array to hold the output data
 model.all.test <- array(
@@ -120,7 +135,15 @@ for (n in 1:length(scenario.file)) { # loop across hab scenarios
 
 
 # Clean up data and create spawners - recruits ----
-prod.stages <- c('ocean1','ocean2', 'spawners', 'n.init', 'natal.smolts','non.natal.smolts')
+if (pop == 'coho') {
+  prod.stages <- c('ocean1', 'ocean2', 'spawners', 'n.init', 'natal.smolts', 'non.natal.smolts')}
+
+if (pop == "fall.chinook" | pop == "spring.chinook") {
+  prod.stages <- c('ocean1', 'ocean2', 'ocean3', 'ocean4', 'ocean5', 'spawners', 'n.init', 
+                   'smolts.fry.migrants', 'smolts.non.natal.sub.yr', 'smolts.natal.sub.yr')
+}
+
+smolt.stages <- grep('smolt', prod.stages, value = T)
 
 # This dataframe has S-R values
 sr_dat <- model.all.test[, , prod.stages, , ] %>%
@@ -136,15 +159,34 @@ sr_dat <- model.all.test[, , prod.stages, , ] %>%
   ) %>%
   spread(lifestage, n) %>%
   arrange(scenario, n.init, Subbasin, year) %>%
-  group_by(scenario, n.init, Subbasin) %>%
-  mutate(total.run = (lead(ocean1) * b2 + lead(ocean2, 2))) %>%
+  group_by(scenario, n.init, Subbasin)
+
+if (pop == 'coho') {
+  sr_dat <- sr_dat %>%
+    mutate(total.run = 
+             lead(ocean1) * b2 + 
+             lead(ocean2, 2))
+}
+
+if (pop %in% c('spring.chinook', 'fall.chinook')) {
+  sr_dat <- sr_dat %>%
+    mutate(total.run = 
+             lead(ocean1)    * b2 + 
+             lead(ocean2, 2) * b3 +
+             lead(ocean3, 3) * b4 +
+             lead(ocean4, 4) * b5 +
+             lead(ocean5, 5)) %>%
+    filter(!Subbasin %in% grep("Mainstem: L", reach.names, value = T)) # Remove Lower Mainstem values
+}
+
+sr_dat <- sr_dat %>%
   ungroup() %>%
   left_join(prespawn_surv) %>%
   mutate(recruits = total.run * prespawn_surv) %>%
   filter(year == 1,
          recruits >= 1,
          n.init >= 1) %>%
-  select(runs, scenario, Subbasin, n.init, recruits, natal.smolts, non.natal.smolts)
+  select(runs, scenario, Subbasin, n.init, recruits, smolt.stages)
 
 
 # Define functions ----
@@ -406,7 +448,7 @@ print(
     ggplot +
     geom_point(aes(S, recruits, color = scenario)) +
     geom_line(aes(S, pred, color = scenario)) +
-    #facet_wrap(~Subbasin, scales = 'free') +
+    #lims(x = c(0,300), y = c(0,300)) +
     labs(x = 'spawners')
 )
 
@@ -458,8 +500,10 @@ bh.dat.nested[[1]] %>%
   unnest %>%
   filter(Subbasin %in% c('Lincoln Creek',
                          'Dillenbaugh Creek',
-                         'Elk Creek',
-                         'Upper Chehalis: Above Proposed Dam')) %>%
+                         'Newaukum River',
+                         #'Elk Creek',
+                         'Upper Chehalis: Above Proposed Dam'),
+         scenario %in% c('Current', 'Fine.sediment')) %>%
   ggplot +
   geom_point(aes(S, recruits, color = scenario)) +
   geom_line(aes(S, pred, color = scenario)) +
@@ -476,16 +520,3 @@ ggsave(
   height = 8,
   dpi = 300
 )
-
-
-
-# bh.dat.nested[[2]] %>%
-#   left_join(bh.results.edr) %>%
-#   mutate(pred = pmap(list(data, Pn, Cn), predict_bh)) %>%
-#   select(scenario, EcoRegion, data, pred) %>%
-#   unnest %>%
-#   ggplot +
-#   geom_point(aes(S, recruits, color = scenario)) +
-#   geom_line(aes(S, pred, color = scenario)) +
-#   facet_wrap(~EcoRegion, scales = 'free') +
-#   labs(x = 'spawners')

@@ -22,7 +22,11 @@ shell(cmd = shell_cmd)
 dev_edr <- read.csv('dev_spawners_edr.csv')
 unlink('dev_spawners_edr.csv') # Delete dev version
 
-
+no_asrp_scenarios <- as.character(str_replace_all(diag_scenarios, "_", "\\."))
+if (run_asrp == "no") {
+  dev_edr %<>% 
+    filter(scenario %in% no_asrp_scenarios)
+}
 
 
 df <- path_to_edr %>%
@@ -35,20 +39,20 @@ df <- path_to_edr %>%
                      file.dev = habitat.file) %>%
               mutate(scenario = ifelse(scenario == 'Temperature','Shade',as.character(scenario)))
             ,by = c('scenario','EcoRegion')
-            ) %>%
+  ) %>%
   select(scenario, 
          EcoRegion,
          total.run.feature,
          total.run.dev
-         ) %>%
+  ) %>%
   gather(version, total.run, total.run.feature:total.run.dev) %>%
   mutate(version = ifelse(version == 'total.run.feature',
                           branch
                           ,
                           'dev'
-                          )
-         )
-  
+  )
+  )
+
 labs_df <- df %>%
   group_by(scenario, version) %>%
   summarize(n = prettyNum(sum(total.run), big.mark = ','),
@@ -63,25 +67,25 @@ labs_df <- df %>%
                      n = scales::percent(prcnt_diff)) %>%
               filter(version == 'dev') %>%
               mutate(version = 'percent diff')
-              
+            
   ) %>%
   mutate(y = ifelse(version == 'percent diff', 
                     max[version == branch] - max[version == branch] * .15, 
                     y))
 
 print(
-ggplot(df) +
-  theme_bw() +
-  geom_bar(aes(EcoRegion,total.run,fill = version),
-           stat = 'identity',position = 'dodge') +
-  facet_wrap(~scenario) +
-  geom_text(data = labs_df, 
-            x = 5, 
-            aes(y = y, label = paste(version,' - ', n)),
-            size = 2) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)) +
-  labs(caption = paste0(pop, ' - Habitat file version = ', hab.ver),
-       y = 'spawners')
+  ggplot(df) +
+    theme_bw() +
+    geom_bar(aes(EcoRegion,total.run,fill = version),
+             stat = 'identity',position = 'dodge') +
+    facet_wrap(~scenario) +
+    geom_text(data = labs_df, 
+              x = 5, 
+              aes(y = y, label = paste(version,' - ', n)),
+              size = 2) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)) +
+    labs(caption = paste0(pop, ' - Habitat file version = ', hab.ver),
+         y = 'spawners')
 )
 
 
@@ -111,5 +115,5 @@ print(df %>%
         spread(version, n) %>%
         mutate(prcnt_diff = (get(branch) - dev) / dev,
                prcnt_diff = scales::percent(prcnt_diff))
-      )
+)
 

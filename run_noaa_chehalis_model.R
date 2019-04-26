@@ -46,6 +46,9 @@ run_asrp_query <- c('yes', 'no')
 run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", graphics = TRUE)]
 
 
+# Create the spawner-recruit curves?
+run_sr_curves_query <- c('yes', 'no')
+run_sr_curves <- run_sr_curves_query[menu(run_sr_curves_query, title = "Create spawner-recruit curves?", graphics = TRUE)]
 
 # Store branch name ----
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
@@ -53,7 +56,7 @@ branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
 # Load packages ----
 
-global.pkgs <- c('tidyverse', 'magrittr')
+global.pkgs <- c('tidyverse', 'magrittr', 'lubridate', 'zoo')
 
 invisible(
   lapply(global.pkgs, function(x) {
@@ -87,4 +90,27 @@ if (fishtype == 'all_species') {
   unlink(file.path("outputs", fishtype), recursive = TRUE) # WARNING -- Entire outptus folder for species will be deleted
   source("hab/R_files/Run_Habitat_Model.R")
   source("lcm/LCM.sim.R")
+}
+
+
+
+# Call plot of observed vs modeled spawner return ----
+
+# Check to see if the necessary files exist
+chk_files <- lapply(spp, function(s) {
+  fp <- file.path('outputs', s, 'lcm')
+  
+  f <- list.files(fp, 
+                  pattern = 'abundance_by_sub', # Name of csv with LCM spawner data
+                  full.names = TRUE)
+  
+  file.exists(f)
+}) %>%
+  unlist
+
+
+# If all files exist, run this script
+if (all(chk_files)) {
+  print('Creating plot of observed vs modeled abundance')
+  source('lcm/scripts/plot_observed_vs_modeled.R')
 }

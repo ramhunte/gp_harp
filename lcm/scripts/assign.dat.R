@@ -21,27 +21,27 @@ dat <- as.matrix(dat)
 
 
 # Egg capacity
-egg.cap <- dat["eggs",]*egg.cap.adj
+egg.cap <- dat["eggs", ]*egg.cap.adj
 
 
 
 # Egg to fry survival
-egg.fry.surv <- dat["eggtofry_surv",]*egg.fry.surv.adj
+egg.fry.surv <- dat["eggtofry_surv", ]*egg.fry.surv.adj
 
 
 #Proportions of total run in each DU
-prop.init <- dat["adults",]/sum(dat["adults",])
+prop.init <- dat["adults", ]/sum(dat["adults", ])
 
 
 # Upstream survival, calculated in the hab model using barriers
-S.up <- dat['prespawn_surv',]
+S.up <- dat['prespawn_surv', ]
 
 
 if (pop == "coho") {
   
   # Fry to parr survival and capacity
-  parr.surv <- dat["surv_s",]*sub.yr.surv.adj
-  parr.cap  <- dat["capacity_s",]*sub.yr.cap.adj
+  parr.surv <- dat["surv_s", ]*sub.yr.surv.adj
+  parr.cap  <- dat["capacity_s", ]*sub.yr.cap.adj
   
   # Fall redistribution
   # Historical wood gets 7% redistribution, historical ponds and all historical get 3%. All other scenarios get 11%.
@@ -54,7 +54,7 @@ if (pop == "coho") {
     
   # Parr-to-smolt survival and capacity
   parr.smolt.surv <- dat["surv_w",]*ps.surv.adj
-  parr.smolt.cap <-dat["capacity_w",]*ps.cap.adj
+  parr.smolt.cap <- dat["capacity_w",]*ps.cap.adj
   
   #Harvest for the historical no beaver scenario set to 0.67
   Hr <- ifelse(substr(habitat.file[n],1,15) == "Historical_no_b",Hr.hist,Hr.cur)
@@ -62,7 +62,7 @@ if (pop == "coho") {
   
 } #end if coho
 
-if(pop=="steelhead"){
+if (pop == "steelhead") {
  
   #first summer parr
   parr.cap <-  dat["capacity_s", ]
@@ -82,18 +82,21 @@ if(pop=="steelhead"){
 }
 
 
-if (pop == "fall.chinook" | pop == "spring.chinook"){
+if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   # Fry to sub yearling migrant survival and capacity
-  fry.surv <- (dat['surv_s',] * fry.surv.adj )^(1/12) # 1 week of freshwater mortality
-  fry.cap <- dat['capacity_s',] * 3
-  
-  sub.yr.surv <- (dat['surv_s',] * sub.yr.surv.adj)^(11/12) # 11 more weeks of freshwater mortality
-  sub.yr.cap  <- dat['capacity_s',]*sub.yr.cap.adj
+  weekly.surv <- dat['surv_s', ]^(1/12) # 1 week of freshwater mortality
+  cap <- dat['capacity_s', ]
   
 } #end if chinook
 
 
+if (pop == "spring.chinook") {
+  
+  # Weekly productivity scaled with June temperatures
+  weekly.surv.temp <- (0.1 * dat['surv_s_2', ]^(1/12)) + (.9 * weekly.surv) 
+  
+} 
 
 
 

@@ -7,8 +7,7 @@
 
 # Hand digitized riffles in the large rivers
 # Summarize as area per noaaid reach
-riff <- list.files(path = Inputs, pattern = "Riffles", full.names = T) %>%
-  read.csv(.) %>%
+riff %<>%
 
   rename(Subbasin = noaa_sub) %>%
   left_join(subbasin_names %>%

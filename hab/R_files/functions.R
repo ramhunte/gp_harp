@@ -102,18 +102,16 @@ asrp_temp_func <- function(a= "Current temperature", b = "Historical temperature
 }
 
 temp_func <- function(t = "temperature"){
-  if (fishtype == "coho") {
+  if (fishtype %in% c("coho", "spring_chinook")) {
     ifelse(t < 18,
            1,
            ifelse(t >= 18 & t < 24,
                   -(1/6) * t + 4,
                   0))
   } else if (fishtype == "steelhead") {
-    if (t <= 17) {
-      t/t
-    } else{
-      (97.8846 / (1 + exp(-((t - 24.3522) / -.5033)))) / 100 
-    }
+    ifelse(t <= 17,
+           t/t,
+           (97.8846 / (1 + exp(-((t - 24.3522) / -.5033)))) / 100 )
   } else {
     t/t #tempmult = 1 for chinook
   }

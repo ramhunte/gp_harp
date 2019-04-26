@@ -165,9 +165,9 @@ if (sensitivity.mode == "no") {
   
   # For spring chinook, EcoRegion is actually subbassin
   # Filter to just the few that they are in
-  if(pop == 'spring.chinook'){
-    spawners.edr <- spawners.edr%>%
-      rename(EcoRegion = Var1, scenario = Var2, spawners = Freq)%>% #EcoRegion is actually Subbasin for Spring chinook (so few units with fish)
+  if (pop == 'spring.chinook') {
+    spawners.edr <- spawners.edr %>%
+      rename(EcoRegion = Var1, scenario = Var2, spawners = Freq) %>% #EcoRegion is actually Subbasin for Spring chinook (so few units with fish)
       filter(EcoRegion %in% c('Upper Chehalis: Above Proposed Dam',
                               'Elk Creek',
                               'South Fork Chehalis',
@@ -176,27 +176,27 @@ if (sensitivity.mode == "no") {
                               ms.reaches[1:4]))
   }
   
-  spawners.edr <- spawners.edr%>%
-    mutate(time.period = as.factor(ifelse(substr(scenario,1,1)=='H','Historical','Current')),
-           spawners = ifelse(EcoRegion %in% c('Upper Skookumchuck','Lower Chehalis Estuary'),0,spawners),
-           spawners = ifelse(spawners < 3,0,spawners))%>% # Turn rounding error fish into 0
-    group_by(EcoRegion)%>%
-    mutate(spawners.change = spawners-spawners[scenario=='Current'],
-           prcnt.change = ((spawners-spawners[scenario=='Current'])/spawners[scenario=='Current']),
-           spawners.change = ifelse(spawners.change < 3,0,spawners.change),
-           prcnt.change = ifelse(spawners.change == 0, 0, prcnt.change))%>%
-    ungroup()%>%
-    mutate(scenario = as.character(scenario))%>%
-    left_join(plot.params)%>%
+  spawners.edr <- spawners.edr %>%
+    mutate(time.period = as.factor(ifelse(substr(scenario,1,1) == 'H', 'Historical', 'Current')),
+           spawners = ifelse(EcoRegion %in% c('Upper Skookumchuck','Lower Chehalis Estuary'), 0, spawners),
+           spawners = ifelse(spawners < 3,0,spawners)) %>% # Turn rounding error fish into 0
+    group_by(EcoRegion) %>%
+    mutate(spawners.change = spawners - spawners[scenario == 'Current'],
+           prcnt.change = ((spawners - spawners[scenario == 'Current'])/spawners[scenario == 'Current']),
+           spawners.change = ifelse(abs(spawners.change) < 3,0,spawners.change),
+           prcnt.change = ifelse(spawners.change == 0, 0, prcnt.change)) %>%
+    ungroup() %>%
+    mutate(scenario = as.character(scenario)) %>%
+    left_join(plot.params) %>%
     filter(EcoRegion != 'Lower Chehalis Estuary',
            EcoRegion != 'Upper Skookumchuck',
            scenario != 'Historical')
   
   # Write the total run per EDR to a file 
-  spawners.edr%>%
-    left_join(.,data.frame(habitat.file,scenario = scenario.file)%>%
-                mutate(scenario = as.character(scenario)))%>%
-    write.csv(.,file.path(save.path.edr,paste0('Total_Run_by_EDR_',pop,'.csv')))
+  spawners.edr %>%
+    left_join(., data.frame(habitat.file,scenario = scenario.file) %>%
+                mutate(scenario = as.character(scenario))) %>%
+    write.csv(., file.path(save.path.edr, paste0('Total_Run_by_EDR_', pop, '.csv')))
   
   # Organize labels
   spawners.edr$scenario.label <- factor(spawners.edr$scenario.label, levels = scenario.label)
@@ -213,77 +213,56 @@ if (sensitivity.mode == "no") {
   
   #total.run.du$du <- factor(total.run.du$du,levels = reach.names)
   
-  for (i in 1:(length(plot.scenario.labs))){
+  for (i in 1:(length(plot.scenario.labs))) {
     
     jpeg(paste0(save.path.edr,'/edr_plots_',pop,'_',plot.scenario[i],".jpg"),
          width = 6, height = 6, units = 'in', res = 300) # 300 dpi for digital report. Maybe 600 for print report
     
-    df <- spawners.edr%>%
-      filter(scenario==plot.scenario[i])
+    df <- spawners.edr %>%
+      filter(scenario == plot.scenario[i])
     
-    total.prcnt.change <- spawners.edr%>%
-      filter(scenario == 'Current' | scenario == plot.scenario[i])%>%
-      group_by(scenario)%>%
-      summarize(spawners = sum(spawners))%>%
-      ungroup%>%
-      summarize(prcnt.change = (spawners[scenario == plot.scenario[i]] - spawners[scenario == "Current"])/spawners[scenario == "Current"]*100)%>%
+    total.prcnt.change <- spawners.edr %>%
+      filter(scenario == 'Current' | scenario == plot.scenario[i]) %>%
+      group_by(scenario) %>%
+      summarize(spawners = sum(spawners)) %>%
+      ungroup %>%
+      summarize(prcnt.change = (spawners[scenario == plot.scenario[i]] - spawners[scenario == "Current"])/spawners[scenario == "Current"]*100) %>%
       as.numeric()
     
-    prcnt.fig <- ggplot(df,aes(EcoRegion,prcnt.change))+
-      theme_bw()+
-      geom_bar(stat = 'identity',fill=unique(df$color),color='black',position = 'dodge',na.rm = T)+
+    prcnt.fig <- ggplot(df,aes(EcoRegion,prcnt.change)) +
+      theme_bw() +
+      geom_bar(stat = 'identity',fill = unique(df$color),color = 'black', position = 'dodge',na.rm = T) +
       theme(axis.text.x = element_blank(),
-            axis.title.y = element_text(margin = margin(r = 10)))+
-      scale_y_continuous(labels = percent)+
-      labs(x=NULL,
-           y='Percent Difference\nfrom Current Scenario',
-           title = plot.scenario.labs[i])+
-      annotate("text",x = 0,y = Inf, vjust=1.02, hjust=-0.05,
-                        label=paste0("Overall = +",format(round(total.prcnt.change,0),big.mark=","),"%"))
+            axis.title.y = element_text(margin = margin(r = 10))) +
+      scale_y_continuous(labels = percent) +
+      labs(x = NULL,
+           y = 'Percent Difference\nfrom Current Scenario',
+           title = plot.scenario.labs[i]) +
+      annotate("text", x = 0, y = Inf, vjust = 1.02, hjust = -0.05,
+                        label = paste0("Overall = +",format(round(total.prcnt.change, 0), big.mark = ","), "%"))
     
-    tr.fig <- ggplot(df,aes(EcoRegion,spawners.change))+
-      theme_bw()+
-      geom_bar(stat = 'identity',fill=unique(df$color),color='black',na.rm = T)+
+    tr.fig <- ggplot(df,aes(EcoRegion,spawners.change)) +
+      theme_bw() +
+      geom_bar(stat = 'identity',fill = unique(df$color),color = 'black',na.rm = T) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1),
-            axis.title.y = element_text(margin = margin(r = 10)))+
-      scale_y_continuous(label=comma)+
-      labs(x=NULL,
-           y='Change in Spawners\nfrom Current Scenario',
+            axis.title.y = element_text(margin = margin(r = 10))) +
+      scale_y_continuous(labels = comma) +
+      labs(x = NULL,
+           y = 'Change in Spawners\nfrom Current Scenario',
            caption = paste0('Model version = ',hab.ver)
-           )+
-      annotate("text",x = 0,y = Inf, vjust=1.02, hjust=-0.05,
-              label=paste0("Total = +",format(round(df%>%
-                                                      summarize(n = sum(spawners.change))%>%
+           ) +
+      annotate("text", x = 0, y = Inf, vjust = 1.02, hjust = -0.05,
+              label = paste0("Total = +", format(round(df %>%
+                                                      summarize(n = sum(spawners.change)) %>%
                                                       as.numeric(),
-                                                    0),big.mark=",")))
+                                                    0), big.mark = ",")))
      
     grid.draw(rbind(ggplotGrob(prcnt.fig), ggplotGrob(tr.fig), size = "first"))
     
     dev.off()
   } # close scenario for loop
   
-  # Figure of change in total run for each scenario, by Eco Region 
-  spawners.edr%>% #spawners.edr object is created in the plots.R script
-    filter(time.period== 'Current',
-           !scenario %in% c('Current', 'ASRP.Current.asrp'),
-           EcoRegion != 'Lower Chehalis Estuary',
-           EcoRegion != 'Upper Skookumchuck')%>%
-    mutate(prcnt.change = ifelse(prcnt.change>5,Inf,prcnt.change))%>%
-    ggplot(aes(scenario.label,spawners.change,fill=scenario.label))+
-    theme_bw()+
-    geom_bar(stat = 'identity',color='black',na.rm = T)+
-    facet_wrap(~EcoRegion,ncol = 3,scales = 'free_y')+
-    theme(axis.text.x = element_text(angle = 90, hjust = 1),
-          axis.title.y = element_text(margin = margin(r = 10)))+
-    scale_fill_manual(values = plot.params$color[2:length(scenario.file) -1],guide=F)+
-    scale_y_continuous(label=comma)+
-    labs(x=NULL,
-         y="Change in Spawners \nfrom Current Scenario",
-         caption = paste0('species = ',pop, ' - Model version = ',hab.ver))
-  
-  ggsave(file.path(outputs_lcm,paste0("Change_by_Scenario_Absolute",".jpg")), width = 6.5, height = 8, dpi = 300)
-  
-  
+
 } # close save.edr.plots if statement
 
 

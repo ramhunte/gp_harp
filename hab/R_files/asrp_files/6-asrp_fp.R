@@ -1,0 +1,110 @@
+#### Floodplain ----
+
+asrp_fp_precalc1 <- all_habs_scenario %>%
+  filter(Habitat %in% Floodplain_habs) %>%
+  select(Habitat, slope.class, noaaid, year, Scenario_num, Area_ha, both_chk, Subbasin_num, Reach, can_ang, species, pool.perc, Period,Hist_salm, 
+         spawn_dist, NEAR_DIST, wse_intersect) %>%
+  left_join(., ss.dist.ref) %>% 
+  left_join(., asrp_reach_data) %>%
+  left_join(., asrp_culvs)
+
+if (fishtype == "spring_chinook") {
+  asrp_fp_precalc1 %<>%
+    rename(Area_nochino = Area_ha) %>%
+    mutate(Area_ha = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
+                            Area_nochino * schino_mult,
+                            Area_nochino))
+} else if (fishtype == "fall_chinook") {
+  asrp_fp_precalc1 %<>%
+    rename(Area_nochino = Area_ha) %>%
+    mutate(Area_ha = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
+                            Area_nochino * fchino_mult,
+                            Area_nochino))
+}
+
+asrp_fp_precalc1 <- asrp_fp_precalc1 %>%
+  mutate(
+    Area_ha = ifelse(pass_tot_asrp == 0,
+                     0,
+                     Area_ha))
+
+asrp_fp_precalc <- asrp_fp_precalc1 %>%
+  bind_rows(., asrp_fp_precalc1 %>%
+              filter(Habitat == "Side_Channel") %>%
+              mutate(pool.perc.asrp = pool.perc,
+                     Area_orig = Area_ha,
+                     SC_pool = Area_orig * pool.perc.asrp,
+                     SC_riffle = Area_orig * (1 - pool.perc.asrp)) %>%
+              gather(Habitat, Area_new, SC_pool:SC_riffle) %>%
+              rename(Area_ha = Area_new)) %>% 
+  filter(!Habitat == "Side_Channel") %>%
+  mutate(summer = Area_ha,
+         winter = ifelse(Habitat == "SC_pool",
+                         Area_ha * winter_pool_scalar_warm,
+                         ifelse(Habitat == "SC_riffle",
+                                (Area_ha + ((1 - winter_pool_scalar_warm) * Area_orig * pool.perc)),
+                                Area_ha))) %>%
+  gather(life.stage, Area, summer:winter)
+
+asrp_fp_curr <- asrp_fp_precalc %>%
+  filter(Period %in% c("Curr", "Both"),
+         Hist_salm == "Hist salmon",
+         spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs & wse_intersect == "Yes" | spawn_dist == "Yes" & wse_intersect == "Yes")
+
+asrp_fp_hist <- asrp_fp_precalc %>%
+  filter(Period %in% c("Hist", "Both"),
+         Hist_salm == "Hist salmon",
+         spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs)
+
+if (fishtype == "spring_chinook") {
+  asrp_fp_curr %<>% 
+    filter(Subbasin_num %in% schino_subs)
+  
+  asrp_fp_hist %<>% 
+    filter(Subbasin_num %in% schino_subs)
+}
+
+asrp_fp <- asrp_fp_curr %>%
+  ungroup() %>%
+  group_by(noaaid, Habitat, life.stage, year, Scenario_num) %>%
+  summarize(curr_area = sum(Area, na.rm = T)) %>%
+  ungroup() %>%
+  full_join(., asrp_fp_hist %>%
+              ungroup() %>%
+              group_by(noaaid, Habitat, life.stage, year, Scenario_num) %>%
+              summarize(hist_area = sum(Area, na.rm = T))) %>%
+  ungroup() %>%
+  left_join(., asrp_reach_data) %>%
+  mutate(curr_area = ifelse(is.na(curr_area),
+                            0,
+                            curr_area),
+         hist_area = ifelse(is.na(hist_area),
+                            0,
+                            hist_area),
+         woodmult_s_asrp = ifelse(Habitat %in% c("SC_pool", "SC_riffle"),
+                                  woodmult_s_asrp,
+                                  1),
+         woodmult_w_asrp = ifelse(Habitat %in% c("SC_pool", "SC_riffle"),
+                                 woodmult_w_asrp,
+                                 1),
+         tempmult.asrp = ifelse(species %in% c("coho", "steelhead"),
+                                ifelse(Subbasin_num %in% mainstem.subs,
+                                       tempmult.asrp,
+                                       1),
+                                1),
+         Area = ifelse(Floodplain == 'y',
+                       ifelse(life.stage == "summer",
+                              (curr_area + ((hist_area - curr_area) * rest_perc * fp_intensity_scalar)) * woodmult_s_asrp * tempmult.asrp,
+                              (curr_area + ((hist_area - curr_area) * rest_perc * fp_intensity_scalar)) * woodmult_w_asrp),
+                       ifelse(life.stage == 'summer',
+                              curr_area * tempmult.asrp * woodmult_s_asrp,
+                              curr_area * woodmult_w_asrp))) 
+rm(asrp_fp_curr)
+rm(asrp_fp_hist)
+rm(asrp_fp_precalc)
+rm(asrp_fp_precalc1)
+asrp_fp_mvmt <- asrp_fp %>%
+  filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp"))
+
+asrp_fp %<>%
+  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp"))

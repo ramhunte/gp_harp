@@ -48,8 +48,8 @@ survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
 
 
 LgRiver_habs = c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater")
-SmStream_habs = c("Pool", "Riffle", "Trib_Pond")
-Floodplain_habs = c("FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", "Side_Channel_pool", "Side_Channel_riffle", "Slough_lg", "Slough_sm", "SC_pool", "SC_riffle")
+SmStream_habs = c("Pool", "Riffle", "Beaver.Pond")
+Floodplain_habs = c("FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", "Slough_lg", "Slough_sm", "SC_pool", "SC_riffle", "Side_Channel")
 
 fry_colonization_surv = .78
 
