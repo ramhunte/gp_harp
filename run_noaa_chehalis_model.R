@@ -56,7 +56,7 @@ branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
 # Load packages ----
 
-global.pkgs <- c('tidyverse', 'magrittr')
+global.pkgs <- c('tidyverse', 'magrittr', 'lubridate', 'zoo')
 
 invisible(
   lapply(global.pkgs, function(x) {

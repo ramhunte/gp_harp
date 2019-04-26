@@ -17,6 +17,9 @@ asrp_ss <- all_habs_scenario %>%
   left_join(., asrp_reach_data) %>%
   left_join(., asrp_culvs) %>%
   mutate(
+    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook"), # Added because of spring chinook w/temp survival 
+                           1,
+                           tempmult.asrp),
     width_s = ifelse(is.na(width_s),
                      wet_width,
                      width_s),

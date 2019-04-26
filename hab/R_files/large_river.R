@@ -24,7 +24,9 @@ LgRiver <- LgRiver_raw %>%
 
 if (fishtype == "spring_chinook") {
   LgRiver <- LgRiver %>%
-    filter(Subbasin_num %in% schino_subs)
+    filter(Subbasin_num %in% schino_subs) %>%
+    mutate(curr.tempmult = 1,
+           hist.tempmult = 1)
 }
 
 assign('asrp_lr_raw', LgRiver , envir = .GlobalEnv)

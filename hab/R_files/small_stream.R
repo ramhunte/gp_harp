@@ -22,7 +22,9 @@ ss <- SmStream_raw %>%
 
 if (fishtype == "spring_chinook") {
   ss <- ss %>%
-    filter(Subbasin_num %in% schino_subs)
+    filter(Subbasin_num %in% schino_subs) %>%
+    mutate(curr.tempmult = 1,
+           hist.tempmult = 1)
 }
 
 assign('asrp_ss_raw', ss , envir = .GlobalEnv) 

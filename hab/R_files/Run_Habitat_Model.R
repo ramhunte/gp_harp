@@ -3,6 +3,8 @@ options(scipen = 999)
 
 Inputs = 'hab/Inputs'
 
+source("hab/R_files/temperature.R")
+
 source(file.path("hab", "R_files",paste0(fishtype, "_inputs.R"))) #source fish specific variables (density, etc)
 source("hab/R_files/read_in_data.R")
 
@@ -11,6 +13,7 @@ outputs_hab <- file.path("outputs", fishtype, "hab.scenarios")
 if (dir.exists(outputs_hab) == F) {
   dir.create(outputs_hab, recursive = TRUE)
 }
+
 
 source("hab/R_files/inputs.R")
 source("hab/R_files/functions.R")
@@ -28,5 +31,6 @@ if (run_asrp == "yes") {
   source("hab/R_files/asrp_files/0-asrp_scenarios.R")
   if (!branch %in% c('dev','master')) {
     source("hab/R_files/compare_scenarios.R")
-  }}
+  }
+  }
 # save.image(file ='R files/myEnvironment.RData')

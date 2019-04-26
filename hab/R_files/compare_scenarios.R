@@ -52,7 +52,7 @@ hab_compare %>%
   spread(version, value) %>%
   mutate(diff = get(branch) - dev,
          prcnt_diff = scales::percent(diff / dev)) %>%
-  filter(abs(diff) > 0) %>%
+  filter(abs(diff) > 0.000001) %>%
   select(hab.scenario, life.stage, parameter, Subbasin_num, Subbasin, EcoRegion, dev, branch, diff) %>%
   write.csv(file.path(save.compare, paste0(fishtype, "_hab_scenario_compare.csv")))
 

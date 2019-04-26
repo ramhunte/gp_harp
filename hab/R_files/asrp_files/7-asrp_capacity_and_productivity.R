@@ -2,6 +2,8 @@
 
 asrp_cap <- bind_rows(asrp_lr, asrp_ss, asrp_fp)
 
+# Create second year for steelhead rearing
+
 if (fishtype == "steelhead") {
   asrp_cap %<>%
     bind_rows(., asrp_cap %>%
@@ -9,6 +11,23 @@ if (fishtype == "steelhead") {
                 mutate(life.stage = ifelse(life.stage == "summer",
                                            "summer.2",
                                            "winter.2")))
+}
+
+# Duplicate spring chinook rearing data.  This allows us to calculate a second survival value with the temperature multiplier applied.  
+# This second survival is assigned to surv_s_2
+
+if (fishtype == "spring_chinook") {
+  asrp_cap <- asrp_cap %>%
+    bind_rows(., asrp_cap %>%
+                mutate(life.stage = ifelse(life.stage == 'summer',
+                                           'summer.2',
+                                           'winter.2'))) %>%
+    select(-tempmult.asrp) %>%
+    left_join(., asrp_reach_data %>%
+                select(noaaid, Scenario_num, year, tempmult.asrp)) %>%
+    mutate(tempmult.asrp = ifelse(life.stage %in% c('summer', 'winter'),
+                                  1,
+                                  tempmult.asrp))
 }
 
 asrp_cap %<>%

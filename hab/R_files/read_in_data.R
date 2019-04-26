@@ -16,14 +16,14 @@ edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T
   select(Reach_low, width_w, width_s, year)
 
 # EDT temperatures.  This file comes from the Temperature repo.  Joined to the flowline by "Reach" ----
-edt_temps <- list.files(path = Inputs, pattern = "edt_temps", full.names = T) %>% 
-  read.csv(.) %>%
-  select(-X)
+# edt_temps <- list.files(path = Inputs, pattern = "edt_temps", full.names = T) %>% 
+#   read.csv(.) %>%
+#   select(-X)
 
 # PSU temps.  This file comes from the Temperature repo.  Joined to the flowline by "Seg" which it gets from a spatial join from a PSU spatial layer. ----
-psu_temps <- list.files(path = Inputs, pattern = "psu_temps", full.names = T) %>%
-  read.csv(.) %>%
-  select(-X)
+# psu_temps <- list.files(path = Inputs, pattern = "psu_temps", full.names = T) %>%
+#   read.csv(.) %>%
+#   select(-X)
 
 # Temperature gaps.  This file was created manually and fills any gaps in psu/edt temperature data.  Joined to flowline using edt "Reach" layer ----
 temp_gaps <- list.files(path = Inputs, pattern = "temp_gaps", full.names = T) %>% 

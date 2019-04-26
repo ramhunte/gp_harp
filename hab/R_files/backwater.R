@@ -19,7 +19,9 @@ bw <- Backwater_raw %>%
 
 if (fishtype == "spring_chinook") {
    bw <- bw %>%
-     filter(Subbasin_num %in% schino_subs)}
+     filter(Subbasin_num %in% schino_subs) %>%
+     mutate(curr.tempmult = 1,
+            hist.tempmult = 1)}
 
 assign('asrp_bw_raw', bw , envir = .GlobalEnv) 
 

@@ -39,14 +39,24 @@ asrp_results <- asrp_results_inputs %>%
                                "ASRP_Current_asrp",
                                hab.scenario))
 
-if (!fishtype == "coho") {
-  asrp_results %<>%
-    filter(!stage_nm == "movement")
-}
-
-if (!fishtype == "steelhead") {
+if (fishtype == "coho") {
   asrp_results %<>%
     filter(!stage_nm %in% c("capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
+}
+
+if (fishtype == "steelhead") {
+  asrp_results %<>%
+    filter(!stage_nm == 'movement')
+}
+
+if (fishtype == 'spring_chinook') {
+  asrp_results %<>%
+    filter(!stage_nm %in% c("capacity_s_2", "capacity_w_2", "surv_w_2", 'capacity_w', 'surv_w'))
+}
+
+if (fishtype == 'fall_chinook') {
+  asrp_results %<>% 
+    filter(!stage_nm %in% c("capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2", "movement", 'capacity_w', 'surv_w'))
 }
 
 asrp_results_outputs <- lapply(c("ASRP_Current_asrp", asrp_scenario_names), function(b) {

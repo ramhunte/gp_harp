@@ -37,6 +37,9 @@ filter(Habitat %in% LgRiver_habs,
   bind_rows(., asrp_bw) %>%
   left_join(., asrp_culvs) %>%
   mutate(
+    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook"), # Added because of spring chinook w/temp survival 
+                           1,
+                           tempmult.asrp),
     summer.area = area_s * tempmult.asrp * woodmult_s_asrp,
     winter.area = area_w * woodmult_w_asrp) %>%
   gather(life.stage, Area, summer.area:winter.area) %>%

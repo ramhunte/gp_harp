@@ -11,6 +11,24 @@ if (fishtype == "steelhead") {
                                            "summer.2", 
                                            "winter.2")))}
 
+if (fishtype == 'spring_chinook') {
+  data <- data %>%
+    bind_rows(., data %>% 
+                mutate(life.stage = ifelse(life.stage == 'summer',
+                                           'summer.2',
+                                           'winter.2'))) %>%
+    select(-curr.tempmult, -hist.tempmult) %>%
+    left_join(., flowline %>% 
+                select(noaaid, curr.tempmult, hist.tempmult), 
+              by = "noaaid") %>%
+    mutate(curr.tempmult = ifelse(life.stage %in% c('summer', 'winter'),
+                                  1,
+                                  curr.tempmult),
+           hist.tempmult = ifelse(life.stage %in% c('summer', 'winter'),
+                                  1,
+                                  hist.tempmult))
+}
+
 data <- data %>%
   left_join(., density) %>%
   mutate(capacity = Area * Density) %>%
@@ -106,7 +124,7 @@ data.spread <- lapply(scenarios, function(x){
   }
   if (fishtype == "spring_chinook") {
     y <- y %>% 
-      filter(!stage_nm %in% c("capacity_w", "surv_w", "capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
+      filter(!stage_nm %in% c("capacity_w", "surv_w", "capacity_s_2", "capacity_w_2", "surv_w_2"))
   }
   if (fishtype == "fall_chinook") {
     y <- y %>% 

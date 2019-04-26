@@ -143,8 +143,8 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
-         tempmult.asrp = ifelse(species %in% c("coho", "steelhead"),
-                                temp_func(asrp_temp),
-                                1))
+         tempmult.asrp = ifelse(species == "fall_chinook",
+                                1,
+                                temp_func(asrp_temp)))
 
 rm(asrp_reach_data_scenarios)
