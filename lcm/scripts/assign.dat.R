@@ -91,6 +91,12 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
 } #end if chinook
 
 
+if (pop == "spring.chinook") {
+  
+  # Weekly productivity scaled with June temperatures
+  weekly.surv.temp <- (0.1 * dat['surv_s_2', ]^(1/12)) + (.9 * weekly.surv) 
+  
+} 
 
 
 

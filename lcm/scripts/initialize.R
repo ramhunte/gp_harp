@@ -311,9 +311,17 @@ return.rows <- grep("return percent", row.names(distribute.matrix))
 
 # Create list of upper basins (4 weeks outmigration), mid basins (2 weeks outmigration), and lower (0 weeks) ----
 
-if (pop %in% c('spring.chinook', 'fall.chinook')) {
+if (pop %in% c('fall.chinook')) {
   ds_weeks <- rep(0,length(reach.names))
   ds_weeks[c(1:18, 52:56)] <- 4 # Upper basins are Skookumchuck River and upstream
   ds_weeks[c(19:39, 57:62)] <- 2 # Mid basins are DS of Skook to LMS 6
+  # All else is Lower. GH tribs, Olympic Mts, LMS 7
+}
+
+# Spring chinook get one week less thatn falls, as one more week of productivity with temperature will be added in
+if (pop %in% c('spring.chinook')) {
+  ds_weeks <- rep(0,length(reach.names))
+  ds_weeks[c(1:18, 52:56)] <- 3 # Upper basins are Skookumchuck River and upstream
+  ds_weeks[c(19:39, 57:62)] <- 1 # Mid basins are DS of Skook to LMS 6
   # All else is Lower. GH tribs, Olympic Mts, LMS 7
 }

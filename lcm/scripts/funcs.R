@@ -223,6 +223,11 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     # Then raise that to either 4, 2 or 0, depending on which natal basin
     sub.yr.ds <- sub.yr * (colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks)
     
+    if (pop == "spring.chinook") {
+      # Spring chinook get one week of productivity weighted by June temperatures
+      sub.yr.ds <- sub.yr.ds * colSums(move.matrix * weekly.surv.temp[ms.reaches])
+      }
+    
     # Apply bay survival (ds migration, delta, bay, nearshore productivity)
     fry.migrants.bay <- fry.migrants * bay.fry.surv
     sub.yr.bay <- sub.yr.ds * bay.parr.surv
