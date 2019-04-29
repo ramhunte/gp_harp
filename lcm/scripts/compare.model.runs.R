@@ -51,7 +51,8 @@ df <- path_to_edr %>%
                           ,
                           'dev'
   )
-  )
+  ) %>%
+  mutate(version = factor(version, levels = c('dev', branch)))
 
 labs_df <- df %>%
   group_by(scenario, version) %>%
@@ -63,7 +64,7 @@ labs_df <- df %>%
   bind_rows(df %>%
               group_by(scenario,version) %>%
               summarize(n = sum(total.run)) %>%
-              mutate(prcnt_diff = (n[version == branch]- n) / n,
+              mutate(prcnt_diff = (n[version == branch] - n) / n,
                      n = scales::percent(prcnt_diff)) %>%
               filter(version == 'dev') %>%
               mutate(version = 'percent diff')

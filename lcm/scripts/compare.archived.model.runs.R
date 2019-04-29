@@ -72,7 +72,8 @@ for (s in compare_spp) {
                             ,
                             ver_parent
     )
-    )
+    ) %>%
+    mutate(version = factor(version, levels = c('dev', branch)))
   
   labs_df <- df %>%
     group_by(scenario, version) %>%
