@@ -73,7 +73,6 @@ all_habs_scenario <- lapply(scenario.nums, function(h) {
   }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3")),
-         !(Scenario_num == "Current_asrp" & year %in% c(2040, 2080)),
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only") & 
              year %in% c(2040, 2080)))

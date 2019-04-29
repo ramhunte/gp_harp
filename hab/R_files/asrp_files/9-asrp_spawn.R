@@ -1,5 +1,7 @@
 #### Spawning Calculations ----
 all_habs_spawn <- all_habs_scenario %>%
+  filter(!Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
+                                        "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only")) %>%
   select(-woodmult_s, -woodmult_w) %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data)
@@ -49,7 +51,8 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
 }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3")),
-         !(Scenario_num == "Current_asrp" & year %in% c(2040, 2080))) %>%
+         !Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
+                              "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only")) %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   mutate(
