@@ -203,7 +203,7 @@ spawners.asrp %<>%
   
  
   ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
-  
+ if (run_asrp == 'yes') { 
  # Bar plot of asrp scenarios ----
   print(
     ggplot() +
@@ -278,6 +278,7 @@ spawners.asrp %<>%
   ) #close print()
   
 ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp_stacked','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
+ }
 } #close if not sensitivity mode if() statement
 
 

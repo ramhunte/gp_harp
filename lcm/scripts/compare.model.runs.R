@@ -74,6 +74,11 @@ labs_df <- df %>%
                     max[version == branch] - max[version == branch] * .15, 
                     y))
 
+labs_df_test <- labs_df %>%
+  filter(abs(prcnt_diff) > 0)
+
+if (nrow(labs_df_test) != 0) {
+
 print(
   ggplot(df) +
     theme_bw() +
@@ -117,4 +122,4 @@ print(df %>%
         mutate(prcnt_diff = (get(branch) - dev) / dev,
                prcnt_diff = scales::percent(prcnt_diff))
 )
-
+} else {print("No changes to lcm results")}
