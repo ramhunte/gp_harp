@@ -259,14 +259,14 @@ for (n in 1:length(scenario.file)) {
     SAR.ratio <- sum(N['smolts.fry.migrants',]) / 
       sum(N['smolts.fry.migrants',], 
           N['smolts.non.natal.sub.yr',], 
-          N['smolts.non.natal.sub.yr',]
+          N['smolts.natal.sub.yr',]
           ) 
     
     # % fry migrants in returning adults
     ratio <- sum(N['smolts.fry.migrants', ] * bay.fry.surv) /
       sum(N['smolts.fry.migrants', ] * bay.fry.surv,
           N['smolts.non.natal.sub.yr', ] * bay.parr.surv,
-          N['smolts.non.natal.sub.yr', ] * bay.parr.surv)
+          N['smolts.natal.sub.yr', ] * bay.parr.surv)
     
     SAR.fry <- so.weighted * bay.fry.surv
     SAR.parr <- so.weighted * bay.parr.surv
