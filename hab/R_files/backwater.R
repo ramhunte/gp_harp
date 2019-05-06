@@ -1,9 +1,9 @@
 bw <- Backwater_raw %>%
   left_join(., flowline %>%
               select(noaaid, curr_temp, hist_temp, temp_diff, Reach, curr.tempmult, hist.tempmult, Subbasin_num, species, spawn_dist, both_chk, 
-                     Area_km2, pass_tot, pass_tot_natural, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang), by = "noaaid") %>%
+                     Area_km2, pass_tot, pass_tot_natural, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, chino_mult), by = "noaaid") %>%
   select(Wtrbdy_wau, Area_ha, Subbasin_num, noaaid, Area_km2, species, spawn_dist, both_chk, Reach, pass_tot, curr_temp, hist_temp, temp_diff, 
-         curr.tempmult, hist.tempmult, pass_tot_natural, tm_2040, tm_2080, Period, tm_2040_cc_only, tm_2080_cc_only, can_ang) %>%
+         curr.tempmult, hist.tempmult, pass_tot_natural, tm_2040, tm_2080, Period, tm_2040_cc_only, tm_2080_cc_only, can_ang, chino_mult) %>%
   bind_rows(., lr_length_raw %>%
               select(Reach, sc_mult) %>%
               left_join(flowline %>%
@@ -65,7 +65,7 @@ bw2 <- bind_rows(bw_curr, bw_hist) %>%
                        ifelse(pass_tot == 0, 
                               0, 
                               Area))) %>%
-  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, curr.tempmult, hist.tempmult, both_chk, pass_tot_natural)
+  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, curr.tempmult, hist.tempmult, both_chk, pass_tot_natural, chino_mult)
 
 if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   bw2 <- bw2 %>%

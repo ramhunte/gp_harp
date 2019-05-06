@@ -81,4 +81,17 @@ flowline <- flowline_noculv %>%
             pass_tot_natural = prod(ifelse(FeatureTyp == 'Natural',FishPass,1))) %>%
   right_join(flowline_noculv) %>%
   replace_na(list(pass_tot = 1, pass_tot_natural = 1)) %>%
-  ungroup()
+  ungroup() %>%
+  left_join(., chinook_mult)
+  
+# Create column with chinook habitat multiplier.  This will be applied to Area in both_chk & mainstem reaches  
+if (fishtype == 'fall_chinook') {
+  flowline %<>% 
+    mutate(chino_mult = perc_fall)
+} else if (fishtype == 'spring_chinook') {
+  flowline %<>% 
+    mutate(chino_mult = perc_spr)
+} else {
+  flowline %<>% 
+    mutate(chino_mult = 1)
+}

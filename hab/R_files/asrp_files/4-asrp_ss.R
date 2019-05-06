@@ -10,7 +10,7 @@ colnames(asrp_ss_raw)
 asrp_ss <- all_habs_scenario %>%
   filter(Habitat == "SmStream") %>%
   select(noaaid, Subbasin_num, Reach, Shape_Length, slope, lc, spawn_dist, species, both_chk,
-         Reach_low, slope.class, Habitat, wet_width, can_ang, Scenario_num, year) %>%
+         Reach_low, slope.class, Habitat, wet_width, can_ang, Scenario_num, year, chino_mult) %>%
   left_join(., edt_width) %>%
   left_join(., ss.dist) %>%
   left_join(., ss.dist.ref) %>%
@@ -66,19 +66,13 @@ asrp_ss <- all_habs_scenario %>%
                   0,
                   Area)) %>%
   select(noaaid, Subbasin_num, pass_tot_asrp, GSU, forest, woodmult_s_asrp, woodmult_w_asrp, tempmult.asrp, Habitat, Area, life.stage, lc, 
-         slope.class, rest_perc, rest_perc, both_chk, Scenario_num, year, LW, Floodplain, Beaver, Riparian, Barriers, wood_intensity_scalar, wood_intensity_scalar)
+         slope.class, rest_perc, rest_perc, both_chk, Scenario_num, year, LW, Floodplain, Beaver, Riparian, Barriers, wood_intensity_scalar, wood_intensity_scalar, chino_mult)
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   asrp_ss %<>%
     rename(Area_nochino = Area) %>%
     mutate(Area = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                         Area_nochino * schino_mult,
-                         Area_nochino))
-} else if (fishtype == "fall_chinook") {
-  asrp_ss %<>%
-    rename(Area_nochino = Area) %>%
-    mutate(Area = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                         Area_nochino * fchino_mult,
+                         Area_nochino * chino_mult,
                          Area_nochino))
 }
 
