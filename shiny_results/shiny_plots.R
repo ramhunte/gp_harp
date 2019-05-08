@@ -197,71 +197,19 @@ asrp_plot <- ggplot() +
 
 
 
-# Total run by edr and scenario boxplots ----
-spawners_edr <- spawner_data %>%
-  rename(Subbasin = natal.basin) %>%
-  left_join(., subbasin_names) %>%
-  group_by(EcoRegion, scenario) %>%
-  summarize(spawners = sum(spawners, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(time.period = as.factor(ifelse(substr(scenario,1,1) == 'H', 'Historical', 'Current')),
-         spawners = ifelse(EcoRegion %in% c('Upper Skookumchuck','Lower Chehalis Estuary'), 0, spawners),
-         spawners = ifelse(spawners < 3,0,spawners)) %>%
-  group_by(EcoRegion) %>%
-  mutate(spawners.change = spawners - spawners[scenario == 'Current'],
-         prcnt.change = ((spawners - spawners[scenario == 'Current'])/spawners[scenario == 'Current']),
-         spawners.change = ifelse(abs(spawners.change) < 3,0,spawners.change),
-         prcnt.change = ifelse(spawners.change == 0, 0, prcnt.change)) %>%
-  ungroup() %>%
-  mutate(scenario = as.character(scenario)) %>%
-  left_join(plot.params) %>%
-  filter(EcoRegion != 'Lower Chehalis Estuary',
-         EcoRegion != 'Upper Skookumchuck',
-         scenario != 'Historical')
+#Create single lookup table with subbasin level data ----
 
-spawners_edr$scenario.label <- factor(spawners_edr$scenario.label, levels = scenario.label)
-dont.plot <- c('Current',"Historical.no.beaver", 'ASRP.Current.asrp')
-plot.scenario <- levels(as.factor(spawners_edr$scenario))
-plot.scenario <- setdiff(plot.scenario,dont.plot)
-plot.scenario.labs <- spawners_edr %>%
-  filter(!scenario %in% dont.plot) %>%
-  pull(scenario.label) %>%
-  unique
-
-unique(spawners_edr$scenario.label[spawners.edr$scenario.label != 'Current'])
-
-# spwaaners by subbasin
-spawners_sub <- spawner_data %>%
-rename(Subbasin = natal.basin) %>%
-  left_join(., subbasin_names) %>%
-  group_by(Subbasin, scenario) %>%
-  summarize(spawners = sum(spawners, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(time.period = as.factor(ifelse(substr(scenario,1,1) == 'H', 'Historical', 'Current'))#,
-         # spawners = ifelse(EcoRegion %in% c('Upper Skookumchuck','Lower Chehalis Estuary'), 0, spawners),
-         # spawners = ifelse(spawners < 3,0,spawners)
-         ) %>%
-  group_by(Subbasin) %>%
-  mutate(spawners.change = spawners - spawners[scenario == 'Current'],
-         prcnt.change = ((spawners - spawners[scenario == 'Current'])/spawners[scenario == 'Current']),
-         spawners.change = ifelse(abs(spawners.change) < 3,0,spawners.change),
-         prcnt.change = ifelse(spawners.change == 0, 0, prcnt.change)) %>%
-  ungroup() %>%
-  mutate(scenario = as.character(scenario)) %>%
-  left_join(plot.params) %>%
-  filter(
-    # EcoRegion != 'Lower Chehalis Estuary',
-         # EcoRegion != 'Upper Skookumchuck',
-         scenario != 'Historical')
-
-spawners_sub$scenario.label <- factor(spawners_sub$scenario.label, levels = scenario.label)
-dont.plot <- c('Current',"Historical.no.beaver", 'ASRP.Current.asrp')
-plot.scenario <- levels(as.factor(spawners_sub$scenario))
-plot.scenario <- setdiff(plot.scenario,dont.plot)
-plot.scenario.labs <- spawners_sub %>%
-  filter(!scenario %in% dont.plot) %>%
-  pull(scenario.label) %>%
-  unique
-
-unique(spawners_sub$scenario.label[spawners_sub$scenario.label != 'Current'])
+shiny_lookup_tbl <- lookup_tbl %>%
+  select(-Subbasin_num) %>%
+  gather(param, data, c(adults.capacity:winter.survival, spawners:age2.smolts)) %>%
+  group_by(Subbasin, param, species) %>%
+  mutate(data = as.numeric(data),
+         dat.chg = data - data[scenario == 'Current'],
+         prcnt.chg = ((data - data[scenario == 'Current'])/data[scenario == 'Current'])) %>%
+  gather(basin_type, basin, Subbasin:EcoRegion) %>%
+  group_by(scenario, param, species, basin_type, basin) %>%
+  summarize(data = sum(data, na.rm = T),
+            dat.chg = sum(dat.chg, na.rm = T),
+            prcnt.chg = sum(prcnt.chg, na.rm = T)) %>%
+  left_join(., plot.params)
 
