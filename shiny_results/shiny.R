@@ -63,7 +63,7 @@ ui <- dashboardPage(
                        box(
                          width = NULL,
                          title = 'Total change in spawners per EDR',
-                         plotOutput('total_sub', height = 400)
+                         plotlyOutput('total_sub', height = 400)
                        ))
               )
       ),
@@ -93,11 +93,11 @@ ui <- dashboardPage(
                 column(width = 10,
                        box(width = NULL,
                            title = 'Comparison Plot: Percent chg',
-                           plotOutput('compare_data_prcnt', height = 400, width = 1200)
+                           plotlyOutput('compare_data_prcnt', height = 400, width = 1200)
                        ),
                        box(width = NULL,
                          title = 'Comparison Plot: Total chg',
-                         plotOutput('compare_data_tot', height = 400, width = 1200)
+                         plotlyOutput('compare_data_tot', height = 400, width = 1200)
                        )
                        )
               )),
@@ -125,22 +125,30 @@ ui <- dashboardPage(
                        box(
                          width = NULL,
                          title = 'Comparison Plot: Feature to dev',
-                         plotOutput('compare_branch', height = 400, width = 1200)
+                         plotlyOutput('compare_branch', height = 400, width = 1200)
                        ),
                        box(
                          width = NULL,
                          title = 'Comparison Plot: Total change from dev',
-                         plotOutput('compare_branch_diff', height = 400, width = 1200)
+                         plotlyOutput('compare_branch_diff', height = 400, width = 1200)
                        ))
               )
       ),
       tabItem(tabName = 'map_data',
               fluidRow(
-                column(width = 2),
+                column(width = 2,
+                       # box(
+                       #   wdith = NULL,
+                       #   selectInput('map_species', 'Species:', choices = unique(fl$species))
+                       # ),
+                       box(
+                         width = NULL,
+                         selectInput('map_param', 'Parameter:', choices = unique(fl$param))
+                       )),
                 column(width = 10,
                        box(width = NULL,
                            title = 'Basin Map',
-                           plotOutput('basin_map', height = 800, width = 1200)))
+                           plotlyOutput('basin_map', height = 800, width = 1200)))
               ))
     )
   )
@@ -166,8 +174,9 @@ server <- function(input, output) {
      summarize(data = sum(data, na.rm = T))
  })
  
- output$total_sub <- renderPlot({
-   tot_data() %>%
+ output$total_sub <- renderPlotly({
+   ggplotly(
+     tot_data() %>%
      ggplot() + 
      theme_bw() + 
      geom_bar(aes(basin, data),
@@ -177,7 +186,7 @@ server <- function(input, output) {
      scale_y_continuous() +
      labs(x = NULL,
           y = 'Total',
-          title = 'Total') 
+          title = 'Total')) 
  })
   
   tot_prcnt_chng_compare <- reactive({
@@ -204,8 +213,9 @@ server <- function(input, output) {
                prcnt = sum(prcnt.chg, na.rm = T))
     })
   
-  output$compare_data_prcnt <- renderPlot({
-    compare_data() %>% 
+  output$compare_data_prcnt <- renderPlotly({
+    ggplotly(
+      compare_data() %>% 
       ggplot() +
       theme_bw() +
       geom_bar(aes(basin, prcnt),
@@ -217,12 +227,13 @@ server <- function(input, output) {
            y = 'Percent Difference\nfrom Current Scenario',
            title = paste0(input$compare_scenario, input$compare_attribute, input$compare_scale)) +
       annotate("text", x = 0, y = Inf, vjust = 1.02, hjust = -0.05,
-               label = paste0("Overall = +",format(round(tot_prcnt_chng_compare(), 0), big.mark = ","), "%"))
+               label = paste0("Overall = +",format(round(tot_prcnt_chng_compare(), 0), big.mark = ","), "%")))
     
   })
   
-  output$compare_data_tot <- renderPlot({
-    compare_data() %>%
+  output$compare_data_tot <- renderPlotly({
+    ggplotly(
+      compare_data() %>%
       ggplot(aes(basin, chg)) +
       theme_bw() +
       geom_bar(stat = 'identity',fill = unique(compare_data()$color),color = 'black',na.rm = T) +
@@ -232,7 +243,7 @@ server <- function(input, output) {
       labs(x = NULL,
            y = 'Change in Spawners\nfrom Current Scenario',
            caption = paste0('Model version = ',hab.ver)
-      ) 
+      )) 
   })
   
   compare_to_dev <- reactive({
@@ -243,28 +254,37 @@ server <- function(input, output) {
              basin_type == input$dev_comp_scale)
   })
   
-  output$compare_branch <- renderPlot({
-    compare_to_dev() %>%
+  output$compare_branch <- renderPlotly({
+    ggplotly(
+      compare_to_dev() %>%
       ggplot() + 
       theme_bw() +
       geom_bar(aes(basin, value, fill = version),
                stat = 'identity', position = 'dodge') +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)))
   })
   
-  output$compare_branch_diff <- renderPlot({
-    compare_to_dev () %>%
+  output$compare_branch_diff <- renderPlotly({
+    ggplotly(
+      compare_to_dev() %>%
       spread(version, value) %>%
       mutate(tot_diff = dev - feature) %>%
       ggplot() + 
       theme_bw() + 
       geom_bar(aes(basin, tot_diff),
                fill = unique(compare_to_dev()$color), stat = 'identity') +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)))
   })
   
+  fl_map <- reactive({
+    fl %>%
+      filter(param == input$map_param) 
+  })
   
-  
+  output$basin_map <- renderPlotly({
+    plot_ly(fl_map(), split = ~level, text = ~value, hoverinfo = 'text', color = ~fl_map()$map_color, colors = fl_map()$map_color)#, trace = ~value)
+  })
+
   
 }
 
