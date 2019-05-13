@@ -2,7 +2,7 @@
 asrp_bw <- all_habs_scenario %>%
   filter(Habitat == "Backwater") %>%
   select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach, Period, can_ang, sc_mult, Shape_Length, bw_mult, 
-         Habitat, Reach_low, slope.class, Scenario_num, year, Area_ha) %>%
+         Habitat, Reach_low, slope.class, Scenario_num, year, Area_ha, chino_mult) %>%
   left_join(., asrp_reach_data) %>%
   mutate(Area_ha = ifelse(Period == "Hist",
                           ifelse(Floodplain == "y" & forest == "n",
@@ -16,7 +16,7 @@ asrp_bw <- all_habs_scenario %>%
 asrp_lr <- all_habs_scenario %>%
   select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach, pass_tot, pass_tot_natural, Period, can_ang, sc_mult, Shape_Length, bw_mult,
          Habitat, Reach_low, slope.class, Scenario_num, year, Area_ha, width_s, width_s_2040, width_s_2080, width_w,
-         width_w_2040, width_w_2080, Length_m) %>%
+         width_w_2040, width_w_2080, Length_m, chino_mult) %>%
 filter(Habitat %in% LgRiver_habs,
        !Habitat == "Backwater",
        Period %in% c("Curr", "Both")) %>%
@@ -50,21 +50,15 @@ filter(Habitat %in% LgRiver_habs,
                        0,
                        Area)) %>%
   select(Subbasin_num, noaaid, Habitat, GSU, forest, pass_tot_asrp, woodmult_s_asrp, woodmult_w_asrp, tempmult.asrp, life.stage, Area, 
-         rest_perc, both_chk, Scenario_num, year, LW, Floodplain, Beaver, Riparian, Barriers, wood_intensity_scalar)
+         rest_perc, both_chk, Scenario_num, year, LW, Floodplain, Beaver, Riparian, Barriers, wood_intensity_scalar, chino_mult)
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   asrp_lr %<>%
     rename(Area_nochino = Area) %>%
     mutate(Area = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                         Area_nochino * schino_mult,
+                         Area_nochino * chino_mult,
                          Area_nochino))
-} else if (fishtype == "fall_chinook") {
-  asrp_lr %<>%
-    rename(Area_nochino = Area) %>%
-    mutate(Area = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                         Area_nochino * fchino_mult,
-                         Area_nochino))
-}
+} 
 
 asrp_lr_mvmt <- asrp_lr %>%
   filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp"))
