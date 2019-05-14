@@ -40,6 +40,12 @@ if (fishtype == "spring_chinook") {
       hab.scenario  ==  "Shade"       ~ cramer.prespawn(prespawn_temp_hist) * pass_tot_weight,
       hab.scenario  ==  "Historical"  ~ cramer.prespawn(prespawn_temp_hist) * pass_tot_nat_weight
     )
+    # mutate(survival = case_when(
+    #   hab.scenario %in% curr.prespawn ~ prespawn.chin.func(prespawn_temp_curr) * pass_tot_weight,
+    #   hab.scenario  ==  "Barriers"    ~ prespawn.chin.func(prespawn_temp_curr) * pass_tot_nat_weight,
+    #   hab.scenario  ==  "Shade"       ~ prespawn.chin.func(prespawn_temp_hist) * pass_tot_weight,
+    #   hab.scenario  ==  "Historical"  ~ prespawn.chin.func(prespawn_temp_hist) * pass_tot_nat_weight
+    # )
     ) %>%
     mutate(life.stage = "prespawn") %>%
     select(hab.scenario, Subbasin_num, life.stage, survival)

@@ -49,7 +49,8 @@ prespawn.chin.func <- function(temps, a = 0.7919, b = -13.2061, c = 0){
   # PSM function from Willamette needs different temperature measure, so
   # convert PSU/ICF 7DADM to mean of daily means, July1 - Sept15
   #  using this fitted relationship:
-  temps.converted <- -3.277448 + 1.011789*temps
+  # temps.converted <- -3.277448 + 1.011789*temps
+  temps.converted <- temps - 1.868
 
   inverse.logit <- function(a, b, c, x){
     # This function back-transforms a prespawn
