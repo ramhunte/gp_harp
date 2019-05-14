@@ -130,13 +130,15 @@ calc_coho_imperv <- function(imperv) {
   #
   # Returns:
   #  ps_mort_imperv: prespawn mortality related to imperviousness in decimal form
-  
+  if (fishtype == 'coho') {
   ps_mort_imperv <- 1.5 * imperv
   
   ps_prod_imperv <- ifelse(ps_mort_imperv > 1,
                            1,
                            ps_prod_imperv <- 1 - ps_mort_imperv)
   
+  
     return(ps_prod_imperv)
+  } else {return(1)}
 }
 

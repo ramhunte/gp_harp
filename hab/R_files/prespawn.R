@@ -49,9 +49,7 @@ if (fishtype == "spring_chinook") {
   
   prespawn <- flowline %>%
     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
-    mutate(imperv_mult = ifelse(fishtype == 'coho',
-                                calc_coho_imperv(mn_imperv),
-                                1)) # For all species other than coho, use imperv_mult of 1
+    mutate(imperv_mult = calc_coho_imperv(mn_imperv)) # For all species other than coho, use imperv_mult of 1
   
   curr.prespawn <- c("Shade", "Beaver", "Current", "Fine_sediment", 
                      "Floodplain", "LR_bank", "LR_length", "Wood", "FP_wood_comb")
