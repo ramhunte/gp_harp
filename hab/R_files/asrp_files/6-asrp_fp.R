@@ -3,24 +3,18 @@
 asrp_fp_precalc1 <- all_habs_scenario %>%
   filter(Habitat %in% Floodplain_habs) %>%
   select(Habitat, slope.class, noaaid, year, Scenario_num, Area_ha, both_chk, Subbasin_num, Reach, can_ang, species, pool.perc, Period,Hist_salm, 
-         spawn_dist, NEAR_DIST, wse_intersect) %>%
+         spawn_dist, NEAR_DIST, wse_intersect, chino_mult) %>%
   left_join(., ss.dist.ref) %>% 
   left_join(., asrp_reach_data) %>%
   left_join(., asrp_culvs)
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   asrp_fp_precalc1 %<>%
     rename(Area_nochino = Area_ha) %>%
     mutate(Area_ha = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                            Area_nochino * schino_mult,
+                            Area_nochino * chino_mult,
                             Area_nochino))
-} else if (fishtype == "fall_chinook") {
-  asrp_fp_precalc1 %<>%
-    rename(Area_nochino = Area_ha) %>%
-    mutate(Area_ha = ifelse(both_chk == "Yes" | Subbasin_num %in% mainstem.subs,
-                            Area_nochino * fchino_mult,
-                            Area_nochino))
-}
+} 
 
 asrp_fp_precalc1 <- asrp_fp_precalc1 %>%
   mutate(

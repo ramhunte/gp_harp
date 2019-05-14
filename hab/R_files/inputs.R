@@ -20,8 +20,8 @@ prespawn_temp_slope = .90223570 # used to convert 7DADM to MDM
 prespawn_temp_intercept = .06201682 # used to convert 7DADM to MDM
 
 schino_subs = c(1, 3, 5, 12, 18, 52:63)
-schino_mult = .19 # fall chinook and spring chinook multipliers are used when both spring and fall chinook exist within the same reach
-fchino_mult = .81
+# schino_mult = .19 # fall chinook and spring chinook multipliers are used when both spring and fall chinook exist within the same reach
+# fchino_mult = .81
 
 hist_beaver_mult = .85 # This comes from the fact that in historical beaver scenarios, beaver ponds take up 15% of all trib reaches
 hist_pond_area_per_m = 3 # m^2 per m

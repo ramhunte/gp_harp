@@ -17,6 +17,7 @@ if (dir.exists(outputs_hab) == F) {
 
 source("hab/R_files/inputs.R")
 source("hab/R_files/functions.R")
+source("hab/R_files/chino_mult.R")
 source("hab/R_files/flowline.R")
 source("hab/R_files/LgRiver_Spawning_Capacity.R")
 source("hab/R_files/large_river.R")
