@@ -47,7 +47,8 @@ if (fishtype == "spring_chinook") {
                 select(noaaid, Subbasin_num, spawn_dist, mn_imperv, pass_tot_natural, pass_tot)) %>%
     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
     left_join(., egg_cap_weight_asrp) %>%
-    mutate(imperv_mult = calc_coho_imperv(mn_imperv),
+    mutate(imperv_mult = calc_coho_imperv(future_imperv + mn_imperv),
+
            pass_tot_asrp = ifelse(Barriers == 'y',
                                   pass_tot_natural,
                                   pass_tot),
