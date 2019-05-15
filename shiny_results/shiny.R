@@ -278,11 +278,26 @@ server <- function(input, output) {
   
   fl_map <- reactive({
     fl %>%
-      filter(param == input$map_param) 
+      filter(param == input$map_param)
+
+  })
+  
+  # fl_color <- reactive({fl_map() %>% pull(map_color) %>% droplevels() %>% levels})
+  
+  fl_color <- reactive({
+    switch(input$map_param,
+           'curr_temp' = c('navy', 'yellow', 'red3'),
+           'hist_temp' = c('navy', 'yellow', 'red3'),
+           'can_ang'  =  c('navy', 'dodgerblue', 'yellow', 'darkorange', 'red3'),
+           'hist_ang' =  c('navy', 'dodgerblue', 'yellow', 'darkorange', 'red3'),
+           'pass_tot' = c('navy', 'dodgerblue', 'yellow', 'darkorange', 'red3'),
+           'temp_diff_2040'  = c('navy', 'dodgerblue', 'lightskyblue', 'grey', 'yellow', 'darkorange', 'red3'),
+           'temp_diff_2080' = c('navy', 'dodgerblue', 'lightskyblue', 'grey', 'yellow', 'darkorange', 'red3'))
+
   })
   
   output$basin_map <- renderPlotly({
-    plot_ly(fl_map(), split = ~level, text = ~value, hoverinfo = 'text', color = ~fl_map()$map_color, colors = fl_map()$map_color)#, trace = ~value)
+    plot_ly(fl_map(), split = ~level, text = ~value, hoverinfo = 'text', color = fl_color())#, trace = ~value)
   })
 
   
