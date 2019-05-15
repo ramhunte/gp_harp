@@ -144,6 +144,12 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                    asrp_temp_w_growth)),
          tempmult.asrp = ifelse(species == "fall_chinook",
                                 1,
-                                temp_func(asrp_temp)))
+                                temp_func(asrp_temp))) %>%
+  
+  # add in future impervious area by GSU, scenario and year ----
 
+  left_join(., fut_imperv, by = c('GSU', 'year')) %>%
+  mutate(future_imperv = ifelse(is.na(future_imperv),
+                                0,
+                                future_imperv))
 rm(asrp_reach_data_scenarios)

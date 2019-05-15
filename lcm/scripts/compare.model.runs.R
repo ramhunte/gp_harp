@@ -65,7 +65,7 @@ labs_df <- df %>%
               group_by(scenario,version) %>%
               summarize(n = sum(total.run)) %>%
               mutate(prcnt_diff = (n[version == branch] - n) / n,
-                     n = scales::percent(prcnt_diff)) %>%
+                     n = ifelse(prcnt_diff > 0, scales::percent(prcnt_diff), NA)) %>%
               filter(version == 'dev') %>%
               mutate(version = 'percent diff')
             
@@ -78,48 +78,48 @@ labs_df_test <- labs_df %>%
   filter(abs(prcnt_diff) > 0)
 
 if (nrow(labs_df_test) != 0) {
-
-print(
-  ggplot(df) +
-    theme_bw() +
-    geom_bar(aes(EcoRegion,total.run,fill = version),
-             stat = 'identity',position = 'dodge') +
-    facet_wrap(~scenario) +
-    geom_text(data = labs_df, 
-              x = 5, 
-              aes(y = y, label = paste(version,' - ', n)),
-              size = 2) +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)) +
-    labs(caption = paste0(pop, ' - Habitat file version = ', hab.ver),
-         y = 'spawners')
-)
-
-
-ggsave(file.path(out.path.compare,
-                 paste('Comparison_Total_run',
-                       pop,
-                       paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),
-                       sep = "_")),
-       width = 10, 
-       height = 8, 
-       dpi = 300)
-
-# Create output csv
-# df %>%
-#   spread(version, total.run) %>%
-#   write.csv(file.path(out.path.compare,
-#                       paste('LCM_comparison',
-#                             pop,
-#                             paste0(format(Sys.time(), "%Y%m%d"),'.csv'),
-#                             sep = "_")))
-
-# Print summary metrics to the screen
-print(paste0(pop, " --------------- summary of percent differences from HEAD of dev branch -----------------"))
-print(df %>%
-        group_by(scenario,version) %>%
-        summarize(n = sum(total.run, na.rm = T)) %>%
-        spread(version, n) %>%
-        mutate(prcnt_diff = (get(branch) - dev) / dev,
-               prcnt_diff = scales::percent(prcnt_diff))
-)
+  
+  print(
+    ggplot(df) +
+      theme_bw() +
+      geom_bar(aes(EcoRegion,total.run,fill = version),
+               stat = 'identity',position = 'dodge') +
+      facet_wrap(~scenario) +
+      geom_text(data = labs_df, 
+                x = 5, 
+                aes(y = y, label = paste(version,' - ', n)),
+                size = 2) +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)) +
+      labs(caption = paste0(pop, ' - Habitat file version = ', hab.ver),
+           y = 'spawners')
+  )
+  
+  
+  ggsave(file.path(out.path.compare,
+                   paste('Comparison_Total_run',
+                         pop,
+                         paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),
+                         sep = "_")),
+         width = 10, 
+         height = 8, 
+         dpi = 300)
+  
+  # Create output csv
+  # df %>%
+  #   spread(version, total.run) %>%
+  #   write.csv(file.path(out.path.compare,
+  #                       paste('LCM_comparison',
+  #                             pop,
+  #                             paste0(format(Sys.time(), "%Y%m%d"),'.csv'),
+  #                             sep = "_")))
+  
+  # Print summary metrics to the screen
+  print(paste0(pop, " --------------- summary of percent differences from HEAD of dev branch -----------------"))
+  print(df %>%
+          group_by(scenario,version) %>%
+          summarize(n = sum(total.run, na.rm = T)) %>%
+          spread(version, n) %>%
+          mutate(prcnt_diff = (get(branch) - dev) / dev,
+                 prcnt_diff = ifelse(prcnt_diff > 0, scales::percent(prcnt_diff), NA))
+  )
 } else {print("No changes to lcm results")}

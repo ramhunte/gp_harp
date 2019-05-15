@@ -64,4 +64,21 @@ asrp_scenarios_raw <- read.csv('hab/Inputs/ASRP_scenarios.csv')
 # Scenarios.  Read in list of all scenarios ----
 scenarios <- read.csv('hab/Inputs/scenarios.csv') 
   
+# Future impervious area ----
+fut_imperv <- read.csv('hab/Inputs/future_impervious.csv') %>%
+  rename(mid_century_imperv = Mid.century.Added.Impervious.Area,
+         late_century_imperv = Late.century.Added.Impervious.Area) %>%
+  select(GSU, mid_century_imperv, late_century_imperv) %>%
+  mutate(
+    mid_century_imperv = as.numeric(gsub("%", "", mid_century_imperv)) / 100,
+    late_century_imperv = as.numeric(gsub("%", "", late_century_imperv)) / 100) %>% 
+  gather(year, future_imperv, mid_century_imperv, late_century_imperv) %>%
+  mutate(year = case_when(
+    year == 'mid_century_imperv' ~ 2040,
+    year == 'late_century_imperv' ~ 2080
+  )) %>%
+  group_by(year, GSU) %>%
+  summarize(future_imperv = sum(future_imperv, na.rm = T))
+
+    
 

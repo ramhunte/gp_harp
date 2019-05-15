@@ -47,7 +47,7 @@ edt_mwmt_lyr <- edt_mwmt_lyr %>%
 # Calculate mean of daily maxima to be used in prespawn survival ----
 
 edt_mdm_lyr <- edt_lyr %>%
-  filter(month %in% c(7, 8, 9)) %>%
+  filter(month %in% c(7, 8)) %>%
   group_by(year,Reach) %>%
   summarize(edt_temp = mean(Temperature, na.rm = T)) %>% 
   ungroup() %>%
@@ -99,7 +99,7 @@ psu_temps_mwmt <- read.csv("hab/Inputs/temperature_inputs/PSU_Modeled_Temperatur
 psu_temps_mean_daily_max <- read.csv("hab/Inputs/temperature_inputs/PSU_Modeled_Temperatures_current.csv") %>%
   separate(col = JDAY, c("month", "day"), sep = "/") %>%
   gather(reach_pt, Temperature, X1:X322) %>%
-  filter(month %in% c(7, 8, 9),
+  filter(month %in% c(7, 8),
          Temperature > 0) %>%
   group_by(reach_pt) %>%
   summarize(mdm = mean(Temperature, na.rm = T))
