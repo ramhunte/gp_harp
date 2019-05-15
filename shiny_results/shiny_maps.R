@@ -55,8 +55,7 @@ fl <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Output
                value >= 10 & value < 25 ~ '10° - 25°',
                value >= 25 & value < 50 ~ '25° - 50°',
                value >= 50 & value < 100 ~ '50° - 100°',
-               value >= 100 & value < 170 ~ '100° - 170°',
-               value >= 170 ~ '>170°'
+               value >= 100  ~ '> 100°'
              ),
            param == 'pass_tot' ~
              case_when(
@@ -78,12 +77,12 @@ fl <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Output
              )),
          level = factor(level, levels = mapping_levels),
          map_color = case_when(
-           level %in% c('< 18°', '< 10°', '100%', '< -2.5°') ~ 'navy',
-           level %in% c('10° - 25°','66% - 100%', '-2.5° - -1.5°') ~ 'dodgerblue',
-           level %in% c('-1.5° - -0.5°') ~ 'lightskyblue',
-           level %in% c('-0.5° - 0.5°') ~ 'grey',
-           level %in% c('18° - 24°', '25° - 50°', '33% - 66%', '0.5° - 1.5°') ~ 'yellow',
-           level %in% c('50° - 100°', '0% - 33%', '1.5° - 2.5°') ~ 'darkorange',
-           level %in% c('> 24°', '> 100°', '0%', '> 2.5°') ~ 'red3',
-           is.na(level) ~ 'white')
+           level %in% c('< 18°', '< 10°', '100%', '< -2.5°') ~ '#00008B',
+           level %in% c('10° - 25°','66% - 100%', '-2.5° - -1.5°') ~ '#0000CD',
+           level %in% c('-1.5° - -0.5°') ~ '#87CEFA',
+           level %in% c('-0.5° - 0.5°') ~ '#808080',
+           level %in% c('18° - 24°', '25° - 50°', '33% - 66%', '0.5° - 1.5°') ~ '#FFFF00',
+           level %in% c('50° - 100°', '0% - 33%', '1.5° - 2.5°') ~ '#FF8C00',
+           level %in% c('> 24°', '> 100°', '0%', '> 2.5°') ~ '#FF0000',
+           is.na(level) ~ '#FFFFFF')
            ) 
