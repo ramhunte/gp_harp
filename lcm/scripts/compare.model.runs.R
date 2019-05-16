@@ -21,6 +21,7 @@ shell_cmd <- paste0('git show dev:', path_to_edr, ' > dev_spawners_edr.csv')
 shell(cmd = shell_cmd)
 dev_edr <- read.csv('dev_spawners_edr.csv')
 unlink('dev_spawners_edr.csv') # Delete dev version
+ver_dev <- shell(cmd = paste0("git describe dev --tags"), intern = TRUE)
 
 no_asrp_scenarios <- as.character(str_replace_all(diag_scenarios, "_", "\\."))
 if (run_asrp == "no") {
@@ -65,7 +66,7 @@ labs_df <- df %>%
               group_by(scenario,version) %>%
               summarize(n = sum(total.run)) %>%
               mutate(prcnt_diff = (n[version == branch] - n) / n,
-                     n = ifelse(prcnt_diff > 0, scales::percent(prcnt_diff), NA)) %>%
+                     n = ifelse(abs(prcnt_diff) > 0, scales::percent(prcnt_diff), '0%')) %>%
               filter(version == 'dev') %>%
               mutate(version = 'percent diff')
             
@@ -90,7 +91,7 @@ if (nrow(labs_df_test) != 0) {
                 aes(y = y, label = paste(version,' - ', n)),
                 size = 2) +
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)) +
-      labs(caption = paste0(pop, ' - Habitat file version = ', hab.ver),
+      labs(caption = paste0(pop, ' - dev version = ', ver_dev),
            y = 'spawners')
   )
   
@@ -120,6 +121,6 @@ if (nrow(labs_df_test) != 0) {
           summarize(n = sum(total.run, na.rm = T)) %>%
           spread(version, n) %>%
           mutate(prcnt_diff = (get(branch) - dev) / dev,
-                 prcnt_diff = ifelse(prcnt_diff > 0, scales::percent(prcnt_diff), NA))
+                 prcnt_diff = ifelse(abs(prcnt_diff) > 0, scales::percent(prcnt_diff), '0%'))
   )
 } else {print("No changes to lcm results")}
