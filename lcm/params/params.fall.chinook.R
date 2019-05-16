@@ -46,7 +46,7 @@ fry.surv.adj <- 1
 # stochastic survival between min and max
 
 # Values including delta
-bay.parr.surv <- .04 # Delta and bay for parr (freshwater rearing)
+bay.parr.surv <- .05 # Delta and bay for parr (freshwater rearing)
 bay.fry.surv <- .001 # Freshwater outmigration, delta and bay for fry
 
 #Stochastically vary the bay-delta survival by 20%
