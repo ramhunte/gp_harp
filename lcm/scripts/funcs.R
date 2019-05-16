@@ -44,6 +44,49 @@ BH.func <- function(S, p, c){
 }
 
 
+# Flow recurrance impact on egg to fry survival ----
+# Functions to create multiplier for year to year
+# variability from flow in egg-fry survival
+
+# Inverse logit function
+# helper function called by another function
+inv.logit <- function(x){
+  # transforms x on logit back to a survival
+  temp <- exp(x)/(exp(x) + 1)
+  temp
+}
+
+# Change rescale egg survival to 0:1 scale
+# helper function called by another function
+range.rescale <- function(x, min = 0.005554976, max = 0.1322917) {
+  # rescales x the range of predictions,
+  # where x is the inv.logit from a fitted 
+  # logit(surv) to recurrence interval relationship:
+  # logit(surv) ~ -1.88084588 - 0.05511075 * peak.winter.flow
+  # from Skagit River Age0+ Chinook salmon
+  # egg-outmigrating juveniles data, rescaled to
+  # 0 to 1 scale, with the minimum surv of 0.005554976 
+  # at high winter flows, and
+  # a maximum surv of 0.1322917 at low winter flows
+
+  temp <- (x - min) / diff(range(c(min, max))) * 1
+  temp
+}
+
+# Egg survival as a function of flow recurrence
+# called within subbasin() function
+# at the egg --> fry line, as in:
+# pre.fry <- eggs * egg.fry.surv * egg.flow.dec() # Eggs --> freshly emerged fry
+egg.flow.dec <- function(){
+  # egg survival multiplier
+  # requires inv.logit(), range.rescale()
+  temp.flow <- sample(seq(0.05, 100, by = 1), size = 1, 
+                      prob = 1/seq(0.05, 100, by = 1))
+  temp.decl <- range.rescale(inv.logit(-1.88084588 - 0.05511075 * temp.flow))
+  temp.decl  
+}
+
+
 
 # Bay survival function ----
 bay.surv.func <- function(min, max){
@@ -117,7 +160,7 @@ if (pop == "coho") {
     
     eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Hockey stick
     #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
-    pre.fry <- eggs * egg.fry.surv # Eggs --> freshly emerged fry
+    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()# Eggs --> freshly emerged fry
     
     # Spring distribution
     fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix.spring * percent.fry.migrants)
@@ -186,7 +229,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     
     eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
     #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
-    pre.fry <- eggs * egg.fry.surv
+    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
     # Natal fry - All basins
     natal.fry <- BH.func(S = pre.fry, p = weekly.surv, c = cap * 2) # Density dependent survival in fresh (first week after fry), 3x capacity
