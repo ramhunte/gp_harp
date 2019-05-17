@@ -46,7 +46,7 @@ fry.surv.adj <- 1
 # stochastic survival between min and max
 
 # Values including delta
-bay.parr.surv <- .05
+bay.parr.surv <- .06
 bay.fry.surv <- .001
 
 bay.parr.range <- c(bay.parr.surv, bay.parr.surv)#c(bay.parr.surv*.8, bay.parr.surv*1.2)
