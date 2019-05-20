@@ -103,7 +103,7 @@ asrp_temp_func <- function(a= "Current temperature", b = "Historical temperature
 }
 
 temp_func <- function(t = "temperature"){
-  if (fishtype %in% c("coho", "spring_chinook")) {
+  if (fishtype %in% c("coho", "spring_chinook", 'fall_chinook')) {
     ifelse(t < 18,
            1,
            ifelse(t >= 18 & t < 24,

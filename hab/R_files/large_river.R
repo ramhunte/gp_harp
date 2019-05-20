@@ -22,9 +22,8 @@ LgRiver <- LgRiver_raw %>%
          area_w = width_w * Length_m / 10000) %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
   LgRiver <- LgRiver %>%
-    filter(Subbasin_num %in% schino_subs) %>%
     mutate(curr.tempmult = 1,
            hist.tempmult = 1)
 }

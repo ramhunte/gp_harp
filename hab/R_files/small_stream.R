@@ -20,9 +20,9 @@ ss <- SmStream_raw %>%
                      as.character(lc))) %>%
   filter(spawn_dist == "Yes")
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
   ss <- ss %>%
-    filter(Subbasin_num %in% schino_subs) %>%
+    # filter(Subbasin_num %in% schino_subs) %>%
     mutate(curr.tempmult = 1,
            hist.tempmult = 1)
 }

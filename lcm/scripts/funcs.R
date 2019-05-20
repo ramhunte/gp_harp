@@ -262,14 +262,12 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     sub.yr <- natal.sub.yr.grp3 + non.natal.sub.yr.grp5.redist
     
     # Downstream migration for subyearlings (4, 2 or 0 weeks)
-    # subyearlings * average MS weekly productivity [using the move matrix to specifiy whcih MS reaches]
-    # Then raise that to either 4, 2 or 0, depending on which natal basin
-    sub.yr.ds <- sub.yr * (colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks)
+    # 3 weeks of survival with june temperatures, the 4 week fish get one week of survival without temperature
+    # Then raise that to either 1 (4 week basins) or 0 (0 and 2 week basins)
+    sub.yr.ds <- sub.yr * 
+                 colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks * # average survival without temperature
+                 colSums(move.matrix * weekly.surv.temp[ms.reaches])^ds_weeks_june # with temperature
     
-    if (pop == "spring.chinook") {
-      # Spring chinook get one week of productivity weighted by June temperatures
-      sub.yr.ds <- sub.yr.ds * colSums(move.matrix * weekly.surv.temp[ms.reaches])
-      }
     
     # Apply bay survival (ds migration, delta, bay, nearshore productivity)
     fry.migrants.bay <- fry.migrants * bay.fry.surv

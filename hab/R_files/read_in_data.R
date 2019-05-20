@@ -26,9 +26,14 @@ edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T
 #   select(-X)
 
 # Temperature gaps.  This file was created manually and fills any gaps in psu/edt temperature data.  Joined to flowline using edt "Reach" layer ----
-temp_gaps <- list.files(path = Inputs, pattern = "temp_gaps", full.names = T) %>% 
-  read.csv(.) %>%
-  select(-notes)
+# temp_gaps <- list.files(path = Inputs, pattern = "temp_gaps", full.names = T) %>% 
+#   read.csv(.) %>%
+#   select(-notes) %>%
+#   mutate(
+#     rearing_temp_gap = case_when(
+#       fishtype %in% c('spring_chinook', 'fall_chinook') ~ gap_temp_mdm, # !!!THIS NEEDS TO BE CHANGED TO JUNE 1-21 TEMPS
+#       fishtype %in% c('coho', 'steelhead') ~ gap_temp_mwmt),
+#     prespawn_temp_gap = gap_temp_mdm)
 
 # Culverts.  This file reads in the most recent Chehalis obstructions layer from the spatial model outputs. ----
 culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "culvs_gsu_", full.names = T) %>%

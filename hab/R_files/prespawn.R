@@ -20,11 +20,7 @@ if (fishtype == "spring_chinook") {
   prespawn.surv <- lapply(diag_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
     do.call('rbind',.) %>%
     left_join(., egg_cap_weight) %>%
-    mutate(prespawn_temp_curr = ifelse(!is.na(mdm), 
-                                       mdm,
-                                       ifelse(!is.na(edt_mdm_temp), 
-                                              edt_mdm_temp, 
-                                              gap_temp_mdm)),
+    mutate(prespawn_temp_curr = prespawn_temp,
            prespawn_temp_hist = prespawn_temp_curr - temp_diff,
            pass_tot_weight = pass_tot * eggs_weight,
            pass_tot_nat_weight = pass_tot_natural * eggs_weight) %>%

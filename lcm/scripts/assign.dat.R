@@ -88,13 +88,9 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   weekly.surv <- dat['surv_s', ]^(1/8) # 1 week of freshwater mortality
   cap <- dat['capacity_s', ]
   
-} #end if chinook
-
-
-if (pop == "spring.chinook") {
-  
   # Weekly productivity scaled with June temperatures
-  weekly.surv.temp <- (0.1 * dat['surv_s_2', ]^(1/8)) + (.9 * weekly.surv) 
+  # This is weighted so that 50% of fish will get the impact of temperature
+  weekly.surv.temp <- (0.45 * dat['surv_s_2', ]^(1/8)) + (.55 * weekly.surv) 
   
 } 
 
