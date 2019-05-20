@@ -17,9 +17,8 @@ bw <- Backwater_raw %>%
   mutate(Habitat = "Backwater") %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
    bw <- bw %>%
-     filter(Subbasin_num %in% schino_subs) %>%
      mutate(curr.tempmult = 1,
             hist.tempmult = 1)}
 

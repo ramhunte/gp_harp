@@ -11,7 +11,7 @@ if (fishtype == "steelhead") {
                                            "summer.2", 
                                            "winter.2")))}
 
-if (fishtype == 'spring_chinook') {
+if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
   data <- data %>%
     bind_rows(., data %>% 
                 mutate(life.stage = ifelse(life.stage == 'summer',
@@ -122,13 +122,9 @@ data.spread <- lapply(scenarios, function(x){
     y <- y %>% 
       filter(!stage_nm %in% c("capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
   }
-  if (fishtype == "spring_chinook") {
+  if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
     y <- y %>% 
       filter(!stage_nm %in% c("capacity_w", "surv_w", "capacity_s_2", "capacity_w_2", "surv_w_2"))
-  }
-  if (fishtype == "fall_chinook") {
-    y <- y %>% 
-      filter(!stage_nm %in% c("capacity_w", "surv_w", "capacity_s_2", "surv_s_2", "capacity_w_2", "surv_w_2"))
   }
   write.csv(y, file = file.path(outputs_hab, paste0(x, ".csv")))
 }) %>%

@@ -16,7 +16,7 @@ if (fishtype == "steelhead") {
 # Duplicate spring chinook rearing data.  This allows us to calculate a second survival value with the temperature multiplier applied.  
 # This second survival is assigned to surv_s_2
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
   asrp_cap <- asrp_cap %>%
     bind_rows(., asrp_cap %>%
                 mutate(life.stage = ifelse(life.stage == 'summer',

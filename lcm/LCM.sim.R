@@ -37,7 +37,7 @@ if (fishtype == "fall_chinook") {
 years <- 100
 
 # Number of model runs (iterations)
-runs  <- 5
+runs  <- 50
 
 if (sensitivity.mode == 'yes') {runs <- 100}
 

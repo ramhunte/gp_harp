@@ -39,10 +39,10 @@ fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side cha
               select(spawn_dist, species, both_chk, lc, noaaid, slope, pass_tot, Subbasin_num, pass_tot_natural, Reach, curr.tempmult, hist.tempmult,
                      curr_temp, hist_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, chino_mult), 
             by = "noaaid") %>%
-  mutate(curr.tempmult = ifelse(species == 'spring_chinook', 
+  mutate(curr.tempmult = ifelse(species %in% c('spring_chinook', 'fall_chinook'), 
                                 1,
                                 curr.tempmult),
-         hist.tempmult = ifelse(species == 'spring_chinook',
+         hist.tempmult = ifelse(species %in% c('spring_chinook', 'fall_chinook'),
                                 1, 
                                 hist.tempmult),
          slope.class = ifelse(slope < .02, 

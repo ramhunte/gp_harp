@@ -14,9 +14,7 @@ flowline_noculv <- flowline %>%
                              Reach %in% mainstem_reaches & !Subbasin_num == 49 ~ "LgRiver")) %>%
   gather(species, spawn_dist, coho:steelhead) %>%
   filter(species == fishtype) %>%
-  left_join(., edt_temps, by = "Reach") %>%
-  left_join(., psu_temps, by = "Seg") %>%
-  left_join(., temp_gaps, by = "Reach") %>%
+  left_join(., all_temps, by = 'noaaid') %>%
   left_join(., edt_width %>%
               gather(stage, width, width_w:width_s) %>%
               mutate(stage = case_when(year == 2019 & stage == "width_s" ~ "width_s",
@@ -30,12 +28,7 @@ flowline_noculv <- flowline %>%
               select(-year) %>%
               spread(stage, width),
             by = "Reach_low") %>%
-  mutate(mwmt = ifelse(Habitat == "LgRiver",
-                       mwmt,
-                       NA),
-         mdm = ifelse(Habitat == "LgRiver",
-                      mdm,
-                      NA),
+  mutate(
          width_s = ifelse(is.na(width_s), 
                           wet_width, 
                           width_s),
@@ -49,13 +42,7 @@ flowline_noculv <- flowline %>%
          temp_diff_2040_cc_only = cc_2040,
          temp_diff_2080_cc_only = cc_2080,
          temp_diff = curr_temp - hist_temp,
-         curr_temp = ifelse(!is.na(mwmt), 
-                            mwmt,
-                            ifelse(!is.na(edt_temp), 
-                                   edt_temp, 
-                                   ifelse(!is.na(gap_temp_mwmt),
-                                          gap_temp_mwmt,
-                                          -9999))), #set temp to -9999 if no temp exists to help us flag down gaps if we receive new temp data
+         curr_temp = rear_temp, #set temp to -9999 if no temp exists to help us flag down gaps if we receive new temp data
          hist_temp = curr_temp - temp_diff,
          tm_2040 = curr_temp + temp_diff_2040,
          tm_2080 = curr_temp + temp_diff_2080,
