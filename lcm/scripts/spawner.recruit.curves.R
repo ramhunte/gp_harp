@@ -121,6 +121,7 @@ for (n in 1:length(scenario.file)) { # loop across hab scenarios
   source("lcm/scripts/assign.dat.R")
   
   for (i in 1:runs) {
+
     spawner.init <- n.init[i] * p.init
     N.test['spawners',] <- spawner.init 
     
@@ -322,6 +323,7 @@ bh.results <- lapply(
 )
 
 
+
 # Make results look pretty ----
 
 bh.results.subbasin <- bh.results[[1]] %>%
@@ -330,7 +332,20 @@ bh.results.subbasin <- bh.results[[1]] %>%
   select(scenario, Subbasin, term, estimate) %>%
   filter(!is.na(term)) %>%
   spread(term, estimate) %>%
-  rename(Pn = a, Cn = Rp) 
+  rename(Pn = a, Cn = Rp) %>%
+  left_join(bh.dat.nested[[1]] %>% # Fit lm() to first 3 S-R points, slope at origin
+              unnest %>%
+              group_by(scenario, Subbasin) %>%
+              top_n(n = -3, wt = spawners) %>%
+              nest() %>%
+              mutate(lm_mod = map(data, ~lm(recruits ~ 0 + spawners, .)),
+                     lm_mod_clean = map(lm_mod, tidy)) %>%
+              select(scenario, Subbasin, lm_mod_clean) %>%
+              unnest() %>%
+              rename(Pn_slope = estimate) %>%
+              select(scenario, Subbasin, Pn_slope)
+            )
+
 
 bh.results.edr <- bh.results[[2]] %>%
   select(scenario, EcoRegion, bh_mod_clean) %>%
@@ -338,7 +353,20 @@ bh.results.edr <- bh.results[[2]] %>%
   select(scenario, EcoRegion, term, estimate) %>%
   filter(!is.na(term)) %>%
   spread(term, estimate) %>%
-  rename(Pn = a, Cn = Rp)  
+  rename(Pn = a, Cn = Rp) %>%
+  left_join(bh.dat.nested[[2]] %>% # Fit lm() to first 3 S-R points, slope at origin
+              unnest %>%
+              group_by(scenario, EcoRegion) %>%
+              top_n(n = -3, wt = spawners) %>%
+              nest() %>%
+              mutate(lm_mod = map(data, ~lm(recruits ~ 0 + spawners, .)),
+                     lm_mod_clean = map(lm_mod, tidy)) %>%
+              select(scenario, EcoRegion, lm_mod_clean) %>%
+              unnest() %>%
+              rename(Pn_slope = estimate) %>%
+              select(scenario, EcoRegion, Pn_slope)
+  )
+
 
 bh.results.basinwide <- bh.results[[3]] %>%
   select(scenario, bh_mod_clean) %>%
@@ -346,7 +374,19 @@ bh.results.basinwide <- bh.results[[3]] %>%
   select(scenario, term, estimate) %>%
   filter(!is.na(term)) %>%
   spread(term, estimate) %>%
-  rename(Pn = a, Cn = Rp) 
+  rename(Pn = a, Cn = Rp) %>%
+  left_join(bh.dat.nested[[3]] %>% # Fit lm() to first 3 S-R points, slope at origin
+              unnest %>%
+              group_by(scenario) %>%
+              top_n(n = -3, wt = spawners) %>%
+              nest() %>%
+              mutate(lm_mod = map(data, ~lm(recruits ~ 0 + spawners, .)),
+                     lm_mod_clean = map(lm_mod, tidy)) %>%
+              select(scenario, lm_mod_clean) %>%
+              unnest() %>%
+              rename(Pn_slope = estimate) %>%
+              select(scenario, Pn_slope)
+  )
   
 
 # Join data to looping model fish abundance and write a csv
@@ -364,7 +404,8 @@ fish.abundance %>%
   spread(Var1, n) %>%
   left_join(bh.results.subbasin) %>%
   mutate(Pn = ifelse(spawners == 0, NA, Pn),
-         Cn = ifelse(spawners == 0, NA, Cn)) %>%
+         Cn = ifelse(spawners == 0, NA, Cn),
+         Cn_slope = spawners/(1 - (1/Pn_slope))) %>%
   write.csv(
     file.path(
       outputs_lcm.sr, 
@@ -385,7 +426,8 @@ fish.abundance %>%
   spread(Var1, n) %>%
   left_join(bh.results.edr) %>%
   mutate(Pn = ifelse(spawners == 0, NA, Pn),
-         Cn = ifelse(spawners == 0, NA, Cn)) %>%
+          Cn = ifelse(spawners == 0, NA, Cn),
+          Cn_slope = spawners/(1 - (1/Pn_slope))) %>%
   write.csv(
     file.path(
       outputs_lcm.sr, 
@@ -406,11 +448,12 @@ fish.abundance %>%
   spread(Var1, n) %>%
   left_join(bh.results.basinwide) %>%
   mutate(Pn = ifelse(spawners == 0, NA, Pn),
-         Cn = ifelse(spawners == 0, NA, Cn)) %>%
+         Cn = ifelse(spawners == 0, NA, Cn),
+         Cn_slope = spawners/(1 - (1/Pn_slope))) %>%
   write.csv(
     file.path(
       outputs_lcm.sr, 
-      paste(
+      paste0(
         'model_outputs_basinwide_', 
         pop, 
         '.csv'
@@ -454,7 +497,7 @@ print(
 
 ggsave(
   file.path(outputs_lcm.sr, 
-            paste('spawner-recruit-basinwide_', 
+            paste0('spawner-recruit-basinwide_', 
                   pop,
                   '.jpg')
             ),
