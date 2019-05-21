@@ -37,7 +37,11 @@ if (fishtype == "fall_chinook") {
 years <- 100
 
 # Number of model runs (iterations)
-runs  <- 50
+if (run_stochastic_eggtofry == 'yes') {
+  runs  <- 50
+} else{
+  runs <- 2
+}
 
 if (sensitivity.mode == 'yes') {runs <- 100}
 

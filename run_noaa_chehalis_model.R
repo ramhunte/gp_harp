@@ -37,7 +37,7 @@ if (clear_env == 'yes') {
 }
 
 # Which species to run?
-spp <- c('coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'all_species')
+spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead')
 fishtype <- spp[menu(spp,title = "Choose a species", graphics = TRUE)]
 
 
@@ -47,8 +47,12 @@ run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", g
 
 
 # Create the spawner-recruit curves?
-run_sr_curves_query <- c('yes', 'no')
+run_sr_curves_query <- c('no', 'yes')
 run_sr_curves <- run_sr_curves_query[menu(run_sr_curves_query, title = "Create spawner-recruit curves?", graphics = TRUE)]
+
+# Run stochastic egg to fry ?
+run_stochastic_eggtofry_query <- c('no', 'yes')
+run_stochastic_eggtofry <- run_stochastic_eggtofry_query[menu(run_stochastic_eggtofry_query, title = 'Run stochastic egg to fry?', graphics = TRUE)]
 
 # Store branch name ----
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
