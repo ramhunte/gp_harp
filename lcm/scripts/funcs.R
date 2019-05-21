@@ -88,7 +88,7 @@ if (run_stochastic_eggtofry == 'yes') {
   }
 } else {
   egg.flow.dec <- function() {
-    1/1
+    1
   }
 }
 
