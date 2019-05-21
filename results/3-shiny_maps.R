@@ -2,7 +2,7 @@ library(sf)
 library(plotly)
 
 # Subbasins shapefile
-sub <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Inputs.gdb', layer = 'NOAA_subbasins_w_fp') # Changed the location of this file since it no longer exists in hab folder
+sub <- st_read(dsn = '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190327/Inputs.gdb', layer = 'NOAA_subbasins_w_fp')
 
 buffer <- 1e4 # buffer of X meters
 bbox <- st_bbox(sub) + c(-buffer, -buffer, buffer, buffer) # subtract from the xmin and ymin, add to the xmax and ymax
@@ -33,7 +33,7 @@ mapping_levels <- as.factor(c(c('< 18°', '18° - 24°','> 24°'),
                             c('0%','0% - 33%','33% - 66%','66% - 100%','100%'), 
                             c('< -2.5°','-2.5° - -1.5°','-1.5° - -0.5°','-0.5° - 0.5°','0.5° - 1.5°','1.5° - 2.5°','> 2.5°')))
 
-fl <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Outputs.gdb', layer = "flowline") %>%
+fl <- st_read(dsn = '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190327/Outputs.gdb', layer = 'flowline') %>%
   gather(species, presence, cohospawn:steelspawn) %>%
   filter(presence == 'Yes') %>% 
   select(-curr_temp, -hist_temp) %>%
