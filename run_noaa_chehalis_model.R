@@ -50,6 +50,10 @@ run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", g
 run_sr_curves_query <- c('yes', 'no')
 run_sr_curves <- run_sr_curves_query[menu(run_sr_curves_query, title = "Create spawner-recruit curves?", graphics = TRUE)]
 
+# Run stochastic egg to fry ?
+run_stochastic_eggtofry_query <- c('yes', 'no')
+run_stochastic_eggtofry <- run_stochastic_eggtofry_query[menu(run_stochastic_eggtofry_query, title = 'Run stochastic egg to fry?', graphics = TRUE)]
+
 # Store branch name ----
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 

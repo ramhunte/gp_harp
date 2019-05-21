@@ -77,13 +77,19 @@ range.rescale <- function(x, min = 0.005554976, max = 0.1322917) {
 # called within subbasin() function
 # at the egg --> fry line, as in:
 # pre.fry <- eggs * egg.fry.surv * egg.flow.dec() # Eggs --> freshly emerged fry
-egg.flow.dec <- function(){
-  # egg survival multiplier
-  # requires inv.logit(), range.rescale()
-  temp.flow <- sample(seq(0.05, 100, by = 1), size = 1, 
-                      prob = 1/seq(0.05, 100, by = 1))
-  temp.decl <- range.rescale(inv.logit(-1.88084588 - 0.05511075 * temp.flow))
-  temp.decl  
+if (run_stochastic_eggtofry == 'yes') {
+  egg.flow.dec <- function(){
+    # egg survival multiplier
+    # requires inv.logit(), range.rescale()
+    temp.flow <- sample(seq(0.05, 100, by = 1), size = 1, 
+                        prob = 1/seq(0.05, 100, by = 1))
+    temp.decl <- range.rescale(inv.logit(-1.88084588 - 0.05511075 * temp.flow))
+    temp.decl  
+  }
+} else {
+  egg.flow.dec <- function() {
+    1/1
+  }
 }
 
 
