@@ -3,11 +3,11 @@ options(scipen = 999)
 
 Inputs = 'hab/Inputs'
 
-source("hab/R_files/temperature.R")
 
 source(file.path("hab", "R_files",paste0(fishtype, "_inputs.R"))) #source fish specific variables (density, etc)
 source("hab/R_files/read_in_data.R")
 
+source("hab/R_files/temperature.R")
 
 outputs_hab <- file.path("outputs", fishtype, "hab.scenarios")
 if (dir.exists(outputs_hab) == F) {
@@ -17,6 +17,7 @@ if (dir.exists(outputs_hab) == F) {
 
 source("hab/R_files/inputs.R")
 source("hab/R_files/functions.R")
+source("hab/R_files/chino_mult.R")
 source("hab/R_files/flowline.R")
 source("hab/R_files/LgRiver_Spawning_Capacity.R")
 source("hab/R_files/large_river.R")

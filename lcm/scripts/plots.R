@@ -67,9 +67,36 @@ if (sensitivity.mode == 'no') {
     mutate(scenario.label = factor(scenario.label,levels = ordered.levels)) %>%
     filter(scenario.label != levs.obs[2]) %>%
     droplevels()
-
   
-  colors <- data.frame(scenario.label = levels(spawners$scenario.label)) %>%
+# Create spawners data frame from diagnostic scenarios only
+  spawners.diag <- spawners %>%  
+    filter(!scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
+                                  "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action')) %>%
+    droplevels()
+  
+# Create spawners data frame from asrp scenarios only  
+  spawners.asrp <- spawners %>%  
+    filter(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
+                                 "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action', "Current")) %>%
+    mutate(year = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", '2040 No action'),
+                          'mid-century',
+                          ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080", '2080 No action'),
+                                 'late-century',
+                                 'current')),
+           scenario.label.nm = case_when(
+             scenario.label %in% c("ASRP 1 - 2040", "ASRP 1 - 2080") ~ "ASRP 1",
+             scenario.label %in% c("ASRP 2 - 2040", "ASRP 2 - 2080") ~ "ASRP 2",
+             scenario.label %in% c("ASRP 3 - 2040", "ASRP 3 - 2080") ~ "ASRP 3",
+             scenario.label %in% c("2040 No action", "2080 No action") ~ "No action",
+             scenario.label %in% c("Current") ~ "Current"))
+
+# reorder factors for asrp spawners so that x axis plotting order is correct
+spawners.asrp$scenario.label.nm <- factor(spawners.asrp$scenario.label.nm, levels = c("Current", "No action", "ASRP 1", "ASRP 2", "ASRP 3"))
+spawners.asrp$year <- factor(spawners.asrp$year, levels = c("current", "mid-century", "late-century"))
+spawners.asrp %<>% 
+  droplevels()
+  
+  colors.diag <- data.frame(scenario.label = levels(spawners.diag$scenario.label)) %>%
     mutate_if(is.factor,as.character) %>%
     left_join(spawners %>%
                 distinct(scenario.label,color) %>%
@@ -77,7 +104,24 @@ if (sensitivity.mode == 'no') {
     select(color) %>%
     unlist(use.names = FALSE)
   
-  label.df <- spawners %>%
+  colors.asrp <- data.frame(scenario.label = levels(spawners.asrp$scenario.label)) %>%
+    mutate_if(is.factor,as.character) %>%
+    left_join(spawners %>%
+                distinct(scenario.label,color) %>%
+                mutate_if(is.factor,as.character)) %>%
+    select(color) %>%
+    unlist(use.names = FALSE)
+  
+  colors.asrp.stack <- data.frame(scenario.label = levels(spawners.asrp$scenario.label)) %>%
+    mutate_if(is.factor,as.character) %>%
+    left_join(spawners %>%
+                distinct(scenario.label,color) %>%
+                mutate_if(is.factor,as.character)) %>%
+    slice(c(1, 3, 5,7, 9)) %>%
+    select(color) %>%
+    unlist(use.names = FALSE)
+  
+  label.df.diag <- spawners.diag %>%
     group_by(scenario.label) %>%
     summarize(n = mean(n)) %>%
     mutate(spawners.change = n - n[scenario.label == 'Current'],
@@ -85,35 +129,67 @@ if (sensitivity.mode == 'no') {
            prcnt.change = ifelse(prcnt.change >= 0,
                                  paste0('+', percent(prcnt.change)),
                                  percent(prcnt.change)),
-           y.pos = n) %>%
+           y.pos = n,
+           curr.spawn = n[scenario.label == 'Current']) %>%
     filter(!scenario.label %in% c('Current', levs.obs[1]))
-
   
-  # Box plot
+  label.df.asrp <- spawners.asrp %>%
+    group_by(scenario.label) %>%
+    summarize(n = mean(n)) %>%
+    mutate(spawners.change = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
+                                    n - n[scenario.label == '2040 No action'],
+                                    ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
+                                           n - n[scenario.label == '2080 No action'],
+                                           n - n[scenario.label == 'Current'])),
+           prcnt.change = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
+                                 ((n - n[scenario.label == '2040 No action']) / n[scenario.label == '2040 No action']),
+                                 ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
+                                        ((n - n[scenario.label == '2080 No action']) / n[scenario.label == '2080 No action']),
+                                        ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']))),
+           prcnt.change = ifelse(prcnt.change >= 0,
+                                 paste0('+', percent(prcnt.change)),
+                                 percent(prcnt.change)),
+           y.pos = n,
+           base.spawn = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
+                               n[scenario.label == '2040 No action'],
+                               n[scenario.label == '2080 No action'])) %>%
+    filter(!scenario.label %in% c('Current', levs.obs[1]))
+  
+  
+  
+  # Box plot of diagnostic scenarios ----
   print(
     ggplot() +
       theme_bw() +
-      geom_boxplot(data = spawners %>% filter(scenario.label == levs.obs[1]), 
+      geom_boxplot(data = spawners.diag %>% filter(scenario.label == levs.obs[1]), 
                    aes(scenario.label, n, fill = scenario.label), 
                    outlier.shape = NA) +
-      geom_jitter(data = spawners %>% filter(scenario.label == levs.obs[1]),
+      geom_jitter(data = spawners.diag %>% filter(scenario.label == levs.obs[1]),
                   aes(scenario.label, n, fill = scenario.label),
                   color = 'black', 
                   pch = 21,
                   size = 2, 
                   width = .3) +
-      geom_bar(data = spawners %>% filter(scenario.label != levs.obs[1]), 
+      geom_bar(data = spawners.diag %>% filter(!scenario.label %in% c(levs.obs[1])) , 
                    aes(scenario.label, n, fill = scenario.label),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_text(data = label.df, 
-                aes(x = scenario.label, 
+      geom_bar(data = spawners.diag %>% filter(!scenario.label %in% c(levs.obs[1])) %>% 
+                 mutate(base.spawn = mean(n[scenario.label == 'Current'])), 
+               aes(scenario.label, base.spawn, fill = scenario.label),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean",
+               fill = 'grey',
+               alpha = .6) +
+      geom_text(data = label.df.diag, 
+                aes(x = scenario.label , 
                     y = y.pos, 
                     label = prcnt.change),
                 vjust = -0.5) +
       scale_x_discrete(drop = F) +
-      scale_fill_manual(values = colors, 
+      scale_fill_manual(values = colors.diag, 
                         guide = F, drop = F) +
       scale_y_continuous(labels = comma, 
                          expand = c(0, 0,.05,0)) +
@@ -127,7 +203,82 @@ if (sensitivity.mode == 'no') {
   
  
   ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
+ if (run_asrp == 'yes') { 
+ # Bar plot of asrp scenarios ----
+  print(
+    ggplot() +
+      theme_bw() +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1])) , 
+               aes(scenario.label.nm, n, fill = scenario.label),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1])) %>% 
+                 mutate(base.spawn = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
+                                            unique(n[scenario.label == '2040 No action']),
+                                            ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
+                                                   unique(n[scenario.label == '2080 No action']),
+                                                   0))), 
+               aes(scenario.label.nm, base.spawn, fill = scenario.label),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean",
+               fill = 'grey',
+               alpha = .6) +
+      facet_grid(~year, scales = 'free_x', space = 'free') +
+      scale_x_discrete(drop = T) +
+      scale_fill_manual(values = colors.asrp, 
+                        guide = F, drop = F) +
+      scale_y_continuous(labels = comma, 
+                         expand = c(0, 0,.05,0)) +
+      labs(x = NULL,
+           y = paste0('Spawners'),
+           caption = paste0('Model version = ',hab.ver)
+      ) +
+      theme(axis.text.x = element_text(angle = 45,hjust = 1),
+            text = element_text( size = 16))
+  ) #close print()
+ 
+  ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
   
+ #bar plot of asrp scenarios with stacked scenarios ----
+   print(
+    ggplot() +
+      theme_bw() +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3')), 
+               aes(year, n, fill = scenario.label.nm),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 2')), 
+               aes(year, n, fill = scenario.label.nm),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 1')), 
+               aes(year, n, fill = scenario.label.nm),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+    geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')), 
+             aes(year, n, fill = scenario.label.nm),
+             color = 'black',
+             stat = "summary", 
+             fun.y = "mean") +
+      scale_x_discrete(drop = T) +
+      scale_fill_manual(values = colors.asrp.stack, drop = F, name = "Scenario") +
+      scale_y_continuous(labels = comma, 
+                         expand = c(0, 0,.05,0)) +
+      labs(x = NULL,
+           y = paste0('Spawners'),
+           caption = paste0('Model version = ',hab.ver)
+      ) +
+      theme(axis.text.x = element_text(angle = 45,hjust = 1),
+            text = element_text( size = 16))
+  ) #close print()
+  
+ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp_stacked','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
+ }
 } #close if not sensitivity mode if() statement
 
 

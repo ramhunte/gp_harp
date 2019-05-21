@@ -9,7 +9,7 @@ SmStream_raw <- flowline %>%
          !fp_overlap == "Yes") %>%
   select(noaaid, curr_temp, hist_temp, temp_diff, curr.tempmult, hist.tempmult, Subbasin_num, pass_tot, Reach, Shape_Length, slope, lc, 
          spawn_dist, species, both_chk, pass_tot_natural, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, area_s, area_w,
-         Reach_low, width_s_hist, width_w_hist, wet_width)
+         Reach_low, width_s_hist, width_w_hist, wet_width, chino_mult)
 
 ss <- SmStream_raw %>%
   mutate(slope.class = case_when(slope < .02 ~ "low",
@@ -20,9 +20,9 @@ ss <- SmStream_raw %>%
                      as.character(lc))) %>%
   filter(spawn_dist == "Yes")
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
   ss <- ss %>%
-    filter(Subbasin_num %in% schino_subs) %>%
+    # filter(Subbasin_num %in% schino_subs) %>%
     mutate(curr.tempmult = 1,
            hist.tempmult = 1)
 }
@@ -90,7 +90,7 @@ ss_2 <- lapply(diag_scenarios, function(x) {
                        ifelse(!hab.scenario %in% c("Barriers", "Historical") & pass_tot == 0,
                               0,
                               Area))) %>%
-  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, curr.tempmult, hist.tempmult, pass_tot, both_chk, pass_tot_natural)
+  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, curr.tempmult, hist.tempmult, pass_tot, both_chk, pass_tot_natural, chino_mult)
 
 if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   ss_2 <- ss_2 %>%

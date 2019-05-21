@@ -49,7 +49,8 @@ prespawn.chin.func <- function(temps, a = 0.7919, b = -13.2061, c = 0){
   # PSM function from Willamette needs different temperature measure, so
   # convert PSU/ICF 7DADM to mean of daily means, July1 - Sept15
   #  using this fitted relationship:
-  temps.converted <- -3.277448 + 1.011789*temps
+  # temps.converted <- -3.277448 + 1.011789*temps
+  temps.converted <- temps - 1.868
 
   inverse.logit <- function(a, b, c, x){
     # This function back-transforms a prespawn
@@ -102,7 +103,7 @@ asrp_temp_func <- function(a= "Current temperature", b = "Historical temperature
 }
 
 temp_func <- function(t = "temperature"){
-  if (fishtype %in% c("coho", "spring_chinook")) {
+  if (fishtype %in% c("coho", "spring_chinook", 'fall_chinook')) {
     ifelse(t < 18,
            1,
            ifelse(t >= 18 & t < 24,
@@ -130,13 +131,15 @@ calc_coho_imperv <- function(imperv) {
   #
   # Returns:
   #  ps_mort_imperv: prespawn mortality related to imperviousness in decimal form
-  
+  if (fishtype == 'coho') {
   ps_mort_imperv <- 1.5 * imperv
   
   ps_prod_imperv <- ifelse(ps_mort_imperv > 1,
                            1,
                            ps_prod_imperv <- 1 - ps_mort_imperv)
   
+  
     return(ps_prod_imperv)
+  } else {return(1)}
 }
 

@@ -1,8 +1,10 @@
 #### Prespawn survival ----
 if (fishtype == "spring_chinook") {
   prespawn_asrp <- asrp_reach_data %>%
+    filter(!Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
+                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only")) %>%
     left_join(., flowline %>%
-                select(noaaid, Subbasin_num, spawn_dist, mn_imperv, mdm, edt_mdm_temp, gap_temp_mdm, temp_diff_2040_cc_only, temp_diff_2040, 
+                select(noaaid, Subbasin_num, spawn_dist, mn_imperv, prespawn_temp, temp_diff_2040_cc_only, temp_diff_2040, 
                        temp_diff_2080_cc_only, temp_diff_2080, Habitat)) %>%
     filter(curr_temp > 0,
            ifelse(Habitat == "LgRiver",
@@ -13,11 +15,7 @@ if (fishtype == "spring_chinook") {
     left_join(., egg_cap_weight_asrp) %>%
     mutate(temp_diff_2019 = 0,
            temp_diff_2019_cc_only = 0,
-           prespawn_temp_curr = ifelse(!is.na(mdm),
-                                       mdm,
-                                       ifelse(!is.na(edt_mdm_temp),
-                                              edt_mdm_temp,
-                                              gap_temp_mdm)),
+           prespawn_temp_curr = prespawn_temp,
            prespawn_temp_asrp = case_when(
              year == 2019 ~ prespawn_temp_curr, # This case is needed because of the prespawn_temp_intercept
              year == 2040 ~
@@ -34,17 +32,19 @@ if (fishtype == "spring_chinook") {
               pass_tot_asrp_weight = sum(pass_tot_asrp_weight, na.rm = T)) %>%
     ungroup() %>%
     mutate(survival = cramer.prespawn(prespawn_temp_asrp) * pass_tot_asrp_weight) %>%
+    # mutate(survival = prespawn.chin.func(prespawn_temp_asrp) * pass_tot_asrp_weight) %>%
     select(-prespawn_temp_asrp, -pass_tot_asrp_weight) %>%
     mutate(life.stage = "prespawn")
 } else {
   prespawn_asrp <- asrp_reach_data %>%
+    filter(!Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
+                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only")) %>%
     left_join(., flowline %>% 
                 select(noaaid, Subbasin_num, spawn_dist, mn_imperv, pass_tot_natural, pass_tot)) %>%
     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
     left_join(., egg_cap_weight_asrp) %>%
-    mutate(imperv_mult = ifelse(fishtype == "coho",
-                                calc_coho_imperv(mn_imperv),
-                                1),
+    mutate(imperv_mult = calc_coho_imperv(future_imperv + mn_imperv),
+
            pass_tot_asrp = ifelse(Barriers == 'y',
                                   pass_tot_natural,
                                   pass_tot),

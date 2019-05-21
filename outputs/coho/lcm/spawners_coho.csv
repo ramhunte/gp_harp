@@ -1,18 +1,20 @@
 "","scenario","scenario.label","habitat.file","n"
-"1","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",86938.188173595
-"2","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",72736.870790502
-"3","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",87782.4987830969
-"4","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",73515.4164138616
-"5","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",88737.7496603653
-"6","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",74176.2595401464
-"7","Current","Current","Current.csv",95786.3445631843
-"8","Beaver","Current, w/ historical beaver ponds","Beaver.csv",202148.831480423
-"9","Fine.sediment","Current, w/ historical fine sediment","Fine_sediment.csv",108726.698128194
-"10","Floodplain","Current, w/ historical floodplain habitat","Floodplain.csv",141027.890245691
-"11","FP.wood.comb","Current, w/ historical floodplains and wood","FP_wood_comb.csv",164245.31773927
-"12","LR.bank","Current, w/ historical large river bank conditions","LR_bank.csv",96390.5762552113
-"13","LR.length","Current, w/ historical large river length","LR_length.csv",96050.3461600529
-"14","Shade","Current, w/ historical shade","Shade.csv",104089.515476788
-"15","Wood","Current, w/ historical wood loading","Wood.csv",116573.032161047
-"16","Barriers","Current, w/ no barriers","Barriers.csv",105688.895074774
-"17","Historical","Historical conditions","Historical.csv",383512.84061948
+"1","ASRP.Current.asrp.2040","2040 No action","ASRP_Current_asrp_2040.csv",63274.4478372702
+"2","ASRP.Current.asrp.2080","2080 No action","ASRP_Current_asrp_2080.csv",50537.3809024947
+"3","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",67456.5208342405
+"4","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",55990.92898769
+"5","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",67561.3077158079
+"6","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",55431.2056710345
+"7","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",66106.6657825478
+"8","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",57593.2811904935
+"9","Current","Current","Current.csv",75887.2163060175
+"10","Beaver","Current, w/ historical beaver ponds","Beaver.csv",157801.612339226
+"11","Fine.sediment","Current, w/ historical fine sediment","Fine_sediment.csv",90815.2973099865
+"12","Floodplain","Current, w/ historical floodplain habitat","Floodplain.csv",112832.185627076
+"13","FP.wood.comb","Current, w/ historical floodplains and wood","FP_wood_comb.csv",130631.921179462
+"14","LR.bank","Current, w/ historical large river bank conditions","LR_bank.csv",76028.0224280335
+"15","LR.length","Current, w/ historical large river length","LR_length.csv",75427.0361643212
+"16","Shade","Current, w/ historical shade","Shade.csv",82407.3792883457
+"17","Wood","Current, w/ historical wood loading","Wood.csv",90469.9215685629
+"18","Barriers","Current, w/ no barriers","Barriers.csv",82377.8552837553
+"19","Historical","Historical conditions","Historical.csv",324589.94842959

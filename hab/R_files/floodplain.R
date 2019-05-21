@@ -6,7 +6,7 @@ ss.dist.ref = data.frame(lc.ref, slope.class, pool.perc.ref)
 # Create historical side channel data frame from flowline and hist channel data joined by reach
 hist_sc <- flowline %>%
   select(Reach, Shape_Length, spawn_dist, species, both_chk, Subbasin_num, noaaid, curr.tempmult, hist.tempmult, curr_temp, hist_temp, tm_2040, 
-         tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang) %>%
+         tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, chino_mult) %>%
   left_join(., lr_length_raw, by = "Reach") %>%
   mutate(sc_mult = ifelse(is.na(sc_mult), 
                           0, 
@@ -37,12 +37,12 @@ fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side cha
                          noaaid_lr)) %>%
   left_join(., flowline %>% 
               select(spawn_dist, species, both_chk, lc, noaaid, slope, pass_tot, Subbasin_num, pass_tot_natural, Reach, curr.tempmult, hist.tempmult,
-                     curr_temp, hist_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang), 
+                     curr_temp, hist_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, chino_mult), 
             by = "noaaid") %>%
-  mutate(curr.tempmult = ifelse(species == 'spring_chinook', 
+  mutate(curr.tempmult = ifelse(species %in% c('spring_chinook', 'fall_chinook'), 
                                 1,
                                 curr.tempmult),
-         hist.tempmult = ifelse(species == 'spring_chinook',
+         hist.tempmult = ifelse(species %in% c('spring_chinook', 'fall_chinook'),
                                 1, 
                                 hist.tempmult),
          slope.class = ifelse(slope < .02, 
@@ -134,7 +134,7 @@ fp2 <- fp_join %>%
                               0, 
                               Area))) %>%
   select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, Hist_salm, species, spawn_dist, both_chk, NEAR_DIST, ET_ID, pass_tot_natural, 
-         curr.tempmult, hist.tempmult, wse_intersect) %>%
+         curr.tempmult, hist.tempmult, wse_intersect, chino_mult) %>%
   filter(Hist_salm == "Hist salmon",
          ifelse(hab.scenario %in% c("Current", "Beaver", "Barriers", "Fine_sediment", "LR_bank", "LR_length", "Shade", "Wood"),
                 spawn_dist == "Yes" & NEAR_DIST < 5  | Subbasin_num %in% mainstem.subs & wse_intersect == "Yes" | spawn_dist == "Yes" & wse_intersect == 'Yes',

@@ -26,9 +26,14 @@ edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T
 #   select(-X)
 
 # Temperature gaps.  This file was created manually and fills any gaps in psu/edt temperature data.  Joined to flowline using edt "Reach" layer ----
-temp_gaps <- list.files(path = Inputs, pattern = "temp_gaps", full.names = T) %>% 
-  read.csv(.) %>%
-  select(-notes)
+# temp_gaps <- list.files(path = Inputs, pattern = "temp_gaps", full.names = T) %>% 
+#   read.csv(.) %>%
+#   select(-notes) %>%
+#   mutate(
+#     rearing_temp_gap = case_when(
+#       fishtype %in% c('spring_chinook', 'fall_chinook') ~ gap_temp_mdm, # !!!THIS NEEDS TO BE CHANGED TO JUNE 1-21 TEMPS
+#       fishtype %in% c('coho', 'steelhead') ~ gap_temp_mwmt),
+#     prespawn_temp_gap = gap_temp_mdm)
 
 # Culverts.  This file reads in the most recent Chehalis obstructions layer from the spatial model outputs. ----
 culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "culvs_gsu_", full.names = T) %>%
@@ -64,4 +69,21 @@ asrp_scenarios_raw <- read.csv('hab/Inputs/ASRP_scenarios.csv')
 # Scenarios.  Read in list of all scenarios ----
 scenarios <- read.csv('hab/Inputs/scenarios.csv') 
   
+# Future impervious area ----
+fut_imperv <- read.csv('hab/Inputs/future_impervious.csv') %>%
+  rename(mid_century_imperv = Mid.century.Added.Impervious.Area,
+         late_century_imperv = Late.century.Added.Impervious.Area) %>%
+  select(GSU, mid_century_imperv, late_century_imperv) %>%
+  mutate(
+    mid_century_imperv = as.numeric(gsub("%", "", mid_century_imperv)) / 100,
+    late_century_imperv = as.numeric(gsub("%", "", late_century_imperv)) / 100) %>% 
+  gather(year, future_imperv, mid_century_imperv, late_century_imperv) %>%
+  mutate(year = case_when(
+    year == 'mid_century_imperv' ~ 2040,
+    year == 'late_century_imperv' ~ 2080
+  )) %>%
+  group_by(year, GSU) %>%
+  summarize(future_imperv = sum(future_imperv, na.rm = T))
+
+    
 

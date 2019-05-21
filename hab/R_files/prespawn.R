@@ -20,11 +20,7 @@ if (fishtype == "spring_chinook") {
   prespawn.surv <- lapply(diag_scenarios, function(x) {prespawn %>% mutate(hab.scenario = x)}) %>%
     do.call('rbind',.) %>%
     left_join(., egg_cap_weight) %>%
-    mutate(prespawn_temp_curr = ifelse(!is.na(mdm), 
-                                       mdm,
-                                       ifelse(!is.na(edt_mdm_temp), 
-                                              edt_mdm_temp, 
-                                              gap_temp_mdm)),
+    mutate(prespawn_temp_curr = prespawn_temp,
            prespawn_temp_hist = prespawn_temp_curr - temp_diff,
            pass_tot_weight = pass_tot * eggs_weight,
            pass_tot_nat_weight = pass_tot_natural * eggs_weight) %>%
@@ -40,6 +36,12 @@ if (fishtype == "spring_chinook") {
       hab.scenario  ==  "Shade"       ~ cramer.prespawn(prespawn_temp_hist) * pass_tot_weight,
       hab.scenario  ==  "Historical"  ~ cramer.prespawn(prespawn_temp_hist) * pass_tot_nat_weight
     )
+    # mutate(survival = case_when(
+    #   hab.scenario %in% curr.prespawn ~ prespawn.chin.func(prespawn_temp_curr) * pass_tot_weight,
+    #   hab.scenario  ==  "Barriers"    ~ prespawn.chin.func(prespawn_temp_curr) * pass_tot_nat_weight,
+    #   hab.scenario  ==  "Shade"       ~ prespawn.chin.func(prespawn_temp_hist) * pass_tot_weight,
+    #   hab.scenario  ==  "Historical"  ~ prespawn.chin.func(prespawn_temp_hist) * pass_tot_nat_weight
+    # )
     ) %>%
     mutate(life.stage = "prespawn") %>%
     select(hab.scenario, Subbasin_num, life.stage, survival)
@@ -49,9 +51,7 @@ if (fishtype == "spring_chinook") {
   
   prespawn <- flowline %>%
     filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
-    mutate(imperv_mult = ifelse(fishtype == 'coho',
-                                calc_coho_imperv(mn_imperv),
-                                1)) # For all species other than coho, use imperv_mult of 1
+    mutate(imperv_mult = calc_coho_imperv(mn_imperv)) # For all species other than coho, use imperv_mult of 1
   
   curr.prespawn <- c("Shade", "Beaver", "Current", "Fine_sediment", 
                      "Floodplain", "LR_bank", "LR_length", "Wood", "FP_wood_comb")

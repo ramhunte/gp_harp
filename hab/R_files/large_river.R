@@ -11,7 +11,7 @@ LgRiver <- LgRiver_raw %>%
   left_join(., flowline %>%
               select(noaaid, curr_temp, hist_temp, temp_diff, curr.tempmult, hist.tempmult, species, spawn_dist, both_chk, Subbasin_num, pass_tot, 
                      Area_km2, pass_tot_natural, tm_2040, tm_2080,tm_2040_cc_only, tm_2080_cc_only, can_ang, Reach_low, width_s, width_w, 
-                     width_s_hist, width_w_hist, width_s_2040, width_s_2080, width_w_2040, width_w_2080),
+                     width_s_hist, width_w_hist, width_s_2040, width_s_2080, width_w_2040, width_w_2080, chino_mult),
             by = "noaaid") %>% 
   gather(value, width, width_s:width_w_2080) %>% 
   mutate(width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width + 2.11,
@@ -22,9 +22,8 @@ LgRiver <- LgRiver_raw %>%
          area_w = width_w * Length_m / 10000) %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
 
-if (fishtype == "spring_chinook") {
+if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
   LgRiver <- LgRiver %>%
-    filter(Subbasin_num %in% schino_subs) %>%
     mutate(curr.tempmult = 1,
            hist.tempmult = 1)
 }
@@ -36,7 +35,7 @@ source("hab/R_files/wood_script.R")
 lr <- LgRiver %>%
   select(Length_m, Period, Subbasin_num, noaaid, curr_temp, hist_temp, pass_tot, species, spawn_dist, both_chk, Habitat, Reach, 
          Wtrbdy_wau, Area_km2, curr.tempmult, hist.tempmult, pass_tot_natural, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, can_ang, area_s, 
-         area_w, Reach_low, width_s, width_w, width_s_hist, width_w_hist)
+         area_w, Reach_low, width_s, width_w, width_s_hist, width_w_hist, chino_mult)
 
 lr_curr_scenarios <- c("Current", "Beaver", "Fine_sediment", "Floodplain", "Barriers", "LR_length", "Wood", "Shade", "FP_wood_comb")
 lr_hist_scenarios <- c("Historical", "LR_bank")
@@ -80,7 +79,7 @@ lr_2 <- bind_rows(lr_curr, lr_hist) %>%
                        ifelse(pass_tot == 0, 
                               0, 
                               Area))) %>%
-  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, curr.tempmult, hist.tempmult, both_chk, pass_tot_natural) 
+  select(noaaid, Subbasin_num, hab.scenario, Habitat, Area, life.stage, curr.tempmult, hist.tempmult, both_chk, pass_tot_natural, chino_mult) 
 
 if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   lr_2 <- lr_2 %>%
