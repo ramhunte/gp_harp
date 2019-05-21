@@ -7,9 +7,10 @@ hab_outputs <- lapply(c('coho', 'spring_chinook', 'fall_chinook', 'steelhead'), 
   do.call('rbind',.) %>%
   select(-X)
 
-hab_outputs <- data.frame(lapply(hab_outputs, function(x) {
+hab_outputs <- lapply(hab_outputs, function(x) {
   gsub('_', '.', x)
-})) %>%
+}) %>%
+  data.frame() %>%
   mutate(scenario = ifelse(grepl('^scenario.', hab.scenario) | grepl('^Current.', hab.scenario), 
                            paste0('ASRP.', hab.scenario),
                            as.character(hab.scenario))) %>%
@@ -19,7 +20,7 @@ hab_outputs <- data.frame(lapply(hab_outputs, function(x) {
   
   left_join(., subbasin_names %>%
               mutate(Subbasin_num = as.factor(Subbasin_num))) %>%
-  select( -hab.scenario, -adults.survival, -egg.to.fry.capacity, -eggs.survival, -prespawn.capacity, )
+  select( -hab.scenario, -adults.survival, -egg.to.fry.capacity, -eggs.survival, -prespawn.capacity)
 
 lcm_outputs <- bind_rows(
   read.csv("outputs/coho/lcm/coho_abundance_by_subbasin.csv") %>%
