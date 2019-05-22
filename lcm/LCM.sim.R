@@ -40,7 +40,7 @@ years <- 100
 if (run_stochastic_eggtofry == 'yes') {
   runs  <- 50
 } else{
-  runs <- 5
+  runs <- 2
 }
 
 if (sensitivity.mode == 'yes') {runs <- 100}
