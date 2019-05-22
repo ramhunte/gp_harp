@@ -114,3 +114,4 @@ if (all(chk_files)) {
   print('Creating plot of observed vs modeled abundance')
   source('lcm/scripts/plot_observed_vs_modeled.R')
 }
+
