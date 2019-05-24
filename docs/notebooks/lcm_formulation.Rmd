@@ -1,0 +1,313 @@
+---
+title: "Exploring the forumlation of the NOAA lifecycle model"
+output: 
+    html_notebook:
+      toc: yes
+      toc_float: true
+      collapsed: false
+---
+
+The goals of this document are to
+
+1. There is a *analytical* solution to $N_{eq}$ (e.g. Moussalli and Hillborn) and there is a *numerical* solution (e.g. `for` loops)
+2. The numerical solution offers flexibility to incorporate biological realism
+
+
+# A simple example lifecycle
+A simple example lifecycle with serial density dependence is from Moussalli and Hillborn. This is a three stage life cycle
+
+1. spawner to egg -- density dependent
+2. egg to smolt -- density dependent
+3. smolt to adult -- density independent
+
+The productivity and capacity parameters are defined as follows
+
+```{r, echo=FALSE}
+tribble(
+  ~lifestage,      ~p,    ~c,
+  'spawn_egg',     1250 , 2500000, # spawner to egg
+  'egg_smolt',     0.012, 10000,   # egg to smolt
+  'smolt_adult',   0.15, NA       # spawner to adult
+)
+
+```
+
+To write this example out fully, there are 4 stages (spawners, eggs, smolts, adults) and three transitions between them (two density dependent, one density independent). The shape of the density dependent transitions will be a Beverton Holt. 
+
+`spawners   -- BH -->    eggs    -- BH -->    smolts    -- DI -->    adults`
+
+```{r, eval = FALSE}
+
+# Define the Beverton Holt function
+BH.func <- function(S, p, c) {
+  # generic Beverton-Holt
+  # Args:
+     # S = parental state
+     # p = productivity or survival
+     # c = capacity
+  # Return:
+     # recruits from S
+  
+  recruits <- (S  * p) / (1 + (p / c) * S)
+  return(recruits)
+}
+
+
+# The lifecycle
+
+# spawners to eggs -- BH
+eggs <- BH.func(S = spawners, 
+                p = 1250,
+                c = 2500000)
+
+# eggs to smolts -- BH
+smolts <- BH.func(S = eggs,
+                  p = 0.012,
+                  c = 10000)
+
+# smolts to adults -- DI
+adults <- smolts * 0.15
+
+
+```
+
+Given the above lifcycle and assuming $p$ and $c$ conditions are stable through time, we would expect there to be an equilibrium spawner abundance $N_{eq}$, in which the input $spawners$ is equal to the ouptut $adults$.
+
+# Analytical $N_{eq}$ solution
+Moussalli and Hillborn present an analytical solution to finding a cumulative lifecycle productivity $P_n$ and capacity $C_n$, which can be used to calculate $N_{eq}$, or the expected population size assuming conditions are unchanging through time.
+
+$P_n$ is defined as $\prod_{i=1}^n p_i$, or the product of all sucessive lifestages. In our example
+
+```{r}
+Pn <- prod(c(1250, 0.012, 0.15))
+Pn
+```
+
+$C_n$ is defined as $\frac{P_n}{\sum_{i=1}^N \frac{P_i}{c_i}}$. In our example
+
+```{r}
+
+p_cumul <- cumprod(c(1250, 0.012, 0.15)) # Pi, cumulative product of p up to stage i
+Pici    <- p_cumul/c(2500000, 10000, NA) # Pi/ci
+Cn      <- Pn/sum(Pici, na.rm = TRUE)
+Cn
+
+```
+
+Once we know $P_n$ and $C_n$, $N_{eq}$ can be calculated as
+```{r}
+Neq <- Cn - (Cn / Pn)
+
+Neq
+```
+
+Advantages of the analytical solution are
+
+1. calculation of $P_n$ and $C_n$, which are convenient overall metrics for a population
+2. calculation of optimal stock $S^*$, optimal recruit $R^*$ and optimal harvest $H^*$. 
+
+# Numerical solution
+A second option for calculaing $N_{eq}$ is a numerical solution. Starting at an arbitrary spawner abundance, we can iteratively calculate each lifestage abundance, using  $adults$ from $year_i$ as the $spawners$ for $year_{i+1}$. In this example we will iterate 100 generations.
+
+Written out, this looks like
+
+year 0: `adults.init` -- BH --> `eggs` -- BH --> `smolts` -- DI --> `adults1`
+
+year 1: `adults1`     -- BH --> `eggs` -- BH --> `smolts` -- DI --> `adults2`
+
+...
+
+year 100: `adults99`  -- BH --> `eggs` -- BH --> `smolts` -- DI --> `adults100`
+
+
+```{r}
+
+spawners <- 1000 # initialize with an arbitrary number of spawners
+
+for (i in 1:100) {
+  #spawners to eggs -- BH
+  eggs <- BH.func(S = spawners,
+                  p = 1250,
+                  c = 2500000)
+  
+  # eggs to smolts -- BH
+  smolts <- BH.func(S = eggs,
+                    p = 0.012,
+                    c = 10000)
+  
+  # smolts to adults -- DI
+  adults <- smolts * 0.15
+  
+  spawners <- adults
+}
+  
+spawners
+
+```
+
+
+Although this approach is more computationally expensive, it provides a highly flexible structure. 
+
+# Deviations from the simple example
+As discussed above, there is much more flexibility offered when using a numerical model. In the NOAA LCM, some of the types of deviation from the simple example include:
+
+1. incorporation of density dependent transitions other than the Beverton Holt (e.g hockey stick)
+2. modeling abundance across time, inluding age structured return, time series parameters, stochastic parameters, etc
+3. comingling of subpopulations, or concurrent density dependence
+
+
+## Incorporation of hockey stick
+
+Given the example above, what would happen if we changed the spawner to egg stage from a Beverton Holt to a hockey stick? Lets also store the results of each iteration in an object called recruits over time `r_over_time`. 
+
+```{r}
+# Define hockey stick function
+hockey.stick <- function(S, p, c) {
+  # generic hockey stick function
+  # Args:
+     # S = parental state
+     # p = productivity or survival
+     # c = capacity or ceiling
+  # Return:
+     # recruits from S
+  
+  if (S * p < c) {
+    # if recruits are below c
+    return(S * p)
+  } else {
+    # if recruits are over c
+    return(c)
+  }
+}
+
+
+# Iterate 100 generations with a hockey stick
+spawners <- 1000 # initialize with an arbitrary number of spawners
+
+# storage for results of each iteration
+r_over_time <- c(spawners) # recruits over time
+
+for (i in 1:100) {
+  # spawners to eggs -- BH
+  eggs <- hockey.stick(S = spawners, 
+                       p = 1250,
+                       c = 2500000)
+  
+  # eggs to smolts -- BH
+  smolts <- BH.func(S = eggs,
+                    p = 0.012,
+                    c = 10000)
+  
+  # smolts to adults -- DI
+  adults <- smolts * 0.15
+  
+  r_over_time <- c(r_over_time, adults)
+  
+  spawners <- adults
+}
+  
+spawners
+
+```
+
+These results suggest the $N_{eq}$ for the lifecycle given a hockey stick transition in the spawner to egg stage is 833.3333. To verify, lets have a look at the results of the 100 iterations. 
+
+```{r}
+plot(r_over_time)
+
+```
+
+So what does this mean for $P_n$ and $C_n$? An $N_{eq}$ of 833.333 is the same as if there was no egg capacity. But can we expect in all cases the hockey stick won't hit capacity at $N_{eq}$? Lets hold off on thinking too hard about that, because we are about to add further deviation from the simple example.  
+
+## Modeling abundance across time
+
+Another advantage of the numerical approach is being able to explicitly model through time. We could add age structure, in which not all `adults` become `spawners`, but rather `age1` and `age2` adults, with a certain propensity to retun as a spawners.  
+
+We could also vary $p$ and $c$ parameters through time. A simple example of this is to add stochasticity to the smolt to adult stage, or SAR. We know annual ocean conditions are highly variable, so lets allow SAR to vary radomly with a uniform distribution between 0.1 and 0.2.
+
+```{r}
+sar <- function() {
+  # stochasitic SAR between 0.1 and 0.2
+  # Args:
+     # NA
+  # Return:
+     # one random number beteen .1 and .2
+  runif(1, 0.1, 0.2)
+}
+
+# Try calling the sar() function it 3 times
+c(sar(), sar(), sar())
+```
+
+As the spawner abundance will change with each year, lets store the `adult` abundace from each iteration.
+
+```{r}
+spawners <- 1000 # initialize with an arbitrary number of spawners
+
+r_over_time <- c(spawners) # recruits over time
+
+for (i in 1:100) {
+  
+  eggs <- BH.func(S = spawners, 
+                  p = 1250,
+                  c = 2500000)
+  
+  smolts <- BH.func(S = eggs,
+                    p = 0.012,
+                    c = 10000)
+  
+  adults <- smolts * sar()
+  
+  r_over_time <- c(r_over_time, adults) # add the next year to the vector of recruits
+}
+  
+plot(r_over_time)
+
+```
+
+
+## Concurrent density dependence
+Another deviation from the simple example is if we are running multiple populations at once which comingle at a density dependent step. Imagine a situation where there are two subbains, and one mainstem. There are spawners in both subbasins, but not in the mainstem. However both of the subbasin populations have a proportion of juveniles which migrate down to the mainstem to rear. 
+
+The first thing we need is a function which can take a proportion of two groups, combine them into one group and send them through a density dependent transtion, and finally reallocate the mixed fish based on the initial proportion from each group. 
+
+In this example below, lets assume both tributary basins are exactly the same as the above example basin, and the mainstem basin has an egg to smolt $p$ and $c$ of 0.012 and 1000, respectively.  
+
+```{r}
+
+spawners <- c(1000, 1000) # initialize with an arbitrary number of spawners
+
+prop_ds <- 0.1 # proportion of downstream migratnts
+
+for (i in 1:100) {
+  
+  eggs <- BH.func(S = spawners,
+                  p = 1250,
+                  c = 2500000)
+  
+  movers <- eggs * prop_ds # number of fish moving down to MS per subbasin
+  movers_comb <- sum(movers) # total number of movers
+  movers_prop <- movers/movers_comb # proportion of total from each basin
+  movers_prop[is.nan(movers_prop)] <- 0 # if dividing by zero, call it zero
+  
+  eggs_moved <- c(eggs * (1 - prop_ds), movers_comb) # length 3, abundance in two tribs and ms
+  
+  # There are 3 populations going through this B-H
+  smolts <- BH.func(S = eggs_moved,
+                    p = c(0.012, 0.012, 0.012),
+                    c = c(10000, 10000, 1000))
+  
+  movers_reallocated <- smolts[3] * movers_prop # fish in ms reallocated to natal basin
+  smolts_reallocated <- smolts[1:2] + movers_reallocated # natal and migrant fish summed per subbasin
+  
+  
+  adults <- smolts_reallocated * 0.15
+  
+  spawners <- adults
+  
+}
+
+spawners
+
+```
+
