@@ -89,7 +89,10 @@ Pn <- prod(c(1250, 0.012, 0.15))
 Pn
 ```
 
-$C_n$ is defined as $\frac{P_n}{\sum_{i=1}^N \frac{P_i}{c_i}}$. In our example
+$C_n$ is defined as 
+$$\frac{P_n}{\sum_{i=1}^N \frac{P_i}{c_i}}$$ 
+
+In our example this is calculated as
 
 ```{r}
 
@@ -100,7 +103,10 @@ Cn
 
 ```
 
-Once we know $P_n$ and $C_n$, $N_{eq}$ can be calculated as
+Once we know $P_n$ and $C_n$, $N_{eq}$, where $S$ is equal to $R$, can be calculated as
+
+$$N_{eq} =  \frac{P_n N_{eq}}{1 + \frac{P_n}{C_n}N_{eq}} = C_n - \frac{C_n}{P_n}  $$
+
 ```{r}
 Neq <- Cn - (Cn / Pn)
 
@@ -277,7 +283,24 @@ Another deviation from the simple example is if we are running multiple populati
 
 The first thing we need is a function which can take a proportion of two groups, combine them into one group and send them through a density dependent transition, and finally reallocate the mixed fish based on the initial proportion from each group. 
 
-In this example below, lets assume both tributary basins are exactly the same as the above example basin, and the mainstem basin has an egg to smolt $p$ and $c$ of 0.012 and 1000, respectively.  
+In this example below, lets assume both tributary basins are exactly the same as the above example basin, and the mainstem basin has an egg to smolt $p$ and $c$ of 0.012 and 1000, respectively.
+
+```{r, echo = FALSE}
+tribble(
+   ~basin,     ~lifestage,      ~p,    ~c,
+ 'Subbasin 1', 'spawn_egg',     1250 , 2500000, # spawner to egg
+ 'Subbasin 1', 'egg_smolt',     0.012, 10000,   # egg to smolt
+ 'Subbasin 1', 'smolt_adult',    0.15, NA,       # spawner to adult
+ 'Subbasin 2', 'spawn_egg',     1250 , 2500000, # spawner to egg
+ 'Subbasin 2', 'egg_smolt',     0.012, 10000,   # egg to smolt
+ 'Subbasin 2', 'smolt_adult',    0.15, NA,       # spawner to adult
+ 'Mainstem'  , 'spawn_egg',       NA , NA, # spawner to egg
+ 'Mainstem'  , 'egg_smolt',     0.012, 10000,   # egg to smolt
+ 'Mainstem'  , 'smolt_adult',      NA, NA       # spawner to adult
+)
+
+```
+
 
 ```{r}
 

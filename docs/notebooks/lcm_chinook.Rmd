@@ -1,5 +1,5 @@
 ---
-title: "Exploring coho spring and fall movement"
+title: "Exploring the spring chinook lifecycle model"
 output: 
   html_notebook:
       toc: yes
@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-# TO RUN THIS NOTEBOOK, FIRST RUN THE COHO ASRP MODEL WITH STOCHASTICITY OFF
+# TO RUN THIS NOTEBOOK, FIRST RUN THE SPRING CHINOOK ASRP MODEL WITH STOCHASTICITY OFF
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -22,23 +22,23 @@ print_nicely <- function(x){
 
 ```
 
-The goal of this document is to walk through the chinook lifecycle, with each stage populated at the level of $N_{eq}$. 
+The goal of this document is to walk through the Chinook lifecycle, with each stage populated at the level of $N_{eq}$. 
 
 
 # Conceptual chinook lifecycle
-The conceptual chinook lifecycle is shown below. The boxes represent the lifestages, and the arrows represent transitions between lifestages, which are either density independent, hockey stick (spawning only) or Beverton Holt. Note there are two groups of recruits created from a BH transition, *recruits* and *density dependent movers*
+The conceptual Chinook lifecycle is shown below. The boxes represent the lifestages, and the arrows represent transitions between lifestages, which are either density independent, hockey stick (spawning only) or Beverton Holt. Note there are two groups of recruits created from a BH transition, *recruits* and *density dependent movers*
 
 ![](images/LCM_chinook.png)
 
-In psudo code format this can be written as
+In pseudo code format this can be written as
 
 ```{r, eval=FALSE}
 spawners           <- spawners[year.i-1] # spawners from previous year
 
 eggs               <- hs.func(spawners, asymptote = egg.cap, slope = fecund/2) # spawners -> eggs, hockey stick
-em.fry             <- eggs * egg.fry.surv # Eggs --> freshly emerged fry, density independent
+pre.fry            <- eggs * egg.fry.surv # Eggs --> freshly emerged fry, density independent
 natal.fry          <- move.fish(fish.in = em.fry, spring.movement.rules) # move emerged fry to mainstem
-nn.fry             <- (em.fry * weekly.surv) - natal.fry # Non natal fry, density dependent movers
+nn.fry             <- (pre.fry * weekly.surv) - natal.fry # Non natal fry, density dependent movers
 nn.fry.to.ms       <- non.natal.fry[to.ms.reaches]
 nn.fry.to.bay.grp1 <- non.natal.fry[to.bay.reaches] # Group 1
 natal.sub.yr.grp3  <- BH.func(S = natal.fry, p = weekly.surv^7, c = cap) # Group 3
@@ -81,10 +81,10 @@ mat.new['spawners',] <- mat.new['total.run', ] * (S.up) # Spawners
 
 ```
 
-Below here, we will walk through each step. The code below is true code, and so results that are displayed are calulated live in this example. 
+Below here, we will walk through each step. The code below is true code, and so results that are displayed are calculated live in this example. 
 
 ## Read in data
-The fist step is read in the productivity and capcity values which will be used to parameterize each transition. Those productivities and capacities are stored in a `habitat.sceanrio` file. We will use `Current.csv`.
+The fist step is read in the productivity and capacity values which will be used to parameterize each transition. Those productivities and capacities are stored in a `habitat.sceanrio` file. We will use `Current.csv`.
 
 ```{r}
 dat <- read.csv('../../outputs/spring_chinook/hab.scenarios/Current.csv', header = TRUE, row.names = 2) %>%
@@ -150,7 +150,7 @@ pre.fry[c(1,5,12,18)]
 ```
 
 ## Natal and non-natal fry
-All `pre.fry` move through a Beverton Holt to transition into both `natal.fry` and density dependent movers, non-natal fry `nn.fry`. In spring chinook, as there are no spawners below Satsop, all `nn.fry` move to the mainstem. 
+All `pre.fry` move through a Beverton Holt to transition into both `natal.fry` and density dependent movers, non-natal fry `nn.fry`. In spring Chinook, as there are no spawners below Satsop, all `nn.fry` move to the mainstem. 
 
 ```{r}
 # Natal fry - All basins
@@ -165,7 +165,7 @@ non.natal.fry[c(1,5,12,18)]
 ```
 
 ## Natal subyearlings (3) and natal fry migrants (2)
-Next, all `natal.fry` go through a density dependent 7 week rearing period to become subyearings. There are also density dependent movers, `natal.fry.migrants` which come from this stage. 
+Next, all `natal.fry` go through a density dependent 7 week rearing period to become subyearlings. There are also density dependent movers, `natal.fry.migrants` which come from this stage. 
 
 ```{r}
 # Natal sub yearlings - all basins
@@ -181,12 +181,12 @@ natal.fry.migrants[c(1,5,12,18)]
 
 
 ## Non-natal subyearlings (5) and non-natal fry migrants (4)
-All `non.natal.fry` also go through a density dependent 7 week rearing period to become subyearings. The difference is rather than experiencing the $p$ and $c$ of their natal basin, they are moved down to the mainstem. In order to not introduce too much density dependence on the natal mainstem juveniles, the non-natal fish go into a different BH than the `natal.fry`, where $c$ is is `cap - natal.sub.yr`. 
+All `non.natal.fry` also go through a density dependent 7 week rearing period to become subyearlings. The difference is rather than experiencing the $p$ and $c$ of their natal basin, they are moved down to the mainstem. In order to not introduce too much density dependence on the natal mainstem juveniles, the non-natal fish go into a different BH than the `natal.fry`, where $c$ is is `cap - natal.sub.yr`. 
 
 
 ```{r}
 non.natal.fry.dist <- distribute.fish(non.natal.fry, move.matrix) # spread the non-natal fry into the mainstem
-non.natal.fry.dist[, c(12,18, 56, 57)]
+non.natal.fry.dist[, c(12,18, 57)]
 ```
 
 Once the fish have been spread into the mainstem, they go through a fry to subyearling Beverton Holt. 
@@ -218,7 +218,7 @@ non.natal.fry.migrants.redist[c(12,18, 56, 57)] %>% round(3)
 ```
 
 ## Downstream migration
-For spring chinook all subyearlings have a 4 week downstream migration period. During this period weekly survival is augmented to refect that 50% of fish experience the mean daily maximum temperature between June 1 and June 21 `weekly.surv.temp`. Each basin is given the average `weekly.surv.temp` of all mainstem units downstream of the basin. 
+For spring Chinook all subyearlings have a 4 week downstream migration period. During this period weekly survival is augmented to reflect that 50% of fish experience the mean daily maximum temperature between June 1 and June 21 `weekly.surv.temp`. Each basin is given the average `weekly.surv.temp` of all mainstem units downstream of the basin. 
 
 ```{r}
 sub.yr.ds <- c(natal.sub.yr + non.natal.sub.yr.redist) * # sum group 3 and group 5
@@ -261,5 +261,10 @@ recruits  <- total.run * (S.up) # Spawners
 tibble(natal.basin = names(recruits),
        spawners = spawners,
        recruits = recruits %>% round(0))
+```
+
+
+```{r}
+# total.run / (sub.yr.ds + non.natal.fry.migrants.redist + natal.fry.migrants)
 ```
 
