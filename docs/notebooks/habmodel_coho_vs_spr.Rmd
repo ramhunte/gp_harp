@@ -1,0 +1,132 @@
+---
+title: "Comparison of Spring Chinook and Coho Habitat Models"
+output: 
+  html_notebook:
+    toc: yes
+    toc_float: true
+    collapsed: false
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+The objective of this document is to describe the differences between the coho and spring chinook models in order to better understand elements specific to the spring chinook model. Specific differences between the coho and spring chinook models include:
+
+1. [Application and calculation of temperature] [Application and calculation of temperature]
+2. [Life stages included] [Life stages included]
+3. [Calculation of prespawn survival] [calculation of prespawn survival]
+4. [Chinook percent multiplier] [Chinook percent multiplier]
+
+##Application and calculation of Temperature
+
+We use the following relationship to calculate the impact of temperature on both coho and spring chinook populations:
+
+```{r}
+tempmult <- function(temp) {
+  ifelse(temp < 18,
+           1,
+           ifelse(temp >= 18 & temp < 24,
+                  -(1/6) * temp + 4,
+                  0))
+}
+plot(tempmult, 0, 30, xlab = 'Temperature (°C)', ylab = 'Temperature Multiplier')
+```
+
+**Coho:**
+
+The temperature multiplier modifies both capacity and productivity for coho. The input to the temperature function for coho is the maximum 7 day average of daily maximum temperatures for the month of August.  The temperature function is applied to all coho, across all subbasins.
+
+**Spring chinook:**
+
+Temperature modifies productivity only for spring chinook.  The input to the temperature function for spring chinook is the mean of daily maximum temperatures from June 1 - June 21. Whereas the temperature function is applied to all coho, it is only applied to a subset of the spring chinook population, using the following rules:
+
+* Temperature multiplier is applied to 45% of spring chinook outmigrants
+* Upper basin spring chinook outmigrants are impacted by temperature for 3 (out of 4) weeks
+* Middle basin spring chinook outmigrants are impacted by temperature for 2 (out of 2) weeks
+* Lower basin spring chinook outmigrants are not impacted by temperature 
+
+(Note: there are no middle or lower basin spring chinook)
+
+##Life stages included
+
+The coho and spring chinook models differ in terms of the life stages included in the models
+
+For coho we calculate the following life stages:
+
+* egg to fry survival
+* adults(spawning capacity)
+* eggs(spawning capacity)
+* summer rearing capacity
+* summer rearing survival
+* winter rearing capacity
+* winter rearing survival
+* prespawn survival
+* movement
+
+For spring chinook we calculate the following life stages:
+
+* egg to fry survival
+* adults(spawning capacity)
+* eggs(spawning capacity)
+* summer rearing capacity
+* summer rearing survival
+* prespawn survival
+
+
+##Calculation of prespawn survival
+
+**Coho**
+
+Coho prespawn survival is a function of base prespawn survival (.95), mean impervious area, and passage percentage. The latter two parameters are weighted by egg capacity of a given reach as a percentage of the total egg capacity of the subbasin:
+
+$$Survival_{prespawn} = .95 * Passage * f(impervious) * weight_{egg capacity}$$
+
+We use the following function to determine the impact of imperviousness on prespawn survival for coho:
+```{r}
+imperv_mult <- function(perc_imperv) {
+  ifelse(1.5 * perc_imperv > 1,
+         1 - 1,
+         1 - (1.5 * perc_imperv))
+}
+plot(imperv_mult, 0, 1, xlab = 'Mean percent impervious area', ylab = 'Productivity multiplier')
+```
+
+
+**Spring chinook:**
+
+Spring chinook prespawn survival is a function of temperature, and passage percentage weighted by egg capacity of a given reach as a percentage of the total egg capacity of the subbasin: 
+
+$$Survival_{prespawn} = f(temperature) * Passage_{weighted}$$
+
+We use the mean of daily maximum temperatures from July 1 - August 31, averaged at the subbasin level as our input temperature to calculate prespawn survival using the following function:
+
+
+```{r}
+prespawn_surv <- function(temp) {
+    ifelse(temp < 16,
+           1,
+           ifelse(temp >= 16 & temp < 22.6,
+                  1 - 0.15*(temp - 16),
+                  0.01))
+  }
+plot(prespawn_surv, 0, 30, xlab = 'Temperature (°C)', ylab = 'Prespawn survival')
+
+```
+
+
+##Chinook percent multiplier
+
+When spring and fall chinook overlap within a subbasin we allot a portion of the capacity within the subbasin to each species.  The allotment is calculated from escapement data from WDFW.  See the table below for a subbasin level breakdown of percent allotment for spring and fall chinook:
+
+```{r}
+chinook_mult %>%
+  as.tibble() %>%
+  
+  arrange(Subbasin_num) %>%
+  kable()
+```
+
