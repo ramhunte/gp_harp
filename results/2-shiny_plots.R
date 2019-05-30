@@ -201,7 +201,7 @@ asrp_plot <- ggplot() +
 
 shiny_lookup_tbl <- lookup_tbl %>%
   select(-Subbasin_num) %>%
-  gather(param, data, c(adults.capacity:winter.survival, spawners:age2.smolts)) %>%
+  gather(param, data, c(adults.capacity:winter.survival, spawners:non.natal.smolts)) %>%
   group_by(Subbasin, param, species) %>%
   mutate(data = as.numeric(data),
          dat.chg = data - data[scenario == 'Current'],
