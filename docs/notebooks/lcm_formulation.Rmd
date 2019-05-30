@@ -7,14 +7,14 @@ output:
       collapsed: false
 ---
 
-The goals of this document are to
+The goals of this document are to show:
 
-1. There is a *analytical* solution to $N_{eq}$ (e.g. Moussalli and Hillborn) and there is a *numerical* solution (e.g. `for` loops)
+1. There are multiple ways to calculate $N_{eq}$, including an *analytical* solution to  (e.g. Moussalli and Hillborn) and a *numerical* solution (e.g. `for` loops)
 2. The numerical solution offers flexibility to incorporate biological realism
 
 
 # A simple example lifecycle
-A simple example lifecycle with serial density dependence is from [Moussalli and Hillborn (1986)](https://www.nrcresearchpress.com/doi/abs/10.1139/f86-014). This is a three stage life cycle
+Consider a simple example lifecycle with serial density dependence is from [Moussalli and Hillborn (1986)](https://www.nrcresearchpress.com/doi/abs/10.1139/f86-014). The three transitions in this lifcycle are as follows:
 
 1. spawner to egg -- density dependent
 2. egg to smolt -- density dependent
@@ -38,7 +38,9 @@ To write this example out fully, there are 4 stages (spawners, eggs, smolts, adu
 
 `spawners   -- BH -->    eggs    -- BH -->    smolts    -- DI -->    adults`
 
-To cut down the amount of typing, first lets define the Beverton Holt function. 
+To cut down the amount of typing, first lets define the Beverton Holt function written in the form
+
+$$ R = \frac{pS}{1+\frac{p}{c}S}$$
 
 ```{r}
 # Define the Beverton Holt function
@@ -158,7 +160,7 @@ spawners
 ```
 
 
-Although this approach is more computationally expensive, it provides a highly flexible structure. 
+Although this approach is more computationally expensive, it has a large advantage in that it provides a highly flexible structure which can accommodate more complex lifecycles.  
 
 # Deviations from the simple example
 As discussed above, there is much more flexibility offered when using a numerical model. In the NOAA LCM, some of the types of deviation from the simple example include:
@@ -239,11 +241,11 @@ We could also vary $p$ and $c$ parameters through time. A simple example of this
 
 ```{r}
 sar <- function() {
-  # stochasitic SAR between 0.1 and 0.2
+  # stochastic SAR between 0.1 and 0.2
   # Args:
      # NA
   # Return:
-     # one random number beteen .1 and .2
+     # one random number between .1 and .2
   runif(1, 0.1, 0.2)
 }
 
