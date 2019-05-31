@@ -7,14 +7,14 @@ output:
       collapsed: false
 ---
 
-The goals of this document are to
+The goals of this document are to show:
 
-1. There is a *analytical* solution to $N_{eq}$ (e.g. Moussalli and Hillborn) and there is a *numerical* solution (e.g. `for` loops)
+1. There are multiple ways to calculate $N_{eq}$, including an *analytical* solution to  (e.g. Moussalli and Hillborn) and a *numerical* solution (e.g. `for` loops)
 2. The numerical solution offers flexibility to incorporate biological realism
 
 
 # A simple example lifecycle
-A simple example lifecycle with serial density dependence is from Moussalli and Hillborn. This is a three stage life cycle
+Consider a simple example lifecycle with serial density dependence is from [Moussalli and Hillborn (1986)](https://www.nrcresearchpress.com/doi/abs/10.1139/f86-014). The three transitions in this lifcycle are as follows:
 
 1. spawner to egg -- density dependent
 2. egg to smolt -- density dependent
@@ -23,6 +23,8 @@ A simple example lifecycle with serial density dependence is from Moussalli and 
 The productivity and capacity parameters are defined as follows
 
 ```{r, echo=FALSE}
+library(tidyverse)
+
 tribble(
   ~lifestage,      ~p,    ~c,
   'spawn_egg',     1250 , 2500000, # spawner to egg
@@ -36,8 +38,11 @@ To write this example out fully, there are 4 stages (spawners, eggs, smolts, adu
 
 `spawners   -- BH -->    eggs    -- BH -->    smolts    -- DI -->    adults`
 
-```{r, eval = FALSE}
+To cut down the amount of typing, first lets define the Beverton Holt function written in the form
 
+$$ R = \frac{pS}{1+\frac{p}{c}S}$$
+
+```{r}
 # Define the Beverton Holt function
 BH.func <- function(S, p, c) {
   # generic Beverton-Holt
@@ -51,8 +56,11 @@ BH.func <- function(S, p, c) {
   recruits <- (S  * p) / (1 + (p / c) * S)
   return(recruits)
 }
+```
 
 
+The three transitions can then be written as follows. 
+```{r, eval = FALSE}
 # The lifecycle
 
 # spawners to eggs -- BH
@@ -71,19 +79,22 @@ adults <- smolts * 0.15
 
 ```
 
-Given the above lifcycle and assuming $p$ and $c$ conditions are stable through time, we would expect there to be an equilibrium spawner abundance $N_{eq}$, in which the input $spawners$ is equal to the ouptut $adults$.
+Given the above lifcycle and assuming $p$ and $c$ conditions are stable through time, we would expect there to be an equilibrium spawner abundance $N_{eq}$, in which the input $spawners$ is equal to the output $adults$.
 
 # Analytical $N_{eq}$ solution
 Moussalli and Hillborn present an analytical solution to finding a cumulative lifecycle productivity $P_n$ and capacity $C_n$, which can be used to calculate $N_{eq}$, or the expected population size assuming conditions are unchanging through time.
 
-$P_n$ is defined as $\prod_{i=1}^n p_i$, or the product of all sucessive lifestages. In our example
+$P_n$ is defined as $\prod_{i=1}^n p_i$, or the product of all successive lifestages. In our example
 
 ```{r}
 Pn <- prod(c(1250, 0.012, 0.15))
 Pn
 ```
 
-$C_n$ is defined as $\frac{P_n}{\sum_{i=1}^N \frac{P_i}{c_i}}$. In our example
+$C_n$ is defined as 
+$$\frac{P_n}{\sum_{i=1}^N \frac{P_i}{c_i}}$$ 
+
+In our example this is calculated as
 
 ```{r}
 
@@ -94,7 +105,10 @@ Cn
 
 ```
 
-Once we know $P_n$ and $C_n$, $N_{eq}$ can be calculated as
+Once we know $P_n$ and $C_n$, $N_{eq}$, where $S$ is equal to $R$, can be calculated as
+
+$$N_{eq} =  \frac{P_n N_{eq}}{1 + \frac{P_n}{C_n}N_{eq}} = C_n - \frac{C_n}{P_n}  $$
+
 ```{r}
 Neq <- Cn - (Cn / Pn)
 
@@ -107,7 +121,7 @@ Advantages of the analytical solution are
 2. calculation of optimal stock $S^*$, optimal recruit $R^*$ and optimal harvest $H^*$. 
 
 # Numerical solution
-A second option for calculaing $N_{eq}$ is a numerical solution. Starting at an arbitrary spawner abundance, we can iteratively calculate each lifestage abundance, using  $adults$ from $year_i$ as the $spawners$ for $year_{i+1}$. In this example we will iterate 100 generations.
+A second option for calculating $N_{eq}$ is a numerical solution. Starting at an arbitrary spawner abundance, we can iteratively calculate each lifestage abundance, using  $adults$ from $year_i$ as the $spawners$ for $year_{i+1}$. In this example we will iterate 100 generations.
 
 Written out, this looks like
 
@@ -146,14 +160,14 @@ spawners
 ```
 
 
-Although this approach is more computationally expensive, it provides a highly flexible structure. 
+Although this approach is more computationally expensive, it has a large advantage in that it provides a highly flexible structure which can accommodate more complex lifecycles.  
 
 # Deviations from the simple example
 As discussed above, there is much more flexibility offered when using a numerical model. In the NOAA LCM, some of the types of deviation from the simple example include:
 
 1. incorporation of density dependent transitions other than the Beverton Holt (e.g hockey stick)
-2. modeling abundance across time, inluding age structured return, time series parameters, stochastic parameters, etc
-3. comingling of subpopulations, or concurrent density dependence
+2. modeling abundance across time, including age structured return, time series parameters, stochastic parameters, etc
+3. commingling of sub populations, or concurrent density dependence
 
 
 ## Incorporation of hockey stick
@@ -217,21 +231,21 @@ plot(r_over_time)
 
 ```
 
-So what does this mean for $P_n$ and $C_n$? An $N_{eq}$ of 833.333 is the same as if there was no egg capacity. But can we expect in all cases the hockey stick won't hit capacity at $N_{eq}$? Lets hold off on thinking too hard about that, because we are about to add further deviation from the simple example.  
+So what does this mean for $P_n$ and $C_n$? An $N_{eq}$ of 833.333 is the same as if there was no egg capacity in the example. But can we expect in all cases the hockey stick won't hit capacity at $N_{eq}$? Lets hold off on thinking too hard about that, because we are about to add further deviation from the simple example.  
 
 ## Modeling abundance across time
 
-Another advantage of the numerical approach is being able to explicitly model through time. We could add age structure, in which not all `adults` become `spawners`, but rather `age1` and `age2` adults, with a certain propensity to retun as a spawners.  
+Another advantage of the numerical approach is being able to explicitly model through time. We could add age structure, in which not all `adults` become `spawners`, but rather `age1` and `age2` adults, with a certain propensity to return as a spawners.  
 
-We could also vary $p$ and $c$ parameters through time. A simple example of this is to add stochasticity to the smolt to adult stage, or SAR. We know annual ocean conditions are highly variable, so lets allow SAR to vary radomly with a uniform distribution between 0.1 and 0.2.
+We could also vary $p$ and $c$ parameters through time. A simple example of this is to add stochasticity to the smolt to adult stage, or SAR. We know annual ocean conditions are highly variable, so lets allow SAR to vary randomly with a uniform distribution between 0.1 and 0.2.
 
 ```{r}
 sar <- function() {
-  # stochasitic SAR between 0.1 and 0.2
+  # stochastic SAR between 0.1 and 0.2
   # Args:
      # NA
   # Return:
-     # one random number beteen .1 and .2
+     # one random number between .1 and .2
   runif(1, 0.1, 0.2)
 }
 
@@ -239,7 +253,7 @@ sar <- function() {
 c(sar(), sar(), sar())
 ```
 
-As the spawner abundance will change with each year, lets store the `adult` abundace from each iteration.
+As the spawner abundance will change with each year, lets store the `adult` abundance from each iteration.
 
 ```{r}
 spawners <- 1000 # initialize with an arbitrary number of spawners
@@ -267,11 +281,28 @@ plot(r_over_time)
 
 
 ## Concurrent density dependence
-Another deviation from the simple example is if we are running multiple populations at once which comingle at a density dependent step. Imagine a situation where there are two subbains, and one mainstem. There are spawners in both subbasins, but not in the mainstem. However both of the subbasin populations have a proportion of juveniles which migrate down to the mainstem to rear. 
+Another deviation from the simple example is if we are running multiple populations at once which commingle at a density dependent step. Imagine a situation where there are two subbasins, and one mainstem. There are spawners in both subbasins, but not in the mainstem. However both of the subbasin populations have a proportion of juveniles which migrate down to the mainstem to rear. 
 
-The first thing we need is a function which can take a proportion of two groups, combine them into one group and send them through a density dependent transtion, and finally reallocate the mixed fish based on the initial proportion from each group. 
+The first thing we need is a function which can take a proportion of two groups, combine them into one group and send them through a density dependent transition, and finally reallocate the mixed fish based on the initial proportion from each group. 
 
-In this example below, lets assume both tributary basins are exactly the same as the above example basin, and the mainstem basin has an egg to smolt $p$ and $c$ of 0.012 and 1000, respectively.  
+In this example below, lets assume both tributary basins are exactly the same as the above example basin, and the mainstem basin has an egg to smolt $p$ and $c$ of 0.012 and 1000, respectively.
+
+```{r, echo = FALSE}
+tribble(
+   ~basin,     ~lifestage,      ~p,    ~c,
+ 'Subbasin 1', 'spawn_egg',     1250 , 2500000, # spawner to egg
+ 'Subbasin 1', 'egg_smolt',     0.012, 10000,   # egg to smolt
+ 'Subbasin 1', 'smolt_adult',    0.15, NA,       # spawner to adult
+ 'Subbasin 2', 'spawn_egg',     1250 , 2500000, # spawner to egg
+ 'Subbasin 2', 'egg_smolt',     0.012, 10000,   # egg to smolt
+ 'Subbasin 2', 'smolt_adult',    0.15, NA,       # spawner to adult
+ 'Mainstem'  , 'spawn_egg',       NA , NA, # spawner to egg
+ 'Mainstem'  , 'egg_smolt',     0.012, 10000,   # egg to smolt
+ 'Mainstem'  , 'smolt_adult',      NA, NA       # spawner to adult
+)
+
+```
+
 
 ```{r}
 
