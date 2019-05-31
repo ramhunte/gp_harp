@@ -11,7 +11,8 @@ hab_outputs <- lapply(hab_outputs, function(x) {
   gsub('_', '.', x)
 }) %>%
   data.frame() %>%
-  mutate(scenario = ifelse(grepl('^scenario.', hab.scenario) | grepl('^Current.', hab.scenario), 
+  mutate(species = as.character(species),
+         scenario = ifelse(grepl('^scenario.', hab.scenario) | grepl('^Current.', hab.scenario), 
                            paste0('ASRP.', hab.scenario),
                            as.character(hab.scenario))) %>%
   gather(param, data, capacity:survival) %>%
@@ -33,9 +34,18 @@ lcm_outputs <- bind_rows(
     mutate(species = 'steelhead')
 ) %>%
   rename(Subbasin = natal.basin) %>%
-  select(-X)
+  select(-X) %>%
+  full_join(.,subbasin_names) %>%
+  mutate(scenario = as.character(scenario),
+         Subbasin_num = as.character(Subbasin_num))
+  
 
-lookup_tbl <- full_join(hab_outputs, lcm_outputs)
+lookup_tbl <- full_join(hab_outputs, lcm_outputs) %>%
+  filter(species == 'spring.chinook') %>%
+  mutate(juvenile.weekly.survival = as.numeric(summer.survival)^(1/8),
+         juvenile.weekly.survival.temps = as.numeric(summer.2.survival)^(1/8)) %>%
+  select(scenario, Subbasin_num, Subbasin, EcoRegion, egg.to.fry.survival, eggs.capacity, summer.capacity, juvenile.weekly.survival, 
+         juvenile.weekly.survival.temps, prespawn.survival, spawners, smolts.fry.migrants, smolts.non.natal.sub.yr, smolts.natal.sub.yr)
 
 
 # Create lookup table of habmodel and lcm outputs from dev branch
