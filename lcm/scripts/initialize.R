@@ -105,13 +105,19 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   
   sens.params <- c(
-    "Egg.Capacity",
-    "Egg.to.Fry.Survival",
-    "Fry.Survival",
-    "Fry.Capacity",
-    "Subyearling.Survival",
-    "Subyearling.Capacity",
-    "Prespawn.Survival",
+    "newauk.cap.adj",
+    "skook.cap.adj",
+    "mainstem.cap.adj",
+    "newauk.surv.adj",
+    "skook.surv.adj",
+    "mainstem.surv.adj",
+    # "Egg.Capacity",
+    # "Egg.to.Fry.Survival",
+    # "Fry.Survival",
+    # "Fry.Capacity",
+    # "Subyearling.Survival",
+    # "Subyearling.Capacity",
+    # "Prespawn.Survival",
     "geomean")
   
 } # end if chinook

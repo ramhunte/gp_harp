@@ -12,7 +12,7 @@
 
 # Run model in sensitivity mode? 
 # Running in sensitivity mode will create only one ouput which is the sensitivity plot
-sensitivity.mode <- 'no' # 'yes' or 'no'
+sensitivity.mode <- 'yes' # 'yes' or 'no'
  
 
 
@@ -188,6 +188,11 @@ for (n in 1:length(scenario.file)) {
       apply(., 1, sum) %>%
       geo.mean
     
+    # Ratio of spawners Newaukum/Skookumchuck spawners (sensitivity of Chinook)
+    ratio.spawners <- (model.all[j, years, 'spawners', c("Newaukum River"), scenario.file[n]]/
+      model.all[j, years, 'spawners', c("Skookumchuck River"), scenario.file[n]])
+      
+    
     
     # Fill sensitivity arrays
     # runs (j) x params x scenario.file (n)
@@ -207,14 +212,21 @@ for (n in 1:length(scenario.file)) {
     
     if (pop %in% c("fall.chinook", "spring.chinook") & sensitivity.mode == "yes") {
       sensitivity[j, , n] <- c(
-        egg.cap.adj,
-        egg.fry.surv.adj,
-        fry.surv.adj,
-        fry.cap.adj,
-        sub.yr.surv.adj,
-        sub.yr.cap.adj,
-        S.up.adj,
-        tr.geomean)
+        newauk.cap.adj,
+        skook.cap.adj,
+        mainstem.cap.adj,
+        newauk.surv.adj,
+        skook.surv.adj,
+        mainstem.surv.adj,
+        # egg.cap.adj,
+        # egg.fry.surv.adj,
+        # fry.surv.adj,
+        # fry.cap.adj,
+        # sub.yr.surv.adj,
+        # sub.yr.cap.adj,
+        # S.up.adj,
+        #tr.geomean
+        ratio.spawners)
     } #ends fill chinook sensitivty[] array
     
     if (pop == 'steelhead' & sensitivity.mode == "yes") {

@@ -8,6 +8,8 @@ adj <- function() {
   runif(n = 1, min = 0.8, max = 1.2)
 }
 
+adj.skook <- function() {}
+adj.newaukum <- 
 
 # Adjust params for all species ----
 
@@ -50,18 +52,32 @@ if (pop == "coho") {
 # Adjust chino params ----
 if (pop == "fall.chinook" | pop == "spring.chinook") {
   
+  cap <- dat["capacity_s",]
+  newauk.cap.adj <- adj()
+  cap[12] <- cap[12]*newauk.cap.adj # Newaukum
+  skook.cap.adj <- adj()
+  cap[18] <- cap[18]*skook.cap.adj # Skook
+  mainstem.cap.adj <- adj()
+  cap[52:63]  <- cap[52:63]*mainstem.cap.adj # mainstem
+  
+  weekly.surv <- dat['surv_s', ]^(1/8)
+  newauk.surv.adj <- adj()
+  weekly.surv[12] <- weekly.surv[12]*newauk.surv.adj
+  skook.surv.adj <- adj()
+  weekly.surv[18] <- weekly.surv[18]*skook.surv.adj
+  mainstem.surv.adj <- adj()
+  weekly.surv[52:63] <- weekly.surv[52:63]*mainstem.surv.adj
+  
   # Fry to sub yearling migrant survival and capacity
-  fry.surv.adj <- adj() # 1 week of freshwater mortality
-  fry.cap.adj <- adj()
-  sub.yr.surv.adj <- adj() # 11 more weeks of freshwater mortality
-  sub.yr.cap.adj  <- adj()
-  
-  
-  fry.surv <- (dat['surv_s', ]^(1/12)) * fry.surv.adj # 1 week of freshwater mortality
-  fry.cap <- dat['capacity_s',] * 3 * fry.cap.adj
-  
-  sub.yr.surv <- (dat['surv_s', ]^(11/12)) * sub.yr.surv.adj # 11 more weeks of freshwater mortality
-  sub.yr.cap  <- dat['capacity_s', ] * sub.yr.cap.adj
+  # fry.surv.adj <- adj() # 1 week of freshwater mortality
+  # fry.cap.adj <- adj()
+  # sub.yr.surv.adj <- adj() # 11 more weeks of freshwater mortality
+  # sub.yr.cap.adj  <- adj()
+  # fry.surv <- (dat['surv_s', ]^(1/12)) * fry.surv.adj # 1 week of freshwater mortality
+  # fry.cap <- dat['capacity_s',] * 3 * fry.cap.adj
+  # 
+  # sub.yr.surv <- (dat['surv_s', ]^(11/12)) * sub.yr.surv.adj # 11 more weeks of freshwater mortality
+  # sub.yr.cap  <- dat['capacity_s', ] * sub.yr.cap.adj
   
 } #end if chinook
 

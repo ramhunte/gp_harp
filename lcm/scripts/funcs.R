@@ -229,7 +229,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     
     eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
     #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
-    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
+    pre.fry <- eggs * egg.fry.surv# * egg.flow.dec()
     
     # Natal fry - All basins
     natal.fry <- BH.func(S = pre.fry, p = weekly.surv, c = cap * 2) # Density dependent survival in fresh (first week after fry), 3x capacity
