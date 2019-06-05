@@ -10,13 +10,13 @@
 "9","Stearns Creek","Current",0,0,0,0
 "10","Bunker Creek","Current",0,0,0,0
 "11","Unnamed: Central Lowlands 9","Current",0,0,0,0
-"12","Newaukum River","Current",56,18979,1429,9467
+"12","Newaukum River","Current",55,18642,1389,9334
 "13","Dillenbaugh Creek","Current",0,0,0,0
 "14","Unnamed: Central Lowlands 8","Current",0,0,0,0
 "15","Salzer Creek","Current",0,0,0,0
 "16","Unnamed: Cascade Mountains 1","Current",0,0,0,0
 "17","Unnamed: Central Lowlands 7","Current",0,0,0,0
-"18","Skookumchuck River","Current",996,480662,126696,20040
+"18","Skookumchuck River","Current",987,476056,125594,20027
 "19","Lincoln Creek","Current",0,0,0,0
 "20","Unnamed: Central Lowlands 6","Current",0,0,0,0
 "21","Unnamed: Black River 1","Current",0,0,0,0
@@ -73,13 +73,13 @@
 "72","Stearns Creek","Barriers",0,0,0,0
 "73","Bunker Creek","Barriers",0,0,0,0
 "74","Unnamed: Central Lowlands 9","Barriers",0,0,0,0
-"75","Newaukum River","Barriers",56,18979,1429,9467
+"75","Newaukum River","Barriers",55,18642,1389,9334
 "76","Dillenbaugh Creek","Barriers",0,0,0,0
 "77","Unnamed: Central Lowlands 8","Barriers",0,0,0,0
 "78","Salzer Creek","Barriers",0,0,0,0
 "79","Unnamed: Cascade Mountains 1","Barriers",0,0,0,0
 "80","Unnamed: Central Lowlands 7","Barriers",0,0,0,0
-"81","Skookumchuck River","Barriers",996,480662,126696,20040
+"81","Skookumchuck River","Barriers",987,476056,125594,20027
 "82","Lincoln Creek","Barriers",0,0,0,0
 "83","Unnamed: Central Lowlands 6","Barriers",0,0,0,0
 "84","Unnamed: Black River 1","Barriers",0,0,0,0
@@ -125,24 +125,24 @@
 "124","Mainstem: Lower Chehalis 5","Barriers",0,0,0,0
 "125","Mainstem: Lower Chehalis 6","Barriers",0,0,0,0
 "126","Mainstem: Lower Chehalis 7","Barriers",0,0,0,0
-"127","Upper Chehalis: Above Proposed Dam","Fine.sediment",413,276073,59976,11844
+"127","Upper Chehalis: Above Proposed Dam","Fine.sediment",413,275699,59961,11843
 "128","Upper Chehalis: Proposed Dam to Elk Creek","Fine.sediment",0,0,0,0
 "129","Elk Creek","Fine.sediment",0,0,0,0
 "130","Unnamed: Willapa Hills 3","Fine.sediment",0,0,0,0
-"131","South Fork Chehalis","Fine.sediment",23,14119,1746,3811
+"131","South Fork Chehalis","Fine.sediment",23,14064,1739,3805
 "132","Unnamed: Willapa Hills 2","Fine.sediment",0,0,0,0
 "133","Unnamed: Willapa Hills 1","Fine.sediment",0,0,0,0
 "134","Unnamed: Willapa Hills 4","Fine.sediment",0,0,0,0
 "135","Stearns Creek","Fine.sediment",0,0,0,0
 "136","Bunker Creek","Fine.sediment",0,0,0,0
 "137","Unnamed: Central Lowlands 9","Fine.sediment",0,0,0,0
-"138","Newaukum River","Fine.sediment",479,325690,57415,31544
+"138","Newaukum River","Fine.sediment",475,322921,56944,31424
 "139","Dillenbaugh Creek","Fine.sediment",0,0,0,0
 "140","Unnamed: Central Lowlands 8","Fine.sediment",0,0,0,0
 "141","Salzer Creek","Fine.sediment",0,0,0,0
 "142","Unnamed: Cascade Mountains 1","Fine.sediment",0,0,0,0
 "143","Unnamed: Central Lowlands 7","Fine.sediment",0,0,0,0
-"144","Skookumchuck River","Fine.sediment",670,395970,76820,19626
+"144","Skookumchuck River","Fine.sediment",664,392329,76131,19610
 "145","Lincoln Creek","Fine.sediment",0,0,0,0
 "146","Unnamed: Central Lowlands 6","Fine.sediment",0,0,0,0
 "147","Unnamed: Black River 1","Fine.sediment",0,0,0,0
@@ -188,24 +188,24 @@
 "187","Mainstem: Lower Chehalis 5","Fine.sediment",0,0,0,0
 "188","Mainstem: Lower Chehalis 6","Fine.sediment",0,0,0,0
 "189","Mainstem: Lower Chehalis 7","Fine.sediment",0,0,0,0
-"190","Upper Chehalis: Above Proposed Dam","Wood",1,188,0,147
+"190","Upper Chehalis: Above Proposed Dam","Wood",1,186,0,145
 "191","Upper Chehalis: Proposed Dam to Elk Creek","Wood",0,0,0,0
 "192","Elk Creek","Wood",0,0,0,0
 "193","Unnamed: Willapa Hills 3","Wood",0,0,0,0
-"194","South Fork Chehalis","Wood",0,84,0,74
+"194","South Fork Chehalis","Wood",0,83,0,73
 "195","Unnamed: Willapa Hills 2","Wood",0,0,0,0
 "196","Unnamed: Willapa Hills 1","Wood",0,0,0,0
 "197","Unnamed: Willapa Hills 4","Wood",0,0,0,0
 "198","Stearns Creek","Wood",0,0,0,0
 "199","Bunker Creek","Wood",0,0,0,0
 "200","Unnamed: Central Lowlands 9","Wood",0,0,0,0
-"201","Newaukum River","Wood",168,61878,8504,22803
+"201","Newaukum River","Wood",167,61450,8431,22699
 "202","Dillenbaugh Creek","Wood",0,0,0,0
 "203","Unnamed: Central Lowlands 8","Wood",0,0,0,0
 "204","Salzer Creek","Wood",0,0,0,0
 "205","Unnamed: Cascade Mountains 1","Wood",0,0,0,0
 "206","Unnamed: Central Lowlands 7","Wood",0,0,0,0
-"207","Skookumchuck River","Wood",1322,672202,159599,25498
+"207","Skookumchuck River","Wood",1314,667766,158614,25488
 "208","Lincoln Creek","Wood",0,0,0,0
 "209","Unnamed: Central Lowlands 6","Wood",0,0,0,0
 "210","Unnamed: Black River 1","Wood",0,0,0,0
@@ -251,24 +251,24 @@
 "250","Mainstem: Lower Chehalis 5","Wood",0,0,0,0
 "251","Mainstem: Lower Chehalis 6","Wood",0,0,0,0
 "252","Mainstem: Lower Chehalis 7","Wood",0,0,0,0
-"253","Upper Chehalis: Above Proposed Dam","Shade",11,2355,85,1430
+"253","Upper Chehalis: Above Proposed Dam","Shade",11,2339,84,1422
 "254","Upper Chehalis: Proposed Dam to Elk Creek","Shade",0,0,0,0
 "255","Elk Creek","Shade",0,0,0,0
 "256","Unnamed: Willapa Hills 3","Shade",0,0,0,0
-"257","South Fork Chehalis","Shade",14,4031,276,1899
+"257","South Fork Chehalis","Shade",14,4012,274,1893
 "258","Unnamed: Willapa Hills 2","Shade",0,0,0,0
 "259","Unnamed: Willapa Hills 1","Shade",0,0,0,0
 "260","Unnamed: Willapa Hills 4","Shade",0,0,0,0
 "261","Stearns Creek","Shade",0,0,0,0
 "262","Bunker Creek","Shade",0,0,0,0
 "263","Unnamed: Central Lowlands 9","Shade",0,0,0,0
-"264","Newaukum River","Shade",335,134231,19461,25481
+"264","Newaukum River","Shade",333,133228,19306,25368
 "265","Dillenbaugh Creek","Shade",0,0,0,0
 "266","Unnamed: Central Lowlands 8","Shade",0,0,0,0
 "267","Salzer Creek","Shade",0,0,0,0
 "268","Unnamed: Cascade Mountains 1","Shade",0,0,0,0
 "269","Unnamed: Central Lowlands 7","Shade",0,0,0,0
-"270","Skookumchuck River","Shade",1632,850718,156343,20660
+"270","Skookumchuck River","Shade",1621,844510,155320,20654
 "271","Lincoln Creek","Shade",0,0,0,0
 "272","Unnamed: Central Lowlands 6","Shade",0,0,0,0
 "273","Unnamed: Black River 1","Shade",0,0,0,0
@@ -325,13 +325,13 @@
 "324","Stearns Creek","LR.bank",0,0,0,0
 "325","Bunker Creek","LR.bank",0,0,0,0
 "326","Unnamed: Central Lowlands 9","LR.bank",0,0,0,0
-"327","Newaukum River","LR.bank",57,19345,1463,9624
+"327","Newaukum River","LR.bank",56,18999,1422,9488
 "328","Dillenbaugh Creek","LR.bank",0,0,0,0
 "329","Unnamed: Central Lowlands 8","LR.bank",0,0,0,0
 "330","Salzer Creek","LR.bank",0,0,0,0
 "331","Unnamed: Cascade Mountains 1","LR.bank",0,0,0,0
 "332","Unnamed: Central Lowlands 7","LR.bank",0,0,0,0
-"333","Skookumchuck River","LR.bank",1058,510752,134312,21295
+"333","Skookumchuck River","LR.bank",1048,505862,133156,21281
 "334","Lincoln Creek","LR.bank",0,0,0,0
 "335","Unnamed: Central Lowlands 6","LR.bank",0,0,0,0
 "336","Unnamed: Black River 1","LR.bank",0,0,0,0
@@ -388,13 +388,13 @@
 "387","Stearns Creek","LR.length",0,0,0,0
 "388","Bunker Creek","LR.length",0,0,0,0
 "389","Unnamed: Central Lowlands 9","LR.length",0,0,0,0
-"390","Newaukum River","LR.length",56,19002,1419,9471
+"390","Newaukum River","LR.length",55,18638,1376,9328
 "391","Dillenbaugh Creek","LR.length",0,0,0,0
 "392","Unnamed: Central Lowlands 8","LR.length",0,0,0,0
 "393","Salzer Creek","LR.length",0,0,0,0
 "394","Unnamed: Cascade Mountains 1","LR.length",0,0,0,0
 "395","Unnamed: Central Lowlands 7","LR.length",0,0,0,0
-"396","Skookumchuck River","LR.length",1083,522886,133744,25559
+"396","Skookumchuck River","LR.length",1073,517727,132562,25538
 "397","Lincoln Creek","LR.length",0,0,0,0
 "398","Unnamed: Central Lowlands 6","LR.length",0,0,0,0
 "399","Unnamed: Black River 1","LR.length",0,0,0,0
@@ -451,13 +451,13 @@
 "450","Stearns Creek","Beaver",0,0,0,0
 "451","Bunker Creek","Beaver",0,0,0,0
 "452","Unnamed: Central Lowlands 9","Beaver",0,0,0,0
-"453","Newaukum River","Beaver",68,23104,1953,11238
+"453","Newaukum River","Beaver",67,22743,1906,11104
 "454","Dillenbaugh Creek","Beaver",0,0,0,0
 "455","Unnamed: Central Lowlands 8","Beaver",0,0,0,0
 "456","Salzer Creek","Beaver",0,0,0,0
 "457","Unnamed: Cascade Mountains 1","Beaver",0,0,0,0
 "458","Unnamed: Central Lowlands 7","Beaver",0,0,0,0
-"459","Skookumchuck River","Beaver",993,479388,126304,20043
+"459","Skookumchuck River","Beaver",985,474802,125207,20029
 "460","Lincoln Creek","Beaver",0,0,0,0
 "461","Unnamed: Central Lowlands 6","Beaver",0,0,0,0
 "462","Unnamed: Black River 1","Beaver",0,0,0,0
@@ -703,13 +703,13 @@
 "702","Stearns Creek","ASRP.Current.asrp.2040",0,0,0,0
 "703","Bunker Creek","ASRP.Current.asrp.2040",0,0,0,0
 "704","Unnamed: Central Lowlands 9","ASRP.Current.asrp.2040",0,0,0,0
-"705","Newaukum River","ASRP.Current.asrp.2040",0,13,0,9
+"705","Newaukum River","ASRP.Current.asrp.2040",0,12,0,9
 "706","Dillenbaugh Creek","ASRP.Current.asrp.2040",0,0,0,0
 "707","Unnamed: Central Lowlands 8","ASRP.Current.asrp.2040",0,0,0,0
 "708","Salzer Creek","ASRP.Current.asrp.2040",0,0,0,0
 "709","Unnamed: Cascade Mountains 1","ASRP.Current.asrp.2040",0,0,0,0
 "710","Unnamed: Central Lowlands 7","ASRP.Current.asrp.2040",0,0,0,0
-"711","Skookumchuck River","ASRP.Current.asrp.2040",446,193011,69792,18304
+"711","Skookumchuck River","ASRP.Current.asrp.2040",441,190316,68769,18266
 "712","Lincoln Creek","ASRP.Current.asrp.2040",0,0,0,0
 "713","Unnamed: Central Lowlands 6","ASRP.Current.asrp.2040",0,0,0,0
 "714","Unnamed: Black River 1","ASRP.Current.asrp.2040",0,0,0,0
@@ -772,7 +772,7 @@
 "771","Salzer Creek","ASRP.Current.asrp.2080",0,0,0,0
 "772","Unnamed: Cascade Mountains 1","ASRP.Current.asrp.2080",0,0,0,0
 "773","Unnamed: Central Lowlands 7","ASRP.Current.asrp.2080",0,0,0,0
-"774","Skookumchuck River","ASRP.Current.asrp.2080",1,258,0,180
+"774","Skookumchuck River","ASRP.Current.asrp.2080",1,249,0,174
 "775","Lincoln Creek","ASRP.Current.asrp.2080",0,0,0,0
 "776","Unnamed: Central Lowlands 6","ASRP.Current.asrp.2080",0,0,0,0
 "777","Unnamed: Black River 1","ASRP.Current.asrp.2080",0,0,0,0
@@ -829,13 +829,13 @@
 "828","Stearns Creek","ASRP.scenario.1.2040",0,0,0,0
 "829","Bunker Creek","ASRP.scenario.1.2040",0,0,0,0
 "830","Unnamed: Central Lowlands 9","ASRP.scenario.1.2040",0,0,0,0
-"831","Newaukum River","ASRP.scenario.1.2040",0,58,0,45
+"831","Newaukum River","ASRP.scenario.1.2040",0,56,0,44
 "832","Dillenbaugh Creek","ASRP.scenario.1.2040",0,0,0,0
 "833","Unnamed: Central Lowlands 8","ASRP.scenario.1.2040",0,0,0,0
 "834","Salzer Creek","ASRP.scenario.1.2040",0,0,0,0
 "835","Unnamed: Cascade Mountains 1","ASRP.scenario.1.2040",0,0,0,0
 "836","Unnamed: Central Lowlands 7","ASRP.scenario.1.2040",0,0,0,0
-"837","Skookumchuck River","ASRP.scenario.1.2040",498,218454,77333,20304
+"837","Skookumchuck River","ASRP.scenario.1.2040",493,215987,76422,20272
 "838","Lincoln Creek","ASRP.scenario.1.2040",0,0,0,0
 "839","Unnamed: Central Lowlands 6","ASRP.scenario.1.2040",0,0,0,0
 "840","Unnamed: Black River 1","ASRP.scenario.1.2040",0,0,0,0
@@ -898,7 +898,7 @@
 "897","Salzer Creek","ASRP.scenario.1.2080",0,0,0,0
 "898","Unnamed: Cascade Mountains 1","ASRP.scenario.1.2080",0,0,0,0
 "899","Unnamed: Central Lowlands 7","ASRP.scenario.1.2080",0,0,0,0
-"900","Skookumchuck River","ASRP.scenario.1.2080",2,912,5,665
+"900","Skookumchuck River","ASRP.scenario.1.2080",2,888,3,648
 "901","Lincoln Creek","ASRP.scenario.1.2080",0,0,0,0
 "902","Unnamed: Central Lowlands 6","ASRP.scenario.1.2080",0,0,0,0
 "903","Unnamed: Black River 1","ASRP.scenario.1.2080",0,0,0,0
@@ -955,13 +955,13 @@
 "954","Stearns Creek","ASRP.scenario.2.2040",0,0,0,0
 "955","Bunker Creek","ASRP.scenario.2.2040",0,0,0,0
 "956","Unnamed: Central Lowlands 9","ASRP.scenario.2.2040",0,0,0,0
-"957","Newaukum River","ASRP.scenario.2.2040",0,58,0,45
+"957","Newaukum River","ASRP.scenario.2.2040",0,56,0,44
 "958","Dillenbaugh Creek","ASRP.scenario.2.2040",0,0,0,0
 "959","Unnamed: Central Lowlands 8","ASRP.scenario.2.2040",0,0,0,0
 "960","Salzer Creek","ASRP.scenario.2.2040",0,0,0,0
 "961","Unnamed: Cascade Mountains 1","ASRP.scenario.2.2040",0,0,0,0
 "962","Unnamed: Central Lowlands 7","ASRP.scenario.2.2040",0,0,0,0
-"963","Skookumchuck River","ASRP.scenario.2.2040",498,218451,77333,20303
+"963","Skookumchuck River","ASRP.scenario.2.2040",493,215984,76422,20271
 "964","Lincoln Creek","ASRP.scenario.2.2040",0,0,0,0
 "965","Unnamed: Central Lowlands 6","ASRP.scenario.2.2040",0,0,0,0
 "966","Unnamed: Black River 1","ASRP.scenario.2.2040",0,0,0,0
@@ -1024,7 +1024,7 @@
 "1023","Salzer Creek","ASRP.scenario.2.2080",0,0,0,0
 "1024","Unnamed: Cascade Mountains 1","ASRP.scenario.2.2080",0,0,0,0
 "1025","Unnamed: Central Lowlands 7","ASRP.scenario.2.2080",0,0,0,0
-"1026","Skookumchuck River","ASRP.scenario.2.2080",2,911,4,664
+"1026","Skookumchuck River","ASRP.scenario.2.2080",2,887,3,647
 "1027","Lincoln Creek","ASRP.scenario.2.2080",0,0,0,0
 "1028","Unnamed: Central Lowlands 6","ASRP.scenario.2.2080",0,0,0,0
 "1029","Unnamed: Black River 1","ASRP.scenario.2.2080",0,0,0,0
@@ -1081,13 +1081,13 @@
 "1080","Stearns Creek","ASRP.scenario.3.2040",0,0,0,0
 "1081","Bunker Creek","ASRP.scenario.3.2040",0,0,0,0
 "1082","Unnamed: Central Lowlands 9","ASRP.scenario.3.2040",0,0,0,0
-"1083","Newaukum River","ASRP.scenario.3.2040",0,68,0,52
+"1083","Newaukum River","ASRP.scenario.3.2040",0,65,0,51
 "1084","Dillenbaugh Creek","ASRP.scenario.3.2040",0,0,0,0
 "1085","Unnamed: Central Lowlands 8","ASRP.scenario.3.2040",0,0,0,0
 "1086","Salzer Creek","ASRP.scenario.3.2040",0,0,0,0
 "1087","Unnamed: Cascade Mountains 1","ASRP.scenario.3.2040",0,0,0,0
 "1088","Unnamed: Central Lowlands 7","ASRP.scenario.3.2040",0,0,0,0
-"1089","Skookumchuck River","ASRP.scenario.3.2040",508,222999,78906,20360
+"1089","Skookumchuck River","ASRP.scenario.3.2040",503,220703,78060,20331
 "1090","Lincoln Creek","ASRP.scenario.3.2040",0,0,0,0
 "1091","Unnamed: Central Lowlands 6","ASRP.scenario.3.2040",0,0,0,0
 "1092","Unnamed: Black River 1","ASRP.scenario.3.2040",0,0,0,0
@@ -1150,7 +1150,7 @@
 "1149","Salzer Creek","ASRP.scenario.3.2080",0,0,0,0
 "1150","Unnamed: Cascade Mountains 1","ASRP.scenario.3.2080",0,0,0,0
 "1151","Unnamed: Central Lowlands 7","ASRP.scenario.3.2080",0,0,0,0
-"1152","Skookumchuck River","ASRP.scenario.3.2080",3,958,9,698
+"1152","Skookumchuck River","ASRP.scenario.3.2080",3,935,6,681
 "1153","Lincoln Creek","ASRP.scenario.3.2080",0,0,0,0
 "1154","Unnamed: Central Lowlands 6","ASRP.scenario.3.2080",0,0,0,0
 "1155","Unnamed: Black River 1","ASRP.scenario.3.2080",0,0,0,0
