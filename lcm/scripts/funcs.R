@@ -172,7 +172,7 @@ if (pop == "coho") {
     fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix.spring * percent.fry.migrants)
   
     parr <- BH.func(fry.distributed['after_movement', ] * fry.colonization, p = parr.surv, c = parr.cap)# summer parr
-    parr.distributed <- distribute.fish(fish.in = parr, move.matrix * redist) # Fall distribution into mainstem fixed by scenario
+    parr.distributed <- distribute.fish(fish.in = parr, sweep(move.matrix, MARGIN = 2, redist, '*')) # Fall distribution into mainstem fixed by scenario
     
     smolts <- BH.func(parr.distributed['after_movement', ], p = parr.smolt.surv, c = parr.smolt.cap)
     
