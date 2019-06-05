@@ -135,8 +135,8 @@ calc_coho_imperv <- function(imperv) {
   ps_mort_imperv <- 1.5 * imperv
   
   ps_prod_imperv <- ifelse(ps_mort_imperv > 1,
-                           1,
-                           ps_prod_imperv <- 1 - ps_mort_imperv)
+                           1 - 1,
+                           1 - ps_mort_imperv)
   
   
     return(ps_prod_imperv)
