@@ -189,8 +189,8 @@ for (n in 1:length(scenario.file)) {
       geo.mean
     
     # Ratio of spawners Newaukum/Skookumchuck spawners (sensitivity of Chinook)
-    ratio.spawners <- (model.all[j, years, 'spawners', c("Newaukum River"), scenario.file[n]]/
-      model.all[j, years, 'spawners', c("Skookumchuck River"), scenario.file[n]])
+    ratio.spawners <- log((model.all[j, years, 'spawners', c("Newaukum River"), scenario.file[n]]/
+      model.all[j, years, 'spawners', c("Skookumchuck River"), scenario.file[n]]))
       
     
     
