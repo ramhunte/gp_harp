@@ -38,6 +38,10 @@ fps1 <- bind_rows(fps_curr, fps_hist) %>%
     adults = eggs / fecundity * adult_per_redd
   )
 
+if (fishtype == 'spring_chinook') {
+  fps1 %<>% 
+    filter(Subbasin_num %in% c(1, 5, 12, 18))
+}
 # Small stream spawning ----
 ss_spawn <- lapply(diag_scenarios, function(z) {
   ss %>%
@@ -79,6 +83,11 @@ ss_sp1 <- ss_spawn %>%
     adults = eggs / fecundity * adult_per_redd
   )
 
+if (fishtype == 'spring_chinook') {
+  ss_sp1 %<>% 
+    filter(Subbasin_num %in% c(1, 5, 12, 18))
+}
+
 # Large river spawning ----
 
 lrsp <- lapply(diag_scenarios, function(a) {
@@ -99,6 +108,11 @@ lrsp1 <- lrsp %>%
     adults = eggs / fecundity * adult_per_redd
   )
 
+if (fishtype == 'spring_chinook') {
+  lrsp1 %<>% 
+    filter(Subbasin_num %in% c(1, 5, 12, 18))
+}
+
 
 spawn_tot <- bind_rows(fps1, ss_sp1, lrsp1) %>%
   group_by(hab.scenario, Subbasin_num) %>%
@@ -106,6 +120,11 @@ spawn_tot <- bind_rows(fps1, ss_sp1, lrsp1) %>%
             adults = sum(adults, na.rm = T)) %>%
   gather(life.stage, capacity, c(eggs, adults)) %>%
   ungroup()
+
+# if (fishtype == 'spring_chinook') {
+#   spawn_tot  %<>%
+#     filter(Subbasin_num %in% c(1, 5, 12, 18))
+# }
 
 # Create spawning capacity per reach (noaaid) to weight egg to fry surv and prespawn surv ---
 
