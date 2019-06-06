@@ -1,12 +1,12 @@
 "","scenario","scenario.label","habitat.file","n"
-"1","ASRP.Current.asrp.2040","2040 No action","ASRP_Current_asrp_2040.csv",80543.0369987493
-"2","ASRP.Current.asrp.2080","2080 No action","ASRP_Current_asrp_2080.csv",67115.4158118221
-"3","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",84687.1938538221
-"4","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",70759.923851993
-"5","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",85590.2732089594
-"6","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",71589.0675805173
-"7","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",86653.5696438887
-"8","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",72367.8253535335
+"1","ASRP.Current.asrp.2040","2040 No action","ASRP_Current_asrp_2040.csv",80819.1801000477
+"2","ASRP.Current.asrp.2080","2080 No action","ASRP_Current_asrp_2080.csv",67587.9936726761
+"3","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",84979.9125003844
+"4","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",71306.848028211
+"5","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",85886.7433874343
+"6","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",72148.6952318539
+"7","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",86932.5402223264
+"8","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",72855.977640836
 "9","Current","Current","Current.csv",93625.0161420055
 "10","Beaver","Current, w/ historical beaver ponds","Beaver.csv",199006.413766472
 "11","Fine.sediment","Current, w/ historical fine sediment","Fine_sediment.csv",106490.747853718
@@ -14,7 +14,7 @@
 "13","FP.wood.comb","Current, w/ historical floodplains and wood","FP_wood_comb.csv",162085.725733686
 "14","LR.bank","Current, w/ historical large river bank conditions","LR_bank.csv",94219.4809989763
 "15","LR.length","Current, w/ historical large river length","LR_length.csv",93888.867188548
-"16","Shade","Current, w/ historical shade","Shade.csv",101533.190139466
+"16","Shade","Current, w/ historical shade","Shade.csv",101564.284755342
 "17","Wood","Current, w/ historical wood loading","Wood.csv",114313.036044594
 "18","Barriers","Current, w/ no barriers","Barriers.csv",103321.926810881
-"19","Historical","Historical conditions","Historical.csv",383503.548864883
+"19","Historical","Historical conditions","Historical.csv",383614.296840617
