@@ -21,7 +21,7 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
                      Floodplain = 'n',
                      Beaver = 'n',
                      Riparian = 'n',
-                     primary_cr_only = 'n',
+                     primary_cr_only = as.character(primary_cr_only),
                      Scenario_num_2 = "wood_only") %>%
                 unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
@@ -30,7 +30,7 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
                      Floodplain = as.character(Floodplain),
                      Beaver = 'n',
                      Riparian = 'n',
-                     primary_cr_only = 'n',
+                     primary_cr_only = as.character(primary_cr_only),
                      Scenario_num_2 = "fp_only") %>%
               unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
@@ -39,7 +39,7 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
                      Floodplain = 'n',
                      Beaver = as.character(Beaver),
                      Riparian = 'n',
-                     primary_cr_only = 'n',
+                     primary_cr_only = as.character(primary_cr_only),
                      Scenario_num_2 = "beaver_only") %>%
               unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_"))
 
