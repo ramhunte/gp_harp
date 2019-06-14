@@ -274,9 +274,12 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
                  colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks * # average survival without temperature
                  colSums(move.matrix * weekly.surv.temp[ms.reaches])^ds_weeks_june # with temperature
     
+    # Downstream migration for fry (2, 1, 0 weeks)
+    # Both weeks are non-june weekly survival, average of all MS reaches DS of natal basin
+    fry.migrants.ds <- fry.migrants * colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks
     
     # Apply bay survival (ds migration, delta, bay, nearshore productivity)
-    fry.migrants.bay <- fry.migrants * bay.fry.surv
+    fry.migrants.bay <- fry.migrants.ds * bay.fry.surv
     sub.yr.bay <- sub.yr.ds * bay.parr.surv
     
     # Ocean survival

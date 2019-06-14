@@ -311,20 +311,23 @@ return.rows <- grep("return percent", row.names(distribute.matrix))
 
 # Create list of upper basins (4 weeks outmigration), mid basins (2 weeks outmigration), and lower (0 weeks) ----
 
-# if (pop %in% c('fall.chinook')) {
-#   ds_weeks <- rep(0,length(reach.names))
-#   ds_weeks[c(1:18, 52:56)] <- 4 # Upper basins are Skookumchuck River and upstream
-#   ds_weeks[c(19:39, 57:62)] <- 2 # Mid basins are DS of Skook to LMS 6
-#   # All else is Lower. GH tribs, Olympic Mts, LMS 7
-# }
 
 # Spring chinook get one week less thatn falls, as one more week of productivity with temperature will be added in
 if (pop %in% c('spring.chinook', 'fall.chinook')) {
   ds_weeks <- rep(0,length(reach.names))
+  
+  # One week of non-june weekly survival for upper basin fish
   ds_weeks[c(1:18, 52:56)] <- 1 # Upper basins are Skookumchuck River and upstream
   # All else get zero weeks of survival without temperature
   
+  # 3 weeks or 2 weeks of June temperatures (total is 4 weeks or 2 weeks)
   ds_weeks_june <- rep(0,length(reach.names))
   ds_weeks_june[c(1:18, 52:56)] <- 3 # Upper basins are Skookumchuck River and upstream
   ds_weeks_june[c(19:39, 57:62)] <- 2 # Mid basins are DS of Skook to LMS 6
+  
+  # Fry migrants get 2 weeks or 1 week of non-june temperature during downstream migration (0 weeks for GH tribs)
+  ds_weeks_fry <- rep(0,length(reach.names))
+  ds_weeks_fry[c(1:18, 52:56)] <- 2 # Upper basins are Skookumchuck River and upstream
+  ds_weeks_fry[c(19:39, 57:62)] <- 1 # Mid basins are DS of Skook to LMS 6
+  
 }
