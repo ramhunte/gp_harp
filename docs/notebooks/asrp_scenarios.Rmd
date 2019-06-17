@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+##1-asrp_prep.R
+
+####Description:
+
+In this script, we create a set of habitat data with added columns for `year` and `Scenario_num`, both of which allow us to join data specific to each habitat scenario and climate change scenario to the habitat data.  Additionally, we create a dataframe that includes the names of all primary creeks within the GSUs where `primary_cr_only == 'y'` so that we can apply the primary creek rule in future scripts.
+
+####Process:
+
+Read in asrp scenarios spreadsheet.  I took the spreadsheet provided to us and adapted it to better fit our modeling abilities.  The spreadsheet I created has 10 columns: GSU, LW, Barriers, Floodplain, Beaver, Riparian, rest_perc_f, rest_perc_nf, primary_cr_only, Scenario_num.  Here is a description of each of the columns:
+
+1. GSU: The GSU in which restoratrion actions are defined. (GSU name)
+2. LW: Do restoration scenarios target large wood?  (y/n)
+3. Barriers: Do restoration scenarios target barrier removal? (y/n)
+4. Floodplain: Do restoration scenarios target floodplain restoration and connectivity? (y/n)
+5. Beaver: Do restoration scenarios target beaver habitat or beaver dam analogs? (y/n)
+6. Riparian:  Do restoration scenarios target tree growth along stream channels? (y/n)
+7. rest_perc_f: What percent of the GSU will be targeted for restoration? This applies to GSUs within managed forests only (percent of GSU in decimal form)
+8. rest_perc_nf: What percent of the GSU will be targeted for restoration? This applies to GSUs outside of managed forest only (percent of GSU in decimal form) 
+9. primary_cr_only: Do restoration actions target only the primary creek within a GSU? (y/n)
+10. Scenario_num: Which scenario does this row describe? (Scenarios 1-3)
+
+Three additional scenarios are added to the asrp scenarios spreadsheet: `wood_only`, `fp_only`, and `beaver_only`.  These three scenarios are used to calculate coho movement, and are created by setting all restoration actions other than the one specified in the scenario name to 'n'.  
+
+Input asrp habitat data created in diagnostic scenario code are bound together into a single habitat file containing backwater, floodplain, large river, and small stream habitat data. Habitat data are then replicated three times, each time assigning a different `year` value: 2019, 2040 and 2080, reflecting the current, mid-century, and late-century timeframes considered in the asrp scenarios. The habitat data are once again replicated, this time 5 times, and each time assigned a different `Scenario_num` value: scenario_1, scenario_2, scenario_3, Current_asrp, or dev_and climate.
+
+Next, a list of primary creeks is created from the names of the GSUs where `primary_cr_only == 'y'`
+
+##2-asrp_reach_level_data.R
+
+####Description:
+
+In this script, we 
+
+
+
+
+
+
+The NOAA model considers the following five restoration actions when creating the three ASRP restoration scenarios:
+
+1. Large wood
+2. Beavers
+3. Floodplain
+4. Riparian restoration and shading
+5. Barrier removal
+
+Restoration actions and percentages are assigned at the GSU level.  For example, consider ASRP scenario 1 shown below:
+
+```{r}
+asrp_scenarios %>% 
+  filter(Scenario_num == 'scenario_1') %>%
+  arrange(GSU) %>%
+  as.tibble
+```
+Bingham creek recieves restoration action for large wood, barriers, floodplain and riparian habitat, but not for beaver habitat.  Restoration is targeted at 33% of the GSU.  
