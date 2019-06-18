@@ -3,36 +3,15 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-##1-asrp_prep.R
+The goal of this document is to describe the process through which the asrp restoration scenarios are created in the NOAA model, including a description of inputs and model structure.  
 
-###Description:
-
-In this script, we create a set of habitat data with added columns for `year` and `Scenario_num`, both of which allow us to join data specific to each habitat scenario and climate change scenario to the habitat data.  Additionally, we create a dataframe that includes the names of all primary creeks within the GSUs where `primary_cr_only == 'y'` so that we can apply the primary creek rule in future scripts.
-
-###Process:
-
-Read in asrp scenarios spreadsheet.  I took the spreadsheet provided to us and adapted it to better fit our modeling abilities.  The spreadsheet I created is attached below, separated out by scenario number.
-
-####Scenario 1:
+##Input data
+The three restoration scenarios are defined in the following data set, which was adapted from a spreadsheet we received through email:
 ```{r}
 asrp_scenarios %>% 
-  filter(Scenario_num == 'scenario_1') %>%
-  select(-Scenario_num)
+  as.tibble()
 ```
-####Scenario 2: 
-```{r}
-asrp_scenarios %>%
-  filter(Scenario_num == 'scenario_2') %>%
-  select(-Scenario_num)
-```
-####Scenario 3:
-```{r}
-asrp_scenarios %>%
-  
-```
-
-
-Here is a description of each of the columns:
+We have adapted this table to accomodate our existing code structure, and have removed columns that were not relevant to our code from the spreadsheet provided to us.  Below is a description of each of the 10 columns included in our asrp scenario spreadsheet: 
 
 1. GSU: The GSU in which restoratrion actions are defined. (GSU name)
 2. LW: Do restoration scenarios target large wood?  (y/n)
@@ -45,11 +24,7 @@ Here is a description of each of the columns:
 9. primary_cr_only: Do restoration actions target only the primary creek within a GSU? (y/n)
 10. Scenario_num: Which scenario does this row describe? (Scenarios 1-3)
 
-Three additional scenarios are added to the asrp scenarios spreadsheet: `wood_only`, `fp_only`, and `beaver_only`.  These three scenarios are used to calculate coho movement, and are created by setting all restoration actions other than the one specified in the scenario name to 'n'.  
-
-Input asrp habitat data created in diagnostic scenario code are bound together into a single habitat file containing backwater, floodplain, large river, and small stream habitat data. Habitat data are then replicated three times, each time assigning a different `year` value: 2019, 2040 and 2080, reflecting the current, mid-century, and late-century timeframes considered in the asrp scenarios. The habitat data are once again replicated, this time 5 times, and each time assigned a different `Scenario_num` value: scenario_1, scenario_2, scenario_3, Current_asrp, or dev_and climate.
-
-Next, a list of primary creeks is created from the names of the GSUs where `primary_cr_only == 'y'`
+We add an additional column, `year` to the asrp scenario spreadsheet by replicating the asrp scenarios spreadsheet three times, once for each year considered in the asrp scenarios (2019/current, 2040/mid-century, 2080/late-century)
 
 ##2-asrp_reach_level_data.R
 
