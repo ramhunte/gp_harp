@@ -27,8 +27,8 @@ asrp_spawn_fp <- all_habs_spawn %>%
   filter(Habitat == "Side_Channel",
          Hist_salm == "Hist salmon",
          ifelse(Period == "Hist", 
-                spawn_dist == "Yes" & NEAR_DIST < 500 | Subbasin_num %in% mainstem.subs,
-                spawn_dist == "Yes" & NEAR_DIST < 5 | Subbasin_num %in% mainstem.subs)) %>%
+                spawn_dist == "Yes" & NEAR_DIST < 500,
+                spawn_dist == "Yes" & NEAR_DIST < 5)) %>%
   mutate(eggs = ifelse(Period == "Hist",
                        ifelse(Floodplain == 'y' & !forest == "y",
                               Length_sc * rest_perc * fp_intensity_scalar * pass_tot_asrp * PR_redd_density / 1000 * fecundity,
