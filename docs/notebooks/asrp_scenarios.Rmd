@@ -5,13 +5,34 @@ output: html_notebook
 
 ##1-asrp_prep.R
 
-####Description:
+###Description:
 
 In this script, we create a set of habitat data with added columns for `year` and `Scenario_num`, both of which allow us to join data specific to each habitat scenario and climate change scenario to the habitat data.  Additionally, we create a dataframe that includes the names of all primary creeks within the GSUs where `primary_cr_only == 'y'` so that we can apply the primary creek rule in future scripts.
 
-####Process:
+###Process:
 
-Read in asrp scenarios spreadsheet.  I took the spreadsheet provided to us and adapted it to better fit our modeling abilities.  The spreadsheet I created has 10 columns: GSU, LW, Barriers, Floodplain, Beaver, Riparian, rest_perc_f, rest_perc_nf, primary_cr_only, Scenario_num.  Here is a description of each of the columns:
+Read in asrp scenarios spreadsheet.  I took the spreadsheet provided to us and adapted it to better fit our modeling abilities.  The spreadsheet I created is attached below, separated out by scenario number.
+
+####Scenario 1:
+```{r}
+asrp_scenarios %>% 
+  filter(Scenario_num == 'scenario_1') %>%
+  select(-Scenario_num)
+```
+####Scenario 2: 
+```{r}
+asrp_scenarios %>%
+  filter(Scenario_num == 'scenario_2') %>%
+  select(-Scenario_num)
+```
+####Scenario 3:
+```{r}
+asrp_scenarios %>%
+  
+```
+
+
+Here is a description of each of the columns:
 
 1. GSU: The GSU in which restoratrion actions are defined. (GSU name)
 2. LW: Do restoration scenarios target large wood?  (y/n)
@@ -34,7 +55,27 @@ Next, a list of primary creeks is created from the names of the GSUs where `prim
 
 ####Description:
 
-In this script, we 
+In this script, we create a reach (noaaid) level table with asrp scenario information through a join of `flowline` with `asrp_scenarios`.
+
+####Process: 
+
+We begin by attaching a `Scenario_num` column to the `flowline` data frame.  This is done through an lapply/rbind where we replicate the `flowline` data frame once for each asrp scenario considered (scenarios 1-3, scenarios 1-3 wood only, scenarios 1-3 fp only, scenarios 1-3 beaver only), and add each scenario name to `flowline` using `mutate`.  
+
+We then replicate `flowline` three more times, once for each year considered (2019/current, 2040/mid-century, and 2080/late-century), and then remove the scenario/year combinations that we do not consider in the asrp scenario code.
+
+
+
+
+
+
+
+#The code after this line is not used anymore
+
+
+
+
+
+
 
 
 
