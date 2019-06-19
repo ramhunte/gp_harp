@@ -3,15 +3,21 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-The goal of this document is to describe the process through which the asrp restoration scenarios are created in the NOAA model, including a description of inputs and model structure.  
+The goal of this document is to describe how the NOAA team has interpreted the ASRP restoration scenarios for the Chehalis River basin. 
 
-##Input data
-The three restoration scenarios are defined in the following data set, which was adapted from a spreadsheet we received through email:
+# Input data
+
+The following spreadsheet defines the three restoration scenarios that we consider in the asrp model: 
+
 ```{r}
-asrp_scenarios %>% 
-  as.tibble()
+asrp_scenarios %>%
+  filter(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3')) %>%
+  arrange(Scenario_num, GSU) %>% 
+  as_tibble() 
 ```
-We have adapted this table to accomodate our existing code structure, and have removed columns that were not relevant to our code from the spreadsheet provided to us.  Below is a description of each of the 10 columns included in our asrp scenario spreadsheet: 
+This spreadsheet is adapted from a similar spreadsheet we received via email, however this one is adapted to better fit our model.
+
+Our asrp scenario input data consist of ten columns, described here:
 
 1. GSU: The GSU in which restoratrion actions are defined. (GSU name)
 2. LW: Do restoration scenarios target large wood?  (y/n)
@@ -24,53 +30,36 @@ We have adapted this table to accomodate our existing code structure, and have r
 9. primary_cr_only: Do restoration actions target only the primary creek within a GSU? (y/n)
 10. Scenario_num: Which scenario does this row describe? (Scenarios 1-3)
 
-We add an additional column, `year` to the asrp scenario spreadsheet by replicating the asrp scenarios spreadsheet three times, once for each year considered in the asrp scenarios (2019/current, 2040/mid-century, 2080/late-century)
 
-##2-asrp_reach_level_data.R
+# Description of restoration actions
 
-####Description:
+### Barriers
 
-In this script, we create a reach (noaaid) level table with asrp scenario information through a join of `flowline` with `asrp_scenarios`.
+Where `Barriers == 'y'` for a particular GSU, we model the removal of all barriers (except natural barriers) within that GSU, regardless of restoration percentage.  No barriers are removed where `Barriers == 'n'`.  The removal of barriers results in a 1.8% increase in coho spawners for scenario 1, a 2.3% increase in coho spawners for scenario 2, and a 2.5% increase in coho spawners for scenario 3.  
 
-####Process: 
+### Large wood
 
-We begin by attaching a `Scenario_num` column to the `flowline` data frame.  This is done through an lapply/rbind where we replicate the `flowline` data frame once for each asrp scenario considered (scenarios 1-3, scenarios 1-3 wood only, scenarios 1-3 fp only, scenarios 1-3 beaver only), and add each scenario name to `flowline` using `mutate`.  
+Where `LW == 'y'` for a particular GSU, we model the effect of the addition of wood to that GSU based on the restoration percentage as well as the wood intensity scalar(.6).  The addition of large wood affects our model in the following ways:
 
-We then replicate `flowline` three more times, once for each year considered (2019/current, 2040/mid-century, and 2080/late-century), and then remove the scenario/year combinations that we do not consider in the asrp scenario code.
+1. Rearing capacity:  We apply a large wood multiplier when calculating rearing capacity in large river, backwater, small stream, and floodplain side channel habitat.  We use the following equation to calculate the wood multipler for each reach: $$woodmult = woodmult_{curr} + (woodmult_{hist} - woodmult_{curr}) * rest.percent * intensity.scalar_{wood}$$
+where $woodmult_{curr}$ == 1, $rest.percent$ can be found in the asrp_scenarios spreadsheet, and $intensity.scalar_{wood}$ == .6 for all time periods.
+2. Rearing productivity:  
+  + For large river habitat we multiply productivity by the wood multiplier described in section `1. Rearing capacity`
+  + For small stream and floodplain habitat we have different low wood and high wood productivities.  Wood restoration within a GSU brings productivity up from the low wood productivity using the following equation: $$productivity = productivity_{low.wood} + (productivity_{high.wood} - productivity_{low.wood}) * rest.percent * intensity.scalar_{wood}$$
+3. Pool and riffle percentage:  Under high wood conditions we use the `reference`, or `historical` pool and riffle percentages.  Under low wood conditions, pool and riffle ratios are based on the landcover of a particular reach.  For the asrp scenarios we use the following equation to calculate pool and riffle percentages:
+$$pool.perc = pool.perc_{low.wood} + (pool.perc_{high.wood} - pool.perc_{low.wood}) * rest.percent * intensity.scalar_{wood}$$ $$riffle.perc = 1 - pool.perc$$
+4. Spawning: 
+  + For small stream habitat we have separate `forested` and `non-forested` redd densities in reaches with slope > 1%. Under high wood scenarios we use the `forested` redd densities whereas under the low wood scenarios we only use the `forested` redd densities where the landcover is forest, and we use the `non-forested` redd densities in all other reaches. We use the following equation to calculate egg capacity under the asrp scenarios: $$egg.capacity = reach.length_{meters} * passage.percent * ((redd.density_{forested} - redd.density_{non-forested}) * rest.percent * intensity.scalar_{wood}) / 1000 * fecundity$$ 
+  + For large river habitat we apply a wood scalar when calculating spawning capacity in high wood scenarios.  Large river spawning capcaity in the asrp scenarios is calculated using the following equation: $$area_{spawning} * passage.percent / redd.area * fecundity * (1 + (1 - spawning.mult_{high.wood}) * rest.perc * intensity.scalar_{wood})$$
 
+The addition of large wood results in a 1.5% increase in coho spawners for scenario 1, a 1.6% increase in coho spawners for scenario 2, and a 1.8% increase in coho spawners for scenario 3.
 
+### Floodplain
 
+Where `Floodplain == 'y'` for a particular GSU, we model the effect of floodplain restoration in that GSU based on the restoration percentage as well as the floodplain intensity scalar (.3 in managed forests, .5 outside of managed forests).  The restoration of floodplain habitat affects our model in the following ways: 
 
+1. Rearing area: $Area = Area_{current} + (Area_{historical} - Area_{current}) * rest.percent * intensity.scalar_{floodplain}$
+2. side channel spawning length: $length = length_{current} + (length_{historical} - length_{current}) * rest.percent * intensity.scalar_{floodplain}$
 
+Restoration of floodplain habitat results in a 3.8% increase in coho spawners for scenario 1, a  4.1% increase in coho spawners for scenario 2, and a 4.8% increase in coho spawners for scenario 3. 
 
-
-#The code after this line is not used anymore
-
-
-
-
-
-
-
-
-
-
-
-
-The NOAA model considers the following five restoration actions when creating the three ASRP restoration scenarios:
-
-1. Large wood
-2. Beavers
-3. Floodplain
-4. Riparian restoration and shading
-5. Barrier removal
-
-Restoration actions and percentages are assigned at the GSU level.  For example, consider ASRP scenario 1 shown below:
-
-```{r}
-asrp_scenarios %>% 
-  filter(Scenario_num == 'scenario_1') %>%
-  arrange(GSU) %>%
-  as.tibble
-```
-Bingham creek recieves restoration action for large wood, barriers, floodplain and riparian habitat, but not for beaver habitat.  Restoration is targeted at 33% of the GSU.  
