@@ -14,8 +14,8 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
          Riparian = as.character(Riparian),
          primary_cr_only = as.character(primary_cr_only))
 
-  asrp_scenarios <- asrp_scenarios_char %>%
-    bind_rows(., asrp_scenarios_char %>%
+asrp_scenarios <- asrp_scenarios_char %>%
+  bind_rows(., asrp_scenarios_char %>%
               mutate(LW = as.character(LW),
                      Barriers = 'n',
                      Floodplain = 'n',
@@ -23,7 +23,7 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
                      Riparian = 'n',
                      primary_cr_only = as.character(primary_cr_only),
                      Scenario_num_2 = "wood_only") %>%
-                unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
+              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
               mutate(LW = 'n',
                      Barriers = 'n',
@@ -41,7 +41,14 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
                      Riparian = 'n',
                      primary_cr_only = as.character(primary_cr_only),
                      Scenario_num_2 = "beaver_only") %>%
-              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_"))
+              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
+  bind_rows(., asrp_scenarios_char %>%
+              mutate(LW = 'n',
+                     Barriers = as.character(Barriers),
+                     Floodplain = 'n',
+                     primary_cr_only = as.character(primary_cr_only),
+                     Scenario_num_2 = 'barrier_only') %>%
+              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = '_'))
 
 # Attach year and scenario num columns to habitat data sets ---- 
 
@@ -74,7 +81,8 @@ all_habs_scenario <- lapply(scenario.nums, function(h) {
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate')),
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
-                               "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only") & 
+                               "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only", 
+                               'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only') & 
              year %in% c(2040, 2080)))
 
 

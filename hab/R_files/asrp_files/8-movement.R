@@ -61,6 +61,29 @@ asrp_mvmt <- mvmt_data %>%
     beaver_perc_3 = beaver_diff_3 / (cap_scen + tot_diff_3),
     curr_perc_3 = (cap_scen / (cap_scen + tot_diff_3)),
     scenario_3 = (wood_perc_3 * 7) + (fp_perc_3 * 3) + (beaver_perc_3 * 3) + (curr_perc_3 * 11),
-    dev_and_climate = 11) %>%
-  select(Subbasin_num, scenario_1, scenario_2, scenario_3) %>%
-  gather(Scenario_num, movement, scenario_1:scenario_3)
+    dev_and_climate = 11,
+    wood_only_perc_1 = wood_diff_1 / (cap_scen + wood_diff_1),
+    wood_only_perc_2 = wood_diff_2 / (cap_scen + wood_diff_2),
+    wood_only_perc_3 = wood_diff_3 / (cap_scen + wood_diff_3),
+    scenario_1_wood_only = (wood_only_perc_1 * 7) + ((1 - wood_only_perc_1) * 11),
+    scenario_2_wood_only = (wood_only_perc_2 * 7) + ((1 - wood_only_perc_2) * 11),
+    scenario_3_wood_only = (wood_only_perc_2 * 7) + ((1 - wood_only_perc_2) * 11),
+    beaver_only_perc_1 = beaver_diff_1 / (cap_scen + beaver_diff_1),
+    beaver_only_perc_2 = beaver_diff_2 / (cap_scen + beaver_diff_2),
+    beaver_only_perc_3 = beaver_diff_3 / (cap_scen + beaver_diff_3),
+    scenario_1_beaver_only = (beaver_only_perc_1 * 3) + ((1 - beaver_only_perc_1) * 11),
+    scenario_2_beaver_only = (beaver_only_perc_2 * 3) + ((1 - beaver_only_perc_3) * 11),
+    scenario_3_beaver_only = (beaver_only_perc_3 * 3) + ((1 - beaver_only_perc_3) * 11),
+    fp_only_perc_1 = fp_diff_1 / (cap_scen + fp_diff_1),
+    fp_only_perc_2 = fp_diff_2 / (cap_scen + fp_diff_2),
+    fp_only_perc_3 = fp_diff_3 / (cap_scen + fp_diff_3),
+    scenario_1_fp_only = (fp_only_perc_1 * 3) + ((1 - fp_only_perc_1) * 11),
+    scenario_2_fp_only = (fp_only_perc_2 * 3) + ((1 - fp_only_perc_3) * 11),
+    scenario_3_fp_only = (fp_only_perc_3 * 3) + ((1 - fp_only_perc_3) * 11),
+    scenario_1_barrier_only = 11, 
+    scenario_2_barrier_only = 11,
+    scenario_3_barrier_only = 11) %>%
+  select(Subbasin_num, scenario_1, scenario_2, scenario_3, scenario_1_wood_only, scenario_2_wood_only, scenario_3_wood_only, scenario_1_beaver_only,
+         scenario_2_beaver_only, scenario_3_beaver_only, scenario_1_fp_only, scenario_2_fp_only, scenario_3_fp_only, scenario_1_barrier_only,
+         scenario_2_barrier_only, scenario_3_barrier_only) %>%
+  gather(Scenario_num, movement, scenario_1:scenario_3_barrier_only)

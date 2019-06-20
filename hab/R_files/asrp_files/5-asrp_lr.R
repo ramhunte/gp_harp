@@ -63,5 +63,5 @@ if (fishtype %in% c("spring_chinook", "fall_chinook")) {
 asrp_lr_mvmt <- asrp_lr %>%
   filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))
 
-asrp_lr %<>%
-  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))
+# asrp_lr %<>%
+#   filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))
