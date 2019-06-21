@@ -11,7 +11,7 @@ asrp_spawn_ss <- all_habs_spawn %>%
   filter(Habitat == "SmStream") %>%
   filter(slope < .03) %>%
   mutate(Shape_Length = ifelse(Beaver == 'y' & !forest == "y",
-                               Shape_Length * (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
+                               Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
                                Shape_Length * curr_beaver_mult),
          eggs = ifelse(slope < .01,
                        Shape_Length * pass_tot_asrp * PR_redd_density / 1000 * fecundity,
@@ -53,7 +53,8 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate')),
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
                               "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only",
-                              'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only') & year %in% c(2040, 2080))) %>%
+                              'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only', 'scenario_1_riparian_only', 
+                              'scenario_2_riparian_only', 'scenario_3_riparian_only') & year %in% c(2040, 2080))) %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   mutate(
