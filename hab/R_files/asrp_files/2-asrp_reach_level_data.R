@@ -1,4 +1,18 @@
 # This script creates a table from which noaaid level characteristics are drawn in the ASRP scenario scripts 
+gsu_forest <- flowline %>% 
+  group_by(GSU, forest) %>%
+  summarize(Shape_Length = sum(Shape_Length, na.rm = T)) %>%
+  mutate(forest = ifelse(forest == 'Yes',
+                         as.character(forest),
+                         'No')) %>%
+  spread(forest, Shape_Length) %>%
+  mutate(Yes = ifelse(is.na(Yes),
+                      0,
+                      Yes),
+         No = ifelse(is.na(No),
+                     0,
+                     No),
+         perc_forest = Yes / (Yes + No))
 
 # Replicate flowline 4x, once for each scenario in `scenario.nums` ----
 
@@ -23,6 +37,8 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only") & 
              year %in% c(2040, 2080))) %>%
+  left_join(., gsu_forest %>%
+              select(GSU, perc_forest)) %>%
   
   # Assign temperature with and without tree growth, and intensity scalars for temperature, wood, floodplains and beaver based on year ----
 
@@ -52,20 +68,23 @@ mutate(tm_2019 = curr_temp,
          year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                    "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                    "scenario_3_beaver_only"),
-                               ifelse(forest == 'y',
-                                      .3,
+                               ifelse(perc_forest > .5,
+                                      1,
                                       1),
                                0),
-         year %in% c(2040, 2080) & forest == 'y' ~ .3,
-         year %in% c(2040, 2080) & !forest == 'y' ~ 1),
+         year %in% c(2040, 2080) & perc_forest > .5 ~ 1,
+         year %in% c(2040, 2080) & perc_forest < .5 ~ 1),
        beaver_intensity_scalar = case_when(
          year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                    "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                    "scenario_3_beaver_only"),
-                               1,
+                               ifelse(perc_forest > .5,
+                                      1,
+                                      1),
                                0),
-         year == 2040 ~ 1,
-         year == 2080 ~ 1)) %>%
+         year %in% c(2040, 2080) ~ ifelse(perc_forest > .5,
+                                          1,
+                                          1))) %>%
   left_join(., asrp_scenarios) %>%
   
   
