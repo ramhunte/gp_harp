@@ -24,70 +24,70 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only") & 
              year %in% c(2040, 2080))) %>%
   
-# Assign temperature with and without tree growth, and intensity scalars for temperature, wood, floodplains and beaver based on year ----
+  # Assign temperature with and without tree growth, and intensity scalars for temperature, wood, floodplains and beaver based on year ----
 
-  mutate(tm_2019 = curr_temp,
-         tm_2019_cc_only = curr_temp,
-         asrp_temp_w_growth = case_when(
-           year == 2019 ~ tm_2019,
-           year == 2040 ~ tm_2040,
-           year == 2080 ~ tm_2080),
-         asrp_temp_cc_only = case_when(
-           year == 2019 ~ tm_2019_cc_only,
-           year == 2040 ~ tm_2040_cc_only,
-           year == 2080 ~ tm_2080_cc_only),
-         temp_intensity_scalar = case_when(
-           year == 2019 ~ 0,
-           year == 2040 ~ .75,
-           year == 2080 ~ .75),
-         wood_intensity_scalar = case_when(
-           year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
-                                                     "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
-                                                     "scenario_3_beaver_only"),
-                                 .6,
-                                 0),
-           year == 2040 ~ .6,
-           year == 2080 ~ .6),
-         fp_intensity_scalar = case_when(
-           year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
-                                                     "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
-                                                     "scenario_3_beaver_only"),
-                                 ifelse(forest == 'y',
-                                        .3,
-                                        .5),
-                                 0),
-           year %in% c(2040, 2080) & forest == 'y' ~ .3,
-           year %in% c(2040, 2080) & !forest == 'y' ~ .5),
-         beaver_intensity_scalar = case_when(
-           year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
-                                                     "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
-                                                     "scenario_3_beaver_only"),
-                                 .3,
-                                 0),
-           year == 2040 ~ .3,
-           year == 2080 ~ .3)) %>%
+mutate(tm_2019 = curr_temp,
+       tm_2019_cc_only = curr_temp,
+       asrp_temp_w_growth = case_when(
+         year == 2019 ~ tm_2019,
+         year == 2040 ~ tm_2040,
+         year == 2080 ~ tm_2080),
+       asrp_temp_cc_only = case_when(
+         year == 2019 ~ tm_2019_cc_only,
+         year == 2040 ~ tm_2040_cc_only,
+         year == 2080 ~ tm_2080_cc_only),
+       temp_intensity_scalar = case_when(
+         year == 2019 ~ 0,
+         year == 2040 ~ .75,
+         year == 2080 ~ .75),
+       wood_intensity_scalar = case_when(
+         year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
+                                                   "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
+                                                   "scenario_3_beaver_only"),
+                               .6,
+                               0),
+         year == 2040 ~ .6,
+         year == 2080 ~ .6),
+       fp_intensity_scalar = case_when(
+         year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
+                                                   "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
+                                                   "scenario_3_beaver_only"),
+                               ifelse(forest == 'y',
+                                      .3,
+                                      .5),
+                               0),
+         year %in% c(2040, 2080) & forest == 'y' ~ .3,
+         year %in% c(2040, 2080) & !forest == 'y' ~ .5),
+       beaver_intensity_scalar = case_when(
+         year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
+                                                   "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
+                                                   "scenario_3_beaver_only"),
+                               .3,
+                               0),
+         year == 2040 ~ .3,
+         year == 2080 ~ .3)) %>%
   left_join(., asrp_scenarios) %>%
   
   
   mutate(
-
-# Create single restoration percentage field based on whether or not forest == 'y' for each reach ----  
+    
+    # Create single restoration percentage field based on whether or not forest == 'y' for each reach ----  
     
     rest_perc_f = ifelse(is.na(rest_perc_f),
-                              0,
-                              rest_perc_f),
-         rest_perc_nf = ifelse(is.na(rest_perc_nf),
-                               0,
-                               rest_perc_nf),
-         rest_perc = ifelse(forest == 'y',
-                            rest_perc_f,
-                            rest_perc_nf),
-
-# Fix fields joined from the asrp scenarios data frame with `NA` values ----
-
-#It is assumed that `NA` values for these particular fields come about only in rows where the GSU does not match any of the GSUs that receive 
-#restoration effort under the asrp scenarios 
-
+                         0,
+                         rest_perc_f),
+    rest_perc_nf = ifelse(is.na(rest_perc_nf),
+                          0,
+                          rest_perc_nf),
+    rest_perc = ifelse(forest == 'y',
+                       rest_perc_f,
+                       rest_perc_nf),
+    
+    # Fix fields joined from the asrp scenarios data frame with `NA` values ----
+    
+    #It is assumed that `NA` values for these particular fields come about only in rows where the GSU does not match any of the GSUs that receive 
+    #restoration effort under the asrp scenarios 
+    
     primary_cr_only = ifelse(is.na(primary_cr_only),
                              "n",
                              as.character(primary_cr_only)),
@@ -127,10 +127,10 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                'y'),
       Riparian == 'n' ~ 'n')) %>%
   select(-rest_perc_f, -rest_perc_nf) %>%
-
-# Calculate wood and temperature multipliers based on the particular asrp scenario and year of each row ----
   
-  left_join(., wood_data) %>%
+  # Calculate wood and temperature multipliers based on the particular asrp scenario and year of each row ----
+
+left_join(., wood_data) %>%
   mutate(woodmult_s_asrp = ifelse(LW == 'y',
                                   1 + ((woodmult_s - 1) * rest_perc * wood_intensity_scalar),
                                   1),
@@ -143,14 +143,14 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                    asrp_temp_w_growth),
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
-                                   asrpasrp_temp_w_growth)),
+                                   asrp_temp_w_growth)),
          tempmult.asrp = ifelse(species == "fall_chinook",
                                 1,
                                 temp_func(asrp_temp))) %>%
   
   # add in future impervious area by GSU, scenario and year ----
 
-  left_join(., fut_imperv, by = c('GSU', 'year')) %>%
+left_join(., fut_imperv, by = c('GSU', 'year')) %>%
   mutate(future_imperv = ifelse(is.na(future_imperv),
                                 0,
                                 future_imperv))
