@@ -44,28 +44,28 @@ mutate(tm_2019 = curr_temp,
          year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                    "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                    "scenario_3_beaver_only"),
-                               .6,
+                               1,
                                0),
-         year == 2040 ~ .6,
-         year == 2080 ~ .6),
+         year == 2040 ~ 1,
+         year == 2080 ~ 1),
        fp_intensity_scalar = case_when(
          year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                    "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                    "scenario_3_beaver_only"),
                                ifelse(forest == 'y',
                                       .3,
-                                      .5),
+                                      1),
                                0),
          year %in% c(2040, 2080) & forest == 'y' ~ .3,
-         year %in% c(2040, 2080) & !forest == 'y' ~ .5),
+         year %in% c(2040, 2080) & !forest == 'y' ~ 1),
        beaver_intensity_scalar = case_when(
          year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                    "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                    "scenario_3_beaver_only"),
-                               .3,
+                               1,
                                0),
-         year == 2040 ~ .3,
-         year == 2080 ~ .3)) %>%
+         year == 2040 ~ 1,
+         year == 2080 ~ 1)) %>%
   left_join(., asrp_scenarios) %>%
   
   
