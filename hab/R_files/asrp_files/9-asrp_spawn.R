@@ -11,7 +11,7 @@ asrp_spawn_ss <- all_habs_spawn %>%
   filter(Habitat == "SmStream") %>%
   filter(slope < .03) %>%
   mutate(Shape_Length = ifelse(Beaver == 'y' & !forest == "y",
-                               Shape_Length * (curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
+                               Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
                                Shape_Length * curr_beaver_mult),
          eggs = ifelse(slope < .01,
                        Shape_Length * pass_tot_asrp * PR_redd_density / 1000 * fecundity,
