@@ -38,8 +38,8 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
            year == 2080 ~ tm_2080_cc_only),
          temp_intensity_scalar = case_when(
            year == 2019 ~ 0,
-           year == 2040 ~ 1,
-           year == 2080 ~ 1),
+           year == 2040 ~ .75,
+           year == 2080 ~ .75),
          wood_intensity_scalar = case_when(
            year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
@@ -138,10 +138,12 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                   1 + ((woodmult_w - 1) * rest_perc * wood_intensity_scalar),
                                   1),
          asrp_temp = ifelse(Riparian == 'y',
-                            asrp_temp_w_growth,
+                            ifelse(can_ang > 170,
+                                   asrp_temp_cc_only - (asrp_temp_cc_only - asrp_temp_w_growth) * temp_intensity_scalar,
+                                   asrp_temp_w_growth),
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
-                                   asrp_temp_w_growth)),
+                                   asrpasrp_temp_w_growth)),
          tempmult.asrp = ifelse(species == "fall_chinook",
                                 1,
                                 temp_func(asrp_temp))) %>%
