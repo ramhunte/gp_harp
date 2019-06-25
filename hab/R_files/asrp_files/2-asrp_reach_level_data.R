@@ -33,7 +33,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
     mutate(year = k)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate')),
+  filter(!(year == 2019 & Scenario_num %in% c('dev_and_climate')),
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only",
                                'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only', 'scenario_1_riparian_only',
@@ -60,7 +60,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
            year == 2040 ~ 1,
            year == 2080 ~ 1),
          wood_intensity_scalar = case_when(
-           year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
+           year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      "scenario_3_beaver_only", 'scenario_1_barrier_only', 'scenario_2_barrier_only', 
                                                      'scenario_3_barrier_only', 'scenario_1_riparian_only', 'scenario_2_riparian_only',
@@ -70,7 +70,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
            year == 2040 ~ 1,
            year == 2080 ~ 1),
          fp_intensity_scalar = case_when(
-           year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
+           year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only',
                                                      "scenario_3_beaver_only", 'scenario_1_riparian_only', 'scenario_2_riparian_only',
@@ -79,10 +79,10 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                         1,
                                         1),
                                  0),
-           year %in% c(2040, 2080) & forest == 'y' ~ .3,
-           year %in% c(2040, 2080) & !forest == 'y' ~ .5),
+           year %in% c(2040, 2080) & forest == 'y' ~ 1,
+           year %in% c(2040, 2080) & !forest == 'y' ~ 1),
          beaver_intensity_scalar = case_when(
-           year == 2019 ~ ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
+           year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      "scenario_3_beaver_only",
                                                      'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only', 
