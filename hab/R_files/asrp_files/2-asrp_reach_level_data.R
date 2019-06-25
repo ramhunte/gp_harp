@@ -79,11 +79,11 @@ mutate(tm_2019 = curr_temp,
                                                    "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                    "scenario_3_beaver_only"),
                                ifelse(perc_forest > .5,
-                                      1,
+                                      .1,
                                       1),
                                0),
          year %in% c(2040, 2080) ~ ifelse(perc_forest > .5,
-                                          1,
+                                          .1,
                                           1))) %>%
   left_join(., asrp_scenarios) %>%
   
@@ -156,6 +156,9 @@ left_join(., wood_data) %>%
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
+         asrp_temp = ifelse(Floodplain == 'y', 
+                            asrp_temp - (1 * rest_perc),
+                            asrp_temp),
          tempmult.asrp = ifelse(species == "fall_chinook",
                                 1,
                                 temp_func(asrp_temp))) %>%
