@@ -139,7 +139,6 @@ mutate(tm_2019 = curr_temp,
                'n',
                'y'),
       Riparian == 'n' ~ 'n')) %>%
-  select(rest_perc) %>%
   
   # Calculate wood and temperature multipliers based on the particular asrp scenario and year of each row ----
 
