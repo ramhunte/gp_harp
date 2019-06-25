@@ -123,7 +123,11 @@ mutate(tm_2019 = curr_temp,
       Floodplain == 'y' ~
         ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
                'n',
-               'y'),
+               ifelse(perc_forest > .5,
+                      ifelse(LW == 'y',
+                             'y',
+                             'n'),
+                      'y')),
       Floodplain == 'n' ~ 'n'),
     Beaver = case_when(
       is.na(Beaver) ~ 'n',
