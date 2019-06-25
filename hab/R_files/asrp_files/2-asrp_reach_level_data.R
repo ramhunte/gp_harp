@@ -92,15 +92,9 @@ mutate(tm_2019 = curr_temp,
     
     # Create single restoration percentage field based on whether or not forest == 'y' for each reach ----  
     
-    rest_perc_f = ifelse(is.na(rest_perc_f),
+    rest_perc = ifelse(is.na(rest_perc),
                          0,
-                         rest_perc_f),
-    rest_perc_nf = ifelse(is.na(rest_perc_nf),
-                          0,
-                          rest_perc_nf),
-    rest_perc = ifelse(forest == 'y',
-                       rest_perc_f,
-                       rest_perc_nf),
+                         rest_perc),
     
     # Fix fields joined from the asrp scenarios data frame with `NA` values ----
     
@@ -145,7 +139,7 @@ mutate(tm_2019 = curr_temp,
                'n',
                'y'),
       Riparian == 'n' ~ 'n')) %>%
-  select(-rest_perc_f, -rest_perc_nf) %>%
+  select(rest_perc) %>%
   
   # Calculate wood and temperature multipliers based on the particular asrp scenario and year of each row ----
 
