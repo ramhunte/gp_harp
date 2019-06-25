@@ -1,7 +1,7 @@
 steelhead_vars = "yes"
 
 #Spawning#
-fecundity = 3500
+fecundity = 4000
 redd_area = 5.4
 defended_redd_area = NA
 adult_per_redd = 1.3
