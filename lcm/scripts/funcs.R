@@ -329,9 +329,11 @@ if (pop == "steelhead") {
       fecund <- fecund.first
     } else {
       fecund <- fecund.first * wts.firstspawn + fecund.respawn * wts.respawn
-      }
+    }
+    # Weight egg cap by number of respawners
+    egg.cap.wt <- (egg.cap / fecund.first) * fecund
     
-    eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Hockey stick
+    eggs <- eggs.func(NOR.total, egg.total = egg.cap.wt, fecund = fecund) # Hockey stick
     pre.fry <- eggs*egg.fry.surv # Eggs --> freshly emerged fry
     # need movement here of fry prior to parr stage
     parr <- BH.func(pre.fry, p = parr.surv, c = parr.cap)# summer parr

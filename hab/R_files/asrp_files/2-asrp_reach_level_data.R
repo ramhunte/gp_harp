@@ -43,7 +43,6 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
               select(GSU, perc_forest)) %>%
   
   # Assign temperature with and without tree growth, and intensity scalars for temperature, wood, floodplains and beaver based on year ----
-
   mutate(tm_2019 = curr_temp,
          tm_2019_cc_only = curr_temp,
          asrp_temp_w_growth = case_when(
@@ -79,8 +78,8 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                         1,
                                         1),
                                  0),
-           year %in% c(2040, 2080) & forest == 'y' ~ 1,
-           year %in% c(2040, 2080) & !forest == 'y' ~ 1),
+           year %in% c(2040, 2080) & perc_forest > .5 ~ 1,
+           year %in% c(2040, 2080) & perc_forest < .5 ~ 1),
          beaver_intensity_scalar = case_when(
            year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
@@ -88,11 +87,11 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                                      'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only', 
                                                      'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
                                  ifelse(perc_forest > .5,
-                                        1,
+                                        .1,
                                         1),
                                  0),
            year %in% c(2040, 2080) ~ ifelse(perc_forest > .5,
-                                            1,
+                                            .1,
                                             1))) %>%
   left_join(., asrp_scenarios) %>%
   
@@ -132,7 +131,11 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
       Floodplain == 'y' ~
         ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
                'n',
-               'y'),
+               ifelse(perc_forest > .5,
+                      ifelse(LW == 'y',
+                             'y',
+                             'n'),
+                      'y')),
       Floodplain == 'n' ~ 'n'),
     Beaver = case_when(
       is.na(Beaver) ~ 'n',
@@ -165,6 +168,9 @@ left_join(., wood_data) %>%
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
+         asrp_temp = ifelse(Floodplain == 'y', 
+                            asrp_temp - (1 * rest_perc),
+                            asrp_temp),
          tempmult.asrp = ifelse(species == "fall_chinook",
                                 1,
                                 temp_func(asrp_temp))) %>%
