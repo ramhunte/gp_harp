@@ -180,9 +180,7 @@ left_join(., wood_data) %>%
          asrp_temp = ifelse(Floodplain == 'y', 
                             asrp_temp - (1 * rest_perc),
                             asrp_temp),
-         tempmult.asrp = ifelse(species == "fall_chinook",
-                                1,
-                                temp_func(asrp_temp))) %>%
+         tempmult.asrp = temp_func(asrp_temp)) %>%
   
   # add in future impervious area by GSU, scenario and year ----
 
