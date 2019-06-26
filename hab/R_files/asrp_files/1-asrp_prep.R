@@ -59,7 +59,7 @@ asrp_scenarios <- asrp_scenarios_char %>%
                      Riparian = as.character(Riparian),
                      primary_cr_only = as.character(primary_cr_only),
                      Scenario_num_2 = 'riparian_only') %>%
-              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = '_'))
+              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = '_')) 
 
 # Attach year and scenario num columns to habitat data sets ---- 
 
@@ -90,11 +90,10 @@ all_habs_scenario <- lapply(scenario.nums, function(h) {
     mutate(Scenario_num = h)
   }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c('dev_and_climate')),
+  filter(!(year == 2019 & Scenario_num %in% c('dev_and_climate', 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only')),
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only", 
-                               'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only', 'scenario_1_riparian_only', 
-                               'scenario_2_riparian_only', 'scenario_3_riparian_only') & 
+                               'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only') & 
              year %in% c(2040, 2080)))
 
 

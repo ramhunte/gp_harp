@@ -52,11 +52,10 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
     mutate(year = k)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c('dev_and_climate')),
+  filter(!(year == 2019 & Scenario_num %in% c('dev_and_climate', 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only')),
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only",
-                               'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only', 'scenario_1_riparian_only',
-                               'scenario_2_riparian_only', 'scenario_3_riparian_only') & 
+                               'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only') & 
              year %in% c(2040, 2080))) %>%
   left_join(., gsu_forest %>%
               select(GSU, perc_forest)) %>%
@@ -81,8 +80,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
            year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      "scenario_3_beaver_only", 'scenario_1_barrier_only', 'scenario_2_barrier_only', 
-                                                     'scenario_3_barrier_only', 'scenario_1_riparian_only', 'scenario_2_riparian_only',
-                                                     'scenario_3_riparian_only'),
+                                                     'scenario_3_barrier_only'),
                                  1,
                                  0),
            year == 2040 ~ 1,
@@ -91,8 +89,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
            year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only',
-                                                     "scenario_3_beaver_only", 'scenario_1_riparian_only', 'scenario_2_riparian_only',
-                                                     'scenario_3_riparian_only'),
+                                                     "scenario_3_beaver_only"),
                                  ifelse(perc_forest > .5,
                                         1,
                                         1),
@@ -103,8 +100,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
            year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      "scenario_3_beaver_only",
-                                                     'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only', 
-                                                     'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                                                     'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'),
                                  ifelse(perc_forest > .5,
                                         .1,
                                         1),
@@ -187,6 +183,11 @@ left_join(., wood_data) %>%
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
+         asrp_temp = ifelse(Scenario_num %in% c('scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                            ifelse(year == 2040,
+                                   asrp_temp - 1.8,
+                                   asrp_temp - 3),
+                            asrp_temp),
 
 # Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
          asrp_temp = ifelse(Floodplain == 'y', 
