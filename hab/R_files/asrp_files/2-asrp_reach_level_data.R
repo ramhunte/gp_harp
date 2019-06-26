@@ -14,6 +14,25 @@ gsu_forest <- flowline %>%
                      No),
          perc_forest = Yes / (Yes + No))
 
+# Create field that shows the percent of each GSU that is within managed forests.  In GSUs that are > 50% within managed forests the only restoration 
+# actions applied are wood placement and barrier removal.  Floodplain reconnection and beaver recovery both occur as indirect results of wood placement
+# and continued tree growth.  
+
+gsu_forest <- flowline %>% 
+  group_by(GSU, forest) %>%
+  summarize(Shape_Length = sum(Shape_Length, na.rm = T)) %>%
+  mutate(forest = ifelse(forest == 'Yes',
+                         as.character(forest),
+                         'No')) %>%
+  spread(forest, Shape_Length) %>%
+  mutate(Yes = ifelse(is.na(Yes),
+                      0,
+                      Yes),
+         No = ifelse(is.na(No),
+                     0,
+                     No),
+         perc_forest = Yes / (Yes + No))
+
 # Replicate flowline 4x, once for each scenario in `scenario.nums` ----
 
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
@@ -168,12 +187,12 @@ left_join(., wood_data) %>%
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
+
+# Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
          asrp_temp = ifelse(Floodplain == 'y', 
                             asrp_temp - (1 * rest_perc),
                             asrp_temp),
-         tempmult.asrp = ifelse(species == "fall_chinook",
-                                1,
-                                temp_func(asrp_temp))) %>%
+         tempmult.asrp = temp_func(asrp_temp)) %>%
   
   # add in future impervious area by GSU, scenario and year ----
 
