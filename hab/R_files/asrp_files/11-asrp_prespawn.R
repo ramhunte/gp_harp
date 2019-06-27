@@ -20,7 +20,8 @@ if (fishtype == "spring_chinook") {
            prespawn_temp_asrp = case_when(
              year == 2019 ~ prespawn_temp_curr, # This case is needed because of the prespawn_temp_intercept
              year == 2040 ~
-               ifelse(Scenario_num %in% c('scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+               ifelse(Scenario_num %in% c('scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only', 'scenario_1_no_climate_chg',
+                                          'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg'),
                       ifelse(!Riparian == 'y' & can_ang > 170,
                              prespawn_temp_curr,
                              prespawn_temp_curr + (temp_diff_2040 - temp_diff_2040_cc_only) * prespawn_temp_slope - prespawn_temp_intercept),
@@ -28,7 +29,8 @@ if (fishtype == "spring_chinook") {
                              prespawn_temp_curr + temp_diff_2040_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
                              prespawn_temp_curr + temp_diff_2040 * prespawn_temp_slope - prespawn_temp_intercept)),
              year == 2080 ~ 
-               ifelse(Scenario_num %in% c('scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+               ifelse(Scenario_num %in% c('scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only', 'scenario_1_no_climate_chg',
+                                          'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg'),
                       ifelse(!Riparian == 'y' & can_ang > 170,
                              prespawn_temp_curr,
                              prespawn_temp_curr + (temp_diff_2080 - temp_diff_2080_cc_only) * prespawn_temp_slope - prespawn_temp_intercept),

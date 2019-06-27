@@ -86,7 +86,11 @@ asrp_mvmt <- mvmt_data %>%
     scenario_1_riparian_only = 11,
     scenario_2_riparian_only = 11,
     scenario_3_riparian_only = 11) %>%
+  mutate(
+    scenario_1_no_climate_chg = scenario_1,
+    scenario_2_no_climate_chg = scenario_2,
+    scenario_3_no_climate_chg = scenario_3) %>%
   select(Subbasin_num, scenario_1, scenario_2, scenario_3, scenario_1_wood_only, scenario_2_wood_only, scenario_3_wood_only, scenario_1_beaver_only,
          scenario_2_beaver_only, scenario_3_beaver_only, scenario_1_fp_only, scenario_2_fp_only, scenario_3_fp_only, scenario_1_barrier_only,
          scenario_2_barrier_only, scenario_3_barrier_only, scenario_1_riparian_only, scenario_2_riparian_only, scenario_3_riparian_only) %>%
-  gather(Scenario_num, movement, scenario_1:scenario_3_riparian_only)
+  gather(Scenario_num, movement, scenario_1:scenario_3_no_climate_chg)

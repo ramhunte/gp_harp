@@ -50,7 +50,8 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
     mutate(Scenario_num = as.character(n))
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c('dev_and_climate', 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only')),
+  filter(!(year == 2019 & Scenario_num %in% c('dev_and_climate', 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only',
+                                              'scenario_1_no_climate_chg', 'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg')),
          !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
                               "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only",
                               'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only') & year %in% c(2040, 2080))) %>%

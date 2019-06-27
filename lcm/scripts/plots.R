@@ -71,27 +71,38 @@ if (sensitivity.mode == 'no') {
 # Create spawners data frame from diagnostic scenarios only
   spawners.diag <- spawners %>%  
     filter(!scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
-                                  "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action')) %>%
+                                  "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action', 'ASRP 1 - no climate change 2040', 
+                                  'ASRP 1 - no climate change 2080', 'ASRP 2 - no climate change 2040', 'ASRP 2 - no climate change 2080', 'ASRP 3 - no climate change 2040',
+                                  'ASRP 3 - no climate change 2080')) %>%
     droplevels()
   
 # Create spawners data frame from asrp scenarios only  
   spawners.asrp <- spawners %>%  
     filter(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
-                                 "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action', "Current")) %>%
-    mutate(year = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", '2040 No action'),
+                                 "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action', "Current",
+                                 'ASRP 1 - no climate change 2040', 
+                                 'ASRP 1 - no climate change 2080', 'ASRP 2 - no climate change 2040', 'ASRP 2 - no climate change 2080', 'ASRP 3 - no climate change 2040',
+                                 'ASRP 3 - no climate change 2080')) %>%
+    mutate(year = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", '2040 No action', 'ASRP 1 - no climate change 2040',
+                                               'ASRP 2 - no climate change 2040', 'ASRP 3 - no climate change 2040'),
                           'mid-century',
-                          ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080", '2080 No action'),
+                          ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080", '2080 No action', 'ASRP 1 - no climate change 2080',
+                                                       'ASRP 2 - no climate change 2080', 'ASRP 3 - no climate change 2080'),
                                  'late-century',
                                  'current')),
            scenario.label.nm = case_when(
              scenario.label %in% c("ASRP 1 - 2040", "ASRP 1 - 2080") ~ "ASRP 1",
              scenario.label %in% c("ASRP 2 - 2040", "ASRP 2 - 2080") ~ "ASRP 2",
              scenario.label %in% c("ASRP 3 - 2040", "ASRP 3 - 2080") ~ "ASRP 3",
+             scenario.label %in% c('ASRP 1 - no climate change 2040', 'ASRP 1 - no climate change 2080') ~ 'ASRP 1 no climate change',
+             scenario.label %in% c('ASRP 2 - no climate change 2040', 'ASRP 2 - no climate change 2080') ~ 'ASRP 2 no climate change',
+             scenario.label %in% c('ASRP 3 - no climate change 2040', 'ASRP 3 - no climate change 2080') ~ 'ASRP 3 no climate change',
              scenario.label %in% c("2040 No action", "2080 No action") ~ "No action",
              scenario.label %in% c("Current") ~ "Current"))
 
 # reorder factors for asrp spawners so that x axis plotting order is correct
-spawners.asrp$scenario.label.nm <- factor(spawners.asrp$scenario.label.nm, levels = c("Current", "No action", "ASRP 1", "ASRP 2", "ASRP 3"))
+spawners.asrp$scenario.label.nm <- factor(spawners.asrp$scenario.label.nm, levels = c("Current", "No action", "ASRP 1", "ASRP 2", "ASRP 3",
+                                                                                      'ASRP 1 no climate change', 'ASRP 2 no climate change', 'ASRP 3 no climate change'))
 spawners.asrp$year <- factor(spawners.asrp$year, levels = c("current", "mid-century", "late-century"))
 spawners.asrp %<>% 
   droplevels()
@@ -117,7 +128,7 @@ spawners.asrp %<>%
     left_join(spawners %>%
                 distinct(scenario.label,color) %>%
                 mutate_if(is.factor,as.character)) %>%
-    slice(c(1, 3, 5,7, 9)) %>%
+    slice(c(1, 3, 5,7, 9, 11, 13, 15)) %>%
     select(color) %>%
     unlist(use.names = FALSE)
   
@@ -152,7 +163,9 @@ spawners.asrp %<>%
            y.pos = n,
            base.spawn = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
                                n[scenario.label == '2040 No action'],
-                               n[scenario.label == '2080 No action'])) %>%
+                               ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
+                                      n[scenario.label == '2080 No action'],
+                                      n[scenario.label == 'Current']))) %>%
     filter(!scenario.label %in% c('Current', levs.obs[1]))
   
   
@@ -242,7 +255,8 @@ spawners.asrp %<>%
   ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
   
  #bar plot of asrp scenarios with stacked scenarios ----
-   print(
+  
+  print(
     ggplot() +
       theme_bw() +
       geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3')), 
@@ -260,7 +274,47 @@ spawners.asrp %<>%
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-    geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')), 
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')), 
+               aes(year, n, fill = scenario.label.nm),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+      scale_x_discrete(drop = T) +
+      scale_fill_manual(values = colors.asrp.stack, drop = F, name = "Scenario") +
+      scale_y_continuous(labels = comma, 
+                         expand = c(0, 0,.05,0)) +
+      labs(x = NULL,
+           y = paste0('Spawners'),
+           caption = paste0('Model version = ',hab.ver)
+      ) +
+      theme(axis.text.x = element_text(angle = 45,hjust = 1),
+            text = element_text( size = 16))
+  ) #close print()
+  
+  ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp_stacked','.jpg')), width = 10, height = 8, dpi = 300) 
+  
+  print(
+    ggplot() +
+      theme_bw() +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3 no climate change')) %>% droplevels(), 
+               aes(year, n, fill = scenario.label.nm),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 2 no climate change')), 
+               aes(year, n, fill = scenario.label.nm),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 1 no climate change')), 
+               aes(year, n, fill = scenario.label.nm),
+               color = 'black',
+               stat = "summary", 
+               fun.y = "mean") +
+    geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')) %>% 
+               mutate(n = ifelse(scenario.label == 'Current',
+                                 n,
+                                 n[scenario.label == 'Current'])),
              aes(year, n, fill = scenario.label.nm),
              color = 'black',
              stat = "summary", 
@@ -277,7 +331,7 @@ spawners.asrp %<>%
             text = element_text( size = 16))
   ) #close print()
   
-ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp_stacked','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
+ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp_stacked_tree_growth','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
  }
 } #close if not sensitivity mode if() statement
 
