@@ -71,9 +71,7 @@ if (sensitivity.mode == 'no') {
 # Create spawners data frame from diagnostic scenarios only
   spawners.diag <- spawners %>%  
     filter(!scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
-                                  "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action', 'ASRP 1 - no climate change 2040', 
-                                  'ASRP 1 - no climate change 2080', 'ASRP 2 - no climate change 2040', 'ASRP 2 - no climate change 2080', 'ASRP 3 - no climate change 2040',
-                                  'ASRP 3 - no climate change 2080')) %>%
+                                  "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action')) %>%
     droplevels()
   
 # Create spawners data frame from asrp scenarios only  
@@ -256,25 +254,33 @@ spawners.asrp %<>%
   
  #bar plot of asrp scenarios with stacked scenarios ----
   
+  spawners.asrp.tot <- spawners.asrp %>%
+    filter(scenario.label.nm %in% c('Current', 'No action', 'ASRP 1', 'ASRP 2', 'ASRP 3')) %>%
+    droplevels()
+  
+  spawners.asrp.tot$scenario.label.nm <- factor(spawners.asrp.tot$scenario.label.nm, levels = c("Current", "No action",'ASRP 1', 
+                                                                                                    'ASRP 2', 'ASRP 3'))
+  
+  
   print(
     ggplot() +
       theme_bw() +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3')), 
+      geom_bar(data = spawners.asrp.tot %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 2')), 
+      geom_bar(data = spawners.asrp.tot %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 2')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 1')), 
+      geom_bar(data = spawners.asrp.tot %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 1')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')), 
+      geom_bar(data = spawners.asrp.tot %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
@@ -293,25 +299,32 @@ spawners.asrp %<>%
   
   ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp_stacked','.jpg')), width = 10, height = 8, dpi = 300) 
   
+  spawners.asrp.no.cc <- spawners.asrp %>%
+    filter(scenario.label.nm %in% c('Current', 'No action', 'ASRP 1 no climate change', 'ASRP 2 no climate change', 'ASRP 3 no climate change')) %>%
+    droplevels()
+  
+  spawners.asrp.no.cc$scenario.label.nm <- factor(spawners.asrp.no.cc$scenario.label.nm, levels = c("Current", "No action",'ASRP 1 no climate change', 
+                                                                                              'ASRP 2 no climate change', 'ASRP 3 no climate change'))
+  
   print(
     ggplot() +
       theme_bw() +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3 no climate change')) %>% droplevels(), 
+      geom_bar(data = spawners.asrp.no.cc %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3 no climate change')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 2 no climate change')), 
+      geom_bar(data = spawners.asrp.no.cc %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 2 no climate change')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 1 no climate change')), 
+      geom_bar(data = spawners.asrp.no.cc %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 1 no climate change')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-    geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')) %>% 
+    geom_bar(data = spawners.asrp.no.cc %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')) %>% 
                mutate(n = ifelse(scenario.label == 'Current',
                                  n,
                                  n[scenario.label == 'Current'])),

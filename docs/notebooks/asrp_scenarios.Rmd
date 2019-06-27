@@ -65,37 +65,38 @@ There are 4,295.75 km available to coho for rearing in the entire Chehalis River
 
 ### Barriers
 
-Where `Barriers == 'y'` for a particular GSU, we model the removal of all barriers (except natural barriers) within that GSU, regardless of restoration percentage.  No barriers are removed where `Barriers == 'n'`.  The removal of barriers results in a 0.78% increase in coho spawners for scenario 1, a 1.18% increase in coho spawners for scenario 2, and a 1.28% increase in coho spawners for scenario 3.  
+Where `Barriers == 'y'` for a particular GSU, we model the removal of all barriers (except natural barriers) within that GSU, regardless of restoration percentage.  No barriers are removed where `Barriers == 'n'`.  The removal of barriers results in a 0.57% increase in coho spawners for scenario 1, a 0.82% increase in coho spawners for scenario 2, and a 0.66% increase in coho spawners for scenario 3.  
 
 ### Large wood
 
-Where `LW == 'y'` for a particular GSU, we model the effect of the addition of wood to that GSU based on the restoration percentage as well as the wood intensity scalar(.6).  The addition of large wood affects our model in the following ways:
+Where `LW == 'y'` for a particular GSU, we model the effect of the addition of wood to that GSU based on the restoration percentage.  The addition of large wood affects our model in the following ways:
 
-1. Rearing capacity:  We apply a large wood multiplier when calculating rearing capacity in large river, backwater, small stream, and floodplain side channel habitat.  We use the following equation to calculate the wood multipler for each reach: $$woodmult = woodmult_{curr} + (woodmult_{hist} - woodmult_{curr}) * rest.percent * intensity.scalar_{wood}$$
-where $woodmult_{curr}$ == 1, $rest.percent$ can be found in the asrp_scenarios spreadsheet, and $intensity.scalar_{wood}$ == .6 for all time periods.
+1. Rearing capacity:  We apply a large wood multiplier when calculating rearing capacity in large river, backwater, small stream, and floodplain side channel habitat.  We use the following equation to calculate the wood multipler for each reach: $$woodmult = woodmult_{curr} + (woodmult_{hist} - woodmult_{curr}) * rest.percent$$
+where $woodmult_{curr}$ == 1, $rest.percent$ can be found in the asrp_scenarios spreadsheet.
 2. Rearing productivity:  
   + For large river habitat we multiply productivity by the wood multiplier described in section `1. Rearing capacity`
-  + For small stream and floodplain habitat we have different low wood and high wood productivities.  Wood restoration within a GSU brings productivity up from the low wood productivity using the following equation: $$productivity = productivity_{low.wood} + (productivity_{high.wood} - productivity_{low.wood}) * rest.percent * intensity.scalar_{wood}$$
+  + For small stream and floodplain habitat we have different low wood and high wood productivities.  Wood restoration within a GSU brings productivity up from the low wood productivity using the following equation: $$productivity = productivity_{low.wood} + (productivity_{high.wood} - productivity_{low.wood}) * rest.percent$$
 3. Pool and riffle percentage:  Under high wood conditions we use the `reference`, or `historical` pool and riffle percentages.  Under low wood conditions, pool and riffle ratios are based on the landcover of a particular reach.  For the asrp scenarios we use the following equation to calculate pool and riffle percentages:
-$$pool.perc = pool.perc_{low.wood} + (pool.perc_{high.wood} - pool.perc_{low.wood}) * rest.percent * intensity.scalar_{wood}$$ $$riffle.perc = 1 - pool.perc$$
+$$pool.perc = pool.perc_{low.wood} + (pool.perc_{high.wood} - pool.perc_{low.wood}) * rest.percent$$ $$riffle.perc = 1 - pool.perc$$
 4. Spawning: 
-  + For small stream habitat we have separate `forested` and `non-forested` redd densities in reaches with slope > 1%. Under high wood scenarios we use the `forested` redd densities whereas under the low wood scenarios we only use the `forested` redd densities where the landcover is forest, and we use the `non-forested` redd densities in all other reaches. We use the following equation to calculate egg capacity under the asrp scenarios: $$egg.capacity = reach.length_{meters} * passage.percent * ((redd.density_{forested} - redd.density_{non-forested}) * rest.percent * intensity.scalar_{wood}) / 1000 * fecundity$$ 
-  + For large river habitat we apply a wood scalar when calculating spawning capacity in high wood scenarios.  Large river spawning capcaity in the asrp scenarios is calculated using the following equation: $$area_{spawning} * passage.percent / redd.area * fecundity * (1 + (1 - spawning.mult_{high.wood}) * rest.perc * intensity.scalar_{wood})$$
+  + For small stream habitat we have separate `forested` and `non-forested` redd densities in reaches with slope > 1%. Under high wood scenarios we use the `forested` redd densities whereas under the low wood scenarios we only use the `forested` redd densities where the landcover is forest, and we use the `non-forested` redd densities in all other reaches. We use the following equation to calculate egg capacity under the asrp scenarios: $$egg.capacity = reach.length_{meters} * passage.percent * ((redd.density_{forested} - redd.density_{non-forested}) * rest.percent) / 1000 * fecundity$$ 
+  + For large river habitat we apply a wood scalar when calculating spawning capacity in high wood scenarios.  Large river spawning capcaity in the asrp scenarios is calculated using the following equation: $$area_{spawning} * passage.percent / redd.area * fecundity * (1 + (1 - spawning.mult_{high.wood}) * rest.perc)$$
 
-The addition of large wood results in a 0.94% increase in coho spawners for scenario 1, a 1.16% increase in coho spawners for scenario 2, and a 1.35% increase in coho spawners for scenario 3.
+The addition of large wood results in a 1.69% increase in coho spawners for scenario 1, a 2.05% increase in coho spawners for scenario 2, and a 2.39% increase in coho spawners for scenario 3.
 
 ### Floodplain
 
-Where `Floodplain == 'y'` for a particular GSU, we model the effect of floodplain restoration in that GSU based on the restoration percentage as well as the floodplain intensity scalar (.3 in managed forests, .5 outside of managed forests).  The restoration of floodplain habitat affects our model in the following ways: 
+Where `Floodplain == 'y'` for a particular GSU, we model the effect of floodplain restoration in that GSU based on the restoration percentage.  The restoration of floodplain habitat affects our model in the following ways: 
 
-1. Rearing area: $Area = Area_{current} + (Area_{historical} - Area_{current}) * rest.percent * intensity.scalar_{floodplain}$
-2. side channel spawning length: $length = length_{current} + (length_{historical} - length_{current}) * rest.percent * intensity.scalar_{floodplain}$
+1. Rearing area: $Area = Area_{current} + (Area_{historical} - Area_{current}) * rest.percent$
+2. side channel spawning length: $length = length_{current} + (length_{historical} - length_{current}) * rest.percent$
+3. Temperature: Where `Floodplain == 'y'` we reduce the temperature of reaches within that GSU using the following equation : $temp =  old.temp - 1 * rest.perc$
 
-Restoration of floodplain habitat results in a 3.18% increase in coho spawners for scenario 1, a  3.48% increase in coho spawners for scenario 2, and a 4.62% increase in coho spawners for scenario 3. 
+Restoration of floodplain habitat results in a 4.17% increase in coho spawners for scenario 1, a  4.36% increase in coho spawners for scenario 2, and a 5.92% increase in coho spawners for scenario 3. 
 
 ### Beaver
 
-Where `Beaver == 'y'` for a particular GSU, we model the effect of beaver pond additions in that GSU based on the restoration percentage as well as the beaver intensity scalar (.3).  The restoration of beaver ponds affects our model in the following ways:
+Where `Beaver == 'y'` for a particular GSU, we model the effect of beaver pond additions in that GSU based on the restoration percentage as well as the beaver intensity scalar (0.1 where managed forests account for > 50% of a GSU, 1 elsewhere).  The restoration of beaver ponds affects our model in the following ways:
 
 1. Rearing area: We model beaver pond area using an estimate of .3 $m^2$ of beaver pond per m of small stream at present, and 3 $m^2$ of beaver pond per m of small stream historically.  Additionally, we assume that 98.6% of small stream length is currently pool/riffle habitat, whereas 1.4% of small stream length is currently beaver pond habitat.  Historically, we assume that 85% of small stream length was pool/riffle habitat, whereas 15% of small stream length was beaver pond habitat.  Where  `Beaver == 'y'` we calculate pool, riffle, and beaver pond habitat area using the following equations: 
 $$Area_{pool} = Area_{reach} * pool.perc * (percent.pool.riffle_{current} - ((percent.pool.riffle_{curr} - percent.pool.riffle_{historical}) * rest.percent * intensity.scalar_{beaver}))$$
@@ -104,8 +105,8 @@ $$Area_{beaver.pond} = (length_{reach} * pond.area.per.m_{current} / 10000) + (l
 2. Spawning:  We do not model spawning in beaver ponds therefore the addition of beaver ponds results in a decrease in egg capacity.  Where `Beaver == 'y'` we use the following equation to calculate the length of available spawning habitat in small streams:
 $$length = length_{reach} * percent.pool.riffle_{current} - ((percent.pool.riffle_{current} - percent.pool.riffle_{historical}) * rest.percent * intensity.scalar_beaver)$$
 
-Restoration of beaver pond habitat results in a 0.51% increase in spawners for scenario 1, a 0.67% increase in spawners for scenario 2 and a 0.93% increase in spawners for scenario 3.
+Restoration of beaver pond habitat results in a 0.18% increase in spawners for scenario 1, a 0.28% increase in spawners for scenario 2 and a 0.32% increase in spawners for scenario 3.
 
 ### Riparian
 
-Where `Riparian == 'y'` for a particular subbasin, we model tree planting and growth for the entire GSU.  If `Riparian == 'n'` we model tree growth in all reaches where there are existing trees (canopy opening angle is less than 170°).  Where no trees currently exist we do not model any planting or growth of trees.
+Where `Riparian == 'y'` for a particular subbasin, we model tree planting and growth for the entire GSU.  If `Riparian == 'n'` we model tree growth in all reaches where there are existing trees (canopy opening angle is less than 170°), and apply a 75% effectiveness scalar.  Where no trees currently exist we do not model any planting or growth of trees.  Riparian restoration results in a 4.53% increase in spawners by mid century, and a 5.88% increase in spawners by late century for all three scenarios.
