@@ -238,34 +238,16 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
     # Natal fry - All basins
-    natal.fry <- BH.func(S = pre.fry, p = weekly.surv, c = cap * 2) # Density dependent survival in fresh (first week after fry), 3x capacity
+    natal.fry <- BH.func(S = pre.fry, p = weekly.surv^1, c = cap * 3) # Density dependent survival in fresh (first week after fry), 3x capacity
     
     # Non natal fry 
-    # Upper basin fry migrate to mainstem
-    # GH and MS migrate straight to bay (fry migrants)
-    non.natal.fry <- (pre.fry * weekly.surv) - natal.fry # Density dependent slice to create non natal fry
-    non.natal.fry.to.ms <- c(non.natal.fry[to.ms.reaches], non.natal.fry[to.bay.reaches] * 0)
-    non.natal.fry.to.bay.grp1 <- c(non.natal.fry[to.ms.reaches] * 0 , non.natal.fry[to.bay.reaches]) # Group 1
+    fry.migrants <- (pre.fry * weekly.surv) - natal.fry # Density dependent slice to create non natal fry
     
     # Natal sub yearlings - all basins
-    natal.sub.yr.grp3 <- BH.func(S = natal.fry, p = weekly.surv^7, c = cap * 2) # Group 3
-    
-    # Non natal subyearlings - only upper watershed fish that migrated to ms reaches
-    non.natal.fry.dist <- distribute.fish(non.natal.fry.to.ms, move.matrix) # Distribute non-natal fry
-    
-    # Run non-natal fry through B-H to get subyearlings
-    non.natal.sub.yr.grp5 <- BH.func(S = non.natal.fry.dist[2,], p = weekly.surv^7, c = cap * 2 - natal.sub.yr.grp3) # Group 5
-    non.natal.sub.yr.grp5.redist <- reallocate.fish(non.natal.sub.yr.grp5, redist.matrix = non.natal.fry.dist[return.rows,])[2, ] # Re-distribute non-natal subyearlings
-    
-    # Fry migrants
-    natal.fry.migrants.grp2 <- (natal.fry * weekly.surv^1) - natal.sub.yr.grp3 # Group 2
-    
-    non.natal.fry.migrants.grp4 <- (non.natal.fry.dist[2,] * weekly.surv^1) - non.natal.sub.yr.grp5 # Group 4
-    non.natal.fry.migrants.grp4.redist <- reallocate.fish(non.natal.fry.migrants.grp4, redist.matrix = non.natal.fry.dist[return.rows, ])[2, ] # Re-distribute non-natal subyearlings
-   
-    # Sum all fry migrants and subyearlings
-    fry.migrants <-  non.natal.fry.to.bay.grp1 + non.natal.fry.migrants.grp4.redist + natal.fry.migrants.grp2
-    sub.yr <- natal.sub.yr.grp3 + non.natal.sub.yr.grp5.redist
+    fry.distributed <- distribute.fish(fish.in = natal.fry, move.matrix = move.matrix.w.natal)
+    sub.yr.ms <- BH.func(S = fry.distributed['after_movement', ], p = weekly.surv^7, c = cap * 3)
+    sub.yr <- reallocate.fish(fish.in = sub.yr.ms,
+                              redist.matrix = fry.distributed[return.rows, ])['after_movement', ]
     
     # Downstream migration for subyearlings (4, 2 or 0 weeks)
     # 3 weeks of survival with june temperatures, the 4 week fish get one week of survival without temperature
@@ -273,10 +255,12 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     sub.yr.ds <- sub.yr * 
                  colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks * # average survival without temperature
                  colSums(move.matrix * weekly.surv.temp[ms.reaches])^ds_weeks_june # with temperature
+    #sub.yr.ds['Satsop River'] <- sub.yr['Satsop River'] * weekly.surv['Satsop River']^2
     
     # Downstream migration for fry (2, 1, 0 weeks)
     # Both weeks are non-june weekly survival, average of all MS reaches DS of natal basin
-    fry.migrants.ds <- fry.migrants * colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks
+    fry.migrants.ds <- fry.migrants * colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks_fry
+    #fry.migrants.ds[to.bay.reaches] <- fry.migrants[to.bay.reaches] * weekly.surv[to.bay.reaches]^1
     
     # Apply bay survival (ds migration, delta, bay, nearshore productivity)
     fry.migrants.bay <- fry.migrants.ds * bay.fry.surv
@@ -295,15 +279,14 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     
     mat.new['eggs', ] <- eggs
     mat.new['pre.fry', ] <- pre.fry 
-    mat.new['natal.fry', ] <- natal.fry
-    mat.new['non.natal.fry', ] <- non.natal.fry
+    #mat.new['natal.fry', ] <- natal.fry
+    #mat.new['non.natal.fry', ] <- non.natal.fry
     mat.new['fry.migrants', ] <- fry.migrants
-    mat.new['fry.migrants.ms', ] <- non.natal.fry.migrants.grp4
-    mat.new['non.natal.sub.yr', ] <- non.natal.sub.yr.grp5
-    mat.new['smolts.fry.migrants', ] <- fry.migrants
-    mat.new['smolts.non.natal.sub.yr', ] <- non.natal.sub.yr.grp5.redist
-    mat.new['smolts.natal.sub.yr', ] <- natal.sub.yr.grp3
-    
+    mat.new['fry.migrants.ds', ] <- fry.migrants.ds
+    mat.new['fry.migrants.bay', ] <- fry.migrants.bay
+    mat.new['sub.yr', ] <- sub.yr
+    mat.new['sub.yr.ds', ] <- sub.yr.ds
+    mat.new['sub.yr.bay', ] <- sub.yr.bay
     
     N <- mat.new
     N

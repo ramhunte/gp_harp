@@ -260,17 +260,16 @@ for (n in 1:length(scenario.file)) {
   
   if (pop == "fall.chinook" | pop == "spring.chinook") {
     # % fry migrant smolts
-    SAR.ratio <- sum(N['smolts.fry.migrants',]) / 
-      sum(N['smolts.fry.migrants',], 
-          N['smolts.non.natal.sub.yr',], 
-          N['smolts.natal.sub.yr',]
+    SAR.ratio <- sum(N['fry.migrants.ds',]) / 
+      sum(N['fry.migrants.ds',], 
+          N['sub.yr.ds',]
           ) 
     
     # % fry migrants in returning adults
-    ratio <- sum(N['smolts.fry.migrants', ] * bay.fry.surv) /
-      sum(N['smolts.fry.migrants', ] * bay.fry.surv,
-          N['smolts.non.natal.sub.yr', ] * bay.parr.surv,
-          N['smolts.natal.sub.yr', ] * bay.parr.surv)
+    ratio <- sum(N['fry.migrants.bay',]) / 
+      sum(N['fry.migrants.bay',], 
+          N['sub.yr.bay',]
+      ) 
     
     SAR.fry <- so.weighted * bay.fry.surv
     SAR.parr <- so.weighted * bay.parr.surv
@@ -314,7 +313,7 @@ if(sensitivity.mode == 'no'){
   if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smolts')}
   
   if (pop == "fall.chinook" | pop == "spring.chinook") {
-    summary.stages <- c('spawners','smolts.fry.migrants','smolts.non.natal.sub.yr','smolts.natal.sub.yr')
+    summary.stages <- c('spawners','fry.migrants.ds','sub.yr.ds')
   }
   
   if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}

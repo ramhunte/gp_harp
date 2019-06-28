@@ -93,14 +93,12 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
                   'spawners',  # Above here is needed for spawner matrix
                   'eggs', # Here and below are stored for diagnostics
                   'pre.fry',
-                  'natal.fry',
-                  'non.natal.fry',
                   'fry.migrants',
-                  'fry.migrants.ms',
-                  'non.natal.sub.yr',
-                  'smolts.fry.migrants',
-                  'smolts.non.natal.sub.yr',
-                  'smolts.natal.sub.yr'
+                  'fry.migrants.ds',
+                  'fry.migrants.bay',
+                  'sub.yr',
+                  'sub.yr.ds',
+                  'sub.yr.bay'
   )
   
   
@@ -264,6 +262,16 @@ move.matrix[10:length(ms.reaches), to.lowms5] <- 1
 move.matrix[11:length(ms.reaches), to.lowms6] <- 1
 move.matrix[12:length(ms.reaches), to.lowms7] <- 1
 
+
+# Create the move matrix, but where percents expect all ms reaches AND the natal reach
+move.matrix.w.natal <- t(apply(move.matrix, 1, function(x)
+  x / (colSums(move.matrix != 0) + 1)
+  )
+  ) # Divide each 1 in the move matrix by the count of ms reaches per column + 1 for natal basin
+move.matrix.w.natal[is.nan(move.matrix.w.natal)] <- 0
+
+
+# Create a move matrix where fish only move to the MS
 move.matrix <-
   t(apply(move.matrix, 1, function(x)
     x / colSums(move.matrix != 0)
@@ -325,7 +333,8 @@ if (pop %in% c('spring.chinook', 'fall.chinook')) {
   ds_weeks_june[c(1:18, 52:56)] <- 3 # Upper basins are Skookumchuck River and upstream
   ds_weeks_june[c(19:39, 57:62)] <- 2 # Mid basins are DS of Skook to LMS 6
   
-  # Fry migrants get 2 weeks or 1 week of non-june temperature during downstream migration (0 weeks for GH tribs)
+  # Fry migrants get 3 weeks or 2 weeks of non-june temperature during downstream migration (0 weeks for GH tribs)
+  # Lower basin fish get 1 extra week of natal basin mortality for DS migration
   ds_weeks_fry <- rep(0,length(reach.names))
   ds_weeks_fry[c(1:18, 52:56)] <- 2 # Upper basins are Skookumchuck River and upstream
   ds_weeks_fry[c(19:39, 57:62)] <- 1 # Mid basins are DS of Skook to LMS 6
