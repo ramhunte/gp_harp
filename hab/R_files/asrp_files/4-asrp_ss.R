@@ -32,7 +32,7 @@ asrp_ss <- all_habs_scenario %>%
                             pool.perc + ((pool.perc.ref - pool.perc) * rest_perc * wood_intensity_scalar),
                             pool.perc),
     beaver_mult_asrp = ifelse(Beaver == "y",
-                              curr_beaver_mult - ((1 - hist_beaver_mult) * rest_perc * beaver_intensity_scalar),
+                              curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar),
                               curr_beaver_mult),
     
     # Begin habitat area calculations ----
@@ -77,7 +77,7 @@ if (fishtype %in% c("spring_chinook", "fall_chinook")) {
 }
 
 asrp_ss_mvmt <- asrp_ss %>%
-  filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp"))
+  filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))
 
 asrp_ss %<>%
-  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp"))
+  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))

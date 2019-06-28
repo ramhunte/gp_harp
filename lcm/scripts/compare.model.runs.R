@@ -57,10 +57,10 @@ df <- path_to_edr %>%
 
 labs_df <- df %>%
   group_by(scenario, version) %>%
-  summarize(n = prettyNum(sum(total.run), big.mark = ','),
-            max_edr = max(total.run)) %>%
+  summarize(n = prettyNum(sum(total.run, na.rm = T), big.mark = ','),
+            max_edr = max(total.run, na.rm = T)) %>%
   ungroup %>%
-  mutate(max = max(max_edr),
+  mutate(max = max(max_edr, na.rm = T),
          y = ifelse(version == branch, max + max * .15, max)) %>%
   bind_rows(df %>%
               group_by(scenario,version) %>%
