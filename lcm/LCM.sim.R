@@ -334,7 +334,6 @@ if(sensitivity.mode == 'no'){
   
   csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
   
-  write.csv(abundance_by_subbasin, file.path(outputs_lcm, csv.name))
 } # end if sensitivity.mode
 
 # Call bar, box or sensitivity plots
@@ -358,10 +357,10 @@ source("lcm/scripts/plots.R")
 # } 
 
 
-# Call S-R curve plots (currently only working for coho 3/19/2019)
-if (sensitivity.mode == 'no' & pop != 'steelhead' & run_sr_curves == 'yes') {
-  print('Creating spawner recruit (P and C) values and plots')
-  source('lcm/scripts/spawner.recruit.curves.R')
+# Call S-R curve plots
+if (sensitivity.mode == 'no') {
+  print('Creating spawner recruit (Pn and Cn) values')
+  source('lcm/scripts/calculate.Pn.Cn.R')
 }
 
 
