@@ -141,7 +141,7 @@ if (pop == 'coho') {
 
 if (pop == "fall.chinook" | pop == "spring.chinook") {
   prod.stages <- c('ocean1', 'ocean2', 'ocean3', 'ocean4', 'ocean5', 'spawners', 'n.init', 
-                   'smolts.fry.migrants', 'smolts.non.natal.sub.yr', 'smolts.natal.sub.yr')
+                   'fry.migrants.bay', 'sub.yr.bay')
 }
 
 smolt.stages <- grep('smolt', prod.stages, value = T)

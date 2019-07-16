@@ -1,0 +1,570 @@
+---
+title: "Exploring the 'flip'"
+output: 
+    html_notebook:
+      toc: yes
+      toc_float: true
+      collapsed: false
+---
+
+In April, the spring chinook results were ~600 fish in the Newaukum and ~50 in Skookumchuck. As the observed population in Skookumchuck is ~700, we decided to remove the roads above the Skookumchuck dam, which would improve fine sediment and egg to fry survival. After doing this, the egg to fry survival in Skoookumchuck went from ~0.2 to ~0.3, while all parameters in the Newaukum stayed the same. The final spawner results, however, flipped, so that Skookumchuck had ~700 fish and the Newaukum had ~25.
+
+This notebook explores the mathematics behind the flip. 
+
+
+# Setup the lifecycle
+We can explore this using a very simple 2 stage lifecycle
+
+1. Spawner to fry -- density independent
+2. Fry to spawner -- density dependent
+3. Smolt to adult -- density independent
+
+As the SAR will not impact the ratio of the two populations, we can probably leave it out, but for realism I am leaving it in for now. 
+
+```{r}
+# Lifecycle
+lc <- function(spawners) {
+  
+  # Spawner to fry
+  fry <- spawners * sp_to_fry
+  
+  # Assume all fry move to MS
+  fry_comb <- sum(fry) # total number of movers
+  fry_prop <- fry/fry_comb # proportion of total from each basin
+  
+  # Fry to smolt -- BH in shared MS basin
+  smolts <- (fry_comb  * p_fry_to_smolt) / (1 + (p_fry_to_smolt / c_smolt) * fry_comb)
+  
+  # fish in ms reallocated to natal basin
+  smolts_reallocated <- smolts * fry_prop 
+  
+  # SAR
+  adults <- smolts_reallocated * sar
+  
+  return(adults)
+}
+```
+
+
+# Run the lifecycle
+
+Set up some general initial conditions
+
+```{r}
+spawners_init <- c(1000,1000) # initial pop
+sp_to_fry <- c(2900, 3000) # spawner to fry, in two natal basins
+p_fry_to_smolt <- 0.012 # p, fry to smolt, in shared MS basin
+c_smolt <- 1000 # c, fry to smolt, in shared MS basin
+sar <- 0.15 # SAR
+```
+
+Run the model across 100 generations
+
+```{r}
+spawners <- spawners_init
+for (i in 1:100) {
+  spawners <- lc(spawners)
+}
+
+spawners
+```
+
+Percent of the total population represented by subbasin 2 after 100 years.
+```{r}
+spawners[2]/sum(spawners)
+```
+
+## Modify mainstem capacity
+
+Try running it with 100x capacity in the mainstem
+```{r}
+c_smolt <- 1000 * 100
+
+spawners <- spawners_init
+for (i in 1:100) {
+  spawners <- lc(spawners)
+}
+
+spawners[2]/sum(spawners)
+```
+
+## Modify mainstem productivity
+
+Try running it with 10x productivity in the mainstem
+```{r}
+p_fry_to_smolt <- 0.012 * 10
+
+spawners <- spawners_init
+for (i in 1:100) {
+  spawners <- lc(spawners)
+}
+
+spawners[2]/sum(spawners)
+```
+
+## Modify SAR
+
+Try changing the SAR by 3x
+
+```{r}
+sar <- 0.15 * 3
+
+spawners <- spawners_init
+for (i in 1:100) {
+  spawners <- lc(spawners)
+}
+
+spawners[2]/sum(spawners)
+```
+
+## Modify the initial population
+
+Try changing the initial pop. Change it from 1000 to 10. 
+
+```{r}
+spawners_init <- c(10,10)
+
+spawners <- spawners_init
+for (i in 1:100) {
+  spawners <- lc(spawners)
+}
+
+spawners[2]/sum(spawners)
+```
+
+## Modify spawner to fry in Subbasin #1
+
+Try changing the spawner to fry survival in Subbasin #1 by 2%. This is the only parameter which is subbasin specific. 
+
+```{r}
+sp_to_fry <- c(2900, 3000) * c(1.02, 1)
+
+spawners <- spawners_init
+for (i in 1:100) {
+  spawners <- lc(spawners)
+}
+
+spawners[2]/sum(spawners)
+```
+
+
+# Simpliest comingling example
+Lets examine the simpliest possible example of comingling at a density dependent step. This will be a two stage lifecycle, with a density independent adult to juvenile stage, and a density dependent juvenile to adult stage. Two populations will have seperate adults to juvenile parameters, but will share the juvenile to adult productivity and capacity. 
+
+
+## Setup the lifecycle
+
+
+
+```{r}
+
+lc_simple <- function(
+  adults_init = c(500, 500),
+  p_a2j = c(2900, 3000),
+  p_j2a = 0.012,
+  c_adult = 1000,
+  years = 100) {
+  
+  n <- matrix(NA, 
+            nrow = length(adults_init), 
+            ncol = years,
+            dimnames = list(paste0('basin',1:length(adults_init)), 1:years)
+              )
+  
+  adults <- adults_init
+  
+  for (y in 1:length(adults_init)) {
+    n[y, 1] <- adults[y]
+  }
+  
+  for (i in 2:100) {
+    
+    # Adult to juvenile stage - DI
+    juv <- adults * p_a2j
+    
+    # Mix juveniles together
+    juv_comb <- sum(juv) # total number of movers
+    juv_prop <- juv/juv_comb # proportion of total from each basin
+    
+    # Juvenile to adult stage - BH
+    adults_comb <- (juv_comb  * p_j2a) / (1 + (p_j2a / c_adult) * juv_comb)
+    
+    adults <- adults_comb * juv_prop
+    
+    for (y in 1:length(adults_init)) {
+      n[y, i] <- adults[y]
+    }
+  }  
+  
+  return(n)
+}
+```
+
+## Two basins -- p = 2900, 3000
+
+
+
+```{r}
+library(tidyverse)
+
+lc_simple() %>%
+  as.data.frame.table() %>%
+  mutate(Var2 = as.numeric(Var2)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(Var2, Freq, color = Var1))
+
+```
+
+## Two basins -- p = 2000, 3000
+
+```{r}
+
+lc_simple(p_a2j = c(2000, 3000)) %>%
+  as.data.frame.table() %>%
+  mutate(Var2 = as.numeric(Var2)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(Var2, Freq, color = Var1))
+
+```
+
+## Two basins -- p = 2990, 3000
+
+```{r}
+
+lc_simple(p_a2j = c(2990, 3000)) %>%
+  as.data.frame.table() %>%
+  mutate(Var2 = as.numeric(Var2)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(Var2, Freq, color = Var1))
+
+```
+
+## Three basins -- p = 2800, 2900, 3000
+
+```{r}
+
+lc_simple(adults_init = rep(500, 3),
+          p_a2j = c(2800, 2900, 3000)) %>%
+  as.data.frame.table() %>%
+  mutate(Var2 = as.numeric(Var2)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(Var2, Freq, color = Var1))
+
+```
+
+## Ten basins -- p = 2100 to 3000, by 100
+
+```{r}
+
+lc_simple(adults_init = rep(500, 10),
+          p_a2j = seq(2100,3000,100)) %>%
+  as.data.frame.table() %>%
+  mutate(Var2 = as.numeric(Var2)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(Var2, Freq, color = Var1))
+
+```
+
+## Fifty basins -- p = 2020 to 3000, by 20
+
+```{r}
+
+lc_simple(adults_init = rep(500, 50),
+          p_a2j = seq(2020,3000,20)) %>%
+  as.data.frame.table() %>%
+  mutate(Var2 = as.numeric(Var2)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(Var2, Freq, color = Var1)) +
+  guides(color = FALSE)
+
+```
+
+# Add in natal rearing fish
+
+Perhaps we are not seeing any stablization because we don't have natal rearing fish to help compensate?
+
+```{r}
+lc_natal <- function(
+  adults_init = c(500, 500),
+  p_a2j = c(2900, 3000),
+  p_j2a = 0.012,
+  c_adult = 1000,
+  years = 100,
+  prop_ds = 0.5) {
+  
+  n <- array(
+    NA,
+    c(
+      years, # 100 years
+      3, # natal and non natal
+      length(adults_init) # number of basins
+    ),
+    dimnames = list(1:years, c('natal','non-natal','total'), paste0('basin',1:length(adults_init)))
+  ) 
+  
+  adults <- adults_init
+  
+  for (y in 1:length(adults_init)) {
+    n[1,'natal',y] <- adults[y]
+  }
+  
+  for (i in 2:100) {
+    
+    # Adult to juvenile stage - DI
+    juv <- adults * p_a2j
+    
+    # Mix juveniles together
+    movers <- juv * prop_ds # number of fish moving down to MS per subbasin
+    movers_comb <- sum(movers) # total number of movers
+    movers_prop <- movers/movers_comb # proportion of total from each basin
+    
+    natal <- juv - movers
+    
+    juv_comb <- c(natal, movers_comb)
+    
+    # Juvenile to adult stage - BH
+    adults_comb <- (juv_comb  * p_j2a) / (1 + (p_j2a / c_adult) * juv_comb)
+    
+    redist <- adults_comb[length(juv_comb)] * movers_prop
+    adults <- adults_comb[-length(juv_comb)] + redist
+    
+    for (y in 1:length(adults_comb[-length(juv_comb)])) {
+      n[i, 'natal' ,y] <- adults_comb[y]
+      n[i, 'non-natal' ,y] <- redist[y]
+      n[i, 'total' ,y] <- adults[y]
+      
+    }
+  }  
+  
+  return(n)
+}
+```
+
+
+## Two basins -- p = 2900 and 3000, 50% natal
+
+```{r}
+lc_natal() %>%
+  as.data.frame.table() %>%
+  mutate(iteration = as.numeric(Var1)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(iteration, Freq, color = Var3)) +
+  facet_wrap(~Var2, scales = 'free_y')
+```
+
+## Two basins -- p = 2000 and 3000, 50% natal
+
+```{r}
+lc_natal(p_a2j = c(2000,3000)) %>%
+  as.data.frame.table() %>%
+  mutate(iteration = as.numeric(Var1)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(iteration, Freq, color = Var3)) +
+  facet_wrap(~Var2, scales = 'free_y')
+```
+
+
+## 3 basins -- p = 2000, 2500, 3000, 50% natal
+
+```{r}
+lc_natal(adults_init = rep(500, 3),
+          p_a2j = c(2000, 2500, 3000)) %>%
+  as.data.frame.table() %>%
+  mutate(iteration = as.numeric(Var1)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(iteration, Freq, color = Var3)) +
+  facet_wrap(~Var2, scales = 'free_y')
+```
+
+## 10 basins -- p = 2100 to 3000, 50% natal
+
+```{r}
+lc_natal(adults_init = rep(500, 10),
+          p_a2j = seq(2100,3000,100)) %>%
+  as.data.frame.table() %>%
+  mutate(iteration = as.numeric(Var1)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(iteration, Freq, color = Var3)) +
+  facet_wrap(~Var2, scales = 'free_y')
+```
+
+
+## 3 basins -- p = 2000, 2500, 3000, 10% natal
+
+```{r}
+lc_natal(adults_init = rep(500, 3),
+         p_a2j = c(2000, 2500, 3000),
+         prop_ds = .9) %>%
+  as.data.frame.table() %>%
+  mutate(iteration = as.numeric(Var1)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(iteration, Freq, color = Var3)) +
+  facet_wrap(~Var2, scales = 'free_y')
+```
+
+
+
+## 3 basins -- p = 2000, 2500, 3000, 5% natal
+
+```{r}
+lc_natal(adults_init = rep(500, 3),
+         p_a2j = c(2000, 2500, 3000),
+         prop_ds = 0.01) %>%
+  as.data.frame.table() %>%
+  mutate(iteration = as.numeric(Var1)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(iteration, Freq, color = Var3)) +
+  facet_wrap(~Var2, scales = 'free_y')
+```
+
+
+# Lifecycle with density dependence before comingling
+On 6/10 at a small group meeting, Larry showed his simulator which appeared to stabilize with two populations parameterized differently. The above work I did showed that any difference in those two populations created a situation where one would go extinct. Perhaps Larry's example was stabilizing because of density dependence before the comingling step? 
+
+
+## Setup the lifecycle
+
+
+```{r}
+
+lc_dd <- function(
+  adults_init = c(500, 500),
+  p_a2j = c(1000,900),
+  c_j = c(1e5, 1e5),
+  p_j2a = 0.012,
+  c_adult = 1000,
+  years = 3000) {
+  
+  n <- matrix(NA, 
+            nrow = length(adults_init), 
+            ncol = years,
+            dimnames = list(paste0('basin',1:length(adults_init)), 1:years)
+              )
+  
+  adults <- adults_init
+  
+  for (y in 1:length(adults_init)) {
+    n[y, 1] <- adults[y]
+  }
+  
+  for (i in 2:years) {
+    
+    # Adult to juvenile stage - DI
+    juv <- (adults  * p_a2j) / (1 + (p_a2j / c_j) * adults)
+    
+    # Mix juveniles together
+    juv_comb <- sum(juv) # total number of movers
+    juv_prop <- juv/juv_comb # proportion of total from each basin
+    
+    # Juvenile to adult stage - BH
+    adults_comb <- (juv_comb  * p_j2a) / (1 + (p_j2a / c_adult) * juv_comb)
+    
+    adults <- adults_comb * juv_prop
+    
+    for (y in 1:length(adults_init)) {
+      n[y, i] <- adults[y]
+    }
+  }  
+  
+  return(
+    n %>%
+      as.data.frame.table() %>%
+      mutate(Var2 = as.numeric(Var2)) %>%
+      ggplot +
+      theme_bw() +
+      geom_line(aes(Var2, Freq, color = Var1))
+         )
+}
+
+```
+
+
+```{r}
+lc_dd(p_a2j = c(1000,1000),
+      c_j = c(3e7, 1e7)) +
+  lims(y = c(0,1000))
+```
+
+
+# Add in natal rearing fish with density dependent movers
+
+
+```{r}
+lc_ddmovers <- function(
+  adults_init = c(500, 500),
+  p_a2j = c(650, 800),
+  c_j = c(70000, 40000),
+  p_j2a = 0.012,
+  c_adult = c(70000, 40000, 150000),
+  years = 100,
+  prop_ds = 0.5) {
+  
+  n <- array(
+    NA,
+    c(
+      years, # 100 years
+      3, # natal and non natal
+      length(adults_init) # number of basins
+    ),
+    dimnames = list(1:years, c('natal','non-natal','total'), paste0('basin',1:length(adults_init)))
+  ) 
+  
+  adults <- adults_init
+  
+  for (y in 1:length(adults_init)) {
+    n[1,'natal',y] <- adults[y]
+  }
+  
+  for (i in 2:100) {
+    
+    # Adult to juvenile stage - DI
+    juv <- (adults * p_a2j)/(1 + (p_a2j/c_j)*adults)
+    
+    # Mix juveniles together
+    movers <- (adults * p_a2j) - juv # DD movers,number of fish moving down to MS per subbasin
+    movers_comb <- sum(movers) # total number of movers
+    movers_prop <- movers/movers_comb # proportion of total from each basin
+    
+    juv_comb <- c(juv, movers_comb)
+    
+    # Juvenile to adult stage - BH
+    adults_comb <- (juv_comb  * p_j2a) / (1 + (p_j2a / c_adult) * juv_comb)
+    
+    redist <- adults_comb[length(juv_comb)] * movers_prop
+    adults <- adults_comb[-length(juv_comb)] + redist
+    
+    for (y in 1:length(adults_comb[-length(juv_comb)])) {
+      n[i, 'natal' ,y] <- adults_comb[y]
+      n[i, 'non-natal' ,y] <- redist[y]
+      n[i, 'total' ,y] <- adults[y]
+      
+    }
+  }  
+  
+  return(n)
+}
+```
+
+```{r}
+lc_ddmovers() %>%
+  as.data.frame.table() %>%
+  mutate(Var1 = as.numeric(Var1)) %>%
+  ggplot +
+  theme_bw() +
+  geom_line(aes(Var1, Freq, color = Var3)) +
+  facet_wrap(~Var2)
+```
+
+

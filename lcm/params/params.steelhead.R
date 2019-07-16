@@ -52,7 +52,7 @@ ow.surv.adj <- 1.0 #winter surv, parr to smolt adjustment
 ow.cap.adj <- 1.0 #winter capacity adjustment
 
 # Age1 smolts [Larsen and Ward (1955) scale analysis]
-prop.age1.smolts <- 0.10
+prop.age1.smolts <- 0.02
 
 
 # Delta survivals and capacities --------------------------------------------------------------------------------------------------
