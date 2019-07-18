@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warnings = FALSE)
@@ -320,10 +322,10 @@ $$length = length_{reach} * percent.pool.riffle_{current} - ((percent.pool.riffl
 Outside of managed forests (GSU is less than 50% managed forest) we model beaver pond restoration in all small stream habitat where `Beaver == 'y'`.  Inside managed forest (GSU is greater than 50% managed forest) we model beaver pond restoration in GSUs where `Beaver == 'y'`, however we apply an effectiveness scalar of 0.1.  In this case we expect beaver restoration to occur as an indirect effect of tree growth.  
 
 * When all historical beaver ponds are restored we predict an increase in spawner abundance of 113%
-* The percent of total small stream lengthwhere beaver habitat restoration is expected is the following for scenarios 1-3: `r beaver_length_1 / coho_ss`, `r beaver_length_2 / coho_ss`, `r beaver_length_3 / coho_ss`.  Note: This number is lowered significantly due to rules limiting restoration to primary creeks only in specific GSUs 
+* The percent of total small stream lengthwhere beaver habitat restoration is expected is the following for scenarios 1-3 `r beaver_length_1 / coho_ss`, `r beaver_length_2 / coho_ss`, `r beaver_length_3 / coho_ss`.  Note: This number is lowered significantly due to rules limiting restoration to primary creeks only in specific GSUs 
 * Mean restoration percentage across all GSUs in scenarios 1-3 are the following: `r beaver_rest_1`, `r beaver_rest_2`, `r beaver_rest_3`
 * Mean beaver restoration intensity scalar across all GSUs in scenarios 1-3 are the following:  `r beaver_int_1`, `r beaver_int_2`, `r beaver_int_3`.  We assume a restoration intensity scalar of 1 for all GSUs outside managed forest and 0.1 for all GSUs inside managed forests.
 
-We can therefore expect a spawner increase of 
+We can therefore expect a spawner increase of 0.6% (`1.13 *.03 * .38 * .52`) for scenario 1, 1.1% (`1.13 * 0.05 * 0.42 * 0.45`) for scenario 2, and 1.6% (`1.13 * 0.06 * 0.51 * 0.45`) for scenario 3 from beaver restoration.  
 
 
