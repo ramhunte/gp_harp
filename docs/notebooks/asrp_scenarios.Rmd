@@ -110,3 +110,7 @@ Restoration of beaver pond habitat results in a 0.18% increase in spawners for s
 ### Riparian
 
 Where `Riparian == 'y'` for a particular subbasin, we model tree planting and growth for the entire GSU.  If `Riparian == 'n'` we model tree growth in all reaches where there are existing trees (canopy opening angle is less than 170°), and apply a 75% effectiveness scalar.  Where no trees currently exist we do not model any planting or growth of trees.  Riparian restoration results in a 4.53% increase in spawners by mid century, and a 5.88% increase in spawners by late century for all three scenarios.
+
+
+
+

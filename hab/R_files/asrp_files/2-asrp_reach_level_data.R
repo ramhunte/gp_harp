@@ -103,7 +103,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                                      "scenario_3_beaver_only",
                                                      'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'),
                                  ifelse(perc_forest > .5,
-                                        .1,
+                                        1,
                                         1),
                                  0),
            year %in% c(2040, 2080) ~ ifelse(perc_forest > .5,

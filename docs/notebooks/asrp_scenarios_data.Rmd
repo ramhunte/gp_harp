@@ -1,0 +1,329 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warnings = FALSE)
+library(tidyverse)
+```
+
+```{r}
+options(digits = 2)
+```
+
+
+The following is a description of the input data and assumptions used by the NOAA modeling team to create the ASRP restoration scenarios for the Chehalis River basin.  ASRP scenarios are created in the NOAA habitat model and subsequently run through the NOAA LCM in order to calculate spawner abundance values and other summary metrics.
+
+# Input data
+
+The following spreadsheet defines the three asrp restoration scenarios considered in the NOAA model.  This spreadsheet was adapted from a similar spreadsheet supplied by Merri Martz, most recently on June 24, 2019, but also several times previously with slight variations.
+
+```{r}
+asrp_scenarios %>% filter(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3')) %>%
+  arrange(Scenario_num, GSU) %>%
+  as_tibble()
+```
+
+# Scope of restoration
+
+```{r}
+total_coho <- flowline %>%
+  filter(species == 'coho',
+         spawn_dist == 'Yes') %>%
+  group_by(Habitat) %>%
+  summarize(length = sum(Shape_Length / 1000, na.rm = T))
+
+coho_ss <- total_coho$length[total_coho$Habitat == 'SmStream']
+coho_lr <- total_coho$length[total_coho$Habitat == 'LgRiver']
+coho_tidal <- total_coho$length[total_coho$Habitat == 'Tidal']
+coho_total <- coho_ss + coho_lr + coho_tidal
+
+total_coho_fp <- fp2 %>%
+  filter(hab.scenario %in% c('Current', 'Historical')) %>%
+  group_by(hab.scenario, life.stage) %>%
+  summarize(Area = sum(Area, na.rm = T))
+
+curr_fp_summer <- total_coho_fp$Area[total_coho_fp$hab.scenario == 'Current' & total_coho_fp$life.stage == 'summer']
+curr_fp_winter <- total_coho_fp$Area[total_coho_fp$hab.scenario == 'Current' & total_coho_fp$life.stage == 'winter']
+hist_fp_summer <- total_coho_fp$Area[total_coho_fp$hab.scenario == 'Historical' & total_coho_fp$life.stage == 'summer']
+hist_fp_winter <- total_coho_fp$Area[total_coho_fp$hab.scenario == 'Historical' & total_coho_fp$life.stage == 'winter']
+
+scenario_1_gsu <- asrp_scenarios %>% 
+  filter(Scenario_num == 'scenario_1')
+scenario_1_gsu <- unique(scenario_1_gsu$GSU)
+scenario_1_length <- flowline %>% 
+  filter(GSU %in% scenario_1_gsu) %>%
+  group_by(Habitat) %>% 
+  summarize(length = sum(Shape_Length / 1000, na.rm = T))
+
+coho_ss_1 <- scenario_1_length$length[scenario_1_length$Habitat == 'SmStream']
+coho_lr_1 <- scenario_1_length$length[scenario_1_length$Habitat == 'LgRiver']
+coho_tidal_1 <- scenario_1_length$length[scenario_1_length$Habitat == 'Tidal']
+coho_total_1 <- coho_ss_1 + coho_lr_1 + coho_tidal_1
+
+scenario_2_gsu <- asrp_scenarios %>% 
+  filter(Scenario_num == 'scenario_2')
+scenario_2_gsu <- unique(scenario_2_gsu$GSU)
+scenario_2_length <- flowline %>% 
+  filter(GSU %in% scenario_2_gsu) %>%
+  group_by(Habitat) %>% 
+  summarize(length = sum(Shape_Length / 1000, na.rm = T))
+
+coho_ss_2 <- scenario_2_length$length[scenario_2_length$Habitat == 'SmStream']
+coho_lr_2 <- scenario_2_length$length[scenario_2_length$Habitat == 'LgRiver']
+coho_tidal_2 <- scenario_2_length$length[scenario_2_length$Habitat == 'Tidal']
+coho_total_2 <- coho_ss_2 + coho_lr_2 + coho_tidal_2
+
+scenario_3_gsu <- asrp_scenarios %>% 
+  filter(Scenario_num == 'scenario_3')
+scenario_3_gsu <- unique(scenario_3_gsu$GSU)
+scenario_3_length <- flowline %>% 
+  filter(GSU %in% scenario_3_gsu) %>%
+  group_by(Habitat) %>% 
+  summarize(length = sum(Shape_Length / 1000, na.rm = T))
+
+coho_ss_3 <- scenario_3_length$length[scenario_3_length$Habitat == 'SmStream']
+coho_lr_3 <- scenario_3_length$length[scenario_3_length$Habitat == 'LgRiver']
+coho_tidal_3 <- scenario_3_length$length[scenario_3_length$Habitat == 'Tidal']
+coho_total_3 <- coho_ss_3 + coho_lr_3 + coho_tidal_3
+
+fp_area_1 <- fp2 %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_1',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num)) %>%
+  filter(hab.scenario %in% c('Current', 'Historical'),
+         GSU %in% scenario_1_gsu) %>%
+  group_by(hab.scenario, life.stage) %>%
+  summarize(Area = sum(Area, na.rm = T))
+
+curr_fp_summer_1 <- fp_area_1$Area[fp_area_1$hab.scenario == 'Current' & fp_area_1$life.stage == 'summer']
+curr_fp_winter_1 <- fp_area_1$Area[fp_area_1$hab.scenario == 'Current' & fp_area_1$life.stage == 'winter']
+hist_fp_summer_1 <- fp_area_1$Area[fp_area_1$hab.scenario == 'Historical' & fp_area_1$life.stage == 'summer']
+hist_fp_winter_1 <- fp_area_1$Area[fp_area_1$hab.scenario == 'Historical' & fp_area_1$life.stage == 'winter']
+
+fp_area_2 <- fp2 %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_2',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num)) %>%
+  filter(hab.scenario %in% c('Current', 'Historical'),
+         GSU %in% scenario_2_gsu) %>%
+  group_by(hab.scenario, life.stage) %>%
+  summarize(Area = sum(Area, na.rm = T))
+
+curr_fp_summer_2 <- fp_area_2$Area[fp_area_2$hab.scenario == 'Current' & fp_area_2$life.stage == 'summer']
+curr_fp_winter_2 <- fp_area_2$Area[fp_area_2$hab.scenario == 'Current' & fp_area_2$life.stage == 'winter']
+hist_fp_summer_2 <- fp_area_2$Area[fp_area_2$hab.scenario == 'Historical' & fp_area_2$life.stage == 'summer']
+hist_fp_winter_2 <- fp_area_2$Area[fp_area_2$hab.scenario == 'Historical' & fp_area_2$life.stage == 'winter']
+
+fp_area_3 <- fp2 %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_3',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num)) %>%
+  filter(hab.scenario %in% c('Current', 'Historical'),
+         GSU %in% scenario_3_gsu) %>%
+  group_by(hab.scenario, life.stage) %>%
+  summarize(Area = sum(Area, na.rm = T))
+
+curr_fp_summer_3 <- fp_area_3$Area[fp_area_3$hab.scenario == 'Current' & fp_area_3$life.stage == 'summer']
+curr_fp_winter_3 <- fp_area_3$Area[fp_area_3$hab.scenario == 'Current' & fp_area_3$life.stage == 'winter']
+hist_fp_summer_3 <- fp_area_3$Area[fp_area_3$hab.scenario == 'Historical' & fp_area_3$life.stage == 'summer']
+hist_fp_winter_3 <- fp_area_3$Area[fp_area_3$hab.scenario == 'Historical' & fp_area_3$life.stage == 'winter']
+
+```
+ 
+There are `r coho_total` km of river habitat available to coho for rearing in the Chehalis River basin.  This includes `r coho_ss` km of small stream habitat, `r coho_lr` km of large river habitat, and `r coho_tidal` km of tidal habitat.  Additionally, there are `r curr_fp_summer` ha of summer floodplain habitat and `r curr_fp_winter` ha of winter floodplain habitat currently available to coho, while there were `r hist_fp_summer` ha of summer floodplain habitat and `r hist_fp_winter` ha of winter floodplain habitat available to coho historically. 
+
+#### Stream length: 
+
+Habitat | Length (km) | Scenario 1 length (km)| Scenario 2 length (km) | Scenario 3 length (km)
+--------|-------------|-----------------------|------------------------|-----------------------
+Total length | `r coho_total` | `r coho_total_1` | `r coho_total_2` | `r coho_total_3`
+Small stream |  `r coho_ss` | `r coho_ss_1` | `r coho_ss_2` | `r coho_ss_3`
+Large river | `r coho_lr` | `r coho_lr_1` | `r coho_lr_2` | `r coho_lr_3` 
+Tidal |  `r coho_tidal` | `r coho_tidal_1` | `r coho_tidal_2` | `r coho_tidal_3`
+
+
+#### Floodplain area: 
+
+Life stage | Period | Total Area (ha) | Scenario 1 Area (ha) | Scenario 2 Area (ha) | Scenario 3 Area (ha)
+-----------|--------|-----------------|----------------------|----------------------|---------------------
+summer | current | `r curr_fp_summer` | `r curr_fp_summer_1` | `r curr_fp_summer_2` | `r curr_fp_summer_3`
+winter | current | `r curr_fp_winter` | `r curr_fp_winter_1` | `r curr_fp_winter_2` | `r curr_fp_winter_3`
+summer | historical | `r hist_fp_summer` | `r hist_fp_summer_1` | `r hist_fp_summer_2` | `r hist_fp_summer_3`
+winter | historical | `r hist_fp_winter` | `r hist_fp_winter_1` | `r hist_fp_winter_2` | `r hist_fp_winter_3`
+
+# ASRP scenario parameters
+
+```{r}
+fp_rest_1 <- fp2 %>%
+  ungroup() %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_1',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num, Floodplain)) %>%
+  filter(Floodplain == 'y',
+         hab.scenario %in% c('Current', 'Historical')) %>%
+  group_by(hab.scenario, life.stage) %>%
+  summarize(Area = sum(Area, na.rm = T))
+
+curr_fp_rest_summer_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Current' & fp_rest_1$life.stage == 'summer']
+curr_fp_rest_winter_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Current' & fp_rest_1$life.stage == 'winter']
+hist_fp_rest_summer_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Historical' & fp_rest_1$life.stage == 'summer']
+hist_fp_rest_winter_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Historical' & fp_rest_1$life.stage == 'winter']
+
+fp_rest_2 <- fp2 %>%
+  ungroup() %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_2',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num, Floodplain)) %>%
+  filter(Floodplain == 'y',
+         hab.scenario %in% c('Current', 'Historical')) %>%
+  group_by(hab.scenario, life.stage) %>%
+  summarize(Area = sum(Area, na.rm = T))
+
+curr_fp_rest_summer_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Current' & fp_rest_2$life.stage == 'summer']
+curr_fp_rest_winter_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Current' & fp_rest_2$life.stage == 'winter']
+hist_fp_rest_summer_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Historical' & fp_rest_2$life.stage == 'summer']
+hist_fp_rest_winter_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Historical' & fp_rest_2$life.stage == 'winter']
+
+fp_rest_3 <- fp2 %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_3',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num, Floodplain)) %>%
+  # left_join(Floodplain_gsu_3, by = 'GSU') %>% 
+  filter(Floodplain == 'y',
+         hab.scenario %in% c('Current', 'Historical')) %>%
+  group_by(hab.scenario, life.stage) %>%
+  summarize(Area = sum(Area, na.rm = T))
+
+curr_fp_rest_summer_3 <- fp_rest_3$Area[fp_rest_3$hab.scenario == 'Current' & fp_rest_3$life.stage == 'summer']
+curr_fp_rest_winter_3 <- fp_rest_3$Area[fp_rest_3$hab.scenario == 'Current' & fp_rest_3$life.stage == 'winter']
+hist_fp_rest_summer_3 <- fp_rest_3$Area[fp_rest_3$hab.scenario == 'Historical' & fp_rest_3$life.stage == 'summer']
+hist_fp_rest_winter_3 <- fp_rest_3$Area[fp_rest_3$hab.scenario == 'Historical' & fp_rest_3$life.stage == 'winter']
+
+asrp_perc_rest <- asrp_reach_data %>%
+  group_by(GSU, Scenario_num, year, Floodplain) %>%
+  summarize(rest_perc = unique(rest_perc, na.rm = T)) %>%
+  filter(Floodplain == 'y') %>%
+  group_by(Scenario_num) %>%
+  summarize(rest_perc = mean(rest_perc, na.rm = T))
+
+rest_perc_fp_1 <- asrp_perc_rest$rest_perc[asrp_perc_rest$Scenario_num == 'scenario_1']
+rest_perc_fp_2 <- asrp_perc_rest$rest_perc[asrp_perc_rest$Scenario_num == 'scenario_2']
+rest_perc_fp_3 <- asrp_perc_rest$rest_perc[asrp_perc_rest$Scenario_num == 'scenario_3']
+```
+
+## Floodplain
+
+The restoration of floodplain habitat affects our model in the following ways:
+
+1. Rearing area: $Area = Area_{current} + (Area_{historical} - Area_{current}) * rest.percent$
+2. side channel spawning length: $length = length_{current} + (length_{historical} - length_{current}) * rest.percent$
+3. Temperature: Where `Floodplain == 'y'` we reduce the temperature of reaches within that GSU using the following equation : $temp =  old.temp - 1 * rest.perc$
+
+Outside of managed forests (GSU is less than 50% managed forest) we model floodplain restoration in all GSUs where `Floodplain == 'y'`.  Inside managed forests (GSU is greater than 50% managed forest) we only model floodplain restoration in GSUs where `Floodplain == 'y'` and `LW == 'y'`.  This is because inside managed forest the only action taken is adding large wood to the system, which we assume has an indirect effect on boosting floodplain connectivity. 
+
+* When all floodplain habitat is restored (Floodplain diagnostic scenario), we see a 49% increase in spawners from the current scenario.  This is the maximum effect we can expect from floodplain restoration.  
+* Under the asrp scenarios, `r ((hist_fp_summer_1 + hist_fp_winter_1) - (curr_fp_summer_1 + curr_fp_winter_1)) / ((hist_fp_summer + hist_fp_winter) - (curr_fp_summer + curr_fp_winter))`%, `r ((hist_fp_summer_2 + hist_fp_winter_2) - (curr_fp_summer_2 + curr_fp_winter_2)) / ((hist_fp_summer + hist_fp_winter) - (curr_fp_summer + curr_fp_winter))`%, and  `r ((hist_fp_summer_3 + hist_fp_winter_3) - (curr_fp_summer_3 + curr_fp_winter_3)) / ((hist_fp_summer + hist_fp_winter) - (curr_fp_summer + curr_fp_winter))`% of potential restorable floodplain habitat exists within the GSUs specified in scenarios 1, 2,  and 3 respectively.  
+* Meanwhile, `r ((hist_fp_rest_summer_1 + hist_fp_rest_winter_1) - (curr_fp_rest_summer_1 + curr_fp_rest_winter_1)) / ((hist_fp_summer + hist_fp_winter) - (curr_fp_summer + curr_fp_winter))`%, `r ((hist_fp_rest_summer_2 + hist_fp_rest_winter_2) - (curr_fp_rest_summer_2 + curr_fp_rest_winter_2)) / ((hist_fp_summer + hist_fp_winter) - (curr_fp_summer + curr_fp_winter))`%, and  `r ((hist_fp_rest_summer_3 + hist_fp_rest_winter_3) - (curr_fp_rest_summer_3 + curr_fp_rest_winter_3)) / ((hist_fp_summer + hist_fp_winter) - (curr_fp_summer + curr_fp_winter))`% of potential restorable habitat is actually targeted by scenarios 1, 2, and 3 respectively (`Floodplain == 'y'`, if inside managed forest, `LW == 'y'`).  
+* A restoration percentage is applied for each GSU.  The mean of all restoration percentages for scenarios 1, 2, and 3 are the following: `r rest_perc_fp_1`, `r rest_perc_fp_2`, and `r rest_perc_fp_3` 
+
+We can therefore expect a spawner increase of 4.9% (`.49 * .27 * .37`) for scenario 1, 5.6% (`.49 * .27 * .42`) for scenario 2, and 6.5% (`.49 * .29 * .46`) for scenario 3 from floodplain restoration.
+
+## Beaver
+
+```{r}
+beaver_length_1 <- flowline %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_1') %>%
+              group_by(GSU) %>%
+              summarize(Beaver = unique(Beaver, na.rm = T),
+                        rest_perc = unique(rest_perc, na.rm = T))) %>%
+  # left_join(beaver_gsu_1, by = 'GSU') %>% 
+  filter(Beaver == 'y',
+         Habitat == 'SmStream',
+         species == 'coho',
+         spawn_dist == 'Yes') %>%
+  summarize(length = sum(Shape_Length/1000, na.rm = T))
+
+beaver_length_1 <- beaver_length_1$length
+
+beaver_length_2 <- flowline %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_2') %>%
+              group_by(GSU) %>%
+              summarize(Beaver = unique(Beaver, na.rm = T),
+                        rest_perc = unique(rest_perc, na.rm = T))) %>%
+  # left_join(beaver_gsu_1, by = 'GSU') %>% 
+  filter(Beaver == 'y',
+         Habitat == 'SmStream',
+         species == 'coho',
+         spawn_dist == 'Yes') %>%
+  summarize(length = sum(Shape_Length/1000, na.rm = T))
+
+beaver_length_2 <- beaver_length_2$length
+
+beaver_length_3 <- flowline %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_3') %>%
+              group_by(GSU) %>%
+              summarize(Beaver = unique(Beaver, na.rm = T),
+                        rest_perc = unique(rest_perc, na.rm = T))) %>%
+  # left_join(beaver_gsu_1, by = 'GSU') %>% 
+  filter(Beaver == 'y',
+         Habitat == 'SmStream',
+         species == 'coho',
+         spawn_dist == 'Yes') %>%
+  summarize(length = sum(Shape_Length/1000, na.rm = T))
+
+beaver_length_3 <- beaver_length_3$length
+
+beaver_rest_perc <- asrp_reach_data %>%
+  group_by(GSU, Scenario_num, year, Beaver) %>%
+  summarize(rest_perc = unique(rest_perc, na.rm = T)) %>%
+  filter(Beaver == 'y') %>%
+  group_by(Scenario_num) %>%
+  summarize(rest_perc = mean(rest_perc, na.rm = T))
+
+beaver_rest_1 <- beaver_rest_perc$rest_perc[beaver_rest_perc$Scenario_num == 'scenario_1']
+beaver_rest_2 <- beaver_rest_perc$rest_perc[beaver_rest_perc$Scenario_num == 'scenario_2']
+beaver_rest_3 <- beaver_rest_perc$rest_perc[beaver_rest_perc$Scenario_num == 'scenario_3']
+
+beaver_intensity <- asrp_reach_data %>%
+  group_by(GSU, Scenario_num, year, Beaver) %>%
+  summarize(beaver_intensity_scalar = unique(beaver_intensity_scalar, na.rm = T)) %>%
+  filter(Beaver == 'y') %>%
+  group_by(Scenario_num) %>%
+  summarize(beaver_intensity_scalar = mean(beaver_intensity_scalar, na.rm = T))
+
+beaver_int_1 <- beaver_intensity$beaver_intensity_scalar[beaver_intensity$Scenario_num == 'scenario_1']
+beaver_int_2 <- beaver_intensity$beaver_intensity_scalar[beaver_intensity$Scenario_num == 'scenario_2']
+beaver_int_3 <- beaver_intensity$beaver_intensity_scalar[beaver_intensity$Scenario_num == 'scenario_3']
+  
+```
+
+
+The restoration of beaver habitat affects our model in the following ways:
+
+1. Rearing area: We model beaver pond area using an estimate of .3 $m^2$ of beaver pond per m of small stream at present, and 3 $m^2$ of beaver pond per m of small stream historically.  Additionally, we assume that 98.6% of small stream length is currently pool/riffle habitat, whereas 1.4% of small stream length is currently beaver pond habitat.  Historically, we assume that 85% of small stream length was pool/riffle habitat, whereas 15% of small stream length was beaver pond habitat.  Where  `Beaver == 'y'` we calculate pool, riffle, and beaver pond habitat area using the following equations: 
+$$Area_{pool} = Area_{reach} * pool.perc * (percent.pool.riffle_{current} - ((percent.pool.riffle_{curr} - percent.pool.riffle_{historical}) * rest.percent * intensity.scalar_{beaver}))$$
+$$Area_{riffle} = Area_{reach} * (1 - pool.perc) * (percent.pool.riffle_{current} - ((percent.pool.riffle_{curr} - percent.pool.riffle_{historical}) * rest.percent * intensity.scalar_{beaver}))$$
+$$Area_{beaver.pond} = (length_{reach} * pond.area.per.m_{current} / 10000) + (length_{reach} * (pond.area.per.m_{historical} - pond.area.per.m_{current}) / 10000 * rest.percent * intensity.scalar_{beaver})$$
+2. Spawning:  We do not model spawning in beaver ponds therefore the addition of beaver ponds results in a decrease in egg capacity.  Where `Beaver == 'y'` we use the following equation to calculate the length of available spawning habitat in small streams:
+$$length = length_{reach} * percent.pool.riffle_{current} - ((percent.pool.riffle_{current} - percent.pool.riffle_{historical}) * rest.percent * intensity.scalar_beaver)$$
+
+Outside of managed forests (GSU is less than 50% managed forest) we model beaver pond restoration in all small stream habitat where `Beaver == 'y'`.  Inside managed forest (GSU is greater than 50% managed forest) we model beaver pond restoration in GSUs where `Beaver == 'y'`, however we apply an effectiveness scalar of 0.1.  In this case we expect beaver restoration to occur as an indirect effect of tree growth.  
+
+* When all historical beaver ponds are restored we predict an increase in spawner abundance of 113%
+* The percent of total small stream lengthwhere beaver habitat restoration is expected is the following for scenarios 1-3: `r beaver_length_1 / coho_ss`, `r beaver_length_2 / coho_ss`, `r beaver_length_3 / coho_ss`.  Note: This number is lowered significantly due to rules limiting restoration to primary creeks only in specific GSUs 
+* Mean restoration percentage across all GSUs in scenarios 1-3 are the following: `r beaver_rest_1`, `r beaver_rest_2`, `r beaver_rest_3`
+* Mean beaver restoration intensity scalar across all GSUs in scenarios 1-3 are the following:  `r beaver_int_1`, `r beaver_int_2`, `r beaver_int_3`.  We assume a restoration intensity scalar of 1 for all GSUs outside managed forest and 0.1 for all GSUs inside managed forests.
+
+We can therefore expect a spawner increase of 
+
+
