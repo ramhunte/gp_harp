@@ -97,8 +97,15 @@ Cascade Mountains,NF Newaukum MS,y,y,y,y,y,0.5,n,NF Newaukum,,scenario_1
 ,NF Newaukum MS,y,y,y,y,y,0.5,n,NF Newaukum,,scenario_2
 ,NF Newaukum MS,y,y,y,y,y,0.5,n,NF Newaukum,,scenario_3
 ,Porter Cr,y,y,n,y,y,0.33,y,Porter Creek,,scenario_2
+<<<<<<< HEAD
 ,Porter Cr,y,y,n,y,y,0.33,y,Porter Creek,,scenario_3
 ,Rock (CL) Cr,y,y,y,y,y,0.5,y,Rock Creek,there are two different rock creeks.  Need to figure out which one we should be using,scenario_3
+=======
+,Cedar (BH) Cr,y,y,y,y,y,0.33,y,Cedar Creek,,scenario_2
+,Lower Black MS,y,y,y,y,y,0.5,n,Lower Black River,,scenario_2
+,Upper Black MS,y,y,y,y,y,0.33,n,Upper Black River,,scenario_2
+,Upper Black Tribs,y,y,y,n,y,0.33,n,Dempsey Creek,can't find this in GSU shapefile,scenario_2
+>>>>>>> dev
 ,Scatter Cr,y,y,y,n,y,0.33,y,Scatter Creek,,scenario_2
 ,Scatter Cr,y,y,y,n,y,0.33,y,Scatter Creek,,scenario_3
 Cascade Mountains,SF Newaukum MS,y,y,y,y,y,0.5,n,SF Newaukum,,scenario_1
