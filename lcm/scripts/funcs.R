@@ -244,27 +244,15 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     fry.migrants <- (pre.fry * weekly.surv) - natal.fry # Density dependent slice to create non natal fry
     
     # Natal sub yearlings - all basins
-    fry.distributed <- distribute.fish(fish.in = natal.fry, move.matrix = move.matrix.w.natal)
-    sub.yr.ms <- BH.func(S = fry.distributed['after_movement', ], p = weekly.surv^7, c = cap * 3)
-    sub.yr <- reallocate.fish(fish.in = sub.yr.ms,
-                              redist.matrix = fry.distributed[return.rows, ])['after_movement', ]
+    fry.distrib <- distribute.fish(fish.in = natal.fry, move.matrix = move.matrix.w.natal)
+    sub.yr.distrib <- BH.func(S = fry.distrib['after_movement', ], p = weekly.surv.temp^11, c = cap * 3)
+    sub.yr <- reallocate.fish(fish.in = sub.yr.distrib,
+                              redist.matrix = fry.distrib[return.rows, ])['after_movement', ]
     
-    # Downstream migration for subyearlings (4, 2 or 0 weeks)
-    # 3 weeks of survival with june temperatures, the 4 week fish get one week of survival without temperature
-    # Then raise that to either 1 (4 week basins) or 0 (0 and 2 week basins)
-    sub.yr.ds <- sub.yr * 
-                 colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks * # average survival without temperature
-                 colSums(move.matrix * weekly.surv.temp[ms.reaches])^ds_weeks_june # with temperature
-    #sub.yr.ds['Satsop River'] <- sub.yr['Satsop River'] * weekly.surv['Satsop River']^2
-    
-    # Downstream migration for fry (2, 1, 0 weeks)
-    # Both weeks are non-june weekly survival, average of all MS reaches DS of natal basin
-    fry.migrants.ds <- fry.migrants * colSums(move.matrix * weekly.surv[ms.reaches])^ds_weeks_fry
-    #fry.migrants.ds[to.bay.reaches] <- fry.migrants[to.bay.reaches] * weekly.surv[to.bay.reaches]^1
     
     # Apply bay survival (ds migration, delta, bay, nearshore productivity)
-    fry.migrants.bay <- fry.migrants.ds * bay.fry.surv
-    sub.yr.bay <- sub.yr.ds * bay.parr.surv
+    fry.migrants.bay <- fry.migrants * bay.fry.surv
+    sub.yr.bay <- sub.yr * bay.parr.surv
     
     # Ocean survival
     mat.new['ocean0', ] <- fry.migrants.bay + sub.yr.bay # smolts leaving bay, ocean0
@@ -279,13 +267,11 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     
     mat.new['eggs', ] <- eggs
     mat.new['pre.fry', ] <- pre.fry 
-    #mat.new['natal.fry', ] <- natal.fry
-    #mat.new['non.natal.fry', ] <- non.natal.fry
     mat.new['fry.migrants', ] <- fry.migrants
-    mat.new['fry.migrants.ds', ] <- fry.migrants.ds
-    mat.new['fry.migrants.bay', ] <- fry.migrants.bay
+    mat.new['fry.migrants.distrib', ] <- fry.distrib['after_movement', ]
+    mat.new['sub.yr.distrib', ] <- sub.yr
     mat.new['sub.yr', ] <- sub.yr
-    mat.new['sub.yr.ds', ] <- sub.yr.ds
+    mat.new['fry.migrants.bay', ] <- fry.migrants.bay
     mat.new['sub.yr.bay', ] <- sub.yr.bay
     
     N <- mat.new
