@@ -75,6 +75,8 @@ df.sr <- model.all.sr[ , "spawners", , ] %>%
 # Write to the abundance CSV
 abundance_by_subbasin %>%
   left_join(df.sr) %>%
-  mutate(Cn = (spawners * Pn) / (Pn - 1)) %>%
+  mutate(Cn = (spawners * Pn) / (Pn - 1),
+         Cn = ifelse(Cn > 0, Cn, 0),
+         Pn = ifelse(Pn > 1, Pn, 0)) %>%
   write.csv(file.path(outputs_lcm, csv.name))
 

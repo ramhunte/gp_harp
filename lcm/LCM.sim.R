@@ -260,9 +260,9 @@ for (n in 1:length(scenario.file)) {
   
   if (pop == "fall.chinook" | pop == "spring.chinook") {
     # % fry migrant smolts
-    SAR.ratio <- sum(N['fry.migrants.ds',]) / 
-      sum(N['fry.migrants.ds',], 
-          N['sub.yr.ds',]
+    SAR.ratio <- sum(N['fry.migrants',]) / 
+      sum(N['fry.migrants',], 
+          N['sub.yr',]
           ) 
     
     # % fry migrants in returning adults
@@ -309,11 +309,11 @@ if (dir.exists(outputs_lcm) == F) {dir.create(outputs_lcm, recursive = T)}
 
 
 # Create summary csv. Spawners per subbasin
-if(sensitivity.mode == 'no'){
+if (sensitivity.mode == 'no') {
   if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smolts')}
   
   if (pop == "fall.chinook" | pop == "spring.chinook") {
-    summary.stages <- c('spawners','fry.migrants.ds','sub.yr.ds')
+    summary.stages <- c('spawners','fry.migrants','sub.yr')
   }
   
   if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}
