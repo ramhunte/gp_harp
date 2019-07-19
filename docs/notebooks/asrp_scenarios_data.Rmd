@@ -1,8 +1,6 @@
 ---
 title: "R Notebook"
-output:
-  html_document:
-    df_print: paged
+output: html_notebook
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warnings = FALSE)
@@ -175,6 +173,19 @@ curr_fp_rest_summer_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Current' & fp
 curr_fp_rest_winter_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Current' & fp_rest_1$life.stage == 'winter']
 hist_fp_rest_summer_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Historical' & fp_rest_1$life.stage == 'summer']
 hist_fp_rest_winter_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Historical' & fp_rest_1$life.stage == 'winter']
+
+fp_rest_1_f <- fp2 %>%
+  ungroup() %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_1', 
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num, Floodplain, perc_forest, LW)) %>%
+  filter(
+    # Floodplain == 'y',
+         hab.scenario %in% c('Current', 'Historical')) %>%
+    mutate(perc_forest = ifelse(perc_forest > .5, 'y', 'n')) %>%
+  group_by(hab.scenario, LW, perc_forest, Floodplain) %>%
+  summarize(Area = sum(Area, na.rm = T))
 
 fp_rest_2 <- fp2 %>%
   ungroup() %>%

@@ -92,8 +92,20 @@ all_habs_year <- lapply(scenario.years, function(g) {
 
 # Attach scenario numbers to habitat data and filter to only those scenarios which we wish to run
 
-scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate') # Note:  Current is only run to compare the asrp scenario outputs with the diagnostics
-                                                                                # scenario code to ensure that the asrp scenario code is working properly
+# scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate') # Note:  Current is only run to compare the asrp scenario outputs with the diagnostics
+                                                                            # scenario code to ensure that the asrp scenario code is working properly
+
+scenario.nums <- c(
+  'scenario_1', 'scenario_2', 'scenario_3', 'Current_asrp'
+  , 'scenario_1_wood_only', 'scenario_2_wood_only', 'scenario_3_wood_only'
+  , 'scenario_1_fp_only', 'scenario_2_fp_only', 'scenario_3_fp_only'
+  , 'scenario_1_beaver_only', 'scenario_2_beaver_only', 'scenario_3_beaver_only'
+  # , 'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'
+  # , 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'
+  # , 'scenario_1_no_climate_chg', 'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg'
+  # , 'dev_and_climate'
+)
+
 all_habs_scenario <- lapply(scenario.nums, function(h) {
   all_habs_year %>%
     mutate(Scenario_num = h)
