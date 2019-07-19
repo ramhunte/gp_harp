@@ -143,13 +143,13 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                'y'),
       Barriers == 'n' ~ 'n'),
     Floodplain = case_when(
-      LW == 'y' ~ 'y',
-      Floodplain == 'y'  ~ 'y',
-        # ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-        #        'n',
-        #        'y'),
-      Floodplain == 'n' & !LW == 'y' ~ 'n',
-      is.na(Floodplain) & !LW == 'y' ~ 'n'),
+      # LW == 'y' ~ 'y',
+      # Floodplain == 'y'  ~ 'y',
+      #   # ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+      #   #        'n',
+      #   #        'y'),
+      # Floodplain == 'n' & !LW == 'y' ~ 'n',
+      # is.na(Floodplain) & !LW == 'y' ~ 'n'),
       # Floodplain == 'y' ~ 
       #   ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
       #          'n',
@@ -174,6 +174,22 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
       #                        'y',
       #                        'n'),
       #                 'n'))),
+      Floodplain == 'y' ~
+        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+               'n',
+               ifelse(perc_forest > .5,
+                      ifelse(LW == 'y',
+                             'y',
+                             'n'),
+                      'y')),
+      is.na(Floodplain) | Floodplain == 'n' ~
+        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+               'n',
+               ifelse(perc_forest > .5,
+                           ifelse(LW == 'y',
+                                  'y',
+                                  'n'),
+                           'n'))),
     Beaver = case_when(
       is.na(Beaver) ~ 'n',
       Beaver == 'y' ~
