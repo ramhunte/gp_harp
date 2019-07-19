@@ -174,17 +174,17 @@ curr_fp_rest_winter_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Current' & fp
 hist_fp_rest_summer_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Historical' & fp_rest_1$life.stage == 'summer']
 hist_fp_rest_winter_1 <- fp_rest_1$Area[fp_rest_1$hab.scenario == 'Historical' & fp_rest_1$life.stage == 'winter']
 
-fp_rest_1_f <- fp2 %>%
+fp_primary <- fp2 %>%
   ungroup() %>%
   left_join(., asrp_reach_data %>%
-              filter(Scenario_num == 'scenario_1', 
+              filter(Scenario_num == 'scenario_1',
                      year == 2019) %>%
-              select(noaaid, GSU, Scenario_num, Floodplain, perc_forest, LW)) %>%
-  filter(
-    # Floodplain == 'y',
-         hab.scenario %in% c('Current', 'Historical')) %>%
-    mutate(perc_forest = ifelse(perc_forest > .5, 'y', 'n')) %>%
-  group_by(hab.scenario, LW, perc_forest, Floodplain) %>%
+              select(noaaid, GSU, Scenario_num, Floodplain, primary_cr_only, Reach)) %>%
+  mutate(primary_creek = ifelse(Reach %in% primary_cr,
+                                'y',
+                                'n')) %>%
+  filter(hab.scenario %in% c('Current', 'Historical')) %>%
+  group_by(hab.scenario, life.stage, primary_cr_only, primary_creek) %>%
   summarize(Area = sum(Area, na.rm = T))
 
 fp_rest_2 <- fp2 %>%
@@ -202,6 +202,19 @@ curr_fp_rest_summer_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Current' & fp
 curr_fp_rest_winter_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Current' & fp_rest_2$life.stage == 'winter']
 hist_fp_rest_summer_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Historical' & fp_rest_2$life.stage == 'summer']
 hist_fp_rest_winter_2 <- fp_rest_2$Area[fp_rest_2$hab.scenario == 'Historical' & fp_rest_2$life.stage == 'winter']
+
+fp_primary_2 <- fp2 %>%
+  ungroup() %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_2',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num, Floodplain, primary_cr_only, Reach)) %>%
+  mutate(primary_creek = ifelse(Reach %in% primary_cr,
+                                'y',
+                                'n')) %>%
+  filter(hab.scenario %in% c('Current', 'Historical')) %>%
+  group_by(hab.scenario, life.stage, primary_cr_only, primary_creek) %>%
+  summarize(Area = sum(Area, na.rm = T))
 
 fp_rest_3 <- fp2 %>%
   left_join(., asrp_reach_data %>%
@@ -229,6 +242,19 @@ asrp_perc_rest <- asrp_reach_data %>%
 rest_perc_fp_1 <- asrp_perc_rest$rest_perc[asrp_perc_rest$Scenario_num == 'scenario_1']
 rest_perc_fp_2 <- asrp_perc_rest$rest_perc[asrp_perc_rest$Scenario_num == 'scenario_2']
 rest_perc_fp_3 <- asrp_perc_rest$rest_perc[asrp_perc_rest$Scenario_num == 'scenario_3']
+
+fp_primary_3 <- fp2 %>%
+  ungroup() %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'scenario_3',
+                     year == 2019) %>%
+              select(noaaid, GSU, Scenario_num, Floodplain, primary_cr_only, Reach)) %>%
+  mutate(primary_creek = ifelse(Reach %in% primary_cr,
+                                'y',
+                                'n')) %>%
+  filter(hab.scenario %in% c('Current', 'Historical')) %>%
+  group_by(hab.scenario, life.stage, primary_cr_only, primary_creek) %>%
+  summarize(Area = sum(Area, na.rm = T))
 ```
 
 ## Floodplain
