@@ -143,37 +143,6 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                'y'),
       Barriers == 'n' ~ 'n'),
     Floodplain = case_when(
-      # LW == 'y' ~ 'y',
-      # Floodplain == 'y'  ~ 'y',
-      #   # ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-      #   #        'n',
-      #   #        'y'),
-      # Floodplain == 'n' & !LW == 'y' ~ 'n',
-      # is.na(Floodplain) & !LW == 'y' ~ 'n'),
-      # Floodplain == 'y' ~ 
-      #   ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-      #          'n',
-      #          ifelse(perc_forest > -5,
-      #                 ifelse(LW == 'y',
-      #                        'y',
-      #                        'n'),
-      #          'y')),
-      # Floodplain == 'n' ~ 
-      #   ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-      #          'n',
-      #          ifelse(perc_forest > -5,
-      #                 ifelse(LW == 'y',
-      #                        'y',
-      #                        'n'),
-      #                 'n')),
-      # is.na(Floodplain) ~ 
-      #   ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-      #          'n',
-      #          ifelse(perc_forest > -5,
-      #                 ifelse(LW == 'y',
-      #                        'y',
-      #                        'n'),
-      #                 'n'))),
       Floodplain == 'y' ~
         ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
                'n',
@@ -239,5 +208,17 @@ left_join(., wood_data) %>%
 left_join(., fut_imperv, by = c('GSU', 'year')) %>%
   mutate(future_imperv = ifelse(is.na(future_imperv),
                                 0,
-                                future_imperv))
+                                future_imperv)) %>%
+  mutate(LW = ifelse(Scenario_num %in% c("scenario_1_fp_only", "scenario_2_fp_only", "scenario_3_fp_only", 
+                                         'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
+                                         'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only',
+                                         'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                     'n',
+                     as.character(LW)),
+         Floodplain = ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", 
+                                                 'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
+                                                 'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only',
+                                                 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                             'n',
+                             as.character(Floodplain)))
 rm(asrp_reach_data_scenarios)

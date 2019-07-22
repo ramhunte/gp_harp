@@ -280,7 +280,7 @@ We can therefore expect a spawner increase of 4.9% (`.49 * .27 * .37`) for scena
 beaver_length_1 <- flowline %>%
   left_join(., asrp_reach_data %>%
               filter(Scenario_num == 'scenario_1') %>%
-              group_by(GSU) %>%
+              group_by(GSU, Reach) %>%
               summarize(Beaver = unique(Beaver, na.rm = T),
                         rest_perc = unique(rest_perc, na.rm = T))) %>%
   # left_join(beaver_gsu_1, by = 'GSU') %>% 
@@ -295,7 +295,7 @@ beaver_length_1 <- beaver_length_1$length
 beaver_length_2 <- flowline %>%
   left_join(., asrp_reach_data %>%
               filter(Scenario_num == 'scenario_2') %>%
-              group_by(GSU) %>%
+              group_by(GSU, Reach) %>%
               summarize(Beaver = unique(Beaver, na.rm = T),
                         rest_perc = unique(rest_perc, na.rm = T))) %>%
   # left_join(beaver_gsu_1, by = 'GSU') %>% 
@@ -310,7 +310,7 @@ beaver_length_2 <- beaver_length_2$length
 beaver_length_3 <- flowline %>%
   left_join(., asrp_reach_data %>%
               filter(Scenario_num == 'scenario_3') %>%
-              group_by(GSU) %>%
+              group_by(GSU, Reach) %>%
               summarize(Beaver = unique(Beaver, na.rm = T),
                         rest_perc = unique(rest_perc, na.rm = T))) %>%
   # left_join(beaver_gsu_1, by = 'GSU') %>% 

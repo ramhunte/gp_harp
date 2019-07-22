@@ -25,7 +25,7 @@ asrp_scenarios <- asrp_scenarios_char %>%
                      Scenario_num_2 = "wood_only") %>%
               unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
-              mutate(LW = 'n',
+              mutate(LW = as.character(LW),
                      Barriers = 'n',
                      Floodplain = as.character(Floodplain),
                      Beaver = 'n',
@@ -100,10 +100,10 @@ scenario.nums <- c(
   , 'scenario_1_wood_only', 'scenario_2_wood_only', 'scenario_3_wood_only'
   , 'scenario_1_fp_only', 'scenario_2_fp_only', 'scenario_3_fp_only'
   , 'scenario_1_beaver_only', 'scenario_2_beaver_only', 'scenario_3_beaver_only'
-  # , 'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'
-  # , 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'
-  # , 'scenario_1_no_climate_chg', 'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg'
-  # , 'dev_and_climate'
+  , 'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'
+  , 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'
+  , 'scenario_1_no_climate_chg', 'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg'
+  , 'dev_and_climate'
 )
 
 all_habs_scenario <- lapply(scenario.nums, function(h) {
@@ -127,7 +127,8 @@ primary_cr_list <- c("Decker-", "Bingham-", "Cedar-", "Sherman-", "Elk Cr-", "Cr
 
 primary_cr <- c(lapply(primary_cr_list, function(z) {
   c(grep(z, flowline$Reach, value = TRUE))
-}))
+})) %>%
+  unlist()
 
 rm(all_habs)
 rm(all_habs_year)
