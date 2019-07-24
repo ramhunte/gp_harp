@@ -25,7 +25,7 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
                      Scenario_num_2 = "wood_only") %>%
                 unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
-              mutate(LW = 'n',
+              mutate(LW = as.character(LW),
                      Barriers = 'n',
                      Floodplain = as.character(Floodplain),
                      Beaver = 'n',
@@ -86,7 +86,8 @@ primary_cr_list <- c("Decker-", "Bingham-", "Cedar-", "Sherman-", "Elk Cr-", "Cr
 
 primary_cr <- c(lapply(primary_cr_list, function(z) {
   c(grep(z, flowline$Reach, value = TRUE))
-}))
+})) %>%
+  unlist()
 
 rm(all_habs)
 rm(all_habs_year)
