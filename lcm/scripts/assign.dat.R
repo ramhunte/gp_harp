@@ -89,8 +89,10 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   cap <- dat['capacity_s', ]
   
   # Weekly productivity scaled with June temperatures
-  # This is weighted so that 50% of fish will get the impact of temperature
-  weekly.surv.temp <- (0.45 * dat['surv_s_2', ]^(1/12)) + (.55 * weekly.surv) 
+  # This is weighted so that 45% of fish will get the impact of temperature for 4 of 11 weeks of the subyr rearing period
+  w <- (0.45 * 4/11)
+  
+  weekly.surv.temp <- (w * dat['surv_s_2', ]^(1/12)) + ((1 - w) * weekly.surv) 
   
 } 
 
