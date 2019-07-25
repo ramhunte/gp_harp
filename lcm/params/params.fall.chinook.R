@@ -46,7 +46,7 @@ fry.surv.adj <- 1
 # stochastic survival between min and max
 
 # Values including delta
-bay.parr.surv <- .06 # Delta and bay for parr (freshwater rearing)
+bay.parr.surv <- .061 # Delta and bay for parr (freshwater rearing)
 bay.fry.surv <- .001 # Freshwater outmigration, delta and bay for fry
 
 #Stochastically vary the bay-delta survival by 20%
@@ -94,13 +94,30 @@ b5 <- 0.85
 
 
 # Pre harvest SAR
-so.weighted <- So.func(so.1[1],so.1[2])*b2 +
-                  So.func(so.1[1],so.1[2])*So.func(so.2[1],so.2[2])*b3 +
-                  So.func(so.1[1],so.1[2])*So.func(so.2[1],so.2[2])*So.func(so.3[1],so.3[2])*b4 +
-                  So.func(so.1[1],so.1[2])*So.func(so.2[1],so.2[2])*So.func(so.3[1],so.3[2])*So.func(so.4[1],so.4[2])*b5 +
-                  So.func(so.1[1],so.1[2])*So.func(so.2[1],so.2[2])*So.func(so.3[1],so.3[2])*So.func(so.4[1],so.4[2])*So.func(so.5[1],so.5[2])*(1-(b2+b3+b4+b5))
 
+# Weighted average ocean survival
+#so_w <- 0.3210761737
 
+age0 <- 1
+
+age1 <- age0 * so.1
+age2 <- age1 * so.2 * (1 - b2)
+age3 <- age2 * so.3 * (1 - b3)
+age4 <- age3 * so.4 * (1 - b4)
+age5 <- age4 * so.5 * (1 - b5)
+
+age2_return <- age1 * b2
+age3_return <- age2 * b3
+age4_return <- age3 * b4
+age5_return <- age4 * b5
+age6_return <- age5
+
+returns <- age2_return + age3_return + age4_return + age5_return + age6_return
+
+so_w <- returns / age0
+
+SAR.parr <- (so_w * bay.parr.surv)[1]
+SAR.fry <- (so_w * bay.fry.surv)[1]
 
 # Harvest rate -------------------------------------------------------------------------------------------------------------
 

@@ -271,8 +271,6 @@ for (n in 1:length(scenario.file)) {
           N['sub.yr.bay',]
       ) 
     
-    SAR.fry <- so.weighted * bay.fry.surv
-    SAR.parr <- so.weighted * bay.parr.surv
     SAR.weighted <- (SAR.fry * SAR.ratio) + (SAR.parr * (1 - SAR.ratio))
   }
   

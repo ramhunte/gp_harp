@@ -221,4 +221,5 @@ left_join(., fut_imperv, by = c('GSU', 'year')) %>%
                                                  'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
                              'n',
                              as.character(Floodplain)))
+
 rm(asrp_reach_data_scenarios)
