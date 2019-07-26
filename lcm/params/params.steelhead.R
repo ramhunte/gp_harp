@@ -31,12 +31,17 @@ egg.fry.surv.adj <- 1.0 #egg to fry survival adjustment
 
 
 
-#Proportions of migrants ----------------------------------------------------------------------------------------------------------
-# Steelhead are spring migrants
-prop.fry.migrants <- c(rep(0, num.reaches))
-prop.sub.migrants <- c(rep(0, num.reaches))
-prop.sp.yr <- c(rep(1, num.reaches))
+# spring redistribution ------------------------------------------------------------------------------------------------
+# Percent of fish that move from natal basin down to mainstem in the spring
+# See memo from Tim (NOAA LCM steelhead juvenile movement 2019-07-17)
 
+percent.spring.migrants <- read.csv('lcm/data/Subbasin_names.csv') %>%
+  mutate(prcnt_movers = case_when(
+    Area_km2 > 450              ~ 0.0,
+    between(Area_km2, 150, 450) ~ 0.2,
+    Area_km2 < 250              ~ 0.5
+  )) %>%
+  pull(prcnt_movers)
 
 
 # Fry to migrants survival & capacity (summer) --------------------------------------------------------------------------------------------
@@ -96,18 +101,50 @@ b5 <- 0.6 # propensity to return as 5 year olds
 # Any age 6 that still hasn't spawned will return
 
 
+# Respawn rate --
+# spawners that outmigrate back to ocean as kelts, from Clakamas River estimates and other Willamette populations;
+# Howell et al. (1985)
+respawn.rate <- 0.80 * 0.50 # rate * sex ratio
+
+# reconditioning of kelts in ocean
+kelt.recond <- 0.60
+
+# kelts from ocean to returning respawners
+respawn.return <- 0.50
+
+# product of all above correspond to a rate of 0.12;
+# Clemens (2015) suggests that coastal populations generally have a higher iteroparity rate than non-coastal, this
+# is in the range for coastal populations
+
+# Condensed kelt rate for simplicity
+kelt.rate <- respawn.rate * kelt.recond * respawn.return
+
+
 # Pre harvest SAR
-so.weighted <- 
-  So +
-  So^2 * b3 +
-  So^3 * b4 +
-  So^4 * b5 +
-  So^5 * (1 - (b3 + b4 + b5))
-
-
-SAR <- bay.surv * so.weighted %>% round(3)
-
-
+# smolts <- 1000
+# 
+# prcnt.age1 <- 0.15
+# 
+# age1.smolts <- smolts * prcnt.age1
+# age2.smolts <- smolts * (1 - prcnt.age1)
+# 
+# age1 <- age1.smolts * So
+# age2 <- (age1 + age2.smolts) * So
+# age3 <- age2 * So * (1 - b3)
+# age4 <- age3 * So * (1 - b4)
+# age5 <- age4 * So * (1 - b5)
+# 
+# age3_return <- age2 * b3
+# age4_return <- age3 * b4
+# age5_return <- age4 * b5
+# age6_return <- age5
+# 
+# returns <- age3_return + age4_return + age5_return + age6_return
+# 
+# so_w <- returns / smolts
+# 
+# SAR <- so_w * bay.surv
+# SAR
 
 # Harvest rate -------------------------------------------------------------------------------------------------------------
 Hr <- 0 #.16 # latest estimate (from Eric Walther, May 2017; average)
@@ -128,23 +165,8 @@ S.sb <- 1#0.90 # 1.0
 
 
 
-# Respawn rate ------------------------------------------------------------------------------------------------------------
-# spawners that outmigrate back to ocean as kelts, from Clakamas River estimates and other Willamette populations;
-# Howell et al. (1985)
-respawn.rate <- 0.80*0.50
-# 
-# reconditioning of kelts in ocean
-kelt.recond <- 0.60
- 
-# kelts from ocean to returning respawners
-respawn.return <- 0.50
 
-# product of all above correspond to a rate of 0.12;
-# Clemens (2015) suggests that coastal populations generally have a higher iteroparity rate than non-coastal, this
-# is in the range for coastal populations
 
-# Condensed kelt rate for simplicity
-kelt.rate <- respawn.rate * kelt.recond * respawn.return
 
-fecund.fac <- 1.0
+
 

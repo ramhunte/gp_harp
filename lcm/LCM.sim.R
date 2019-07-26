@@ -274,6 +274,11 @@ for (n in 1:length(scenario.file)) {
     SAR.weighted <- (SAR.fry * SAR.ratio) + (SAR.parr * (1 - SAR.ratio))
   }
   
+  if (pop == "steelhead") {
+    SAR <- sum(N['total.run', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ])
+    SAR <- SAR %>% round(3)
+  }
+  
   if (sensitivity.mode == "no") {
     cat(runs, "\t", years, "\t")
     cat(round(spawn.hr, 0), "\t", "\t")
