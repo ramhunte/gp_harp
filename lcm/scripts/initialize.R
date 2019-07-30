@@ -229,7 +229,7 @@ move.matrix <- matrix(
 )
 
 # Create spring movmemnt matrix for coho
-if (pop == 'coho') {
+if (pop == 'coho' | pop == 'steelhead') {
   move.matrix.spring <- move.matrix
   
   move.matrix.spring[1, to.upperms1] <- 1

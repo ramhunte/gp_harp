@@ -18,30 +18,12 @@ gsu_forest <- flowline %>%
 # actions applied are wood placement and barrier removal.  Floodplain reconnection and beaver recovery both occur as indirect results of wood placement
 # and continued tree growth.  
 
-gsu_forest <- flowline %>% 
-  group_by(GSU, forest) %>%
-  summarize(Shape_Length = sum(Shape_Length, na.rm = T)) %>%
-  mutate(forest = ifelse(forest == 'Yes',
-                         as.character(forest),
-                         'No')) %>%
-  spread(forest, Shape_Length) %>%
-  mutate(Yes = ifelse(is.na(Yes),
-                      0,
-                      Yes),
-         No = ifelse(is.na(No),
-                     0,
-                     No),
-         perc_forest = Yes / (Yes + No))
-
 # Replicate flowline 4x, once for each scenario in `scenario.nums` ----
 
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num) %>%
-    mutate(forest = ifelse(forest == "Yes",
-                           "y", 
-                           "n"),
-           Scenario_num = j) 
+    mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
 
@@ -58,8 +40,11 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only",
                                'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only') & 
              year %in% c(2040, 2080))) %>%
-  left_join(., gsu_forest %>%
-              select(GSU, perc_forest)) %>%
+  left_join(., asrp_scenarios %>%
+              select(GSU, Scenario_num, managed_forest)) %>%
+  mutate(managed_forest = ifelse(is.na(managed_forest), 
+                                 'n',
+                                 as.character(managed_forest))) %>%
   
   # Assign temperature with and without tree growth, and intensity scalars for temperature, wood, floodplains and beaver based on year ----
   mutate(tm_2019 = curr_temp,
@@ -142,11 +127,17 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                'n',
                'y'),
       Barriers == 'n' ~ 'n'),
+    Riparian = case_when(
+      is.na(Riparian) | Riparian == 'n' ~ 'n',
+      Riparian == 'y' ~
+        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+               'n',
+               'y')),
     Floodplain = case_when(
       Floodplain == 'y' ~
         ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
                'n',
-               ifelse(perc_forest > .5,
+               ifelse(managed_forest == 'y',
                       ifelse(LW == 'y',
                              'y',
                              'n'),
@@ -154,25 +145,19 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
       is.na(Floodplain) | Floodplain == 'n' ~
         ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
                'n',
-               ifelse(perc_forest > .5,
+               ifelse(managed_forest == 'y',
                            ifelse(LW == 'y',
                                   'y',
                                   'n'),
-                           'n'))),
+                           ifelse(Riparian == 'y',
+                                  'y',
+                                  'n')))),
     Beaver = case_when(
-      is.na(Beaver) ~ 'n',
-      Beaver == 'y' ~
-        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-               'n',
-               'y'),
-      Beaver == 'n' ~ 'n'),
-    Riparian = case_when(
-      is.na(Riparian) ~ 'n',
-      Riparian == 'y' ~
-        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-               'n',
-               'y'),
-      Riparian == 'n' ~ 'n')) %>%
+      (primary_cr_only == 'y' & !Reach %in% primary_cr) ~ 'n',
+      !(primary_cr_only == 'y' & !Reach %in% primary_cr) ~
+        ifelse(LW == 'y',
+               'y',
+               'n'))) %>%
   
   # Calculate wood and temperature multipliers based on the particular asrp scenario and year of each row ----
 
@@ -211,15 +196,21 @@ left_join(., fut_imperv, by = c('GSU', 'year')) %>%
                                 future_imperv)) %>%
   mutate(LW = ifelse(Scenario_num %in% c("scenario_1_fp_only", "scenario_2_fp_only", "scenario_3_fp_only", 
                                          'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
-                                         'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only',
                                          'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
                      'n',
                      as.character(LW)),
          Floodplain = ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", 
                                                  'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
-                                                 'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only',
                                                  'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
                              'n',
+                             as.character(Floodplain)),
+         Riparian = ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", 
+                                                 'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
+                                                 'scenario_1_fp_only', 'scenario_2_fp_only', 'scenario_3_fp_only'),
+                             'n',
                              as.character(Floodplain)))
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
 rm(asrp_reach_data_scenarios)

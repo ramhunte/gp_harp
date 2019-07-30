@@ -12,7 +12,8 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
          Floodplain = as.character(Floodplain),
          Beaver = as.character(Beaver),
          Riparian = as.character(Riparian),
-         primary_cr_only = as.character(primary_cr_only))
+         primary_cr_only = as.character(primary_cr_only),
+         managed_forest = as.character(managed_forest))
 
 asrp_scenarios <- asrp_scenarios_char %>%
   bind_rows(., asrp_scenarios_char %>%
@@ -22,6 +23,7 @@ asrp_scenarios <- asrp_scenarios_char %>%
                      Beaver = 'n',
                      Riparian = 'n',
                      primary_cr_only = as.character(primary_cr_only),
+                     managed_forest = as.character(managed_forest),
                      Scenario_num_2 = "wood_only") %>%
               unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
@@ -29,17 +31,19 @@ asrp_scenarios <- asrp_scenarios_char %>%
                      Barriers = 'n',
                      Floodplain = as.character(Floodplain),
                      Beaver = 'n',
-                     Riparian = 'n',
+                     Riparian = as.character(Riparian),
                      primary_cr_only = as.character(primary_cr_only),
+                     managed_forest = as.character(managed_forest),
                      Scenario_num_2 = "fp_only") %>%
               unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
-              mutate(LW = 'n',
+              mutate(LW = as.character(LW),
                      Barriers = 'n',
                      Floodplain = 'n',
                      Beaver = as.character(Beaver),
                      Riparian = 'n',
                      primary_cr_only = as.character(primary_cr_only),
+                     managed_forest = as.character(managed_forest),
                      Scenario_num_2 = "beaver_only") %>%
               unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
   bind_rows(., asrp_scenarios_char %>%
