@@ -65,7 +65,7 @@ asrp_ss <- all_habs_scenario %>%
     Area = ifelse(pass_tot_asrp == 0,
                   0,
                   Area)) %>%
-  select(noaaid, Subbasin_num, pass_tot_asrp, GSU, forest, woodmult_s_asrp, woodmult_w_asrp, tempmult.asrp, Habitat, Area, life.stage, lc, 
+  select(noaaid, Subbasin_num, pass_tot_asrp, GSU, woodmult_s_asrp, woodmult_w_asrp, tempmult.asrp, Habitat, Area, life.stage, lc, 
          slope.class, rest_perc, rest_perc, both_chk, Scenario_num, year, LW, Floodplain, Beaver, Riparian, Barriers, wood_intensity_scalar, wood_intensity_scalar, chino_mult)
 
 if (fishtype %in% c("spring_chinook", "fall_chinook")) {
