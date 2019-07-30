@@ -1,22 +1,4 @@
 # This script creates a table from which noaaid level characteristics are drawn in the ASRP scenario scripts 
-gsu_forest <- flowline %>% 
-  group_by(GSU, forest) %>%
-  summarize(Shape_Length = sum(Shape_Length, na.rm = T)) %>%
-  mutate(forest = ifelse(forest == 'Yes',
-                         as.character(forest),
-                         'No')) %>%
-  spread(forest, Shape_Length) %>%
-  mutate(Yes = ifelse(is.na(Yes),
-                      0,
-                      Yes),
-         No = ifelse(is.na(No),
-                     0,
-                     No),
-         perc_forest = Yes / (Yes + No))
-
-# Create field that shows the percent of each GSU that is within managed forests.  In GSUs that are > 50% within managed forests the only restoration 
-# actions applied are wood placement and barrier removal.  Floodplain reconnection and beaver recovery both occur as indirect results of wood placement
-# and continued tree growth.  
 
 # Replicate flowline 4x, once for each scenario in `scenario.nums` ----
 
@@ -60,8 +42,8 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
          temp_intensity_scalar = case_when(
            year == 2019 & Scenario_num == 'Current_asrp' ~ 0,
            year == 2019 & !Scenario_num == 'Current_asrp' ~ 1,
-           year == 2040 ~ 1,
-           year == 2080 ~ 1),
+           year == 2040 ~ .75,
+           year == 2080 ~ .75),
          wood_intensity_scalar = case_when(
            year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
@@ -76,22 +58,22 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only',
                                                      "scenario_3_beaver_only"),
-                                 ifelse(perc_forest > .5,
+                                 ifelse(managed_forest == 'y',
                                         1,
                                         1),
                                  0),
-           year %in% c(2040, 2080) & perc_forest > .5 ~ 1,
-           year %in% c(2040, 2080) & perc_forest < .5 ~ 1),
+           year %in% c(2040, 2080) & managed_forest == 'y'~ 1,
+           year %in% c(2040, 2080) & managed_forest == 'n'~ 1),
          beaver_intensity_scalar = case_when(
            year == 2019 ~ ifelse(Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', "scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", 
                                                      "scenario_2_fp_only", "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", 
                                                      "scenario_3_beaver_only",
                                                      'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'),
-                                 ifelse(perc_forest > .5,
+                                 ifelse(managed_forest == 'y',
                                         1,
                                         1),
                                  0),
-           year %in% c(2040, 2080) ~ ifelse(perc_forest > .5,
+           year %in% c(2040, 2080) ~ ifelse(managed_forest == 'y',
                                             .1,
                                             1))) %>%
   left_join(., asrp_scenarios) %>%
@@ -196,21 +178,33 @@ left_join(., fut_imperv, by = c('GSU', 'year')) %>%
                                 future_imperv)) %>%
   mutate(LW = ifelse(Scenario_num %in% c("scenario_1_fp_only", "scenario_2_fp_only", "scenario_3_fp_only", 
                                          'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
-                                         'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                                         'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only',
+                                         'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'),
                      'n',
                      as.character(LW)),
          Floodplain = ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", 
                                                  'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
-                                                 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                                                 'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only',
+                                                 'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'),
                              'n',
                              as.character(Floodplain)),
          Riparian = ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", 
                                                  'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
-                                                 'scenario_1_fp_only', 'scenario_2_fp_only', 'scenario_3_fp_only'),
+                                                 'scenario_1_fp_only', 'scenario_2_fp_only', 'scenario_3_fp_only',
+                                               'scenario_1_barrier_only', 'scenario_2_barrier_only', 'scenario_3_barrier_only'),
                              'n',
-                             as.character(Floodplain)))
-<<<<<<< HEAD
+                             as.character(Floodplain)),
+         Barriers = ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", 
+                                               'scenario_1_beaver_only', 'scenario_2_beaver_only','scenario_3_beaver_only',
+                                               'scenario_1_fp_only', 'scenario_2_fp_only', 'scenario_3_fp_only',
+                                               'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                           'n',
+                           as.character(Barriers)),
+         Beaver = ifelse(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", 
+                                               'scenario_1_barrier_only', 'scenario_2_barrier_only','scenario_3_barrier_only',
+                                               'scenario_1_fp_only', 'scenario_2_fp_only', 'scenario_3_fp_only',
+                                               'scenario_1_riparian_only', 'scenario_2_riparian_only', 'scenario_3_riparian_only'),
+                           'n',
+                           as.character(Beaver)))
 
-=======
->>>>>>> dev
 rm(asrp_reach_data_scenarios)
