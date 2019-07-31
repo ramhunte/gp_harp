@@ -47,8 +47,10 @@ mutate(tm_2019 = curr_temp,
 # already present and tree growth, not tree planting, is necessary, no temperature intensity scalar is applied.
        temp_intensity_scalar = case_when(
          year == 2019 ~ 0,
-         year == 2040 ~ .75,
-         year == 2080 ~ .75),
+         year %in% c(2040, 2080) ~ 
+           ifelse(managed_forest == 'y',
+                  0,
+                  .75)),
        
 # assign wood intensity scalar.  This is set to 1 for all restoration scenarios
        wood_intensity_scalar = case_when(
