@@ -5,7 +5,7 @@ asrp_bw <- all_habs_scenario %>%
          Habitat, Reach_low, slope.class, Scenario_num, year, Area_ha, chino_mult) %>%
   left_join(., asrp_reach_data) %>%
   mutate(Area_ha = ifelse(Period == "Hist",
-                          ifelse(Floodplain == "y" & managed_forest == "n",
+                          ifelse(Floodplain == "y",
                                  Area_ha * rest_perc * fp_intensity_scalar,
                                  0),
                           Area_ha),
