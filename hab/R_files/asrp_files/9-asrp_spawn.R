@@ -10,7 +10,7 @@ all_habs_spawn <- all_habs_scenario %>%
 asrp_spawn_ss <- all_habs_spawn %>%
   filter(Habitat == "SmStream") %>%
   filter(slope < .03) %>%
-  mutate(Shape_Length = ifelse(Beaver == 'y' & !managed_forest == "y",
+  mutate(Shape_Length = ifelse(Beaver == 'y',
                                Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
                                Shape_Length * curr_beaver_mult),
          eggs = ifelse(slope < .01,
@@ -30,7 +30,7 @@ asrp_spawn_fp <- all_habs_spawn %>%
                 spawn_dist == "Yes" & NEAR_DIST < 500,
                 spawn_dist == "Yes" & NEAR_DIST < 5)) %>%
   mutate(eggs = ifelse(Period == "Hist",
-                       ifelse(Floodplain == 'y' & !managed_forest == "y",
+                       ifelse(Floodplain == 'y',
                               Length_sc * rest_perc * fp_intensity_scalar * pass_tot_asrp * PR_redd_density / 1000 * fecundity,
                               0),
                        Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity))
