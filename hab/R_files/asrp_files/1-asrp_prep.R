@@ -15,46 +15,26 @@ asrp_scenarios_char <- asrp_scenarios_raw %>%
          primary_cr_only = as.character(primary_cr_only),
          managed_forest = as.character(managed_forest))
 
-  asrp_scenarios <- asrp_scenarios_char %>%
-    bind_rows(., asrp_scenarios_char %>%
-              mutate(LW = as.character(LW),
-                     Barriers = 'n',
-                     Floodplain = 'n',
-                     Beaver = 'n',
-                     Riparian = 'n',
-                     primary_cr_only = as.character(primary_cr_only),
-                     managed_forest = as.character(managed_forest),
-                     Scenario_num_2 = "wood_only") %>%
-                unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
-  bind_rows(., asrp_scenarios_char %>%
-              mutate(LW = as.character(LW),
-                     Barriers = 'n',
-                     Floodplain = as.character(Floodplain),
-                     Beaver = 'n',
-                     Riparian = as.character(Riparian),
-                     primary_cr_only = as.character(primary_cr_only),
-                     managed_forest = as.character(managed_forest),
-                     Scenario_num_2 = "fp_only") %>%
-              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_")) %>%
-  bind_rows(., asrp_scenarios_char %>%
-              mutate(LW = as.character(LW),
-                     Barriers = 'n',
-                     Floodplain = 'n',
-                     Beaver = as.character(Beaver),
-                     Riparian = 'n',
-                     primary_cr_only = as.character(primary_cr_only),
-                     managed_forest = as.character(managed_forest),
-                     Scenario_num_2 = "beaver_only") %>%
-              unite(Scenario_num, Scenario_num, Scenario_num_2, sep = "_"))
+if (run_single_action == 'yes') {
+  single_action_list <- c('wood_only', 'beaver_only', 'fp_only', 'barrier_only', 'riparian_only', 'no_climate_chg')
+} else {
+  single_action_list <- c('wood_only', 'beaver_only', 'fp_only')
+}
 
-# Attach year and scenario num columns to habitat data sets ---- 
+  asrp_scenarios <- lapply(single_action_list, function(q) {
+    asrp_scenarios_char %>%
+      mutate(Scenario_num_2 = q) %>%
+      unite(Scenario_num, Scenario_num, Scenario_num_2, sep = '_')
+  }) %>%
+    do.call('rbind',.) %>%
+    bind_rows(asrp_scenarios_char)
+  
+# Create single dataframe with all habitat data included
 
-# Assign habitat for SmStream data.  LgRiver and Floodplain already have Habitat field attached.  
-
-asrp_ss_raw %<>% 
-  mutate(Habitat = "SmStream")
-
-all_habs <- bind_rows(asrp_bw_raw, asrp_fp_raw, asrp_lr_raw, asrp_ss_raw)
+all_habs <- bind_rows(asrp_bw_raw, asrp_fp_raw, asrp_lr_raw, asrp_ss_raw %>%
+                        mutate(Habitat = 'SmStream')) %>%
+  select(-Wtrbdy_wau, -Area_km2, -HabUnit, -NEAR_FID, -ET_ID, -noaaid_lr, -OID, -Join_Count, -TARGET_FID, -Basin_wau, Shape_Length_1, -noaa_sub,
+         -noaa_sub_num, -source_hab, -temp_diff, -curr.tempmult, -hist.tempmult)
 
 # Attach year column to dataset
 
@@ -69,17 +49,20 @@ all_habs_year <- lapply(scenario.years, function(g) {
 
 # Attach scenario numbers to habitat data and filter to only those scenarios which we wish to run
 
-scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate') # Note:  Current is only run to compare the asrp scenario outputs with the diagnostics
-                                                                                # scenario code to ensure that the asrp scenario code is working properly
+scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate') 
+single_action_scenarios <- c(unique(asrp_scenarios$Scenario_num[!asrp_scenarios$Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3')]), 'dev_and_climate')
+growth_scenarios <- c('scenario_1_riparian_only', 'scenario_2_riparian_only','scenario_3_riparian_only', 'scenario_1_no_climate_chg',
+                      'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg')
+
 all_habs_scenario <- lapply(scenario.nums, function(h) {
   all_habs_year %>%
     mutate(Scenario_num = h)
   }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate')),
-         !(Scenario_num %in% c("scenario_1_wood_only", "scenario_2_wood_only", "scenario_3_wood_only", "scenario_1_fp_only", "scenario_2_fp_only", 
-                               "scenario_3_fp_only", "scenario_1_beaver_only",  "scenario_2_beaver_only", "scenario_3_beaver_only") & 
-             year %in% c(2040, 2080)))
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+         !(Scenario_num %in% single_action_scenarios[!single_action_scenarios %in% growth_scenarios] & 
+             year %in% c(2040, 2080)),
+         !(is.na(Shape_Length) & Area_ha == 0))
 
 
 # Create list of primary creeks to be used when asrp scenarios call for restoration of primary creek only ----
@@ -95,3 +78,4 @@ primary_cr <- c(lapply(primary_cr_list, function(z) {
 
 rm(all_habs)
 rm(all_habs_year)
+rm(all_scenarios_char)

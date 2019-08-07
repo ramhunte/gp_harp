@@ -18,7 +18,7 @@ ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
 
 asrp_results <- asrp_results_inputs %>%
   left_join(., asrp_mvmt) %>%
-  mutate(movement = ifelse(Scenario_num == "Current_asrp",
+  mutate(movement = ifelse(Scenario_num %in% c("Current_asrp", 'dev_and_climate'),
                            11,
                            movement)) %>%
   # mutate(movement = 11) %>%

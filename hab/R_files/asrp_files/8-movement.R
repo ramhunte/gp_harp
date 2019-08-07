@@ -16,51 +16,56 @@ mvmt_data %<>%
   group_by(Subbasin_num, Scenario_num) %>%
   summarize(cap_mvmt = sum(capacity, na.rm = T))
 
-asrp_mvmt <- mvmt_data %>%
+mvmt_data_curr <- data %>%
+  filter(hab.scenario == 'Current',
+         life.stage %in% c('winter', 'winter.2')) %>%
+  select(Subbasin_num, capacity) %>%
+  group_by(Subbasin_num) %>%
+  summarize(current_cap = sum(capacity, na.rm = TRUE)) %>%
+  ungroup()
+
+asrp_mvmt_1 <- mvmt_data %>%
+  left_join(., mvmt_data_curr) %>%
   spread(Scenario_num, cap_mvmt) %>%
-  left_join(., data %>%
-              filter(hab.scenario == "Current",
-                     life.stage == "winter") %>%
-              select(Subbasin_num, capacity) %>%
-              group_by(Subbasin_num) %>%
-              summarize(cap_curr = sum(capacity, na.rm = TRUE)) %>%
-              ungroup(),
-            by = "Subbasin_num") %>%
-  left_join(., asrp_cap %>%
-              filter(life.stage == "winter", Scenario_num == "Current_asrp", year == 2019) %>%
-              select(Subbasin_num, capacity) %>%
-              group_by(Subbasin_num) %>%
-              summarize(cap_scen = sum(capacity, na.rm = TRUE)) %>%
-              ungroup(), 
-            by = "Subbasin_num") %>%
+  rename(scenario_1_cap_curr = current_cap) %>%
+  mutate(scenario_2_cap_curr = scenario_1_cap_curr,
+         scenario_3_cap_curr = scenario_1_cap_curr) %>%
+  gather(Scenario_num, cap, -Subbasin_num) %>%
+  group_by(Subbasin_num) %>%
   mutate(
-    wood_diff_1 = scenario_1_wood_only - cap_scen,
-    fp_diff_1 = scenario_1_fp_only - cap_scen,
-    beaver_diff_1 = scenario_1_beaver_only - cap_scen,
-    tot_diff_1 = wood_diff_1 + fp_diff_1 + beaver_diff_1,
-    wood_perc_1 = wood_diff_1 / (cap_scen + tot_diff_1),
-    fp_perc_1 = fp_diff_1 / (cap_scen + tot_diff_1),
-    beaver_perc_1 = beaver_diff_1 / (cap_scen + tot_diff_1),
-    curr_perc_1 = (cap_scen / (cap_scen + tot_diff_1)),
-    scenario_1 = (wood_perc_1 * 7) + (fp_perc_1 * 3) + (beaver_perc_1 * 3) + (curr_perc_1 * 11),
-    wood_diff_2 = scenario_2_wood_only - cap_scen,
-    fp_diff_2 = scenario_2_fp_only - cap_scen,
-    beaver_diff_2 = scenario_2_beaver_only - cap_scen,
-    tot_diff_2 = wood_diff_2 + fp_diff_2 + beaver_diff_2,
-    wood_perc_2 = wood_diff_2 / (cap_scen + tot_diff_2),
-    fp_perc_2 = fp_diff_2 / (cap_scen + tot_diff_2),
-    beaver_perc_2 = beaver_diff_2 / (cap_scen + tot_diff_2),
-    curr_perc_2 = (cap_scen / (cap_scen + tot_diff_2)),
-    scenario_2 = (wood_perc_2 * 7) + (fp_perc_2 * 3) + (beaver_perc_2 * 3) + (curr_perc_2 * 11),
-    wood_diff_3 = scenario_3_wood_only - cap_scen,
-    fp_diff_3 = scenario_3_fp_only - cap_scen,
-    beaver_diff_3 = scenario_3_beaver_only - cap_scen,
-    tot_diff_3 = wood_diff_3 + fp_diff_3 + beaver_diff_3,
-    wood_perc_3 = wood_diff_3 / (cap_scen + tot_diff_3),
-    fp_perc_3 = fp_diff_3 / (cap_scen + tot_diff_3),
-    beaver_perc_3 = beaver_diff_3 / (cap_scen + tot_diff_3),
-    curr_perc_3 = (cap_scen / (cap_scen + tot_diff_3)),
-    scenario_3 = (wood_perc_3 * 7) + (fp_perc_3 * 3) + (beaver_perc_3 * 3) + (curr_perc_3 * 11),
-    dev_and_climate = 11) %>%
-  select(Subbasin_num, scenario_1, scenario_2, scenario_3) %>%
-  gather(Scenario_num, movement, scenario_1:scenario_3)
+    scenario = case_when(
+      str_detect(Scenario_num, 'scenario_1') ~ 'scenario_1',
+      str_detect(Scenario_num, 'scenario_2') ~ 'scenario_2',
+      str_detect(Scenario_num, 'scenario_3') ~ 'scenario_3'),
+    Scenario_num = ifelse(str_detect(Scenario_num, 'curr'),
+                          'current',
+                          as.character(Scenario_num)),
+    diff = cap - cap[Scenario_num == 'current']) %>%
+  group_by(Subbasin_num, scenario) %>%
+  mutate(tot_diff = sum(diff, na.rm = T),
+         perc = case_when(
+           Scenario_num == 'current' ~ cap / (cap[Scenario_num == 'current'] + tot_diff),
+           !Scenario_num == 'current' ~ diff / (cap[Scenario_num == 'current'] + tot_diff)),
+         curr_cap = cap) %>%
+  group_by(Subbasin_num, Scenario_num) %>%
+  mutate(
+    perc_single_action = case_when(
+      !Scenario_num == 'current' ~ diff / (curr_cap + diff),
+      Scenario_num == 'current' ~ 0),
+    mvmt_base = case_when(
+      str_detect(Scenario_num, 'wood') ~ 7,
+      str_detect(Scenario_num, 'fp') ~ 3,
+      str_detect(Scenario_num, 'beaver') ~ 3,
+      !str_detect(Scenario_num, 'wood|fp|beaver') ~ 11))
+
+asrp_mvmt <- asrp_mvmt_1 %>%
+  group_by(Subbasin_num, scenario) %>%
+  summarize(movement = sum(perc * mvmt_base, na.rm = T)) %>%
+  rename(Scenario_num = scenario) %>%
+  bind_rows(., asrp_mvmt_1 %>%
+              filter(!Scenario_num == 'current') %>%
+              group_by(Subbasin_num, Scenario_num) %>%
+              summarize(movement = sum((perc_single_action * mvmt_base) + ((1 - perc_single_action) * 11), na.rm = T))) %>%
+  mutate(movement = ifelse(movement == 0,
+                           NA,
+                           movement))

@@ -2,6 +2,10 @@
 
 asrp_cap <- bind_rows(asrp_lr, asrp_ss, asrp_fp)
 
+rm(asrp_ss)
+rm(asrp_lr)
+rm(asrp_fp)
+
 # Create second year for steelhead rearing
 
 if (fishtype == "steelhead") {
@@ -35,6 +39,10 @@ asrp_cap %<>%
   mutate(capacity = Area * Density)
 
 source("hab/R_files/asrp_files/8-movement.R", local = TRUE)
+
+rm(asrp_fp_mvmt)
+rm(asrp_ss_mvmt)
+rm(asrp_lr_mvmt)
 
 # Productivity calculations ----
 

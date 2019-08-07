@@ -4,6 +4,16 @@
 # The structure of the asrp scenarios code is now much closer to the structure of the diagnostic scenario s code and eventually I hope that we will 
 # combine these two sets of code
 
+rm(ss_2)
+rm(bw2)
+rm(all_temps)
+rm(edt_lyr)
+rm(fp2)
+rm(lr_2)
+rm(hist_sc)
+rm(flowline_noculv)
+rm(egg_cap_weight)
+
 source("hab/R_files/asrp_files/1-asrp_prep.R", local = TRUE)
 
 source("hab/R_files/asrp_files/2-asrp_reach_level_data.R", local = TRUE)

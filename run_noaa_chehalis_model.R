@@ -50,6 +50,10 @@ run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", g
 run_stochastic_eggtofry_query <- c('no', 'yes')
 run_stochastic_eggtofry <- run_stochastic_eggtofry_query[menu(run_stochastic_eggtofry_query, title = 'Run stochastic egg to fry?', graphics = TRUE)]
 
+# Run single action scenarios?
+run_single_action_query <- c('no', 'yes')
+run_single_action <- run_single_action_query[menu(run_single_action_query, title = 'Run single action scenarios?', graphics = TRUE)]
+
 # Store branch name ----
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 

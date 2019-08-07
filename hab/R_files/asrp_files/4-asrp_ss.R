@@ -1,11 +1,3 @@
-# Build reference (historical) pool/riffle ratios data table to recalculate pool/riffle areas in added large wood reaches ----
-
-lc.ref = c(rep("Reference", times = 3))
-slope.class = c("low", "med", "high")
-pool.perc.ref = c(.81, .66, .35)
-ss.dist.ref = data.frame(lc.ref, slope.class, pool.perc.ref)
-colnames(asrp_ss_raw)
-
 # Calculate area of each reach in each scenario ----
 asrp_ss <- all_habs_scenario %>%
   filter(Habitat == "SmStream") %>%
@@ -41,7 +33,7 @@ asrp_ss <- all_habs_scenario %>%
     Riffle = area_s * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp * beaver_mult_asrp, 
     Beaver.Pond = ifelse(Beaver == "y",
                          ((Shape_Length * curr_pond_area_per_m / 10000) + (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 
-                                                                             10000 * rest_perc * beaver_intensity_scalar)) * # 3 m^2 / m in historical - .3 m^2 in current = 2.7 m^2 diff between historical and current
+                                                                             10000 * rest_perc * beaver_intensity_scalar)) * 
                            tempmult.asrp * woodmult_s_asrp,
                          (Shape_Length * curr_pond_area_per_m) / 10000 * tempmult.asrp * woodmult_s_asrp),
     winter.pool = area_w * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp * beaver_mult_asrp,
@@ -66,7 +58,8 @@ asrp_ss <- all_habs_scenario %>%
                   0,
                   Area)) %>%
   select(noaaid, Subbasin_num, pass_tot_asrp, GSU, woodmult_s_asrp, woodmult_w_asrp, tempmult.asrp, Habitat, Area, life.stage, lc, 
-         slope.class, rest_perc, rest_perc, both_chk, Scenario_num, year, LW, Floodplain, Beaver, Riparian, Barriers, wood_intensity_scalar, wood_intensity_scalar, chino_mult)
+         slope.class, rest_perc, rest_perc, both_chk, Scenario_num, year, LW, Floodplain, Beaver, Riparian, Barriers, wood_intensity_scalar, 
+         wood_intensity_scalar, chino_mult)
 
 if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   asrp_ss %<>%
@@ -79,5 +72,7 @@ if (fishtype %in% c("spring_chinook", "fall_chinook")) {
 asrp_ss_mvmt <- asrp_ss %>%
   filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))
 
-asrp_ss %<>%
-  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))
+if (run_single_action == 'no') {
+  asrp_ss %<>%
+    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp"))
+}
