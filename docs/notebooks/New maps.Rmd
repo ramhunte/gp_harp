@@ -47,9 +47,6 @@ fl_schino <- fl %>%
 #Spring chinook
 
 ## ASRP Scenario 1
-```{r}
-par(mfrow=c(3,1))
-```
 
 ```{r include=FALSE}
 ## Scenario 1 target GSUs
@@ -61,12 +58,12 @@ gsu_1 <- gsu %>%
 gsu_list_1 <- unique(gsu_1$GSU)
 scenario_1_gsus <- gsu$GSU %in% gsu_list_1
 
-jpeg('map_jpegs/scenario_1_target_gsu.jpeg')
+# jpeg('map_jpegs/scenario_1_target_gsu.jpeg')
 plot(water, col = 'steelblue3', reset = FALSE, main = 'Target GSUs in scenario 1')
 plot(wa, col = 'white', add = TRUE)
 plot(gsu, col = 'lightgrey', add = TRUE)
 plot(gsu[scenario_1_gsus, ], col = 'green', add = TRUE)
-dev.off()
+# dev.off()
 ```
 ![](map_jpegs/scenario_1_target_gsu.jpeg)
 
