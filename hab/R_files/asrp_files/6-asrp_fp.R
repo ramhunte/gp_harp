@@ -99,9 +99,9 @@ rm(asrp_fp_precalc)
 rm(asrp_fp_precalc1)
 
 asrp_fp_mvmt <- asrp_fp %>%
-  filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate'))
+  filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'dev_and_climate', 'floodplain_hist'))
 
 if (run_single_action == 'no') {
 asrp_fp %<>%
-  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp"))
+  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", "Current_asrp", 'floodplain_hist'))
 }

@@ -1,7 +1,7 @@
 #### Prespawn survival ----
 if (run_single_action == 'no') {
   asrp_reach_data %<>%
-    filter(!Scenario_num %in% single_action_scenarios)
+    filter(!Scenario_num %in% single_action_scenarios[!single_action_scenarios == 'floodplain_hist'])
 }
 
 if (fishtype == "spring_chinook") {

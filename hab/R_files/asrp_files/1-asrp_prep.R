@@ -49,7 +49,7 @@ all_habs_year <- lapply(scenario.years, function(g) {
 
 # Attach scenario numbers to habitat data and filter to only those scenarios which we wish to run
 
-scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate') 
+scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate', 'floodplain_hist') 
 single_action_scenarios <- c(unique(asrp_scenarios$Scenario_num[!asrp_scenarios$Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3')]), 'dev_and_climate')
 growth_scenarios <- c('scenario_1_riparian_only', 'scenario_2_riparian_only','scenario_3_riparian_only', 'scenario_1_no_climate_chg',
                       'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg')
@@ -60,7 +60,7 @@ all_habs_scenario <- lapply(scenario.nums, function(h) {
   }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
-         !(Scenario_num %in% single_action_scenarios[!single_action_scenarios %in% growth_scenarios] & 
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], 'floodplain_hist') & 
              year %in% c(2040, 2080)),
          !(is.na(Shape_Length) & Area_ha == 0))
 

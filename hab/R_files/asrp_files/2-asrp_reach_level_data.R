@@ -18,7 +18,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
 }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
-         !(Scenario_num %in% single_action_scenarios[!single_action_scenarios %in% growth_scenarios] & 
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], 'floodplain_hist') & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_scenarios %>%
               select(GSU, Scenario_num, managed_forest)) %>%
@@ -70,6 +70,9 @@ mutate(tm_2019 = curr_temp,
     rest_perc = ifelse(is.na(rest_perc),
                          0,
                          rest_perc),
+    rest_perc = ifelse(Scenario_num == 'floodplain_hist',
+                       1,
+                       rest_perc),
     primary_cr_only = ifelse(is.na(primary_cr_only),
                              "n",
                              as.character(primary_cr_only)),
@@ -107,6 +110,9 @@ mutate(tm_2019 = curr_temp,
                            ifelse(Riparian == 'y',
                                   'y',
                                   'n')))),
+    Floodplain = ifelse(Scenario_num == 'floodplain_hist',
+                        'y',
+                        as.character(Floodplain)),
     Beaver = case_when(
       (primary_cr_only == 'y' & !Reach %in% primary_cr) ~ 'n',
       !(primary_cr_only == 'y' & !Reach %in% primary_cr) ~
