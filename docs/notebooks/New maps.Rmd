@@ -1,0 +1,529 @@
+---
+title: "R Notebook"
+# output: 
+#   flexdashboard::flex_dashboard:
+#     orientation: rows
+output:
+  html_notebook:
+    toc: yes
+---
+
+```{r include=FALSE}
+library(sf)
+library(knitr)
+```
+
+```{r include=FALSE} 
+
+sub <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Inputs.gdb',
+               layer = 'NOAA_subbasins_w_fp')
+
+gsu <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Inputs.gdb',
+               layer = 'chehalis_gsu_20180919_NAD83')
+
+buffer <- 1e4 
+bbox <- st_bbox(sub) + c(-buffer, -buffer, buffer, buffer)
+
+wa_state <- '//nwcfile/FE/watershed/Chehalis/Data/Map files/washington.shp'
+wa <- st_read(wa_state) %>%
+  filter(CARTO_SYMB == 1) %>%
+  st_transform(crs = st_crs(sub)) %>%
+  st_crop(bbox)
+water <- st_read(wa_state) %>%
+  filter(CARTO_SYMB == 4) %>%
+  st_transform(crs = st_crs(sub)) %>%
+  st_crop(bbox)
+
+fl <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Outputs.gdb',
+              layer = 'Flowline')
+```
+
+```{r include=FALSE}
+fl_schino <- fl %>%
+  filter(sprspawn == 'Yes' | (noaa_sub_num %in% 52:63 & Habitat == 'LgRiver')) %>%
+  select(noaaid)
+
+```
+#Spring chinook
+
+## ASRP Scenario 1
+```{r}
+par(mfrow=c(3,1))
+```
+
+```{r include=FALSE}
+## Scenario 1 target GSUs
+
+gsu_1 <- gsu %>%
+  left_join(., asrp_scenarios) %>%
+  filter(Scenario_num == 'scenario_1',
+         Barriers == 'y' | LW == 'y' | Riparian == 'y' | Floodplain == 'y')
+gsu_list_1 <- unique(gsu_1$GSU)
+scenario_1_gsus <- gsu$GSU %in% gsu_list_1
+
+jpeg('map_jpegs/scenario_1_target_gsu.jpeg')
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Target GSUs in scenario 1')
+plot(wa, col = 'white', add = TRUE)
+plot(gsu, col = 'lightgrey', add = TRUE)
+plot(gsu[scenario_1_gsus, ], col = 'green', add = TRUE)
+dev.off()
+```
+![](map_jpegs/scenario_1_target_gsu.jpeg)
+
+### 2040
+```{r include=FALSE}
+## Spring chinook 2040 temperature ASRP 1
+fl_2040_1 <- fl_schino %>%
+  left_join(., asrp_mapping %>% 
+              filter(Scenario_num == 'scenario_1',
+                     year == 2040)) 
+ps_1 <- fl_2040_1$prespawn_temp_asrp < 16
+ps_2 <- fl_2040_1$prespawn_temp_asrp > 16 & fl_2040_1$prespawn_temp_asrp < 18
+ps_3 <- fl_2040_1$prespawn_temp_asrp > 18 & fl_2040_1$prespawn_temp_asrp < 20
+ps_4 <- fl_2040_1$prespawn_temp_asrp > 20 & fl_2040_1$prespawn_temp_asrp < 22.6
+ps_5 <- fl_2040_1$prespawn_temp_asrp > 22.6
+
+jpeg('map_jpegs/scenario_1_2040_temp.jpeg')
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 1 2040 temperature')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_1['prespawn_temp_asrp'], breaks = c(0, 16, 18, 20, 22.6, 100), col = c('blue', 'yellow', 'orange', 'darkorange', 'red'), lw = 2, key.pos=4, key.length=4, key.width=4,add = TRUE)
+# plot(fl_2040_1[ps_1, ], col = 'blue', lwd = 2, add = TRUE)
+# plot(fl_2040_1[ps_2, ], col = 'yellow', lwd = 2, add = TRUE)
+# plot(fl_2040_1[ps_3, ], col = 'orange', lwd = 2, add = TRUE)
+# plot(fl_2040_1[ps_4, ], col = 'darkorange', lwd = 2, add = TRUE)
+# plot(fl_2040_1[ps_5, ], col = 'red', lwd = 2, add = TRUE)
+dev.off()
+```
+![](map_jpegs/scenario_1_2040_temp.jpeg)
+
+
+```{r include=FALSE}
+
+fl_2040_diff_1 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_1',
+                     year == 2040)) %>%
+  mutate(ps_diff_no_cc = (temp_diff_2040 - 1.8) * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_nocc_1 <- fl_2040_diff_1$ps_diff_no_cc < -2.5
+ps_diff_nocc_2 <- fl_2040_diff_1$ps_diff_no_cc > -2.5 & fl_2040_diff_1$ps_diff_no_cc < -1.5
+ps_diff_nocc_3 <- fl_2040_diff_1$ps_diff_no_cc > -1.5 & fl_2040_diff_1$ps_diff_no_cc < -.5
+ps_diff_nocc_4 <- fl_2040_diff_1$ps_diff_no_cc > -.5 & fl_2040_diff_1$ps_diff_no_cc < .5
+ps_diff_nocc_5 <- fl_2040_diff_1$ps_diff_no_cc > .5 & fl_2040_diff_1$ps_diff_no_cc < 1.5
+ps_diff_nocc_6 <- fl_2040_diff_1$ps_diff_no_cc > 1.5 & fl_2040_diff_1$ps_diff_no_cc < 2.5
+ps_diff_nocc_7 <- fl_2040_diff_1$ps_diff_no_cc > 2.5
+
+jpeg('map_jpegs/scenario_1_2040_temp_chg_no_cc.jpeg')
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 1 2040 temperature change tree growth only')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_diff_1[ps_diff_nocc_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_nocc_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_nocc_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_nocc_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_nocc_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_nocc_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_nocc_7, ], col = 'red', lwd = 2, add = TRUE)
+dev.off()
+```
+![](map_jpegs/scenario_1_2040_temp_chg_no_cc.jpeg)
+
+```{r include=FALSE}
+
+fl_2040_diff_1 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_1',
+                     year == 2040)) %>%
+  mutate(ps_diff = temp_diff_2040 * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_1 <- fl_2040_diff_1$ps_diff < -2.5
+ps_diff_2 <- fl_2040_diff_1$ps_diff > -2.5 & fl_2040_diff_1$ps_diff < -1.5
+ps_diff_3 <- fl_2040_diff_1$ps_diff > -1.5 & fl_2040_diff_1$ps_diff < -.5
+ps_diff_4 <- fl_2040_diff_1$ps_diff > -.5 & fl_2040_diff_1$ps_diff < .5
+ps_diff_5 <- fl_2040_diff_1$ps_diff > .5 & fl_2040_diff_1$ps_diff < 1.5
+ps_diff_6 <- fl_2040_diff_1$ps_diff > 1.5 & fl_2040_diff_1$ps_diff < 2.5
+ps_diff_7 <- fl_2040_diff_1$ps_diff > 2.5
+
+jpeg('map_jpegs/scenario_1_2040_temp_chg.jpeg')
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 1 temperature change')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_diff_1[ps_diff_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2040_diff_1[ps_diff_7, ], col = 'red', lwd = 2, add = TRUE)
+dev.off()
+```
+![](map_jpegs/scenario_1_2040_temp_chg.jpeg)
+
+```{r}
+
+include_graphics(c('map_jpegs/scenario_1_2040_temp_chg_no_cc', 'map_jpegs/scenario_1_2040_temp_chg.jpeg'))
+```
+
+### 2080
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+## Spring chinook 2080 temperature ASRP 1
+fl_2080_1 <- fl_schino %>%
+  left_join(., asrp_mapping %>% 
+              filter(Scenario_num == 'scenario_1',
+                     year == 2080)) 
+ps_1 <- fl_2080_1$prespawn_temp_asrp < 16
+ps_2 <- fl_2080_1$prespawn_temp_asrp > 16 & fl_2080_1$prespawn_temp_asrp < 18
+ps_3 <- fl_2080_1$prespawn_temp_asrp > 18 & fl_2080_1$prespawn_temp_asrp < 20
+ps_4 <- fl_2080_1$prespawn_temp_asrp > 20 & fl_2080_1$prespawn_temp_asrp < 22.6
+ps_5 <- fl_2080_1$prespawn_temp_asrp > 22.6
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 1 2080 temperature')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2080_1[ps_1, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2080_1[ps_2, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2080_1[ps_3, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2080_1[ps_4, ], col = 'darkorange', lwd = 2, add = TRUE)
+plot(fl_2080_1[ps_5, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2080_diff_1 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_1',
+                     year == 2080)) %>%
+  mutate(ps_diff_no_cc = (temp_diff_2080 - 3) * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_nocc_1 <- fl_2080_diff_1$ps_diff_no_cc < -2.5
+ps_diff_nocc_2 <- fl_2080_diff_1$ps_diff_no_cc > -2.5 & fl_2080_diff_1$ps_diff_no_cc < -1.5
+ps_diff_nocc_3 <- fl_2080_diff_1$ps_diff_no_cc > -1.5 & fl_2080_diff_1$ps_diff_no_cc < -.5
+ps_diff_nocc_4 <- fl_2080_diff_1$ps_diff_no_cc > -.5 & fl_2080_diff_1$ps_diff_no_cc < .5
+ps_diff_nocc_5 <- fl_2080_diff_1$ps_diff_no_cc > .5 & fl_2080_diff_1$ps_diff_no_cc < 1.5
+ps_diff_nocc_6 <- fl_2080_diff_1$ps_diff_no_cc > 1.5 & fl_2080_diff_1$ps_diff_no_cc < 2.5
+ps_diff_nocc_7 <- fl_2080_diff_1$ps_diff_no_cc > 2.5
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 1 2080 temperature change tree growth only')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2080_diff_1[ps_diff_nocc_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_nocc_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_nocc_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_nocc_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_nocc_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_nocc_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_nocc_7, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2080_diff_1 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_1',
+                     year == 2080)) %>%
+  mutate(ps_diff = temp_diff_2080 * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_1 <- fl_2080_diff_1$ps_diff < -2.5
+ps_diff_2 <- fl_2080_diff_1$ps_diff > -2.5 & fl_2080_diff_1$ps_diff < -1.5
+ps_diff_3 <- fl_2080_diff_1$ps_diff > -1.5 & fl_2080_diff_1$ps_diff < -.5
+ps_diff_4 <- fl_2080_diff_1$ps_diff > -.5 & fl_2080_diff_1$ps_diff < .5
+ps_diff_5 <- fl_2080_diff_1$ps_diff > .5 & fl_2080_diff_1$ps_diff < 1.5
+ps_diff_6 <- fl_2080_diff_1$ps_diff > 1.5 & fl_2080_diff_1$ps_diff < 2.5
+ps_diff_7 <- fl_2080_diff_1$ps_diff > 2.5
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 1 temperature change')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2080_diff_1[ps_diff_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2080_diff_1[ps_diff_7, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+
+## Scenario 2
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+gsu_2 <- gsu %>%
+  left_join(., asrp_scenarios) %>%
+  filter(Scenario_num == 'scenario_2',
+         Barriers == 'y' | LW == 'y' | Riparian == 'y' | Floodplain == 'y')
+gsu_list_2 <- unique(gsu_2$GSU)
+scenario_2_gsus <- gsu$GSU %in% gsu_list_2
+
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Target GSUs for scenario 2')
+plot(wa, col = 'white', add = TRUE)
+plot(gsu, col = 'lightgrey', add = TRUE)
+plot(gsu[scenario_2_gsus, ], col = 'orange', add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+## Spring chinook 2040 temperature ASRP 1
+fl_2040_2 <- fl_schino %>%
+  left_join(., asrp_mapping %>% 
+              filter(Scenario_num == 'scenario_2',
+                     year == 2040)) 
+ps_1 <- fl_2040_2$prespawn_temp_asrp < 16
+ps_2 <- fl_2040_2$prespawn_temp_asrp > 16 & fl_2040_2$prespawn_temp_asrp < 18
+ps_3 <- fl_2040_2$prespawn_temp_asrp > 18 & fl_2040_2$prespawn_temp_asrp < 20
+ps_4 <- fl_2040_2$prespawn_temp_asrp > 20 & fl_2040_2$prespawn_temp_asrp < 22.6
+ps_5 <- fl_2040_2$prespawn_temp_asrp > 22.6
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 2 2040 temperature')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_2[ps_1, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2040_2[ps_2, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2040_2[ps_3, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2040_2[ps_4, ], col = 'darkorange', lwd = 2, add = TRUE)
+plot(fl_2040_2[ps_5, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2040_diff_2 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_2',
+                     year == 2040)) %>%
+  mutate(ps_diff_no_cc = (temp_diff_2040 - 1.8) * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_nocc_1 <- fl_2040_diff_2$ps_diff_no_cc < -2.5
+ps_diff_nocc_2 <- fl_2040_diff_2$ps_diff_no_cc > -2.5 & fl_2040_diff_2$ps_diff_no_cc < -1.5
+ps_diff_nocc_3 <- fl_2040_diff_2$ps_diff_no_cc > -1.5 & fl_2040_diff_2$ps_diff_no_cc < -.5
+ps_diff_nocc_4 <- fl_2040_diff_2$ps_diff_no_cc > -.5 & fl_2040_diff_2$ps_diff_no_cc < .5
+ps_diff_nocc_5 <- fl_2040_diff_2$ps_diff_no_cc > .5 & fl_2040_diff_2$ps_diff_no_cc < 1.5
+ps_diff_nocc_6 <- fl_2040_diff_2$ps_diff_no_cc > 1.5 & fl_2040_diff_2$ps_diff_no_cc < 2.5
+ps_diff_nocc_7 <- fl_2040_diff_2$ps_diff_no_cc > 2.5
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 2 2040 temperature change tree growth only')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_diff_2[ps_diff_nocc_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_nocc_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_nocc_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_nocc_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_nocc_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_nocc_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_nocc_7, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2040_diff_2 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_2',
+                     year == 2040)) %>%
+  mutate(ps_diff = temp_diff_2040 * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_1 <- fl_2040_diff_2$ps_diff < -2.5
+ps_diff_2 <- fl_2040_diff_2$ps_diff > -2.5 & fl_2040_diff_2$ps_diff < -1.5
+ps_diff_3 <- fl_2040_diff_2$ps_diff > -1.5 & fl_2040_diff_2$ps_diff < -.5
+ps_diff_4 <- fl_2040_diff_2$ps_diff > -.5 & fl_2040_diff_2$ps_diff < .5
+ps_diff_5 <- fl_2040_diff_2$ps_diff > .5 & fl_2040_diff_2$ps_diff < 1.5
+ps_diff_6 <- fl_2040_diff_2$ps_diff > 1.5 & fl_2040_diff_2$ps_diff < 2.5
+ps_diff_7 <- fl_2040_diff_2$ps_diff > 2.5
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 2 temperature change')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_diff_2[ps_diff_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2040_diff_2[ps_diff_7, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+### 2080
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+## Spring chinook 2080 temperature ASRP 1
+fl_2080_2 <- fl_schino %>%
+  left_join(., asrp_mapping %>% 
+              filter(Scenario_num == 'scenario_2',
+                     year == 2080)) 
+ps_1 <- fl_2080_2$prespawn_temp_asrp < 16
+ps_2 <- fl_2080_2$prespawn_temp_asrp > 16 & fl_2080_2$prespawn_temp_asrp < 18
+ps_3 <- fl_2080_2$prespawn_temp_asrp > 18 & fl_2080_2$prespawn_temp_asrp < 20
+ps_4 <- fl_2080_2$prespawn_temp_asrp > 20 & fl_2080_2$prespawn_temp_asrp < 22.6
+ps_5 <- fl_2080_2$prespawn_temp_asrp > 22.6
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 2 2080 temperature')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2080_2[ps_1, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2080_2[ps_2, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2080_2[ps_3, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2080_2[ps_4, ], col = 'darkorange', lwd = 2, add = TRUE)
+plot(fl_2080_2[ps_5, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2080_diff_2 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_2',
+                     year == 2080)) %>%
+  mutate(ps_diff_no_cc = (temp_diff_2080 - 3) * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_nocc_1 <- fl_2080_diff_2$ps_diff_no_cc < -2.5
+ps_diff_nocc_2 <- fl_2080_diff_2$ps_diff_no_cc > -2.5 & fl_2080_diff_2$ps_diff_no_cc < -1.5
+ps_diff_nocc_3 <- fl_2080_diff_2$ps_diff_no_cc > -1.5 & fl_2080_diff_2$ps_diff_no_cc < -.5
+ps_diff_nocc_4 <- fl_2080_diff_2$ps_diff_no_cc > -.5 & fl_2080_diff_2$ps_diff_no_cc < .5
+ps_diff_nocc_5 <- fl_2080_diff_2$ps_diff_no_cc > .5 & fl_2080_diff_2$ps_diff_no_cc < 1.5
+ps_diff_nocc_6 <- fl_2080_diff_2$ps_diff_no_cc > 1.5 & fl_2080_diff_2$ps_diff_no_cc < 2.5
+ps_diff_nocc_7 <- fl_2080_diff_2$ps_diff_no_cc > 2.5
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 2 2080 temperature change tree growth only')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2080_diff_2[ps_diff_nocc_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_nocc_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_nocc_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_nocc_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_nocc_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_nocc_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_nocc_7, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2080_diff_2 <- fl_schino %>%
+  left_join(., asrp_mapping %>%
+              filter(Scenario_num == 'scenario_2',
+                     year == 2080)) %>%
+  mutate(ps_diff = temp_diff_2080 * prespawn_temp_slope - prespawn_temp_intercept)
+
+ps_diff_1 <- fl_2080_diff_2$ps_diff < -2.5
+ps_diff_2 <- fl_2080_diff_2$ps_diff > -2.5 & fl_2080_diff_2$ps_diff < -1.5
+ps_diff_3 <- fl_2080_diff_2$ps_diff > -1.5 & fl_2080_diff_2$ps_diff < -.5
+ps_diff_4 <- fl_2080_diff_2$ps_diff > -.5 & fl_2080_diff_2$ps_diff < .5
+ps_diff_5 <- fl_2080_diff_2$ps_diff > .5 & fl_2080_diff_2$ps_diff < 1.5
+ps_diff_6 <- fl_2080_diff_2$ps_diff > 1.5 & fl_2080_diff_2$ps_diff < 2.5
+ps_diff_7 <- fl_2080_diff_2$ps_diff > 2.5
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 2 temperature change')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2080_diff_2[ps_diff_1, ], col = 'navy', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_2, ], col = 'blue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_3, ], col = 'lightblue', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_4, ], col = 'white', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_5, ], col = 'yellow', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_6, ], col = 'orange', lwd = 2, add = TRUE)
+plot(fl_2080_diff_2[ps_diff_7, ], col = 'red', lwd = 2, add = TRUE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Current
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+## Scenario 1 temps: Spring chinook
+fl_curr <- fl_schino %>%
+  left_join(., flowline)
+
+ps_low <- fl_curr$prespawn_temp < 16
+ps_med <- fl_curr$prespawn_temp > 16 & fl_curr$prespawn_temp < 22.6
+ps_high <- fl_curr$prespawn_temp > 22.6
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Spring chinook current temperatures')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_curr[ps_low, ], col = 'blue', add = TRUE)
+plot(fl_curr[ps_med, ], col = 'yellow', add = TRUE)
+plot(fl_curr[ps_high, ], col = 'red', add = TRUE)
+```
+# ASRP scenario maps: 2
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+gsu_2 <- gsu %>%
+  left_join(., asrp_scenarios) %>%
+  filter(Scenario_num == 'scenario_2',
+         Barriers == 'y' | LW == 'y' | Riparian == 'y' | Floodplain == 'y')
+gsu_list_2 <- unique(gsu_2$GSU)
+scenario_2_gsus <- gsu$GSU %in% gsu_list_2
+
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 2 GSUs')
+plot(wa, col = 'white', add = TRUE)
+plot(gsu, col = 'lightgrey', add = TRUE)
+plot(gsu[scenario_2_gsus, ], col = 'orange', add = TRUE)
+```
+
+# ASRP scenario maps: 3
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+gsu_3 <- gsu %>%
+  left_join(., asrp_scenarios) %>%
+  filter(Scenario_num == 'scenario_3',
+         Barriers == 'y' | LW == 'y' | Riparian == 'y' | Floodplain == 'y')
+gsu_list_3 <- unique(gsu_3$GSU)
+scenario_3_gsus <- gsu$GSU %in% gsu_list_3
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Scenario 3 GSUs')
+plot(wa, col = 'white', add = TRUE)
+plot(gsu, col = 'lightgrey', add = TRUE)
+plot(gsu[scenario_3_gsus, ], col = 'pink', add = TRUE)
+```
+
+
+
+
+## Spring chinook current temperature
+
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2040_2 <- fl_schino %>%
+  left_join(., asrp_mapping %>% 
+              filter(Scenario_num == 'scenario_2',
+                     year == 2040)) 
+ps_low <- fl_2040_2$prespawn_temp_asrp < 16
+ps_med <- fl_2040_2$prespawn_temp_asrp > 16 & fl_2040_2$prespawn_temp_asrp < 22.6
+ps_high <- fl_2040_2$prespawn_temp_asrp > 22.6
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Spring chinook 2040 temperatures ASRP 2')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_2[ps_low, ], col = 'blue', add = TRUE)
+plot(fl_2040_2[ps_med, ], col = 'yellow', add = TRUE)
+plot(fl_2040_2[ps_high, ], col = 'red', add = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fl_2040_3 <- fl_schino %>%
+  left_join(., asrp_mapping %>% 
+              filter(Scenario_num == 'scenario_3',
+                     year == 2040)) 
+ps_low <- fl_2040_3$prespawn_temp_asrp < 16
+ps_med <- fl_2040_3$prespawn_temp_asrp > 16 & fl_2040_3$prespawn_temp_asrp < 22.6
+ps_high <- fl_2040_3$prespawn_temp_asrp > 22.6
+
+plot(water, col = 'steelblue3', reset = FALSE, main = 'Spring chinook 2040 temperatures ASRP 3')
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(fl_2040_1[ps_low, ], col = 'blue', add = TRUE)
+plot(fl_2040_1[ps_med, ], col = 'yellow', add = TRUE)
+plot(fl_2040_1[ps_high, ], col = 'red', add = TRUE)
+```
+
+
+
