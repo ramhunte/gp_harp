@@ -31,7 +31,8 @@ The next step is to load the various layers needed. All of the layers are shapef
 
 ```{r}
 # NOAA subbasins
-sub <- st_read('../../Inputs/shapefiles/NOAA_subbasins_w_fp.shp')
+sub <- st_read(dsn = 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/Inputs.gdb',
+                     layer = 'NOAA_subbasins_w_fp')
 
 
 # Bounding box for the basemap data

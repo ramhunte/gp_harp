@@ -5,7 +5,7 @@
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp, 
-           temp_diff_2040, temp_diff_2040_cc_only, temp_diff_2080, temp_diff_2080_cc_only) %>%
+           temp_diff_2040, temp_diff_2040_cc_only, temp_diff_2080, temp_diff_2080_cc_only, Habitat, Shape_Length) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -174,4 +174,9 @@ left_join(., fut_imperv, by = c('GSU', 'year')) %>%
   mutate(future_imperv = ifelse(is.na(future_imperv),
                                 0,
                                 future_imperv))
+assign('asrp_mapping', asrp_reach_data, envir = .GlobalEnv)
+
+asrp_reach_data %<>%
+  select(-Habitat, -Shape_Length)
+
 rm(asrp_reach_data_scenarios)
