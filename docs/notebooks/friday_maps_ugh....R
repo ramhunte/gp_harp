@@ -55,6 +55,21 @@ plot(temp_plt['prespawn_temp_bin'],
 plot(st_geometry(sub), add = TRUE)
 dev.off()
 
+layout(matrix(1:2, ncol = 2), widths = c(1, lcm(2)))
+plot(st_geometry(sub), col = 'grey80')
+plot(temp_plt['prespawn_temp_bin'], 
+     main = 'Scenario 1 2040 temperature',
+     reset = FALSE,
+     key.pos = 1, 
+     lwd = 2, 
+     pal = colorRampPalette(colorschemes$BluetoOrangeRed.14, space = "Lab")(5),
+     add = TRUE)
+.image_scale(c(0,temp_breaks,40), 
+             col = colorRampPalette(colorschemes$BluetoOrangeRed.14, space = "Lab")(5), 
+             key.length = lcm(8), 
+             key.pos = 4, 
+             at = c(0,temp_breaks,40),
+             las = 1)
 
 # Scenario 3 2080 temperature  ---------------------------
 
