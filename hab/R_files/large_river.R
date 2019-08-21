@@ -14,6 +14,7 @@ LgRiver <- LgRiver_raw %>%
                      width_s_hist, width_w_hist, width_s_2040, width_s_2080, width_w_2040, width_w_2080, chino_mult),
             by = "noaaid") %>% 
   gather(value, width, width_s:width_w_2080) %>% 
+  filter(width < 200) %>% # remove the wynoochee reservoir
   mutate(width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width + 2.11,
                            Habitat == "Bank" ~ 0.084 * width + 0.33,
                            Habitat == "HM_Bank" ~ 0.089 * width + .33)) %>%
