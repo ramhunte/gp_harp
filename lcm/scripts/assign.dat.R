@@ -46,7 +46,7 @@ if (pop == "coho") {
   # Fall redistribution
   # Historical wood gets 7% redistribution, historical ponds and all historical get 3%. All other scenarios get 11%.
   redist_7 <- c('Wood')
-  redist_3 <- c('Beaver','Historical')
+  redist_3 <- c('Beaver','Historical', 'Floodplain', 'FP.wood.comb')
   redist <- if (scenario.file[n] %in% redist_7) {redist.histwood
             } else if (scenario.file[n] %in% redist_3) {redist.histpond
             } else if (substr(scenario.file[n],1,4) == 'ASRP') {dat["movement", ]/100 # If starts with ASRP
