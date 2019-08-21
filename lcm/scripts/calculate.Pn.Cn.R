@@ -72,11 +72,32 @@ df.sr <- model.all.sr[ , "spawners", , ] %>%
   mutate(Pn = Pn/sr.init)
 
 
-# Write to the abundance CSV
-abundance_by_subbasin %>%
+# Pn and Cn by subbasin
+abundance_by_subbasin %<>%
   left_join(df.sr) %>%
-  mutate(Cn = (spawners * Pn) / (Pn - 1),
-         Cn = ifelse(Cn > 0, Cn, 0),
-         Pn = ifelse(Pn > 1, Pn, 0)) %>%
+  mutate(Cn = (spawners * Pn) / (Pn - 1)) %>%
+  filter(Cn > 0) %>%                                     # Remove rows with Cn < 0
+  filter_at(vars(summary.stages), all_vars(. > 0)) %>%   # Remove rows with spawner or smolt abundance < 1  
   write.csv(file.path(outputs_lcm, csv.name))
 
+
+# Pn and Cn basinwide
+read.csv(file.path(outputs_lcm, csv.name)) %>%
+  select(-X) %>%
+  group_by(scenario) %>%
+  summarize(basinwide_spawners = sum(spawners),
+            Pn = weighted.mean(Pn, spawners)) %>%
+  mutate(Cn = (basinwide_spawners * Pn) / (Pn - 1)) %>%
+  write.csv(file.path(outputs_lcm, paste0(pop, '_abundance_basinwide.csv')))
+
+
+# Pn and Cn by EDR
+read.csv(file.path(outputs_lcm, csv.name)) %>%
+  select(-X) %>%
+  left_join(read.csv('lcm/data/Subbasin_names.csv') %>%
+              rename(natal.basin = Subbasin)) %>%
+  group_by(scenario, EcoRegion) %>%
+  summarize(basinwide_spawners = sum(spawners),
+            Pn = weighted.mean(Pn, spawners)) %>%
+  mutate(Cn = (basinwide_spawners * Pn) / (Pn - 1)) %>%
+  write.csv(file.path(outputs_lcm, paste0(pop, '_abundance_by_EDR.csv')))
