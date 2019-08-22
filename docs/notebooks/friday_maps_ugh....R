@@ -1,29 +1,40 @@
+# Purpose: create a set of output maps for use in the report
 
+library(sf)
+library(tidyverse)
+library(colorspace)
 
 gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190604/Inputs.gdb'
 gdb_out <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190604/Outputs.gdb'
 
-sub <- st_read(dsn = gdb_in,
-               layer = 'NOAA_subbasins_w_fp')
+sub <- st_read(dsn = gdb_in, layer = 'NOAA_subbasins_w_fp') %>%
+  st_geometry()
 
-gsu <- st_read(dsn = gdb_in,
-               layer = 'chehalis_gsu_20180919_NAD83')
+gsu <- st_read(dsn = gdb_in, layer = 'chehalis_gsu_20180919_NAD83') %>%
+  st_geometry()
 
 buffer <- 1e4 
 bbox <- st_bbox(sub) + c(-buffer, -buffer, buffer, buffer)
 
 wa_state <- '//nwcfile/FE/watershed/Chehalis/Data/Map files/washington.shp'
+
 wa <- st_read(wa_state) %>%
   filter(CARTO_SYMB == 1) %>%
   st_transform(crs = st_crs(sub)) %>%
-  st_crop(bbox)
+  st_crop(bbox) %>%
+  st_geometry()
+
 water <- st_read(wa_state) %>%
   filter(CARTO_SYMB == 4) %>%
   st_transform(crs = st_crs(sub)) %>%
-  st_crop(bbox)
+  st_crop(bbox) %>%
+  st_geometry()
+
 
 fl <- st_read(dsn = gdb_out,
-              layer = 'flowline')
+              layer = 'flowline') %>%
+  select(noaaid) %>%
+  inner_join(flowline)
 
 fl_schino <- fl %>%
   filter(sprspawn == 'Yes' | (noaa_sub_num %in% 52:63 & Habitat == 'LgRiver')) %>%
@@ -36,40 +47,40 @@ fl_schino <- fl %>%
 
 temp_breaks <- c(16, 18, 20, 22.6)
 
-temp_plt <- fl_schino %>%
-  left_join(flowline) %>%
+temp_plt <- fl %>%
   mutate(prespawn_temp_bin = cut(prespawn_temp, 
-                                      c(-Inf,temp_breaks,Inf), 
-                                      na.rm=T,
-                                      dig.lab =10))
+                                 c(-Inf, temp_breaks, Inf), 
+                                 na.rm = T,
+                                 dig.lab = 10))
 
 
+#jpeg('map_jpegs/2019_temps.jpeg', width = 8, height = 6, units = 'in', res = 300)
+layout(matrix(1:2, ncol = 2), widths = c(1, lcm(1.5)))
 
-jpeg('map_jpegs/2019_temps.jpeg', width = 8, height = 6, units = 'in', res = 300)
-plot(temp_plt['prespawn_temp_bin'], 
+plot(water, col = 'steelblue3', reset = FALSE)
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+fl %>%
+  filter(spawn_dist == 'Yes' | (noaa_sub_num %in% 52:63 & Habitat == 'LgRiver')) %>%
+  mutate(prespawn_temp_bin = cut(prespawn_temp, 
+                                 c(-Inf, temp_breaks, Inf), 
+                                 na.rm = T,
+                                 dig.lab = 10)) %>%
+  select(prespawn_temp_bin) %>%
+  plot(., 
      main = 'Scenario 1 2040 temperature',
      reset = FALSE,
      key.pos = 1, 
      lwd = 2, 
-     pal = rev(heat.colors(5)))
-plot(st_geometry(sub), add = TRUE)
-dev.off()
-
-layout(matrix(1:2, ncol = 2), widths = c(1, lcm(2)))
-plot(st_geometry(sub), col = 'grey80')
-plot(temp_plt['prespawn_temp_bin'], 
-     main = 'Scenario 1 2040 temperature',
-     reset = FALSE,
-     key.pos = 1, 
-     lwd = 2, 
-     pal = colorRampPalette(colorschemes$BluetoOrangeRed.14, space = "Lab")(5),
+     pal = diverge_hcl(5, 'Blue-Red2'),
      add = TRUE)
-.image_scale(c(0,temp_breaks,40), 
-             col = colorRampPalette(colorschemes$BluetoOrangeRed.14, space = "Lab")(5), 
+.image_scale_factor(temp_breaks, 
+             col = diverge_hcl(5, 'Blue-Red2'), 
              key.length = lcm(8), 
-             key.pos = 4, 
-             at = c(0,temp_breaks,40),
-             las = 1)
+             key.pos = 4,
+             key.width = lcm(1.8),
+             breaks = 1:6)
+#dev.off()
 
 # Scenario 3 2080 temperature  ---------------------------
 
