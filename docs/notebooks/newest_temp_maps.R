@@ -76,6 +76,47 @@ legend(x = 551386, y = 5273509,
        title = 'Temp Chg (°C)')
 dev.off()
 
+# Temp difference Historical to current ----
+# 2080 temperature difference (Historical - Current) ----
+
+
+temp_breaks_hist <- c(-Inf, .5, 2, 3.5, Inf)
+
+temp_diff_hist_cols <- c('dodgerblue', 'orange', 'red', 'red4')
+
+temp_diff_hist_plt <- fl %>%
+  mutate(temp_diff_hist_bin = cut(temp_diff,
+                             temp_breaks_hist,
+                             na.rm = T,
+                             dig.lab = 10))
+
+levels(temp_diff_hist_plt$temp_diff_hist_bin) <- c(levels(temp_diff_hist_plt$temp_diff_hist_bin) %>% 
+                                           gsub("]|\\(", "",.) %>% 
+                                           sub(","," - ",.) )
+
+jpeg('Tm_Chg.jpeg', width = 10, height = 10, unit = 'in', res = 300)
+plot(water, col = 'steelblue3', main = 'Temperature Difference Historical to Current', reset = FALSE)
+plot(wa, col = 'white', add = TRUE)
+plot(sub, col = 'lightgrey', add = TRUE)
+plot(temp_diff_hist_plt['temp_diff_hist_bin'], 
+     reset = FALSE,
+     key.pos = 1,
+     lwd = 2,
+     pal = temp_diff_hist_cols,
+     add = TRUE)
+legend(x = 551386, y = 5273509,
+       xjust = 1,
+       yjust = 1,
+       legend = unique(temp_diff_hist_plt$temp_diff_hist_bin),
+       bg = 'lightgrey',
+       lty = c(1, 1, 1, 1),
+       col = temp_diff_hist_cols,
+       lwd = 3,
+       # y.intersp = .75,
+       cex = .85,
+       title = 'Temp Chg (°C)')
+dev.off()
+
 # Benefit of barrier removal----
 spawners_sub <- read.csv('outputs/coho/lcm/coho_abundance_by_subbasin.csv') %>%
   select(natal.basin, spawners, scenario) %>%
