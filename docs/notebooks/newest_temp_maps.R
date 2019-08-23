@@ -76,7 +76,7 @@ legend(x = 551386, y = 5273509,
        title = 'Temp Chg (°C)')
 dev.off()
 
-# Percent passage ----
+# Benefit of barrier removal----
 spawners_sub <- read.csv('outputs/coho/lcm/coho_abundance_by_subbasin.csv') %>%
   select(natal.basin, spawners, scenario) %>%
   rename(Subbasin = natal.basin) %>%
@@ -88,7 +88,7 @@ spawners_sub <- read.csv('outputs/coho/lcm/coho_abundance_by_subbasin.csv') %>%
   rename(noaa_sub = Subbasin)
 
 sub_breaks <- c(-Inf, 10, 25, Inf)
-
+diff_breaks <- c(-Inf, 30, 500, Inf)
 sub_cols <- c('lightgrey', 'orange', 'orange3')
 
 sub_plt <- sub %>%
@@ -96,14 +96,24 @@ sub_plt <- sub %>%
   mutate(perc_diff = ifelse(is.na(perc_diff),
                             0,
                             perc_diff),
+         diff = ifelse(is.na(diff),
+                       0,
+                       diff),
          sub_bin = cut(perc_diff,
                        sub_breaks,
                        na.rm = T,
-                       dig.lab = 10))
+                       dig.lab = 10),
+         diff_bin = cut(diff,
+                        diff_breaks,
+                        na.rm = T,
+                        dig.lab = 10))
 
 levels(sub_plt$sub_bin) <- c(levels(sub_plt$sub_bin) %>%
                                  gsub("]|\\(", "",.) %>%
                                  sub(","," - ",.) )
+levels(sub_plt$diff_bin) <- c(levels(sub_plt$diff_bin) %>%
+                               gsub("]|\\(", "",.) %>%
+                               sub(","," - ",.) )
 
 
 
@@ -127,6 +137,29 @@ legend(x = 551386, y = 5273509,
        # cex = .85,
        title = 'Percent Benefit')
 dev.off()
+
+
+jpeg('Benefit of barrier removal absolute.jpeg', width = 10, height = 10, unit = 'in', res = 300)
+
+plot(water, col = 'steelblue3', main = 'Total Benefit of Barrier Removal (Spawners)', reset = FALSE)
+plot(wa, col = 'white', add = TRUE)
+plot(sub_plt['diff_bin'],
+     pal = sub_cols,
+     add = TRUE)
+legend(x = 551386, y = 5273509,
+       xjust = 1,
+       yjust = 1,
+       legend = unique(sub_plt$diff_bin),
+       bg = 'white',
+       # fill = sub_cols,
+       lty = c(1, 1, 1),
+       col = sub_cols,
+       lwd = 3,
+       # y.intersp = .75,
+       # cex = .85,
+       title = 'Total Benefit')
+dev.off()
+
 
 # Percent passage ----
 
