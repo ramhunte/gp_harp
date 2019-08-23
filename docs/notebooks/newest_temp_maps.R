@@ -109,7 +109,7 @@ levels(sub_plt$sub_bin) <- c(levels(sub_plt$sub_bin) %>%
 
 jpeg('Benefit of barrier removal.jpeg', width = 10, height = 10, unit = 'in', res = 300)
 
-plot(water, col = 'steelblue3', main = 'Percent Passage', reset = FALSE)
+plot(water, col = 'steelblue3', main = 'Percent Benefit of Barrier Removal', reset = FALSE)
 plot(wa, col = 'white', add = TRUE)
 plot(sub_plt['sub_bin'],
      pal = sub_cols,
@@ -125,7 +125,7 @@ legend(x = 551386, y = 5273509,
        lwd = 3,
        # y.intersp = .75,
        # cex = .85,
-       title = 'Percent Benefit \n OF Barrier Removal')
+       title = 'Percent Benefit')
 dev.off()
 
 # Percent passage ----
@@ -148,7 +148,7 @@ levels(sub_plt_2$sub_bin_2) <- c(levels(sub_plt_2$sub_bin_2) %>%
                                gsub("]|\\(", "",.) %>%
                                sub(","," - ",.) )
 
-pass_breaks <- c(-Inf, 20, 40, 60, 80, Inf)
+pass_breaks <- c(0, 20, 40, 60, 80, 100)
 
 pass_cols <- c('navy', 'dodgerblue', 'yellow', 'orange', 'red')
 
@@ -178,7 +178,7 @@ plot(pass_plt['pass_bin'],
 legend(x = 551386, y = 5273509,
        xjust = 1,
        yjust = 1,
-       legend = unique(pass_plt$pass_bin),
+       legend = levels(pass_plt$pass_bin),
        bg = 'white',
        lty = c(1, 1, 1, 1, 1),
        col = rev(pass_cols),
