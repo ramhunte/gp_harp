@@ -27,11 +27,16 @@ if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
            hist.tempmult = ifelse(life.stage %in% c('summer', 'winter'),
                                   1,
                                   hist.tempmult))
-}
+} 
+
 
 data <- data %>%
   left_join(., density) %>%
-  mutate(capacity = Area * Density) %>%
+  mutate(capacity = Area * Density)
+
+assign('culvs_cap', data, envir = .GlobalEnv)
+
+data %<>%
   left_join(., survival) %>%
   mutate(
     surv.base.summer = case_when(

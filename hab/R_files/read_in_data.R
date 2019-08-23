@@ -46,6 +46,8 @@ culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern =
 flowline <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T) %>%
   read.csv(.)
 
+assign("culv_plotting", flowline, envir = .GlobalEnv)
+
 # Large river spawning riffles.  Hand digitized ----
 riff <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "Riffles", full.names = T) %>%
   read.csv(.)
