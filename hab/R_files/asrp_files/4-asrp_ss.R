@@ -43,7 +43,7 @@ asrp_ss <- all_habs_scenario %>%
                                 ((Shape_Length * curr_pond_area_per_m / 10000) + 
                                    (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 10000 * rest_perc * 
                                       beaver_intensity_scalar)) * woodmult_w_asrp,
-                                (Shape_Length * curr_pond_area_per_m) / 10000 * woodmult_s_asrp)) %>%
+                                (Shape_Length * curr_pond_area_per_m) / 10000 * woodmult_w_asrp)) %>%
   gather(Habitat, Area, Pool:winter.beaver.pond) %>%
   mutate(
     life.stage = case_when(
