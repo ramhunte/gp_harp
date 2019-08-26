@@ -4,9 +4,9 @@ asrp_ss <- all_habs_scenario %>%
   select(noaaid, Subbasin_num, Reach, Shape_Length, slope, lc, spawn_dist, species, both_chk,
          Reach_low, slope.class, Habitat, wet_width, can_ang, Scenario_num, year, chino_mult) %>%
   left_join(., edt_width) %>%
+  left_join(., asrp_reach_data) %>%
   left_join(., ss.dist) %>%
   left_join(., ss.dist.ref) %>%
-  left_join(., asrp_reach_data) %>%
   left_join(., asrp_culvs) %>%
   mutate(
     tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook"), # Added because of spring chinook w/temp survival 
@@ -21,8 +21,13 @@ asrp_ss <- all_habs_scenario %>%
     area_s = (Shape_Length * width_s) / 10000,
     area_w = (Shape_Length * width_w) / 10000,
     pool.perc.asrp = ifelse(LW == "y",
-                            pool.perc + ((pool.perc.ref - pool.perc) * rest_perc * wood_intensity_scalar),
+                            ifelse(is.na(pool.perc),
+                                   pool.perc.ref * rest_perc * wood_intensity_scalar,
+                                   pool.perc + ((pool.perc.ref - pool.perc) * rest_perc * wood_intensity_scalar)),
                             pool.perc),
+    riffle.perc.asrp = ifelse(is.na(pool.perc),
+                              (1 - pool.perc.asrp) * rest_perc,
+                              1 - pool.perc.asrp),
     beaver_mult_asrp = ifelse(Beaver == "y",
                               curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar),
                               curr_beaver_mult),
@@ -30,14 +35,14 @@ asrp_ss <- all_habs_scenario %>%
     # Begin habitat area calculations ----
     
     Pool = area_s * pool.perc.asrp * tempmult.asrp * woodmult_s_asrp * beaver_mult_asrp,
-    Riffle = area_s * (1 - pool.perc) * tempmult.asrp * woodmult_s_asrp * beaver_mult_asrp, 
+    Riffle = area_s * riffle.perc.asrp * tempmult.asrp * woodmult_s_asrp * beaver_mult_asrp, 
     Beaver.Pond = ifelse(Beaver == "y",
                          ((Shape_Length * curr_pond_area_per_m / 10000) + (Shape_Length * (hist_pond_area_per_m - curr_pond_area_per_m) / 
                                                                              10000 * rest_perc * beaver_intensity_scalar)) * 
                            tempmult.asrp * woodmult_s_asrp,
                          (Shape_Length * curr_pond_area_per_m) / 10000 * tempmult.asrp * woodmult_s_asrp),
     winter.pool = area_w * pool.perc.asrp * winter_pool_scalar_warm * woodmult_w_asrp * beaver_mult_asrp,
-    winter.riffle = (area_w * (1 - pool.perc.asrp) * beaver_mult_asrp + ((1 - winter_pool_scalar_warm) * area_w * pool.perc) * beaver_mult_asrp) * 
+    winter.riffle = (area_w * riffle.perc.asrp * beaver_mult_asrp + ((1 - winter_pool_scalar_warm) * area_w * pool.perc.asrp) * beaver_mult_asrp) * 
       woodmult_w_asrp,
     winter.beaver.pond = ifelse(Beaver == "y",
                                 ((Shape_Length * curr_pond_area_per_m / 10000) + 
