@@ -1,8 +1,77 @@
 #### Floodplain ----
+lc.ref = c(rep("Reference", times = 3))
+slope.class = c("low", "med", "high")
+pool.perc.ref = c(.81, .66, .35)
+ss.dist.ref = data.frame(lc.ref, slope.class, pool.perc.ref)
 
-asrp_fp_precalc1 <- all_habs_scenario %>%
-  filter(Habitat %in% Floodplain_habs) %>%
-  select(Habitat, slope.class, noaaid, year, Scenario_num, Area_ha, both_chk, Subbasin_num, Reach, can_ang, species, pool.perc, Period,Hist_salm, 
+# Create historical side channel data frame from flowline and hist channel data joined by reach
+hist_sc <- flowline %>%
+  select(Reach, Shape_Length, spawn_dist, species, both_chk, Subbasin_num, noaaid, chino_mult) %>%
+  left_join(., lr_length_raw, by = "Reach") %>%
+  mutate(sc_mult = ifelse(is.na(sc_mult), 
+                          0, 
+                          sc_mult),
+         Area_ha = (Shape_Length * sc_mult * 2) / 10000, # Assume average width of side channels of 2 m
+         Length_sc = Shape_Length * sc_mult,
+         Period = "Hist",
+         NEAR_DIST = 0,
+         HabUnit = "Side channel",
+         Hist_salm = "Hist salmon") %>%
+  filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
+  select(noaaid, sc_mult, Area_ha, Length_sc, Period, NEAR_DIST, HabUnit, Hist_salm)
+
+#Create entire floodplain data frame
+
+asrp_fp_raw <- Floodplain_raw %>%
+  mutate(Length_sc = Shape_Length / 2) %>% #perimeter / 2 ~ Length of each side
+  bind_rows(., hist_sc) %>%
+  select(HabUnit, Area_ha, Period, Hist_salm, noaaid, NEAR_FID, NEAR_DIST, ET_ID, Length_sc, wse_intersect)
+
+asrp_fp_year <- lapply(scenario.years, function(x) {
+  asrp_fp_raw %>%
+    mutate(year = x)
+}) %>%
+  do.call('rbind',.)
+
+asrp_fp_scenario <- lapply(scenario.nums, function(y) {
+  asrp_fp_year %>%
+    mutate(Scenario_num = y)
+}) %>%
+  do.call('rbind',.) %>%
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], 'floodplain_hist') &
+             year %in% c(2040, 2080))) %>%
+  left_join(., LgRiver_raw %>%
+              rename(noaaid_lr = noaaid) %>%
+              select(noaaid_lr, ET_ID), by = "ET_ID") %>%
+  mutate(noaaid = ifelse(is.na(noaaid_lr), 
+                         noaaid, 
+                         noaaid_lr)) %>%
+  left_join(., flowline %>% 
+              select(spawn_dist, species, both_chk, lc, noaaid, slope, Subbasin_num, Reach, chino_mult), 
+            by = "noaaid") %>%
+  mutate(slope.class = ifelse(slope < .02, 
+                              "low",
+                              ifelse(slope >= .02 & slope < .04, 
+                                     "med", 
+                                     "high")),
+         Habitat = case_when(HabUnit %in% c("FP channel", "FP Channel") ~ "FP_Channel",
+                             HabUnit == "Side channel" ~ "Side_Channel",
+                             HabUnit == "Pond" & (Area_ha >.05 & Area_ha < 5) ~ "FP_Pond_lg",
+                             HabUnit == "Pond" & Area_ha > 5 ~ "Lake",
+                             HabUnit == "Pond" & Area_ha < .05 ~ "FP_Pond_sm",
+                             HabUnit == "Slough" & Area_ha > .05 ~ "FP_Pond_lg",
+                             HabUnit == "Slough" & Area_ha <= .05 ~ "FP_Pond_sm",
+                             HabUnit == "Lake" ~ "Lake",
+                             HabUnit == "Marsh" ~ "Marsh"),
+         lc = ifelse(lc == "", "Reference", as.character(lc))) %>%
+  left_join(., ss.dist) %>% 
+  left_join(., wood_data, by = "Subbasin_num")
+
+assign('asrp_fp_spawn', asrp_fp_scenario, envir = .GlobalEnv)
+
+asrp_fp_precalc1 <- asrp_fp_scenario %>%
+  select(Habitat, slope.class, noaaid, year, Scenario_num, Area_ha, both_chk, Subbasin_num, Reach, species, pool.perc, Period,Hist_salm, 
          spawn_dist, NEAR_DIST, wse_intersect, chino_mult) %>%
   left_join(., ss.dist.ref) %>% 
   left_join(., asrp_reach_data) %>%

@@ -1,8 +1,40 @@
 # Calculate area of each reach in each scenario ----
-asrp_ss <- all_habs_scenario %>%
-  filter(Habitat == "SmStream") %>%
+lc = c(rep(c("Agriculture", "BareShrubGrass", "Developed", "Forest", "Wetland", "Reference"), times = 3))
+slope.class = c(rep("low", times = 6), rep("med", times = 6), rep("high", times = 6))
+pool.perc = c(c(.92, .83, .74, .75, .89, .81), c(.60, .50, .51, .48, .53, .66), c(.31, .35, .54, .34, NA, .35))
+ss.dist = data.frame(lc, slope.class, pool.perc)
+
+asrp_ss_raw <- flowline %>%
+  filter(Habitat == "SmStream",
+         !fp_overlap == 'Yes',
+         spawn_dist == 'Yes') %>%
+  mutate(slope.class = case_when(slope < .02 ~ 'low',
+                                 slope >= .02 & slope < .04 ~ 'med',
+                                 slope >= .04 ~ 'high'),
+         lc = ifelse(lc == '',
+                     'Reference',
+                     as.character(lc))) %>%
   select(noaaid, Subbasin_num, Reach, Shape_Length, slope, lc, spawn_dist, species, both_chk,
-         Reach_low, slope.class, Habitat, wet_width, can_ang, Scenario_num, year, chino_mult) %>%
+         Reach_low, slope.class, Habitat, wet_width, can_ang, chino_mult)
+
+asrp_ss_year <- lapply(scenario.years, function(x) {
+  asrp_ss_raw %>%
+    mutate(year = x)
+}) %>%
+  do.call('rbind',.)
+
+asrp_ss_scenario <- lapply(scenario.nums, function(y) {
+  asrp_ss_year %>%
+    mutate(Scenario_num = y)
+}) %>%
+  do.call('rbind',.) %>%
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], 'floodplain_hist') &
+             year %in% c(2040, 2080)))
+
+assign('asrp_ss_spawn', asrp_ss_scenario, envir = .GlobalEnv)
+
+asrp_ss <- asrp_ss_scenario %>%
   left_join(., edt_width) %>%
   left_join(., asrp_reach_data) %>%
   left_join(., ss.dist) %>%

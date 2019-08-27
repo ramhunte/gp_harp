@@ -1,8 +1,34 @@
 #### 2.b. Large River and Backwater ----
-asrp_bw <- all_habs_scenario %>%
-  filter(Habitat == "Backwater") %>%
-  select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach, Period, can_ang, sc_mult, Shape_Length, bw_mult, 
-         Habitat, Reach_low, slope.class, Scenario_num, year, Area_ha, chino_mult) %>%
+asrp_bw_raw <- Backwater_raw %>%
+  left_join(., flowline %>%
+              select(noaaid, Reach, Subbasin_num, species, spawn_dist, both_chk, chino_mult, Reach_low)) %>%
+  select(Area_ha, Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach, Period, chino_mult, Reach_low) %>%
+  bind_rows(., lr_length_raw %>%
+              select(Reach, sc_mult) %>%
+              left_join(flowline %>%
+                          select(noaaid, Reach, Subbasin_num, species, spawn_dist, both_chk, Shape_Length, Reach_low)) %>%
+              mutate(bw_mult = sc_mult * bw_scalar,
+                     Area_ha = bw_mult * (Shape_Length/1000), # bw_mult is in units of A(ha) / km.  Shape_Length is in m, so Shape_Length / 1000 * bw_mult gives unit of ha/km
+                     Period = "Hist")) %>%
+  mutate(Habitat = "Backwater") %>%
+  filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
+  select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach, Period, sc_mult, Shape_Length, bw_mult, 
+         Habitat, Reach_low, Area_ha, chino_mult)
+
+asrp_bw_year <- lapply(scenario.years, function(x) {
+  asrp_bw_raw %>% 
+    mutate(year = x)
+}) %>%
+  do.call('rbind',.)
+
+asrp_bw <- lapply(scenario.nums, function(y) {
+  asrp_bw_year %>%
+    mutate(Scenario_num = y)
+}) %>%
+  do.call('rbind',.) %>%
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], 'floodplain_hist') &
+             year %in% c(2040, 2080))) %>%
   left_join(., asrp_reach_data) %>%
   mutate(Area_ha = ifelse(Period == "Hist",
                           ifelse(Floodplain == "y",
@@ -13,13 +39,47 @@ asrp_bw <- all_habs_scenario %>%
          area_w = Area_ha)
 
 
-asrp_lr <- all_habs_scenario %>%
-  select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach, pass_tot, pass_tot_natural, Period, can_ang, sc_mult, Shape_Length, bw_mult,
-         Habitat, Reach_low, slope.class, Scenario_num, year, Area_ha, width_s, width_s_2040, width_s_2080, width_w,
-         width_w_2040, width_w_2080, Length_m, chino_mult) %>%
-filter(Habitat %in% LgRiver_habs,
-       !Habitat == "Backwater",
-       Period %in% c("Curr", "Both")) %>%
+asrp_lr_raw <- LgRiver_raw %>%
+  mutate(Habitat = case_when(HabUnit %in% c("Bank", "Bank-TM") ~ "Bank",
+                             HabUnit %in% c("Bank HM", "Bank HM-TM") ~ "HM_Bank",
+                             HabUnit %in% c("Bar-boulder", "Bar-boulder-TM") ~ "Bar_boulder",
+                             HabUnit %in% c("Bar-gravel", "Bar-gravel-TM") ~ "Bar_gravel",
+                             HabUnit %in% c("Bar-sand", "Bar-sand-TM") ~ "Bar_sand"),
+         Period = ifelse(Period == " Hist", 
+                         "Hist", 
+                         as.character(Period))) %>%
+  left_join(., flowline %>%
+              select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach_low, width_s, width_s_2040, width_s_2080, width_w,
+                     width_w_2040, width_w_2080, chino_mult)) %>% 
+  gather(value, width, width_s:width_w_2080) %>% 
+  filter(width < 200) %>%
+  mutate(width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width + 2.11,
+                           Habitat == "Bank" ~ 0.084 * width + 0.33,
+                           Habitat == "HM_Bank" ~ 0.089 * width + .33)) %>%
+  spread(value, width) %>%
+  mutate(area_s = width_s * Length_m / 10000,
+         area_w = width_w * Length_m / 10000) %>%
+  filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
+
+asrp_lr_year <- lapply(scenario.years, function(z) {
+  asrp_lr_raw %>%
+    mutate(year = z)
+}) %>%
+  do.call('rbind',.)
+
+asrp_lr_scenario <- lapply(scenario.nums, function(a) {
+  asrp_lr_year %>%
+    mutate(Scenario_num = a)
+}) %>%
+  do.call('rbind',.) %>%
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], 'floodplain_hist') &
+             year %in% c(2040, 2080)))
+
+assign('asrp_lr_spawn', asrp_lr_scenario, envir = .GlobalEnv)
+
+asrp_lr <- asrp_lr_scenario %>%
+  filter(Period %in% c("Curr", "Both")) %>%
   left_join(., asrp_reach_data) %>%
   rename(width_s_2019 = width_s,
          width_w_2019 = width_w) %>%

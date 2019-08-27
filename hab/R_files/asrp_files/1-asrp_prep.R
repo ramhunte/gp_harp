@@ -28,42 +28,14 @@ if (run_single_action == 'yes') {
   }) %>%
     do.call('rbind',.) %>%
     bind_rows(asrp_scenarios_char)
-  
-# Create single dataframe with all habitat data included
-
-all_habs <- bind_rows(asrp_bw_raw, asrp_fp_raw, asrp_lr_raw, asrp_ss_raw %>%
-                        mutate(Habitat = 'SmStream')) %>%
-  select(-Wtrbdy_wau, -Area_km2, -HabUnit, -NEAR_FID, -ET_ID, -noaaid_lr, -OID, -Join_Count, -TARGET_FID, -Basin_wau, Shape_Length_1, -noaa_sub,
-         -noaa_sub_num, -source_hab, -temp_diff, -curr.tempmult, -hist.tempmult)
-
-# Attach year column to dataset
 
 scenario.years <- c(2040, 2080, 2019) # Note:  We use 2019 as the current year for the Current_asrp scenario
 
-all_habs_year <- lapply(scenario.years, function(g) {
-  all_habs %>%
-    mutate(year = g)
-  
-}) %>%
-  do.call('rbind',.)
-
-# Attach scenario numbers to habitat data and filter to only those scenarios which we wish to run
 
 scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate') 
 single_action_scenarios <- c(unique(asrp_scenarios$Scenario_num[!asrp_scenarios$Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3')]), 'dev_and_climate')
 growth_scenarios <- c('scenario_1_riparian_only', 'scenario_2_riparian_only','scenario_3_riparian_only', 'scenario_1_no_climate_chg',
                       'scenario_2_no_climate_chg', 'scenario_3_no_climate_chg')
-
-all_habs_scenario <- lapply(scenario.nums, function(h) {
-  all_habs_year %>%
-    mutate(Scenario_num = h)
-  }) %>%
-  do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
-         !(Scenario_num %in% single_action_scenarios[!single_action_scenarios %in% growth_scenarios] & 
-             year %in% c(2040, 2080)),
-         !(is.na(Shape_Length) & Area_ha == 0))
-
 
 # Create list of primary creeks to be used when asrp scenarios call for restoration of primary creek only ----
 

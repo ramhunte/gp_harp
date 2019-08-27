@@ -1,17 +1,16 @@
 #### Spawning Calculations ----
 if (run_single_action == 'no') {
-  all_habs_scenario %<>%
+  asrp_ss_spawn %<>%
+    filter(!Scenario_num %in% single_action_scenarios)
+  asrp_lr_spawn %<>%
+    filter(!Scenario_num %in% single_action_scenarios)
+  asrp_fp_spawn %<>%
     filter(!Scenario_num %in% single_action_scenarios)
 }
 
-all_habs_spawn <- all_habs_scenario %>%
-  select(-woodmult_s, -woodmult_w) %>%
+asrp_spawn_ss <- asrp_ss_spawn %>%
   left_join(., asrp_culvs) %>%
-  left_join(., asrp_reach_data)
-
-
-asrp_spawn_ss <- all_habs_spawn %>%
-  filter(Habitat == "SmStream") %>%
+  left_join(., asrp_reach_data) %>%
   filter(slope < .03) %>%
   mutate(Shape_Length = ifelse(Beaver == 'y',
                                Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
@@ -25,8 +24,9 @@ asrp_spawn_ss <- all_habs_spawn %>%
                                                                        wood_intensity_scalar) / 1000 * fecundity,
                                      Shape_Length * pass_tot_asrp * NF_redd_density / 1000 * fecundity))))
 
-asrp_spawn_fp <- all_habs_spawn %>%
-  filter(Habitat %in% Floodplain_habs) %>%
+asrp_spawn_fp <- asrp_fp_spawn %>%
+  left_join(., asrp_culvs) %>%
+  left_join(., asrp_reach_data) %>%
   filter(Habitat == "Side_Channel",
          Hist_salm == "Hist salmon",
          ifelse(Period == "Hist", 

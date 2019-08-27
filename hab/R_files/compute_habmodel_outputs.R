@@ -144,7 +144,7 @@ rm(bw_hist)
 
 rm(data.lr)
 
-rm(Floodplain_raw) 
+# rm(Floodplain_raw) 
 rm(fp)
 rm(fp_hist)
 rm(fp_curr)
@@ -155,7 +155,7 @@ rm(fps_hist)
 #rm(fps1)
 
 rm(LgRiver)
-rm(LgRiver_raw)
+# rm(LgRiver_raw)
 rm(LgRiver_raw_wood)
 rm(lr)
 rm(lr_curr)

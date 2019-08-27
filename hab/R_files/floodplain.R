@@ -23,12 +23,12 @@ hist_sc <- flowline %>%
 
 #Create entire floodplain data frame
 
-Floodplain_raw %<>%
+Floodplain_raw_1 <- Floodplain_raw %>%
   mutate(Length_sc = Shape_Length / 2) %>% #perimeter / 2 ~ Length of each side
   bind_rows(.,hist_sc) %>%
   select(HabUnit, Area_ha, Period, Hist_salm, noaaid, NEAR_FID, NEAR_DIST, ET_ID, Length_sc, wse_intersect)
 
-fp <- Floodplain_raw %>%####fix Length_sc for spawning once non -histsc side channel spawning added
+fp <- Floodplain_raw_1 %>%####fix Length_sc for spawning once non -histsc side channel spawning added
   left_join(., LgRiver_raw %>%
               rename(noaaid_lr = noaaid) %>%
               select(noaaid_lr, ET_ID), by = "ET_ID") %>%

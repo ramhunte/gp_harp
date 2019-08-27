@@ -2,9 +2,9 @@
 
 asrp_cap <- bind_rows(asrp_lr, asrp_ss, asrp_fp)
 
-rm(asrp_ss)
-rm(asrp_lr)
-rm(asrp_fp)
+# rm(asrp_ss)
+# rm(asrp_lr)
+# rm(asrp_fp)
 
 # Create second year for steelhead rearing
 
