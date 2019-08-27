@@ -24,19 +24,39 @@ asrp_spawn_ss <- asrp_ss_spawn %>%
                                                                        wood_intensity_scalar) / 1000 * fecundity,
                                      Shape_Length * pass_tot_asrp * NF_redd_density / 1000 * fecundity))))
 
-asrp_spawn_fp <- asrp_fp_spawn %>%
+asrp_spawn_fp_raw <- asrp_fp_spawn %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   filter(Habitat == "Side_Channel",
-         Hist_salm == "Hist salmon",
-         ifelse(Period == "Hist", 
-                spawn_dist == "Yes" & NEAR_DIST < 500,
-                spawn_dist == "Yes" & NEAR_DIST < 5)) %>%
-  mutate(eggs = ifelse(Period == "Hist",
-                       ifelse(Floodplain == 'y',
-                              Length_sc * rest_perc * fp_intensity_scalar * pass_tot_asrp * PR_redd_density / 1000 * fecundity,
-                              0),
-                       Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity))
+         Hist_salm == "Hist salmon")
+
+asrp_spawn_fp_curr <- asrp_spawn_fp_raw %>%
+  filter(Period %in% c('Curr', 'Both'),
+         spawn_dist == 'Yes' & NEAR_DIST < 5) %>%
+  group_by(noaaid, year, Scenario_num) %>%
+  summarize(Length_sc_curr = sum(Length_sc, na.rm = TRUE))
+
+asrp_spawn_fp_hist <- asrp_spawn_fp_raw %>%
+  filter(Period %in% c('Hist', 'Both'),
+         spawn_dist == 'Yes' & NEAR_DIST < 500) %>%
+  group_by(noaaid, year, Scenario_num) %>%
+  summarize(Length_sc_hist = sum(Length_sc, na.rm = TRUE))
+
+
+asrp_spawn_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
+  left_join(., asrp_reach_data) %>%
+  left_join(., asrp_culvs) %>%
+  mutate(Length_sc_curr = ifelse(is.na(Length_sc_curr),
+                                 0,
+                                 Length_sc_curr),
+         Length_sc_hist = ifelse(is.na(Length_sc_hist),
+                                 0,
+                                 Length_sc_hist),
+         Length_sc = ifelse(Floodplain == 'y',
+                            Length_sc_curr + ((Length_sc_hist - Length_sc_curr) * rest_perc * fp_intensity_scalar),
+                            Length_sc_curr),
+         eggs = Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity)
+
 if (fishtype == "spring_chinook") {
   asrp_spawn_fp %<>%
     filter(Subbasin_num %in% schino_subs)
@@ -54,7 +74,7 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
 }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
-         !(Scenario_num %in% single_action_scenarios[!single_action_scenarios %in% growth_scenarios] & 
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_test_scenarios) & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%

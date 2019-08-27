@@ -1,10 +1,7 @@
 # Floodplain side channel spawning ----
 
 fp_spawn <- fp %>%
-  filter(Habitat == "Side_Channel",
-         ifelse(Period == "Hist",
-                spawn_dist == "Yes" & NEAR_DIST < 500,
-                spawn_dist == "Yes" & NEAR_DIST < 5))
+  filter(Habitat == "Side_Channel")
 
 if (fishtype == "spring_chinook") {
   fp_spawn <- fp_spawn %>%
@@ -16,14 +13,16 @@ hist_fp_spawn <- c("Floodplain", "FP_wood_comb", "Historical")
 
 fps_curr <- lapply(curr_fp_spawn, function(x) {
   fp_spawn %>%
-    filter(Period %in% c("Curr", "Both")) %>%
+    filter(Period %in% c("Curr", "Both"),
+           spawn_dist == 'Yes' & NEAR_DIST < 5) %>%
     mutate(hab.scenario = x)
 }) %>%
   do.call('rbind',.)
 
 fps_hist <- lapply(hist_fp_spawn, function(y) {
   fp_spawn %>% 
-    filter(Period %in% c("Hist", "Both")) %>%
+    filter(Period %in% c("Hist", "Both"),
+           spawn_dist == 'Yes' & NEAR_DIST < 500) %>%
     mutate(hab.scenario = y)
 }) %>% 
   do.call('rbind',.)

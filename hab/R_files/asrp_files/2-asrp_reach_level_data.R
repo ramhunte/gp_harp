@@ -18,7 +18,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
 }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
-         !(Scenario_num %in% single_action_scenarios[!single_action_scenarios %in% growth_scenarios] & 
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_test_scenarios) & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_scenarios %>%
               select(GSU, Scenario_num, managed_forest)) %>%
@@ -42,34 +42,46 @@ mutate(tm_2019 = curr_temp,
                   0,
                   .75)),
        
-# assign wood intensity scalar.  This is set to 1 for all restoration scenarios
+       # assign wood intensity scalar.  This is set to 1 for all restoration scenarios
        wood_intensity_scalar = case_when(
-         year == 2019 ~ ifelse(Scenario_num %in% single_action_scenarios,
-                               1,
-                               0),
-         year %in% c(2040, 2080) ~ 1),
-
-# assign floodplain intensity scalar.  This is set to 1 for all restoration scenarios
+         Scenario_num %in% diag_test_scenarios ~ 1,
+         !Scenario_num %in% diag_test_scenarios ~
+           case_when(
+             year == 2019 ~ ifelse(Scenario_num %in% single_action_scenarios,
+                                   1,
+                                   0),
+             year %in% c(2040, 2080) ~ 1)),
+       
+       # assign floodplain intensity scalar.  This is set to 1 for all restoration scenarios
        fp_intensity_scalar = case_when(
-         year == 2019 ~ ifelse(Scenario_num %in% single_action_scenarios,
-                               1,
-                               0),
-         year %in% c(2040, 2080) ~ 1),
+         Scenario_num %in% diag_test_scenarios ~ 1,
+         !Scenario_num %in% diag_test_scenarios ~
+           case_when(
+             year == 2019 ~ ifelse(Scenario_num %in% single_action_scenarios,
+                                   1,
+                                   0),
+             year %in% c(2040, 2080) ~ 1)),
        beaver_intensity_scalar = case_when(
-         year == 2019 ~ ifelse(Scenario_num %in% single_action_scenarios,
-                               ifelse(managed_forest == 'y',
-                                      .1,
-                                      1),
-                               0),
-         year %in% c(2040, 2080) ~ ifelse(managed_forest == 'y',
+         Scenario_num %in% diag_test_scenarios ~ 1,
+         !Scenario_num %in% diag_test_scenarios ~
+           case_when(
+             year == 2019 ~ ifelse(Scenario_num %in% single_action_scenarios,
+                                   ifelse(managed_forest == 'y',
                                           .1,
-                                          1))) %>%
+                                          1),
+                                   0),
+             year %in% c(2040, 2080) ~ ifelse(managed_forest == 'y',
+                                              .1,
+                                              1)))) %>%
   left_join(., asrp_scenarios %>%
               select(-managed_forest)) %>%
   mutate(
-    rest_perc = ifelse(is.na(rest_perc),
-                         0,
-                         rest_perc),
+    rest_perc = case_when(
+      Scenario_num %in% diag_test_scenarios ~ 1,
+      !Scenario_num %in% diag_test_scenarios ~
+        ifelse(is.na(rest_perc),
+               0,
+               rest_perc)),
     primary_cr_only = ifelse(is.na(primary_cr_only),
                              "n",
                              as.character(primary_cr_only)),
@@ -89,24 +101,27 @@ mutate(tm_2019 = curr_temp,
                'n',
                'y')),
     Floodplain = case_when(
-      Floodplain == 'y' ~
-        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-               'n',
-               ifelse(managed_forest == 'y',
-                      ifelse(LW == 'y',
-                             'y',
-                             'n'),
-                      'y')),
-      is.na(Floodplain) | Floodplain == 'n' ~
-        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-               'n',
-               ifelse(managed_forest == 'y',
-                           ifelse(LW == 'y',
-                                  'y',
-                                  'n'),
-                           ifelse(Riparian == 'y',
-                                  'y',
-                                  'n')))),
+      Scenario_num == 'fp_test' ~ 'y',
+      !Scenario_num == 'fp_test' ~
+        case_when(
+          Floodplain == 'y' ~
+            ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+                   'n',
+                   ifelse(managed_forest == 'y',
+                          ifelse(LW == 'y',
+                                 'y',
+                                 'n'),
+                          'y')),
+          is.na(Floodplain) | Floodplain == 'n' ~
+            ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+                   'n',
+                   ifelse(managed_forest == 'y',
+                          ifelse(LW == 'y',
+                                 'y',
+                                 'n'),
+                          ifelse(Riparian == 'y',
+                                 'y',
+                                 'n'))))),
     Beaver = case_when(
       (primary_cr_only == 'y' & !Reach %in% primary_cr) ~ 'n',
       !(primary_cr_only == 'y' & !Reach %in% primary_cr) ~
@@ -142,9 +157,12 @@ mutate(tm_2019 = curr_temp,
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
-         asrp_temp = ifelse(Floodplain == 'y', # Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
-                            asrp_temp - (1 * rest_perc),
-                            asrp_temp),
+         asrp_temp = case_when(
+           Scenario_num %in% diag_test_scenarios ~ asrp_temp,
+           !Scenario_num %in% diag_test_scenarios ~
+             ifelse(Floodplain == 'y', # Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
+                    asrp_temp - (1 * rest_perc),
+                    asrp_temp)),
          asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
                             ifelse(year == 2040,
                                    asrp_temp - 1.8,
@@ -159,9 +177,11 @@ mutate(tm_2019 = curr_temp,
            year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
                                  prespawn_temp + temp_diff_2080_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
                                  prespawn_temp + temp_diff_2080 * prespawn_temp_slope - prespawn_temp_intercept)),
-         prespawn_temp_asrp = ifelse(Floodplain == 'y',
-                                     prespawn_temp_asrp - (1 * rest_perc * prespawn_temp_slope - prespawn_temp_intercept),
-                                     prespawn_temp_asrp),
+         prespawn_temp_asrp = case_when(
+           Scenario_num %in% diag_test_scenarios ~ prespawn_temp_asrp,
+           !Scenario_num %in% diag_test_scenarios ~ ifelse(Floodplain == 'y',
+                                                           prespawn_temp_asrp - (1 * rest_perc * prespawn_temp_slope - prespawn_temp_intercept),
+                                                           prespawn_temp_asrp)),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,
                                             prespawn_temp_asrp - (1.8 * prespawn_temp_slope - prespawn_temp_intercept),

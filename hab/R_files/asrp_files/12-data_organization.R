@@ -20,7 +20,9 @@ asrp_results <- asrp_results_inputs %>%
   left_join(., asrp_mvmt) %>%
   mutate(movement = ifelse(Scenario_num %in% c("Current_asrp", 'dev_and_climate'),
                            11,
-                           movement)) %>%
+                           ifelse(Scenario_num %in% c('fp_test'),
+                                  3,
+                                  movement))) %>%
   # mutate(movement = 11) %>%
   gather(life.stage2, num, c(capacity, survival, movement)) %>%
   unite(life.stage, life.stage2, col = life.stage, sep = ".") %>%
