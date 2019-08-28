@@ -92,8 +92,11 @@ mutate(tm_2019 = curr_temp,
                'n',
                'y')),
     Barriers = case_when(
-      is.na(Barriers) | Barriers == 'n' ~ 'n',
-      Barriers == 'y' ~ 'y'),
+      Scenario_num == 'barrier_test' ~ 'y',
+      !Scenario_num == 'barrier_test' ~ 
+        case_when(
+          is.na(Barriers) | Barriers == 'n' ~ 'n',
+          Barriers == 'y' ~ 'y')),
     Riparian = case_when(
       is.na(Riparian) | Riparian == 'n' ~ 'n',
       Riparian == 'y' ~
