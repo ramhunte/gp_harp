@@ -86,8 +86,8 @@ mutate(tm_2019 = curr_temp,
                              "n",
                              as.character(primary_cr_only)),
     LW = case_when(
-      Scenario_num == 'wood_test' ~ 'y',
-      !Scenario_num == 'wood_test' ~
+      Scenario_num %in% c('wood_test', 'lw_flp_test') ~ 'y',
+      !Scenario_num %in% c('wood_test', 'lw_flp_test') ~
         case_when(
           is.na(LW) | LW == 'n' ~ 'n',
           LW == 'y' ~
@@ -107,8 +107,8 @@ mutate(tm_2019 = curr_temp,
                'n',
                'y')),
     Floodplain = case_when(
-      Scenario_num == 'fp_test' ~ 'y',
-      !Scenario_num == 'fp_test' ~
+      Scenario_num %in% c('fp_test', 'lw_flp_test') ~ 'y',
+      !Scenario_num %in% c('fp_test', 'lw_flp_test') ~
         case_when(
           Floodplain == 'y' ~
             ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
@@ -143,13 +143,13 @@ mutate(tm_2019 = curr_temp,
          Floodplain = ifelse(str_detect(Scenario_num, 'wood|beaver|riparian|barrier'),
                              'n',
                              as.character(Floodplain)),
-         Riparian = ifelse(str_detect(Scenario_num, 'wood|beaver|fp|barrier'),
+         Riparian = ifelse(str_detect(Scenario_num, 'wood|beaver|fp|barrier|flp'),
                            'n',
                            as.character(Riparian)),
-         Barriers = ifelse(str_detect(Scenario_num, 'wood|beaver|fp|riparian'),
+         Barriers = ifelse(str_detect(Scenario_num, 'wood|beaver|fp|riparian|flp'),
                            'n',
                            as.character(Barriers)),
-         Beaver = ifelse(str_detect(Scenario_num, 'wood|fp|barrier|riparian'),
+         Beaver = ifelse(str_detect(Scenario_num, 'wood|fp|barrier|riparian|flp'),
                          'n',
                          as.character(Beaver))) %>%
   left_join(., wood_data) %>%
