@@ -129,11 +129,14 @@ mutate(tm_2019 = curr_temp,
                                  'y',
                                  'n'))))),
     Beaver = case_when(
-      (primary_cr_only == 'y' & !Reach %in% primary_cr) ~ 'n',
-      !(primary_cr_only == 'y' & !Reach %in% primary_cr) ~
-        ifelse(LW == 'y',
-               'y',
-               'n'))) %>%
+      Scenario_num == 'beaver_test' ~ 'y',
+      !Scenario_num == 'beaver_test' ~
+        case_when(
+          (primary_cr_only == 'y' & !Reach %in% primary_cr) ~ 'n',
+          !(primary_cr_only == 'y' & !Reach %in% primary_cr) ~
+            ifelse(LW == 'y',
+                   'y',
+                   'n')))) %>%
   mutate(LW = ifelse(str_detect(Scenario_num, 'beaver|riparian|barrier|fp'),
                      'n',
                      as.character(LW)),
