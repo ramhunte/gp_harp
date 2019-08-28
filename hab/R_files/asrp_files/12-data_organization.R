@@ -22,7 +22,9 @@ asrp_results <- asrp_results_inputs %>%
                            11,
                            ifelse(Scenario_num %in% c('fp_test'),
                                   3,
-                                  movement))) %>%
+                                  ifelse(Scenario_num == 'wood_test',
+                                         7,
+                                         movement)))) %>%
   # mutate(movement = 11) %>%
   gather(life.stage2, num, c(capacity, survival, movement)) %>%
   unite(life.stage, life.stage2, col = life.stage, sep = ".") %>%

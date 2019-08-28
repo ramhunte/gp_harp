@@ -20,7 +20,7 @@ asrp_spawn_ss <- asrp_ss_spawn %>%
                        ifelse(lc == "Forest",
                               Shape_Length * pass_tot_asrp * F_redd_density / 1000 * fecundity,
                               ifelse(LW == 'y',
-                                     Shape_Length * pass_tot_asrp * ((F_redd_density - NF_redd_density) * rest_perc * 
+                                     Shape_Length * pass_tot_asrp * (NF_redd_density + (F_redd_density - NF_redd_density) * rest_perc * 
                                                                        wood_intensity_scalar) / 1000 * fecundity,
                                      Shape_Length * pass_tot_asrp * NF_redd_density / 1000 * fecundity))))
 

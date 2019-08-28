@@ -86,11 +86,14 @@ mutate(tm_2019 = curr_temp,
                              "n",
                              as.character(primary_cr_only)),
     LW = case_when(
-      is.na(LW) | LW == 'n' ~ 'n',
-      LW == 'y' ~
-        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-               'n',
-               'y')),
+      Scenario_num == 'wood_test' ~ 'y',
+      !Scenario_num == 'wood_test' ~
+        case_when(
+          is.na(LW) | LW == 'n' ~ 'n',
+          LW == 'y' ~
+            ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+                   'n',
+                   'y'))),
     Barriers = case_when(
       Scenario_num == 'barrier_test' ~ 'y',
       !Scenario_num == 'barrier_test' ~ 
