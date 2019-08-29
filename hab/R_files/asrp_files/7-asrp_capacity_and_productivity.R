@@ -65,12 +65,46 @@ asrp_prod <- asrp_cap %>%
     ),
     surv.base.asrp = ifelse(life.stage %in% c("summer", "summer.2"),
                             surv.base.asrp.summer,
-                            surv.base.asrp.winter)
-  ) %>%
+                            surv.base.asrp.winter)) %>%
+  select(-surv.base.asrp.summer, -surv.base.asrp.winter) %>%
   group_by(Subbasin_num, life.stage, year, Scenario_num) %>%
   mutate(cap.sum.sub = sum(capacity, na.rm = T),
          cap.perc = capacity / cap.sum.sub,
          survival = cap.perc * surv.base.asrp) %>%
-  summarize(capacity = sum(capacity, na.rm = T),
-            survival = sum(survival, na.rm = T)) %>%
   ungroup()
+
+asrp_prod_adjustment <- asrp_prod
+
+asrp_prod <- asrp_prod %>%
+  left_join(., asrp_prod_adjustment %>%
+              filter(Habitat %in% LgRiver_habs,
+                     life.stage %in% c('summer', 'summer.2')) %>%
+              group_by(Subbasin_num, Scenario_num, year, life.stage) %>%
+              summarize(survival = sum(survival, na.rm = T),
+                        cap.perc = sum(cap.perc, na.rm = T)) %>%
+              group_by(Subbasin_num, life.stage, year) %>%
+              mutate(survival.curr = ifelse(Scenario_num == 'Current_asrp',
+                                            survival,
+                                            0),
+                     survival.curr = sum(survival.curr, na.rm = T),
+                     surv.adj = (survival - survival.curr) * cap.perc) %>%
+              select(Subbasin_num, year, Scenario_num, surv.adj)) %>%
+  group_by(Subbasin_num, Scenario_num, year, life.stage) %>%
+  summarize(capacity = sum(capacity, na.rm = T),
+            survival = sum(survival, na.rm = T),
+            surv.adj = unique(surv.adj, na.rm = T)) %>%
+  group_by(Subbasin_num, life.stage, year) %>%
+  mutate(survival.curr = ifelse(Scenario_num == 'Current_asrp',
+                                survival,
+                                0),
+         survival.curr = sum(survival.curr, na.rm = T),
+         survival = ifelse(life.stage %in% c('summer', 'summer.2') & Scenario_num == 'riparian_test' & Subbasin_num %in% mainstem.subs,
+                           survival.curr + surv.adj,
+                           survival)) %>%
+  select(Scenario_num, year, life.stage, capacity, survival)
+  
+
+# 
+#   summarize(capacity = sum(capacity, na.rm = T),
+#             survival = sum(survival, na.rm = T)) %>%
+#   ungroup()

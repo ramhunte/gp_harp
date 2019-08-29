@@ -31,7 +31,7 @@ if (run_single_action == 'yes') {
 
 scenario.years <- c(2040, 2080, 2019) # Note:  We use 2019 as the current year for the Current_asrp scenario
 
-diag_test_scenarios <- c('fp_test', 'barrier_test', 'wood_test', 'beaver_test', 'lw_flp_test')
+diag_test_scenarios <- c('fp_test', 'barrier_test', 'wood_test', 'beaver_test', 'lw_flp_test', 'riparian_test')
 scenario.nums <- c(unique(asrp_scenarios$Scenario_num), "Current_asrp", 'dev_and_climate', diag_test_scenarios) 
 single_action_scenarios <- c(unique(asrp_scenarios$Scenario_num[!asrp_scenarios$Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3')]), 'dev_and_climate')
 growth_scenarios <- c('scenario_1_riparian_only', 'scenario_2_riparian_only','scenario_3_riparian_only', 'scenario_1_no_climate_chg',

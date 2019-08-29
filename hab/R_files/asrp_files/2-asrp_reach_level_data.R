@@ -5,7 +5,7 @@
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp, 
-           temp_diff_2040, temp_diff_2040_cc_only, temp_diff_2080, temp_diff_2080_cc_only) %>%
+           temp_diff_2040, temp_diff_2040_cc_only, temp_diff_2080, temp_diff_2080_cc_only, hist_temp, temp_diff) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -18,29 +18,34 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
 }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_test_scenarios) & 
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_test_scenarios, 'Current_asrp') & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_scenarios %>%
               select(GSU, Scenario_num, managed_forest)) %>%
   mutate(managed_forest = ifelse(is.na(managed_forest), 
                                  'n',
                                  as.character(managed_forest))) %>%
-mutate(tm_2019 = curr_temp,
-       tm_2019_cc_only = curr_temp,
-       asrp_temp_w_growth = case_when(
-         year == 2019 ~ tm_2019,
+mutate(asrp_temp_w_growth = case_when(
+         year == 2019 ~ ifelse(Scenario_num == 'riparian_test',
+                               hist_temp,
+                               curr_temp),
          year == 2040 ~ tm_2040,
          year == 2080 ~ tm_2080),
        asrp_temp_cc_only = case_when(
-         year == 2019 ~ tm_2019_cc_only,
+         year == 2019 ~ ifelse(Scenario_num == 'riparian_test',
+                               hist_temp,
+                               curr_temp),
          year == 2040 ~ tm_2040_cc_only,
          year == 2080 ~ tm_2080_cc_only),
        temp_intensity_scalar = case_when(
-         year == 2019 ~ 0,
-         year %in% c(2040, 2080) ~ 
-           ifelse(managed_forest == 'y',
-                  0,
-                  .75)),
+         Scenario_num == 'riparian_test' ~ 1,
+         !Scenario_num == 'riparian_test' ~
+           case_when(
+             year == 2019 ~ 0,
+             year %in% c(2040, 2080) ~ 
+               ifelse(managed_forest == 'y',
+                      0,
+                      .75))),
        
        # assign wood intensity scalar.  This is set to 1 for all restoration scenarios
        wood_intensity_scalar = case_when(
@@ -101,11 +106,14 @@ mutate(tm_2019 = curr_temp,
           is.na(Barriers) | Barriers == 'n' ~ 'n',
           Barriers == 'y' ~ 'y')),
     Riparian = case_when(
-      is.na(Riparian) | Riparian == 'n' ~ 'n',
-      Riparian == 'y' ~
-        ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
-               'n',
-               'y')),
+      Scenario_num == 'riparian_test' ~ 'y',
+      !Scenario_num == 'riparian_test' ~
+        case_when(
+          is.na(Riparian) | Riparian == 'n' ~ 'n',
+          Riparian == 'y' ~
+            ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
+                   'n',
+                   'y'))),
     Floodplain = case_when(
       Scenario_num %in% c('fp_test', 'lw_flp_test') ~ 'y',
       !Scenario_num %in% c('fp_test', 'lw_flp_test') ~
@@ -179,13 +187,16 @@ mutate(tm_2019 = curr_temp,
                             asrp_temp),
          tempmult.asrp = temp_func(asrp_temp),
          prespawn_temp_asrp = case_when(
-           year == 2019 ~ prespawn_temp,
-           year == 2040 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                 prespawn_temp + temp_diff_2040_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
-                                 prespawn_temp + temp_diff_2040 * prespawn_temp_slope - prespawn_temp_intercept), 
-           year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                 prespawn_temp + temp_diff_2080_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
-                                 prespawn_temp + temp_diff_2080 * prespawn_temp_slope - prespawn_temp_intercept)),
+           Scenario_num == 'riparian_test' ~ prespawn_temp - temp_diff, #* prespawn_temp_slope - prespawn_temp_intercept,
+           !Scenario_num == 'riparian_test' ~
+             case_when(
+               year == 2019 ~ prespawn_temp,
+               year == 2040 ~ ifelse(!Riparian == 'y' & can_ang > 170,
+                                     prespawn_temp + temp_diff_2040_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
+                                     prespawn_temp + temp_diff_2040 * prespawn_temp_slope - prespawn_temp_intercept), 
+               year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
+                                     prespawn_temp + temp_diff_2080_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
+                                     prespawn_temp + temp_diff_2080 * prespawn_temp_slope - prespawn_temp_intercept))),
          prespawn_temp_asrp = case_when(
            Scenario_num %in% diag_test_scenarios ~ prespawn_temp_asrp,
            !Scenario_num %in% diag_test_scenarios ~ ifelse(Floodplain == 'y',
