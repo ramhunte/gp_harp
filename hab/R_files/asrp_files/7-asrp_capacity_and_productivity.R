@@ -98,7 +98,8 @@ asrp_prod <- asrp_prod %>%
                                 survival,
                                 0),
          survival.curr = sum(survival.curr, na.rm = T),
-         survival = ifelse(life.stage %in% c('summer', 'summer.2') & Scenario_num == 'riparian_test' & Subbasin_num %in% mainstem.subs,
+         survival = ifelse(life.stage %in% c('summer', 'summer.2') & Scenario_num %in% c('riparian_test', 'lr_bank_test')
+                           & Subbasin_num %in% mainstem.subs,
                            survival.curr + surv.adj,
                            survival)) %>%
   select(Scenario_num, year, life.stage, capacity, survival)

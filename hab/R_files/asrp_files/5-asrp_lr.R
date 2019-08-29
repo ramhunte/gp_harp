@@ -79,7 +79,9 @@ asrp_lr_scenario <- lapply(scenario.nums, function(a) {
 assign('asrp_lr_spawn', asrp_lr_scenario, envir = .GlobalEnv)
 
 asrp_lr <- asrp_lr_scenario %>%
-  filter(Period %in% c("Curr", "Both")) %>%
+  filter(case_when(
+    Scenario_num %in% c('lr_bank_test') ~ Period %in% c('Hist', 'Both'),
+    !Scenario_num %in% c('lr_bank_test') ~ Period %in% c("Curr", "Both"))) %>%
   left_join(., asrp_reach_data) %>%
   rename(width_s_2019 = width_s,
          width_w_2019 = width_w) %>%
