@@ -85,6 +85,8 @@ asrp_lr <- asrp_lr_scenario %>%
   left_join(., asrp_reach_data) %>%
   rename(width_s_2019 = width_s,
          width_w_2019 = width_w) %>%
+  left_join(., lr_length_raw %>% 
+              select(Reach, lr_mult)) %>%
   mutate(
     width_s = case_when(
       year == 2019 ~ width_s_2019,
@@ -94,8 +96,15 @@ asrp_lr <- asrp_lr_scenario %>%
       year == 2019 ~ width_w_2019,
       year == 2040 ~ width_w_2040,
       year == 2080 ~ width_w_2080),
-    area_s = Length_m * width_s / 10000,
-    area_w = Length_m * width_w / 10000) %>%
+    lr_mult = ifelse(is.na(lr_mult),
+                     1,
+                     lr_mult),
+    area_s = case_when(
+      Scenario_num %in% c('lr_length_test') ~ (Length_m * lr_mult * width_s) / 10000,
+      !Scenario_num %in% c('lr_length_test') ~ Length_m * width_s / 10000),
+    area_w = case_when(
+      Scenario_num %in% c('lr_length_test') ~ (Length_m * lr_mult * width_w) / 10000,
+      !Scenario_num %in% c('lr_length_test') ~ Length_m * width_w / 10000)) %>%
   bind_rows(., asrp_bw) %>%
   left_join(., asrp_culvs) %>%
   mutate(
