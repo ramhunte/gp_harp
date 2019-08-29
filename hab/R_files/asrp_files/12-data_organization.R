@@ -18,7 +18,8 @@ ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
 
 asrp_results <- asrp_results_inputs %>%
   left_join(., asrp_mvmt) %>%
-  mutate(movement = ifelse(Scenario_num %in% c("Current_asrp", 'dev_and_climate', 'barrier_test', 'riparian_test', 'lr_bank_test', 'lr_length_test'),
+  mutate(movement = ifelse(Scenario_num %in% c("Current_asrp", 'dev_and_climate', 'barrier_test', 'riparian_test', 'lr_bank_test', 'lr_length_test',
+                                               'fine_sed_test'),
                            11,
                            ifelse(Scenario_num %in% c('fp_test', 'beaver_test', 'lw_flp_test'),
                                   3,
