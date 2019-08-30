@@ -33,9 +33,11 @@ if (fishtype == "spring_chinook") {
     left_join(., egg_cap_weight_asrp) %>%
     mutate(
       imperv_mult = case_when(
-        Scenario_num  == 'Current_asrp' ~ calc_coho_imperv(mn_imperv),
-        !Scenario_num == 'Current_asrp' ~ calc_coho_imperv(future_imperv + mn_imperv)),
-      
+        year == 2019 ~ 
+          ifelse(Scenario_num == 'hist_test',
+                 1,
+                 calc_coho_imperv(mn_imperv)),
+        !year == 2019 ~ calc_coho_imperv(future_imperv + mn_imperv)),
       pass_tot_asrp = ifelse(Barriers == 'y',
                              pass_tot_natural,
                              pass_tot),

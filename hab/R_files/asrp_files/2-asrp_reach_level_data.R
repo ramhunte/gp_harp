@@ -26,20 +26,20 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
                                  'n',
                                  as.character(managed_forest))) %>%
 mutate(asrp_temp_w_growth = case_when(
-         year == 2019 ~ ifelse(Scenario_num == 'riparian_test',
+         year == 2019 ~ ifelse(Scenario_num %in% c('riparian_test', 'hist_test'),
                                hist_temp,
                                curr_temp),
          year == 2040 ~ tm_2040,
          year == 2080 ~ tm_2080),
        asrp_temp_cc_only = case_when(
-         year == 2019 ~ ifelse(Scenario_num == 'riparian_test',
+         year == 2019 ~ ifelse(Scenario_num %in% c('riparian_test', 'hist_test'),
                                hist_temp,
                                curr_temp),
          year == 2040 ~ tm_2040_cc_only,
          year == 2080 ~ tm_2080_cc_only),
        temp_intensity_scalar = case_when(
-         Scenario_num == 'riparian_test' ~ 1,
-         !Scenario_num == 'riparian_test' ~
+         Scenario_num %in% c('riparian_test', 'hist_test') ~ 1,
+         !Scenario_num %in% c('riparian_test', 'hist_test') ~
            case_when(
              year == 2019 ~ 0,
              year %in% c(2040, 2080) ~ 
@@ -91,8 +91,8 @@ mutate(asrp_temp_w_growth = case_when(
                              "n",
                              as.character(primary_cr_only)),
     LW = case_when(
-      Scenario_num %in% c('wood_test', 'lw_flp_test') ~ 'y',
-      !Scenario_num %in% c('wood_test', 'lw_flp_test') ~
+      Scenario_num %in% c('wood_test', 'lw_flp_test', 'hist_test') ~ 'y',
+      !Scenario_num %in% c('wood_test', 'lw_flp_test', 'hist_test') ~
         case_when(
           is.na(LW) | LW == 'n' ~ 'n',
           LW == 'y' ~
@@ -100,14 +100,14 @@ mutate(asrp_temp_w_growth = case_when(
                    'n',
                    'y'))),
     Barriers = case_when(
-      Scenario_num == 'barrier_test' ~ 'y',
-      !Scenario_num == 'barrier_test' ~ 
+      Scenario_num %in% c('barrier_test', 'hist_test') ~ 'y',
+      !Scenario_num %in% c('barrier_test', 'hist_test') ~ 
         case_when(
           is.na(Barriers) | Barriers == 'n' ~ 'n',
           Barriers == 'y' ~ 'y')),
     Riparian = case_when(
-      Scenario_num == 'riparian_test' ~ 'y',
-      !Scenario_num == 'riparian_test' ~
+      Scenario_num %in% c('riparian_test', 'hist_test') ~ 'y',
+      !Scenario_num %in% c('riparian_test', 'hist_test') ~
         case_when(
           is.na(Riparian) | Riparian == 'n' ~ 'n',
           Riparian == 'y' ~
@@ -115,8 +115,8 @@ mutate(asrp_temp_w_growth = case_when(
                    'n',
                    'y'))),
     Floodplain = case_when(
-      Scenario_num %in% c('fp_test', 'lw_flp_test') ~ 'y',
-      !Scenario_num %in% c('fp_test', 'lw_flp_test') ~
+      Scenario_num %in% c('fp_test', 'lw_flp_test', 'hist_test') ~ 'y',
+      !Scenario_num %in% c('fp_test', 'lw_flp_test', 'hist_test') ~
         case_when(
           Floodplain == 'y' ~
             ifelse(primary_cr_only == 'y' & !Reach %in% primary_cr,
@@ -137,8 +137,8 @@ mutate(asrp_temp_w_growth = case_when(
                                  'y',
                                  'n'))))),
     Beaver = case_when(
-      Scenario_num == 'beaver_test' ~ 'y',
-      !Scenario_num == 'beaver_test' ~
+      Scenario_num %in% c('beaver_test', 'hist_test') ~ 'y',
+      !Scenario_num %in% c('beaver_test', 'hist_test') ~
         case_when(
           (primary_cr_only == 'y' & !Reach %in% primary_cr) ~ 'n',
           !(primary_cr_only == 'y' & !Reach %in% primary_cr) ~
@@ -187,8 +187,8 @@ mutate(asrp_temp_w_growth = case_when(
                             asrp_temp),
          tempmult.asrp = temp_func(asrp_temp),
          prespawn_temp_asrp = case_when(
-           Scenario_num == 'riparian_test' ~ prespawn_temp - temp_diff, #* prespawn_temp_slope - prespawn_temp_intercept,
-           !Scenario_num == 'riparian_test' ~
+           Scenario_num %in% c('riparian_test', 'hist_test') ~ prespawn_temp - temp_diff, #* prespawn_temp_slope - prespawn_temp_intercept,
+           !Scenario_num %in% c('riparian_test', 'hist_test') ~
              case_when(
                year == 2019 ~ prespawn_temp,
                year == 2040 ~ ifelse(!Riparian == 'y' & can_ang > 170,

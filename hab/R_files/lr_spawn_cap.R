@@ -78,8 +78,9 @@ lgr_spawning_area <- lgr %>%
          spawn_area_hist = Historical) %>%
   mutate(spawn_area_passable = spawn_area * pass_tot,
          spawn_area_passable_nat = spawn_area * pass_tot_natural,
-         spawn_area_passable_hist = spawn_area_hist * pass_tot_natural) %>% #Apply culvert passablility correction to the min spawnable area
-  assign("lgr_sp_area_asrp", . , envir = .GlobalEnv)
+         spawn_area_passable_hist = spawn_area_hist * pass_tot_natural)  #Apply culvert passablility correction to the min spawnable area
+
+assign("lgr_sp_area_asrp", lgr_spawning_area , envir = .GlobalEnv)
 
 if (fishtype == "spring_chinook") {
   lgr_spawning_area <- lgr_spawning_area %>%

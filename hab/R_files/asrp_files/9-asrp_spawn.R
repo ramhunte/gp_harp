@@ -34,13 +34,15 @@ asrp_spawn_fp_curr <- asrp_spawn_fp_raw %>%
   filter(Period %in% c('Curr', 'Both'),
          spawn_dist == 'Yes' & NEAR_DIST < 5) %>%
   group_by(noaaid, year, Scenario_num) %>%
-  summarize(Length_sc_curr = sum(Length_sc, na.rm = TRUE))
+  summarize(Length_sc_curr = sum(Length_sc, na.rm = TRUE)) %>%
+  ungroup()
 
 asrp_spawn_fp_hist <- asrp_spawn_fp_raw %>%
   filter(Period %in% c('Hist', 'Both'),
          spawn_dist == 'Yes' & NEAR_DIST < 500) %>%
   group_by(noaaid, year, Scenario_num) %>%
-  summarize(Length_sc_hist = sum(Length_sc, na.rm = TRUE))
+  summarize(Length_sc_hist = sum(Length_sc, na.rm = TRUE)) %>%
+  ungroup()
 
 
 asrp_spawn_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
@@ -79,6 +81,9 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   mutate(
+    spawn_area = ifelse(Scenario_num == 'hist_test',
+                        spawn_area_hist,
+                        spawn_area),
     eggs = ifelse(LW == 'y',
                   spawn_area * pass_tot_asrp / redd_area * fecundity * (1 + (wood_spawn_mult - 1) * rest_perc * 
                                                                           wood_intensity_scalar),

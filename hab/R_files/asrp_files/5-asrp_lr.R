@@ -49,16 +49,16 @@ asrp_lr_raw <- LgRiver_raw %>%
                          "Hist", 
                          as.character(Period))) %>%
   left_join(., flowline %>%
-              select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach_low, width_s, width_s_2040, width_s_2080, width_w,
-                     width_w_2040, width_w_2080, chino_mult)) %>% 
-  gather(value, width, width_s:width_w_2080) %>% 
+              select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach_low, width_s, width_s_2040, width_s_2080, width_s_hist, width_w,
+                     width_w_2040, width_w_2080, width_w_hist, chino_mult, wet_width)) %>% 
+  gather(value, width, width_s:width_w_hist) %>% 
   filter(width < 200) %>%
   mutate(width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width + 2.11,
                            Habitat == "Bank" ~ 0.084 * width + 0.33,
                            Habitat == "HM_Bank" ~ 0.089 * width + .33)) %>%
   spread(value, width) %>%
-  mutate(area_s = width_s * Length_m / 10000,
-         area_w = width_w * Length_m / 10000) %>%
+  # mutate(area_s = width_s * Length_m / 10000,
+  #        area_w = width_w * Length_m / 10000) %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
 
 asrp_lr_year <- lapply(scenario.years, function(z) {
@@ -80,8 +80,8 @@ assign('asrp_lr_spawn', asrp_lr_scenario, envir = .GlobalEnv)
 
 asrp_lr <- asrp_lr_scenario %>%
   filter(case_when(
-    Scenario_num %in% c('lr_bank_test') ~ Period %in% c('Hist', 'Both'),
-    !Scenario_num %in% c('lr_bank_test') ~ Period %in% c("Curr", "Both"))) %>%
+    Scenario_num %in% c('lr_bank_test', 'hist_test') ~ Period %in% c('Hist', 'Both'),
+    !Scenario_num %in% c('lr_bank_test', 'hist_test') ~ Period %in% c("Curr", "Both"))) %>%
   left_join(., asrp_reach_data) %>%
   rename(width_s_2019 = width_s,
          width_w_2019 = width_w) %>%
@@ -89,22 +89,34 @@ asrp_lr <- asrp_lr_scenario %>%
               select(Reach, lr_mult)) %>%
   mutate(
     width_s = case_when(
-      year == 2019 ~ width_s_2019,
+      year == 2019 ~ 
+        ifelse(Scenario_num == 'hist_test',
+               width_s_hist,
+               width_s_2019),
       year == 2040 ~ width_s_2040,
       year == 2080 ~ width_s_2080),
+    # width_s = ifelse(is.na(width_s),
+    #                  wet_width,
+    #                  width_s),
     width_w = case_when(
-      year == 2019 ~ width_w_2019,
+      year == 2019 ~ 
+        ifelse(Scenario_num == 'hist_test',
+               width_w_hist,
+               width_w_2019),
       year == 2040 ~ width_w_2040,
       year == 2080 ~ width_w_2080),
+    # width_w = ifelse(is.na(width_w),
+    #                  wet_width,
+    #                  width_w),
     lr_mult = ifelse(is.na(lr_mult),
                      1,
                      lr_mult),
     area_s = case_when(
-      Scenario_num %in% c('lr_length_test') ~ (Length_m * lr_mult * width_s) / 10000,
-      !Scenario_num %in% c('lr_length_test') ~ Length_m * width_s / 10000),
+      Scenario_num %in% c('lr_length_test', 'hist_test') ~ (Length_m * lr_mult * width_s) / 10000,
+      !Scenario_num %in% c('lr_length_test', 'hist_test') ~ Length_m * width_s / 10000),
     area_w = case_when(
-      Scenario_num %in% c('lr_length_test') ~ (Length_m * lr_mult * width_w) / 10000,
-      !Scenario_num %in% c('lr_length_test') ~ Length_m * width_w / 10000)) %>%
+      Scenario_num %in% c('lr_length_test', 'hist_test') ~ (Length_m * lr_mult * width_w) / 10000,
+      !Scenario_num %in% c('lr_length_test', 'hist_test') ~ Length_m * width_w / 10000)) %>%
   bind_rows(., asrp_bw) %>%
   left_join(., asrp_culvs) %>%
   mutate(

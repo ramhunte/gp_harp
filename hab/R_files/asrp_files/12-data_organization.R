@@ -21,7 +21,7 @@ asrp_results <- asrp_results_inputs %>%
   mutate(movement = ifelse(Scenario_num %in% c("Current_asrp", 'dev_and_climate', 'barrier_test', 'riparian_test', 'lr_bank_test', 'lr_length_test',
                                                'fine_sed_test'),
                            11,
-                           ifelse(Scenario_num %in% c('fp_test', 'beaver_test', 'lw_flp_test'),
+                           ifelse(Scenario_num %in% c('fp_test', 'beaver_test', 'lw_flp_test', 'hist_test'),
                                   3,
                                   ifelse(Scenario_num == 'wood_test',
                                          7,
