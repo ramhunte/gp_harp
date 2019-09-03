@@ -49,7 +49,7 @@ num.reaches <- length(reach.names)
 
 # Coho lifestages and sensitivity parameters
 if (pop == "coho") {
-  lifestages <- list(
+  lifestages <- c(
     'ocean0',
     'ocean1',
     'ocean2',

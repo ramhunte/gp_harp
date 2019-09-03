@@ -313,35 +313,22 @@ if (dir.exists(outputs_lcm) == F) {dir.create(outputs_lcm, recursive = T)}
 
 # Create summary csv. Spawners per subbasin
 if (sensitivity.mode == 'no') {
-  if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smolts')}
   
-  if (pop == "fall.chinook" | pop == "spring.chinook") {
-    summary.stages <- c('spawners','fry.migrants','sub.yr')
-  }
-  
-  if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}
-  
-  
-  abundance_by_subbasin <- model.all[ ,50:100, summary.stages, , ] %>%
+  abundance_by_subbasin <- model.all[ ,50:100, lifestages, , ] %>%
     apply(c(1,3,4,5),geo.mean) %>% # geomean across years
     apply(c(2,3,4),mean) %>% # mean of runs
-    round(0) %>%# round to whole fish
+    #round(0) %>%# round to whole fish
     as.data.frame.table() %>%
     rename(lifestage = Var1, Subbasin = Var2, scenario = Var3, n = Freq) %>%
     spread(lifestage, n) %>%
+    filter(scenario != 'ASRP.Current.asrp') %>%
     mutate(scenario = factor(scenario, levels = read.csv('lcm/data/scenarios.csv')$scenario)) %>%
-    filter(scenario != 'Historical.no.beaver') %>%
     arrange(scenario) %>%
     rename(natal.basin = Subbasin)
   
-  csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
+  write.csv(abundance_by_subbasin, file.path(outputs_lcm, paste0(pop, '_abundance_by_subbasin_raw.csv')))
   
 } # end if sensitivity.mode
-
-# Call bar, box or sensitivity plots
-packages.plots <- c("grid","scales")
-invisible(lapply(packages.plots,pkgCheck))
-source("lcm/scripts/plots.R")
 
 
 # Call spatial plots
@@ -365,6 +352,11 @@ if (sensitivity.mode == 'no') {
   source('lcm/scripts/calculate.Pn.Cn.R')
 }
 
+# Call bar, box or sensitivity plots
+print('Creating output plots')
+packages.plots <- c("grid","scales")
+invisible(lapply(packages.plots,pkgCheck))
+source("lcm/scripts/plots.R")
 
 # Call comparison plots
 if (!branch %in% c('dev','master')) {

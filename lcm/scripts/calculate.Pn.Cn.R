@@ -16,6 +16,13 @@ sr.years <- 10 # How many generations
 
 csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
 
+# Lifestages for clean output
+if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smolts')}
+
+if (pop == "fall.chinook" | pop == "spring.chinook") { summary.stages <- c('spawners','fry.migrants','sub.yr')}
+
+if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}
+
 # Initialize arrays to capture data ----
 
 N.sr <- matrix(
@@ -73,11 +80,13 @@ df.sr <- model.all.sr[ , "spawners", , ] %>%
 
 
 # Pn and Cn by subbasin
-abundance_by_subbasin %<>%
+abundance_by_subbasin %>%
+  select(scenario, natal.basin, summary.stages) %>%
+  mutate_at(vars(summary.stages), list(~round(., 0))) %>% # round to whole fish 
   left_join(df.sr) %>%
-  mutate(Cn = (spawners * Pn) / (Pn - 1)) %>%
-  filter(Cn > 0) %>%                                     # Remove rows with Cn < 0
-  filter_at(vars(summary.stages), all_vars(. > 0)) %>%   # Remove rows with spawner or smolt abundance < 1  
+  mutate(Cn = (spawners * Pn) / (Pn - 1),
+         Cn = ifelse(Pn < 1, NA, Cn)) %>%
+  #mutate_at(vars(summary.stages), list(~ifelse(Pn < 0, 0, .))) %>%   # Zero out abundance when Pn < 0  
   write.csv(file.path(outputs_lcm, csv.name))
 
 
