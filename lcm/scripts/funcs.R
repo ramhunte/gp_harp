@@ -369,7 +369,8 @@ if (pop == "steelhead") {
     mat.new['spawners', ] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj))
   
     N <- mat.new
-    N[is.na(N)] <- 0
+    N[is.na(N)] <- 0 # convert NAN to zero
+    N[N < 0 & N > -1] <- 0 # convert fractional negative fish to zero (some very small negative numbers from movement function)
     N
     
   } #End sub basin function 
