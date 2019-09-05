@@ -84,7 +84,7 @@ if (fishtype == 'all_species') {
   
   for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')) {
     fishtype <- s
-    source("hab/R_files/Run_Habitat_Model.R")
+    source("hab/R_files/0-Run_Habitat_Model.R")
     source("lcm/LCM.sim.R")
     print(paste0("finished ", s))
   }
@@ -92,7 +92,7 @@ if (fishtype == 'all_species') {
 } else {
   
   unlink(file.path("outputs", fishtype), recursive = TRUE) # WARNING -- Entire outptus folder for species will be deleted
-  source("hab/R_files/Run_Habitat_Model.R")
+  source("hab/R_files/0-Run_Habitat_Model.R")
   source("lcm/LCM.sim.R")
 }
 
