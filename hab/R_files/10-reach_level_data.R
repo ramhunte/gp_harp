@@ -187,7 +187,7 @@ mutate(asrp_temp_w_growth = case_when(
                             asrp_temp),
          tempmult.asrp = temp_func(asrp_temp),
          prespawn_temp_asrp = case_when(
-           Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - temp_diff, #* prespawn_temp_slope - prespawn_temp_intercept,
+           Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - (temp_diff * prespawn_temp_slope + prespawn_temp_intercept), # convert 7DADM to MDM
            !Scenario_num %in% c('Shade', 'Historical') ~
              case_when(
                year == 2019 ~ prespawn_temp,
