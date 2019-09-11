@@ -5,7 +5,7 @@
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp, 
-           temp_diff_2040, temp_diff_2040_cc_only, temp_diff_2080, temp_diff_2080_cc_only, hist_temp, temp_diff) %>%
+           temp_diff_2040, temp_diff_2040_cc_only, temp_diff_2080, temp_diff_2080_cc_only, hist_temp, temp_diff, Habitat) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -174,12 +174,9 @@ mutate(asrp_temp_w_growth = case_when(
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
-         asrp_temp = case_when(
-           Scenario_num %in% diag_scenarios ~ asrp_temp,
-           !Scenario_num %in% diag_scenarios ~
-             ifelse(Floodplain == 'y', # Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
+         asrp_temp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',# Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
                     asrp_temp - (1 * rest_perc),
-                    asrp_temp)),
+                    asrp_temp),
          asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
                             ifelse(year == 2040,
                                    asrp_temp - 1.8,
@@ -197,16 +194,15 @@ mutate(asrp_temp_w_growth = case_when(
                year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
                                      prespawn_temp + temp_diff_2080_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
                                      prespawn_temp + temp_diff_2080 * prespawn_temp_slope - prespawn_temp_intercept))),
-         prespawn_temp_asrp = case_when(
-           Scenario_num %in% diag_scenarios ~ prespawn_temp_asrp,
-           !Scenario_num %in% diag_scenarios ~ ifelse(Floodplain == 'y',
+         prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
                                                            prespawn_temp_asrp - (1 * rest_perc * prespawn_temp_slope - prespawn_temp_intercept),
-                                                           prespawn_temp_asrp)),
+                                                           prespawn_temp_asrp),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,
                                             prespawn_temp_asrp - (1.8 * prespawn_temp_slope - prespawn_temp_intercept),
                                             prespawn_temp_asrp - (3 * prespawn_temp_slope - prespawn_temp_intercept)),
                                      prespawn_temp_asrp)) %>%
+  select(-Habitat) %>%
   
   # add in future impervious area by GSU, scenario and year ----
 
