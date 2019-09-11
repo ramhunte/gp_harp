@@ -50,7 +50,7 @@
 "49","ASRP.scenario.3.2040","Black Hills",703,2.26677410127726,1257.95293066947
 "50","ASRP.scenario.3.2040","Black River",325,1.48336010322992,997.376552860444
 "51","ASRP.scenario.3.2040","Cascade Mountains",1222,2.29659772960202,2164.46655851779
-"52","ASRP.scenario.3.2040","Central Lowlands",135,1.84199055241287,295.334340585097
+"52","ASRP.scenario.3.2040","Central Lowlands",135,1.84331403272257,295.082715052379
 "53","ASRP.scenario.3.2040","Grays Harbor Tributaries",2429,2.38172624982422,4186.94590303906
 "54","ASRP.scenario.3.2040","Lower Chehalis Estuary",0,NA,NA
 "55","ASRP.scenario.3.2040","Mainstem: Lower Chehalis",479,3.11239652675489,705.756668993321
@@ -58,11 +58,11 @@
 "57","ASRP.scenario.3.2040","Mainstem: Upper Chehalis",0,NA,NA
 "58","ASRP.scenario.3.2040","Olympic Mountains",4261,2.75723451917355,6685.83285725801
 "59","ASRP.scenario.3.2040","Upper Skookumchuck",0,NA,NA
-"60","ASRP.scenario.3.2040","Willapa Hills",818,1.86700769596088,1761.47490086975
+"60","ASRP.scenario.3.2040","Willapa Hills",818,1.8659634811585,1762.61258216763
 "61","ASRP.scenario.3.2080","Black Hills",637,2.11161362605621,1210.04083457483
 "62","ASRP.scenario.3.2080","Black River",235,1.33213442546656,942.544843235952
 "63","ASRP.scenario.3.2080","Cascade Mountains",1045,2.16508317001149,1941.9316756929
-"64","ASRP.scenario.3.2080","Central Lowlands",101,1.68227534636755,249.034075300722
+"64","ASRP.scenario.3.2080","Central Lowlands",101,1.68226560477161,249.0361889763
 "65","ASRP.scenario.3.2080","Grays Harbor Tributaries",2422,2.37618363738139,4181.93954165056
 "66","ASRP.scenario.3.2080","Lower Chehalis Estuary",0,NA,NA
 "67","ASRP.scenario.3.2080","Mainstem: Lower Chehalis",329,3.22095477116555,477.134488946545
@@ -70,7 +70,7 @@
 "69","ASRP.scenario.3.2080","Mainstem: Upper Chehalis",0,NA,NA
 "70","ASRP.scenario.3.2080","Olympic Mountains",4225,2.74016673099138,6652.92826960494
 "71","ASRP.scenario.3.2080","Upper Skookumchuck",0,NA,NA
-"72","ASRP.scenario.3.2080","Willapa Hills",623,1.68179206972188,1536.76832859634
+"72","ASRP.scenario.3.2080","Willapa Hills",623,1.6813640839398,1537.34229464764
 "73","Barriers","Black Hills",701,2.30904551694337,1236.50467949872
 "74","Barriers","Black River",331,1.5085611335292,981.855871944046
 "75","Barriers","Cascade Mountains",1024,1.93352725712455,2120.91494510201
@@ -122,7 +122,7 @@
 "121","Floodplain","Black Hills",757,2.40876234113609,1294.35110450889
 "122","Floodplain","Black River",443,1.68140967515407,1093.12284995783
 "123","Floodplain","Cascade Mountains",1371,2.54844307933513,2256.40548780694
-"124","Floodplain","Central Lowlands",261,1.90444094953664,549.576053675715
+"124","Floodplain","Central Lowlands",262,1.90597024951923,551.192719230057
 "125","Floodplain","Grays Harbor Tributaries",2548,2.48022163668867,4269.36383960716
 "126","Floodplain","Lower Chehalis Estuary",0,NA,NA
 "127","Floodplain","Mainstem: Lower Chehalis",877,2.96503791419069,1323.30182128633
@@ -130,11 +130,11 @@
 "129","Floodplain","Mainstem: Upper Chehalis",0,NA,NA
 "130","Floodplain","Olympic Mountains",4456,2.81079353400858,6916.79959769664
 "131","Floodplain","Upper Skookumchuck",0,NA,NA
-"132","Floodplain","Willapa Hills",838,1.95933195814871,1711.52453223506
+"132","Floodplain","Willapa Hills",838,1.9575203523519,1713.17721993237
 "133","FP.wood.comb","Black Hills",847,2.52968737552468,1400.70791022543
 "134","FP.wood.comb","Black River",513,1.78312664911083,1168.06645774661
 "135","FP.wood.comb","Cascade Mountains",1606,2.81112109774658,2492.74357667094
-"136","FP.wood.comb","Central Lowlands",314,2.17035246208957,582.295244527771
+"136","FP.wood.comb","Central Lowlands",317,2.16893310245662,588.187460885312
 "137","FP.wood.comb","Grays Harbor Tributaries",2917,2.65919502784557,4675.08144976644
 "138","FP.wood.comb","Lower Chehalis Estuary",0,NA,NA
 "139","FP.wood.comb","Mainstem: Lower Chehalis",1120,3.46854551247479,1573.70846692519
@@ -142,19 +142,19 @@
 "141","FP.wood.comb","Mainstem: Upper Chehalis",0,NA,NA
 "142","FP.wood.comb","Olympic Mountains",5177,3.08138008306701,7664.29198579216
 "143","FP.wood.comb","Upper Skookumchuck",0,NA,NA
-"144","FP.wood.comb","Willapa Hills",1015,2.07705518145912,1957.38439912145
+"144","FP.wood.comb","Willapa Hills",1016,2.07443713864506,1961.61139359092
 "145","Historical","Black Hills",1088,4.12268481061493,1436.41812926542
 "146","Historical","Black River",800,2.98648638991883,1202.72110801257
 "147","Historical","Cascade Mountains",2290,3.84471944764613,3095.00029691675
-"148","Historical","Central Lowlands",619,4.41335748314216,800.346373199147
+"148","Historical","Central Lowlands",620,4.42289429866312,801.133259137494
 "149","Historical","Grays Harbor Tributaries",3927,3.76745710504574,5345.99218341637
 "150","Historical","Lower Chehalis Estuary",0,NA,NA
 "151","Historical","Mainstem: Lower Chehalis",1319,5.37110167015773,1620.75459175545
-"152","Historical","Mainstem: Middle Chehalis",170,2.5500690244599,279.672535427404
+"152","Historical","Mainstem: Middle Chehalis",189,2.5040763622742,314.658513583863
 "153","Historical","Mainstem: Upper Chehalis",44,2.06777334938757,85.2072468611776
 "154","Historical","Olympic Mountains",6864,5.05208105628292,8557.94439663468
 "155","Historical","Upper Skookumchuck",0,NA,NA
-"156","Historical","Willapa Hills",1746,4.49032715080397,2246.2396407448
+"156","Historical","Willapa Hills",1746,4.48959293214387,2246.34489235606
 "157","LR.bank","Black Hills",700,2.311156730365,1233.87972908863
 "158","LR.bank","Black River",330,1.5093324518747,977.90688043805
 "159","LR.bank","Cascade Mountains",971,1.84496216283676,2120.16388296027
