@@ -28,12 +28,12 @@ ver_feat <- shell(cmd = "git describe --tags", intern = TRUE)
 hab_compare <- rbind(
   paste0(outputs_hab, "/outputs_long/habmodel_outputs_dev.csv") %>%
     read.csv(.) %>%
-    select(-X) %>%
+    select(-X, -year) %>%
     gather(parameter, value, capacity:survival) %>%
     mutate(version = 'dev')
   ,
   # read in feature version
-  feature_file <- paste0(outputs_hab, "/outputs_long/habmodel_outputs.csv") %>%
+  paste0(outputs_hab, "/outputs_long/habmodel_outputs.csv") %>%
     read.csv(.) %>%
     select(-X, -year) %>%
     gather(parameter, value, capacity:survival) %>%
