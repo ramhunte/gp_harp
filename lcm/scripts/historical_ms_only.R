@@ -24,20 +24,21 @@ curr <- 'Current.csv' %>%
 fp <- 'Floodplain.csv' %>%
   hab_to_long()
 
-subs <- paste0('X', 52:63) %>% as.list()
+subs <- list(paste0('X', 1:51)) %>% append(., paste0('X', 52:63))
+names(subs) <- c('X0', paste0('X', 52:63))
 # Swap in Current conditions for basins 1:51, leave 52:63 as is
 
 # Replace one ms basin with historical conditions
 
 replace_ms_sub <- function(sub_to_replace) {
   curr %>%
-    filter(subbasin != sub_to_replace) %>%
+    filter(!subbasin %in% sub_to_replace) %>%
     bind_rows(fp %>%
-                filter(subbasin == sub_to_replace)) %>%
+                filter(subbasin %in% sub_to_replace)) %>%
     mutate(subbasin = as.numeric(str_remove(subbasin, 'X'))) %>%
     spread(subbasin, value) %>%
     write.csv(file.path(path_to_hab,
-                        paste0('Floodplain_', sub_to_replace, '.csv')))
+                        paste0('Floodplain_', sub_to_replace[1], '.csv')))
 }
 
 
@@ -59,10 +60,23 @@ lapply(subs , replace_ms_sub)
 #   select(natal.basin, FP_diff_orig)
 # 
 # 
-# x <- read.csv('outputs/coho/lcm/coho_abundance_by_subbasin.csv') %>%
-#   select(natal.basin, scenario, spawners) %>%
-#   spread(scenario, spawners) %>%
-#   mutate(FP_diff_ms = Floodplain - Current) %>%
-#   select(natal.basin, FP_diff_ms) %>%
-#   left_join(y) %>%
-#   mutate(benefit_fp_in_sub = FP_diff_orig - FP_diff_ms)
+
+
+read.csv('outputs/coho/lcm/coho_abundance_by_subbasin.csv') %>%
+  filter(scenario %in% c('Current', 'Floodplain.X1')) %>%
+  left_join(subbasins %>% rename(natal.basin = Subbasin)) %>%
+  select(scenario, natal.basin, Subbasin_num, spawners) %>%
+  spread(scenario, spawners) %>%
+  mutate(diff = Floodplain.X1 - Current) %>%
+  filter(!Subbasin_num %in% 52:63) %>%
+  bind_rows(read.csv('outputs/coho/lcm/coho_abundance_basinwide.csv') %>%
+              filter(str_detect(scenario, 'Current|Floodplain')) %>%
+              mutate(curr = basinwide_spawners[scenario == 'Current'],
+                     diff = basinwide_spawners - curr) %>%
+              filter(str_detect(scenario, 'X5|X6')) %>%
+              mutate(Subbasin_num = str_extract(scenario, "[^X]+$") %>% as.integer) %>%
+              select(Subbasin_num, diff)) %>%
+  select(Subbasin_num, diff)
+  
+
+

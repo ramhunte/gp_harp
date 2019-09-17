@@ -321,9 +321,9 @@ if (sensitivity.mode == 'no') {
     as.data.frame.table() %>%
     rename(lifestage = Var1, Subbasin = Var2, scenario = Var3, n = Freq) %>%
     spread(lifestage, n) %>%
-    filter(scenario != 'ASRP.Current.asrp') %>%
-    mutate(scenario = factor(scenario, levels = read.csv('lcm/data/scenarios.csv')$scenario)) %>%
-    arrange(scenario) %>%
+    # filter(scenario != 'ASRP.Current.asrp') %>%
+    # mutate(scenario = factor(scenario, levels = read.csv('lcm/data/scenarios.csv')$scenario)) %>%
+    # arrange(scenario) %>%
     rename(natal.basin = Subbasin)
   
   write.csv(abundance_by_subbasin, file.path(outputs_lcm, paste0(pop, '_abundance_by_subbasin_raw.csv')))
