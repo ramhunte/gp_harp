@@ -21,6 +21,7 @@ This document describes the process we use to convert the Thermalscape temperatu
 
 * riverscape_thermalscape_join.txt:  This file was created through a spatial join in which we joined the Thermalscape `meanT` field to the closest riverscape collection point.  We then exported the data table as a .txt file.  This file allows us to compare the measured Riverscape temperature values with the modeled Thermalscape temperature values at a number of locations.
 * thermalscape_noaaid.txt:  This file was created through a spatial join in which we joined the Thermalscape `meanT` field to the closest reach in the `flowline` layer.  We then exported the data table as a .txt file.  This allows us to assign a Thermalscape temperature value to each reach even if Thermalscape does not model temperatures for that particular reach.  
+* riverscape_flowline_join.txt:  This file was created through a spatial join in which we joined the flowline `noaaid` and `Seg` fields to the closest riverscape observation point.  We then exported the data table as a .txt file.  This allows us to calculate both daily mean and daily max temperatures in the riverscape dataset and then convert the PSU daily max data into daily means.
 
 # Prespawn survival temperatures:
 
@@ -72,8 +73,6 @@ print(mdmean_prespawn_comp_plot)
 
 lm_mdmean_prespawn <- lm(mdmean_prespawn ~ meanT, data = mdmean_prespawn_comp)
 summary(lm_mdmean_prespawn)
-thermalscape_data %>% 
-  mutate(mdmean_prespawn_thermal = predict(lm_mdmean_prespawn, newdata = .))
 ```
 
 Now that we are using the Willamette function, which uses mean of daily mean, we must convert the daily max data from the PSU data to daily mean. First, we plot riverscape daily max from July - September 15 against riverscape daily mean from July - September 15. In the 3-temperature.R script we use this function to convert PSU daily max data to daily mean, and then calculate the mean of daily means, filtering to the July - September 15 time period.
@@ -110,7 +109,6 @@ The final step is to convert all Thermalscape August mean of daily mean data int
 thermalscape_data <- read.delim('thermalscape_noaaid.txt', header = TRUE, sep = ',') %>%
   group_by(Reach) %>%
   summarize(meanT = mean(meanT, na.rm = T)) 
-
 ```
 
 # Rearing MWMT
@@ -148,8 +146,6 @@ print(mwmt_comp_plot)
 
 lm_mwmt <- lm(mwmt ~ meanT, data = mwmt_comp)
 summary(lm_mwmt)
-thermalscape_data %>% 
-  mutate(mwmt_thermal = predict(lm_mwmt, newdata = .))
 ```
 
 
@@ -179,7 +175,7 @@ print(mdm_rear_comp_plot)
 
 lm_mdm_rear <- lm(mdm_rear ~ meanT, data = mdm_rear_comp)
 summary(lm_mdm_rear)
-thermalscape_data %>% mutate(mdm_rear_thermal = predict(lm_mdm_rear, newdata = .))
+
 ```
 
 
@@ -189,7 +185,11 @@ thermalscape_data %>% mutate(mdm_rear_thermal = predict(lm_mdm_rear, newdata = .
 The following equation for mean of daily means from July 1 - September 15 was created using the slope and intercept from the plot above:
 
 ```{r}
-write.csv(thermalscape_data, '../../hab/Inputs/temperature_inputs/thermalscape_temps.csv')
+thermalscape_temps <- thermalscape_data %>%
+  mutate(mdmean_prespawn_thermal = predict(lm_mdmean_prespawn, newdata = .),
+         mwmt_thermal = predict(lm_mwmt, newdata = .),
+         mdm_rear_thermal = predict(lm_mdm_rear, newdata = .))
+write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps.csv')
 ```
 
 
