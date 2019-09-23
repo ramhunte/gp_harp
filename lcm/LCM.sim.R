@@ -38,7 +38,7 @@ years <- 100
 
 # Number of model runs (iterations)
 if (run_stochastic_eggtofry == 'yes') {
-  runs  <- 50
+  runs  <- 500
 } else{
   runs <- 2
 }
@@ -213,10 +213,9 @@ for (n in 1:length(scenario.file)) {
       sensitivity[j, , n] <- c(
         egg.cap.adj,
         egg.fry.surv.adj,
-        fry.surv.adj,
-        fry.cap.adj,
-        sub.yr.surv.adj,
-        sub.yr.cap.adj,
+        surv.adj,
+        cap.adj,
+        surv.temp.adj,
         S.up.adj,
         tr.geomean)
     } #ends fill chinook sensitivty[] array

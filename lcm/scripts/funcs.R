@@ -244,10 +244,10 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     fry.migrants <- (pre.fry * weekly.surv) - natal.fry # Density dependent slice to create non natal fry
     
     # Natal sub yearlings - all basins
-    fry.distrib <- distribute.fish(fish.in = natal.fry, move.matrix = move.matrix.w.natal)
-    sub.yr.distrib <- BH.func(S = fry.distrib['after_movement', ], p = weekly.surv.temp^11, c = cap * 3)
+    natal.fry.distrib <- distribute.fish(fish.in = natal.fry, move.matrix = move.matrix.w.natal)
+    sub.yr.distrib <- BH.func(S = natal.fry.distrib['after_movement', ], p = weekly.surv.temp^11, c = cap * 3)
     sub.yr <- reallocate.fish(fish.in = sub.yr.distrib,
-                              redist.matrix = fry.distrib[return.rows, ])['after_movement', ]
+                              redist.matrix = natal.fry.distrib[return.rows, ])['after_movement', ]
     
     
     # Apply bay survival (ds migration, delta, bay, nearshore productivity)
@@ -267,9 +267,10 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     
     mat.new['eggs', ] <- eggs
     mat.new['pre.fry', ] <- pre.fry 
+    mat.new['natal.fry', ] <- natal.fry
     mat.new['fry.migrants', ] <- fry.migrants
-    mat.new['fry.migrants.distrib', ] <- fry.distrib['after_movement', ]
-    mat.new['sub.yr.distrib', ] <- sub.yr
+    mat.new['natal.fry.distrib', ] <- natal.fry.distrib['after_movement', ]
+    mat.new['sub.yr.distrib', ] <- sub.yr.distrib
     mat.new['sub.yr', ] <- sub.yr
     mat.new['fry.migrants.bay', ] <- fry.migrants.bay
     mat.new['sub.yr.bay', ] <- sub.yr.bay

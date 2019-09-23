@@ -58,26 +58,6 @@ if (pop == "coho") {
   
 } #end if coho
 
-if (pop == "steelhead") {
- 
-  #first summer parr
-  parr.cap <-  dat["capacity_s", ]
-  parr.surv <- dat["surv_s", ]
-  
-  #1st overwinter Age1
-  first.winter.cap <-  dat["capacity_w", ]
-  first.winter.surv <- dat["surv_w", ]
-  
-  #2nd summer: Age1.plus
-  second.summer.cap <-  dat["capacity_s_2", ]
-  second.summer.surv <- dat["surv_s_2", ]
-
-  #2nd overwinter: Age2
-  second.winter.cap <-  dat["capacity_w_2", ]
-  second.winter.surv <- dat["surv_w_2", ]
-}
-
-
 if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   # Fry to sub yearling migrant survival and capacity
@@ -92,5 +72,23 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   
 } 
 
+if (pop == "steelhead") {
+  
+  #first summer parr
+  parr.cap <-  dat["capacity_s", ]
+  parr.surv <- dat["surv_s", ]
+  
+  #1st overwinter Age1
+  first.winter.cap <-  dat["capacity_w", ]
+  first.winter.surv <- dat["surv_w", ]
+  
+  #2nd summer: Age1.plus
+  second.summer.cap <-  dat["capacity_s_2", ]
+  second.summer.surv <- dat["surv_s_2", ]
+  
+  #2nd overwinter: Age2
+  second.winter.cap <-  dat["capacity_w_2", ]
+  second.winter.surv <- dat["surv_w_2", ]
+}
 
 
