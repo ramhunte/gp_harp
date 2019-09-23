@@ -69,13 +69,13 @@ if (pop == "coho") {
   )
   
   sens.params <- c(
-    "Egg.Capacity",
-    "Egg.to.Fry.Survival",
-    "Summer.Productivity",
-    "Summer.Capacity",
-    "Winter.Productivity",
-    "Winter.Capacity",
-    "Prespawn.Survival",
+    "Egg.capacity",
+    "Incubation.productivity",
+    "Summer.rearing.productivity",
+    "Summer.rearing.capacity",
+    "Winter.rearing.productivity",
+    "Winter.rearing.capacity",
+    "Prespawn.productivity",
     "geomean")# model output
 } #end if coho
 
@@ -93,8 +93,9 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
                   'spawners',  # Above here is needed for spawner matrix
                   'eggs', # Here and below are stored for diagnostics
                   'pre.fry',
+                  'natal.fry',
                   'fry.migrants',
-                  'fry.migrants.distrib',
+                  'natal.fry.distrib',
                   'sub.yr.distrib',
                   'sub.yr',
                   'fry.migrants.bay',
@@ -103,13 +104,12 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   
   sens.params <- c(
-    "Egg.Capacity",
-    "Egg.to.Fry.Survival",
-    "Fry.Survival",
-    "Fry.Capacity",
-    "Subyearling.Survival",
-    "Subyearling.Capacity",
-    "Prespawn.Survival",
+    "Egg.capacity",
+    "Incubation.productivity",
+    "Rearing.productivity",
+    "Rearing.capacity",
+    "Rearing.productivity.June",
+    "Prespawn.productivity",
     "geomean")
   
 } # end if chinook
@@ -139,17 +139,17 @@ if (pop == "steelhead") {
   )
   
   sens.params <- c(
-    "Egg.Capacity",
-    "Egg.to.Fry.Survival",
-    "First.Summer.Survival",
-    "First.Summer.Capacity",
-    "First.Winter.Survival",
-    "First.Winter.Capacity",
-    "Second.Summer.Survival",
-    "Second.Summer.Capacity",
-    "Second.Winter.Survival",
-    "Second.Winter.Capacity",
-    "Prespawn.Survival",
+    "Egg.capacity",
+    "Incubation.productivity",
+    "First.summer.productivity",
+    "First.summer.capacity",
+    "First.winter.productivity",
+    "First.winter.capacity",
+    "Second.summer.productivity",
+    "Second.summer.capacity",
+    "Second.winter.productivity",
+    "Second.winter.capacity",
+    "Prespawn.productivity",
     "geomean")# model output
 } #end if steelhead
 

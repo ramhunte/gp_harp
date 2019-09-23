@@ -1,0 +1,198 @@
+---
+title: "Conversion of new temperatures"
+author: "Caleb Fogel"
+date: "September 5, 2019"
+output: 
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(sf)
+rmarkdown::paged_table
+
+```
+
+This document describes the process we use to convert the Thermalscape temperature data into a temperature metric that is usable in our model.  We received the updated Thermalscape data in an email from Jon Walker of ICF on May 9, 2019.  The Thermalscape data include the mean of daily mean temperatures in August.  The file path to the thermalscape data is the following: `watershed/Chehalis/Data/3b-Temperature/WDFW_Winkowski_Chehalis_Thermalscape_Outputs_011819_utm.shp`  
+
+# Files created manually in ArcGIS:
+
+* riverscape_thermalscape_join.txt:  This file was created through a spatial join in which we joined the Thermalscape `meanT` field to the closest riverscape collection point.  We then exported the data table as a .txt file.  This file allows us to compare the measured Riverscape temperature values with the modeled Thermalscape temperature values at a number of locations.
+* thermalscape_noaaid.txt:  This file was created through a spatial join in which we joined the Thermalscape `meanT` field to the closest reach in the `flowline` layer.  We then exported the data table as a .txt file.  This allows us to assign a Thermalscape temperature value to each reach even if Thermalscape does not model temperatures for that particular reach.  
+* riverscape_flowline_join.txt:  This file was created through a spatial join in which we joined the flowline `noaaid` and `Seg` fields to the closest riverscape observation point.  We then exported the data table as a .txt file.  This allows us to calculate both daily mean and daily max temperatures in the riverscape dataset and then convert the PSU daily max data into daily means.
+
+# Prespawn survival temperatures:
+
+The Willamette prespawn function uses mean of daily means from July 1 - September 15, therefore in order to use this function we must first expand the range of dates for the Thermalscape dataset.  We can achieve this using the observed temperature data from the riverscape dataset `('watershed/Chehalis/Data/3b-Temperature/Chehalis Temperature Data for NOAA')`.  The first step is to extract the mean of daily means from the Thermalscape dataset for each Riverscape observation point.  This is done through a spatial join using the `CLOSEST` match option.  The output file from this join is exported as a .txt file that can be read into R.  The path to this file is the following:  `asrp.git/docs/new_temp_conversion/riverscape_thermalscape_join.txt`.  This file contains temperature data (mean of daily means) from the Thermalscape model but it does not yet contain temperature data from the Riverscape dataset.  The actual Riverscape temperature data consist of 8 separate spreadsheets and can be found in `watershed/Chehalis/Data/3b-Temperature/Chehalis Temperature Data for NOAA`.  These data can be joined to the Riverscape locations file using the `Site_ID` field.
+
+The following code reads in the riverscape temperature data from the shared drive and combines the 8 separate spreadsheets into a single file, here named `riverscape_data`:
+
+```{r}
+riverscape_df <- '//nwcfile/FE/watershed/Chehalis/Data/3b-Temperature/Chehalis Temperature Data for NOAA'
+riverscape_files <- list.files(path = riverscape_df, pattern = '\\.txt$')
+riverscape_data <- lapply(riverscape_files, function(x){
+  read.delim(file.path(paste0(riverscape_df, '/', x)), header = TRUE, sep = '\t')
+}) %>%
+  do.call('rbind',.)
+
+riverscape_locs <- read.delim('riverscape_thermalscape_join.txt', header = TRUE, sep = ',')
+riverscape_siteid <- unique(riverscape_locs$Site_ID)
+```
+
+Next, we filter the Riverscape data to the desired range of dates, July 1 - September 15, and calculate the mean of daily means for this time period:
+```{r}
+mdmean_prespawn <- riverscape_data %>%
+  filter(Month %in% 7:9,
+         Day %in% ifelse(Month == 9,
+                         1:15,
+                         1:31)) %>%
+  group_by(Site_ID, Day, Year) %>%
+  summarize(mean_temp = mean(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  summarize(mdmean_prespawn = mean(mean_temp, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mdmean_prespawn = max(mdmean_prespawn, na.rm = T))
+```
+
+Note:  The Riverscape dataset contains observations from 2014-2016.  For now, we take the max of the annual mean of daily means from July 1 - September 15
+
+We then plot the July 1 - September 15 mean of daily means from the Riverscape dataset against the August mean of daily means from the Thermalscape dataset:
+
+```{r}
+mdmean_prespawn_comp <- mdmean_prespawn %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs)
+
+mdmean_prespawn_comp_plot <- ggplot(mdmean_prespawn_comp, aes(x = meanT, y = mdmean_prespawn)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+
+print(mdmean_prespawn_comp_plot)
+
+lm_mdmean_prespawn <- lm(mdmean_prespawn ~ meanT, data = mdmean_prespawn_comp)
+summary(lm_mdmean_prespawn)
+```
+
+Now that we are using the Willamette function, which uses mean of daily mean, we must convert the daily max data from the PSU data to daily mean. First, we plot riverscape daily max from July - September 15 against riverscape daily mean from July - September 15. In the 3-temperature.R script we use this function to convert PSU daily max data to daily mean, and then calculate the mean of daily means, filtering to the July - September 15 time period.
+
+```{r}
+riverscape_fl_join <- read.delim('riverscape_flowline_join.txt', header = TRUE, sep = ',') 
+riverscape_psu_locs <- riverscape_fl_join %>%
+  filter(Seg > 0)
+riverscape_psu_id <- unique(riverscape_psu_locs$Site_ID)
+riverscape_psu_data <- riverscape_data %>%
+  filter(Site_ID %in% riverscape_psu_id, 
+         Month %in% 7:9,
+         Day %in% ifelse(Month == 9,
+                         1:15,
+                         1:31)) %>%
+  group_by(Month, Day, Year) %>%
+  mutate(max = max(Temperature, na.rm = T),
+         mean = mean(Temperature, na.rm = T)) %>%
+  summarize(max = unique(max, na.rm = T),
+            mean = unique(mean, na.rm = T))
+
+riverscape_psu_plot <- ggplot(riverscape_psu_data, aes(x = max, y = mean)) +
+  geom_point() + 
+  geom_smooth(method = 'lm', se = FALSE)
+print(riverscape_psu_plot)
+
+lm_riverscape_psu <- lm(mean ~ max, data = riverscape_psu_data)
+summary(lm_riverscape_psu)
+```
+
+The final step is to convert all Thermalscape August mean of daily mean data into July 1 - September 15 mean of daily mean.  For this purpose, we have created a copy of the Thermalscape data with the edt `Reach` field attached through a spatial join with the `flowline`.  Thermalscape temperatures are averaged within each edt reach, and at this point we are able to calcualte a new temperature value for each reach.
+
+```{r}
+thermalscape_data <- read.delim('thermalscape_noaaid.txt', header = TRUE, sep = ',') %>%
+  group_by(Reach) %>%
+  summarize(meanT = mean(meanT, na.rm = T)) 
+```
+
+# Rearing MWMT
+
+We model the effect of temperature on Coho and Steelhead rearing using the mean weekly maximum temperature for August.  We calculate both the mean of daily means and the MWMT from the riverscape data below:
+
+```{r}
+mwmt <- riverscape_data %>%
+  filter(Month == 8) %>% 
+  group_by(Site_ID, Year, Day) %>%
+  mutate(mdmean = mean(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  mutate(mwmt = zoo::rollmean(Temperature, 7, na.pad = TRUE, align = 'right')) %>%
+  summarize(mwmt = max(mwmt, na.rm = T),
+            mdmean = mean(mdmean, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mwmt = max(mwmt, na.rm = T),
+            mdmean = max(mdmean, na.rm = T)) %>%
+  mutate(temp_diff = mwmt - mdmean)
+
+```
+Note: The Riverscape dataset contains temperature data from 2014 - 2016.  In this summary we use the year with the highest mean of daily maxima value.
+
+We now compare MWMT with mean of daily mean for each site:
+
+```{r}
+mwmt_comp <- mwmt %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs)
+
+mwmt_comp_plot <- ggplot(mwmt_comp, aes(x = meanT, y = mwmt)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mwmt_comp_plot)
+
+lm_mwmt <- lm(mwmt ~ meanT, data = mwmt_comp)
+summary(lm_mwmt)
+```
+
+
+We model the effect of temperature on Chinook rearing using the mean of daily maxima from June 1 - June 21.  
+
+```{r}
+mdm_rear <- riverscape_data %>%
+  filter(Month == 6,
+         Day %in% 1:21) %>%
+  group_by(Site_ID, Day, Year) %>% 
+  summarize(max_temp = max(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  summarize(mdm_rear = mean(max_temp, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mdm_rear = max(mdm_rear, na.rm = T))
+```
+
+```{r}
+mdm_rear_comp <- mdm_rear %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs)
+
+mdm_rear_comp_plot <- ggplot(mdm_rear_comp, aes(x = meanT, y = mdm_rear)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdm_rear_comp_plot)
+
+lm_mdm_rear <- lm(mdm_rear ~ meanT, data = mdm_rear_comp)
+summary(lm_mdm_rear)
+
+```
+
+
+
+
+
+The following equation for mean of daily means from July 1 - September 15 was created using the slope and intercept from the plot above:
+
+```{r}
+thermalscape_temps <- thermalscape_data %>%
+  mutate(mdmean_prespawn_thermal = predict(lm_mdmean_prespawn, newdata = .),
+         mwmt_thermal = predict(lm_mwmt, newdata = .),
+         mdm_rear_thermal = predict(lm_mdm_rear, newdata = .))
+write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps.csv')
+```
+
+
+The psu temperature data are currently summarized in termps of mean of daily max July-Aug.  Use the following equation, found by performing linear regression with riverscape mean of daily max and 
+
+

@@ -514,8 +514,8 @@ if (sensitivity.mode == 'yes') {
            fill = "",
            caption = paste0('Model version = ',hab.ver)) +
       theme(axis.text = element_text(size = rel(1.2))) +
-      guides(fill = guide_legend(reverse = TRUE)) +
-      geom_text(aes(y = -1), hjust = 0, na.rm = T)
+      guides(fill = guide_legend(reverse = TRUE))# +
+      #geom_text(aes(y = -1), hjust = 0, na.rm = T)
     
   )#close print()
   
