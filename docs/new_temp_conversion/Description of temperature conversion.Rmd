@@ -88,7 +88,7 @@ riverscape_psu_data <- riverscape_data %>%
          Day %in% ifelse(Month == 9,
                          1:15,
                          1:31)) %>%
-  group_by(Month, Day, Year) %>%
+  group_by(Month, Day, Year, Site_ID) %>%
   mutate(max = max(Temperature, na.rm = T),
          mean = mean(Temperature, na.rm = T)) %>%
   summarize(max = unique(max, na.rm = T),
@@ -108,7 +108,9 @@ The final step is to convert all Thermalscape August mean of daily mean data int
 ```{r}
 thermalscape_data <- read.delim('thermalscape_noaaid.txt', header = TRUE, sep = ',') %>%
   group_by(Reach) %>%
-  summarize(meanT = mean(meanT, na.rm = T)) 
+  summarize(meanT = mean(meanT, na.rm = T)) %>%
+  mutate(meanT_mid = meanT + 1,
+         meanT_late = meanT + 2)
 ```
 
 # Rearing MWMT
@@ -192,7 +194,129 @@ thermalscape_temps <- thermalscape_data %>%
 write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps.csv')
 ```
 
+# Future temperature increases
+2040 and 2080 August mean daily mean are projected to increase by 1° and 2° respectively. 
 
-The psu temperature data are currently summarized in termps of mean of daily max July-Aug.  Use the following equation, found by performing linear regression with riverscape mean of daily max and 
+```{r}
+mwmt_coef <- coef(lm_mwmt)
+mdm_rear_coef <- coef(lm_mdm_rear)
+mdmean_prespawn_coef <- coef(lm_mdmean_prespawn)
+
+futuretemps <- thermalscape_temps %>%
+  mutate(meanT_mid = meanT + 1,
+         mdmean_mid = mdmean_prespawn_coef[2] * meanT_mid + mdmean_prespawn_coef[1],
+         mdm_rear_mid = mdm_rear_coef[2] * meanT_mid + mdm_rear_coef[1],
+         mwmt_mid = mwmt_coef[2] * meanT_mid + mwmt_coef[1],
+         meanT_late = meanT + 2,
+         mdmean_late = mdmean_prespawn_coef[2] * meanT_late + mdmean_prespawn_coef[1],
+         mdm_rear_late = mdm_rear_coef[2] * meanT_late + mdm_rear_coef[1], 
+         mwmt_late = mwmt_coef[2] * meanT_late + mwmt_coef[1])
+```
+
+### MWMT mid century
+Temperature increase of 1° mean of dialy mean translated into mwmt
+```{r}
+mwmt_mid_plot <- ggplot(futuretemps, aes(x = mwmt_thermal, y = mwmt_mid)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mwmt_mid_plot)
+
+lm_mwmt_mid <- lm(mwmt_mid~mwmt_thermal, data = futuretemps)
+summary(lm_mwmt_mid)
+```
+
+### MWMT late century
+Temp increase of 2° mean of daily mean translated into mwmt
+
+```{r}
+mwmt_late_plot <- ggplot(futuretemps, aes(x = mwmt_thermal, y = mwmt_late)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mwmt_late_plot)
+
+lm_mwmt_late <- lm(mwmt_late~mwmt_thermal, data = futuretemps)
+summary(lm_mwmt_late)
+
+```
+
+### MDM_Rear mid century
+Temp increase of 1° mean of daily mean translated into mean of daily max
+```{r}
+mdm_rear_mid_plot <- ggplot(futuretemps, aes(x = mdm_rear_thermal, y = mdm_rear_mid)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdm_rear_mid_plot)
+
+lm_mdm_rear_mid <- lm(mdm_rear_mid~mdm_rear_thermal, data = futuretemps)
+summary(lm_mdm_rear_mid)
+```
+
+### MDM_Rear late century
+Temp icnrease of 2° daily mean to daily max
+
+```{r}
+mdm_rear_late_plot <- ggplot(futuretemps, aes(x = mdm_rear_thermal, y = mdm_rear_late)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdm_rear_late_plot)
+
+lm_mdm_rear_late <- lm(mdm_rear_late~mdm_rear_thermal, data = futuretemps)
+summary(lm_mdm_rear_late)
+```
+
+
+### mdmean_prespawn mid century
+Temp increase of 1° August daily mean translated into July - Sept 15 daily mean
+```{r}
+mdmean_prespawn_mid_plot <- ggplot(futuretemps, aes(x = mdmean_prespawn_thermal, y = mdmean_mid)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdmean_prespawn_mid_plot)
+
+lm_mdmean_prespawn_mid <- lm(mdmean_mid~mdmean_prespawn_thermal, data = futuretemps)
+summary(lm_mdmean_prespawn_mid)
+```
+
+
+### mdmean_prespawn late century
+Temp increase of 2° August daily mean into July - Sept 15 daily mean
+
+```{r}
+mdmean_prespawn_late_plot <- ggplot(futuretemps, aes(x = mdmean_prespawn_thermal, y = mdmean_late)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdmean_prespawn_mid_plot)
+
+lm_mdmean_prespawn_late <- lm(mdmean_late~mdmean_prespawn_thermal, data = futuretemps)
+summary(lm_mdmean_prespawn_late)
+```
+# Convert between change in mwmt, daily mean
+```{r}
+mdmean_vs_mwmt <- mdmean_prespawn_comp %>%
+  left_join(., mwmt_comp)
+
+mdmean_vs_mwmt_plot <- ggplot(mdmean_vs_mwmt, aes(x = mwmt, y = mdmean)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdmean_vs_mwmt_plot)
+
+lm_mdmean_vs_mwmt <- lm(mdmean~mwmt, data = mdmean_vs_mwmt)
+summary(lm_mdmean_vs_mwmt)
+
+View(mdmean_vs_mwmt)
+```
+# Convert between temperature change in mwmt, daily max
+```{r}
+mdm_rear_vs_mwmt <- mdm_rear_comp %>%
+  left_join(., mwmt_comp) 
+
+mdm_rear_vs_mwmt_plot <- ggplot(mdm_rear_vs_mwmt, aes(x = mwmt, y = mdm_rear)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdm_rear_vs_mwmt_plot)
+
+lm_mdm_rear_vs_mwmt <- lm(mdm_rear~mwmt, data = mdm_rear_vs_mwmt)
+summary(lm_mdm_rear_vs_mwmt)
+```
 
 

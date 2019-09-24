@@ -8,9 +8,21 @@ mainstem.reaches = lapply(mainstem.reaches.num, function(x){ # around in case we
   paste0("Chehalis-", x)}) %>%
   do.call('rbind',.)
 
-cc_2040 = 1.8 # projected magnitude of increase in temperature by 2040
-cc_2080 = 3 #projected magnitude of increase in temperature by 2080
+# cc_mid_rear = 1.8
+# cc_late_rear = 3
+# cc_mid_prespawn = 1.8
+# cc_late_prespawn = 3
 
+#change in future temperatures due to climate change.  See temp conversion doc for more details
+if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
+cc_mid_rear = .9585
+cc_late_rear = 1.917
+} else {
+cc_mid_rear = 1.024
+cc_late_rear = 2.049
+}
+cc_mid_prespawn = .9265
+cc_late_prespawn = 1.853
 
 bw_scalar = .16 # see Tim's description in Trello card, V4
 

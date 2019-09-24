@@ -1,10 +1,10 @@
 "","scenario","scenario.label","habitat.file","n"
-"1","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",26508.6212620249
-"2","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",25710.0390569038
-"3","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",27195.5360026231
-"4","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",26396.2469733182
-"5","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",28217.9930017579
-"6","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",27380.8874282322
+"1","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",27011.6448560333
+"2","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",26620.8880963502
+"3","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",27700.0411897683
+"4","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",27308.5554878058
+"5","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",28724.7580156394
+"6","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",28315.7530119176
 "7","Current","Current","Current.csv",23994.3351686697
 "8","Beaver","Current, w/ historical beaver ponds","Beaver.csv",26183.1102449134
 "9","Fine.sediment","Current, w/ historical fine sediment","Fine_sediment.csv",31869.518173486
@@ -12,7 +12,7 @@
 "11","FP.wood.comb","Current, w/ historical floodplains and wood","FP_wood_comb.csv",36502.45824953
 "12","LR.bank","Current, w/ historical large river bank conditions","LR_bank.csv",24605.6374436713
 "13","LR.length","Current, w/ historical large river length","LR_length.csv",24909.0238581019
-"14","Shade","Current, w/ historical shade","Shade.csv",24439.634198216
+"14","Shade","Current, w/ historical shade","Shade.csv",24432.5746163624
 "15","Wood","Current, w/ historical wood loading","Wood.csv",30881.1135004661
 "16","Barriers","Current, w/ no barriers","Barriers.csv",24505.0017885846
-"17","Historical","Historical conditions","Historical.csv",56240.435243311
+"17","Historical","Historical conditions","Historical.csv",56236.4781307416

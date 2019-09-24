@@ -143,3 +143,10 @@ calc_coho_imperv <- function(imperv) {
   } else {return(1)}
 }
 
+mwmt_to_prespawn_func <- function(mwmt) { # Where necessary, convert temp_diff due to tree growth from mwmt to mean of daily mean
+  .82749 * mwmt
+}
+
+mwmt_to_mdm_func <- function(mwmt) {
+  .97550 * mwmt
+}

@@ -1,12 +1,12 @@
 "","scenario","scenario.label","habitat.file","n"
-"1","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",8177.19819875025
-"2","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",6833.52688718149
-"3","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",8381.5099450639
-"4","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",7032.60985382949
-"5","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",8835.84557445271
-"6","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",7465.46639846952
-"7","Current","Current","Current.csv",8093.94736814497
-"8","Beaver","Current, w/ historical beaver ponds","Beaver.csv",8787.43810846459
+"1","ASRP.scenario.1.2040","ASRP 1 - 2040","ASRP_scenario_1_2040.csv",9116.2027767458
+"2","ASRP.scenario.1.2080","ASRP 1 - 2080","ASRP_scenario_1_2080.csv",8186.92674834762
+"3","ASRP.scenario.2.2040","ASRP 2 - 2040","ASRP_scenario_2_2040.csv",9326.31199962213
+"4","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",8391.60755554495
+"5","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",9773.34541342306
+"6","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",8842.37154802169
+"7","Current","Current","Current.csv",8093.94736814492
+"8","Beaver","Current, w/ historical beaver ponds","Beaver.csv",8787.43810849462
 "9","Fine.sediment","Current, w/ historical fine sediment","Fine_sediment.csv",11289.818219218
 "10","Floodplain","Current, w/ historical floodplain habitat","Floodplain.csv",10822.4059465275
 "11","FP.wood.comb","Current, w/ historical floodplains and wood","FP_wood_comb.csv",12727.902184295
@@ -14,5 +14,5 @@
 "13","LR.length","Current, w/ historical large river length","LR_length.csv",8278.05867093267
 "14","Shade","Current, w/ historical shade","Shade.csv",8810.80613869015
 "15","Wood","Current, w/ historical wood loading","Wood.csv",9748.97335561506
-"16","Barriers","Current, w/ no barriers","Barriers.csv",8392.83177006959
+"16","Barriers","Current, w/ no barriers","Barriers.csv",8392.83214216775
 "17","Historical","Historical conditions","Historical.csv",18478.8474588254

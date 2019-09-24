@@ -40,7 +40,7 @@ psu_temps_prespawn <- read.csv("hab/Inputs/temperature_inputs/PSU_Modeled_Temper
                          1:15,
                          1:31),
          Temperature > 0) %>%
-  mutate(mean_temp = .78178 * Temperature + 1.95105) %>%
+  mutate(mean_temp = .856679 * Temperature + 1.469950) %>%
   group_by(reach_pt) %>%
   summarize(mdmean = mean(mean_temp, na.rm = T))
 

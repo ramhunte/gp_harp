@@ -4,8 +4,8 @@
 
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
-    select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp, 
-           temp_diff_2040, temp_diff_2040_cc_only, temp_diff_2080, temp_diff_2080_cc_only, hist_temp, temp_diff, Habitat) %>%
+    select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp,
+           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -179,28 +179,28 @@ mutate(asrp_temp_w_growth = case_when(
                     asrp_temp),
          asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
                             ifelse(year == 2040,
-                                   asrp_temp - 1.8,
-                                   asrp_temp - 3),
+                                   asrp_temp - cc_mid_rear,
+                                   asrp_temp - cc_late_rear),
                             asrp_temp),
          tempmult.asrp = temp_func(asrp_temp),
          prespawn_temp_asrp = case_when(
-           Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - (temp_diff * prespawn_temp_slope + prespawn_temp_intercept), # convert 7DADM to MDM
+           Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - temp_diff_prespawn, # convert 7DADM to MDM
            !Scenario_num %in% c('Shade', 'Historical') ~
              case_when(
                year == 2019 ~ prespawn_temp,
                year == 2040 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                     prespawn_temp + temp_diff_2040_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
-                                     prespawn_temp + temp_diff_2040 * prespawn_temp_slope - prespawn_temp_intercept), 
+                                     prespawn_temp + cc_mid_prespawn,
+                                     prespawn_temp + temp_diff_2040_prespawn), 
                year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                     prespawn_temp + temp_diff_2080_cc_only * prespawn_temp_slope - prespawn_temp_intercept,
-                                     prespawn_temp + temp_diff_2080 * prespawn_temp_slope - prespawn_temp_intercept))),
+                                     prespawn_temp + cc_late_prespawn,
+                                     prespawn_temp + temp_diff_2080_prespawn))),
          prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
-                                                           prespawn_temp_asrp - (1 * rest_perc * prespawn_temp_slope - prespawn_temp_intercept),
+                                                           prespawn_temp_asrp - mwmt_to_prespawn_func(1),
                                                            prespawn_temp_asrp),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,
-                                            prespawn_temp_asrp - (1.8 * prespawn_temp_slope - prespawn_temp_intercept),
-                                            prespawn_temp_asrp - (3 * prespawn_temp_slope - prespawn_temp_intercept)),
+                                            prespawn_temp_asrp - cc_mid_prespawn,
+                                            prespawn_temp_asrp - cc_late_prespawn),
                                      prespawn_temp_asrp)) %>%
   select(-Habitat) %>%
   
