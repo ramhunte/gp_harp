@@ -67,30 +67,34 @@ flowline_noculv <- flowline %>%
                           0, # we set canopy opening angle to 0 because the majority of these reaches are far upstream and few of them are clearcut.
                           can_ang)) %>%
   gather(key, value, c(left_ht, right_ht, left_buff, right_buff)) %>%
-  separate(key, side, measurement, sep = '_') %>%
-  spread(measurement, value)
-         rip_func_l = case_when(
-           Habitat == 'SmStream' ~ case_when(
-             ht >= 33 ~
-               case_when(
-                 buff < 15 ~ 'Impaired',
-                 buff >= 15 & buff < 30 ~ 'Moderately Impaired',
-                 buff >= 30 ~ 'Functioning'),
-             ht >= 23 & ht < 33 ~ 
-               case_when(
-                 buff >= 30 ~ 'Moderately Impaired',
-                 buff < 30 ~ 'Impaired'),
-             ht < 23 ~ 'Impaired'),
-           Habitat == 'LgRiver' ~ case_when (
-             ht >= 33 ~
-               case_when(
-                 buff < 15 ~ 'Moderately Impaired',
-                 buff >= 15 ~ 'Functioning'),
-             ht >= 23 & ht < 33 ~
-               case_when(buff < 15 ~ 'Impaired',
-                         buff >= 15 & buff < 30 ~ 'Moderately Impaired',
-                         buff >= 30 ~ 'Functioning'),
-             ht < 23 ~ 'Impaired'))
+  separate(col = key, c('side', 'measurement'), sep = '_') %>%
+  spread(measurement, value) %>%
+  mutate(rip_func = case_when(
+    Habitat == 'SmStream' ~ case_when(
+      ht >= 33 ~
+        case_when(
+          buff < 15 ~ 'Impaired',
+          buff >= 15 & buff < 30 ~ 'Moderately Impaired',
+          buff >= 30 ~ 'Functioning'),
+      ht >= 23 & ht < 33 ~ 
+        case_when(
+          buff >= 30 ~ 'Moderately Impaired',
+          buff < 30 ~ 'Impaired'),
+      ht < 23 ~ 'Impaired'),
+    Habitat == 'LgRiver' ~ case_when (
+      ht >= 33 ~
+        case_when(
+          buff < 15 ~ 'Moderately Impaired',
+          buff >= 15 ~ 'Functioning'),
+      ht >= 23 & ht < 33 ~
+        case_when(buff < 15 ~ 'Impaired',
+                  buff >= 15 & buff < 30 ~ 'Moderately Impaired',
+                  buff >= 30 ~ 'Functioning'),
+      ht < 23 ~ 'Impaired'))) %>% 
+  select(-buff, -ht) %>%
+  spread(side, rip_func) %>%
+  rename(rip_func_left = left,
+         rip_func_right = right)
 
 flowline <- flowline_noculv %>% 
   select(noaaid,Reach,culv_list) %>%
