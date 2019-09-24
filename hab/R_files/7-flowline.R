@@ -65,7 +65,32 @@ flowline_noculv <- flowline %>%
          hist.tempmult = temp_func(hist_temp),
          can_ang = ifelse(is.na(can_ang), # We are still working on calculating canopy opening angle in some reaches.  For reaches without canopy opening angle measurements, 
                           0, # we set canopy opening angle to 0 because the majority of these reaches are far upstream and few of them are clearcut.
-                          can_ang))
+                          can_ang)) %>%
+  gather(key, value, c(left_ht, right_ht, left_buff, right_buff)) %>%
+  separate(key, side, measurement, sep = '_') %>%
+  spread(measurement, value)
+         rip_func_l = case_when(
+           Habitat == 'SmStream' ~ case_when(
+             ht >= 33 ~
+               case_when(
+                 buff < 15 ~ 'Impaired',
+                 buff >= 15 & buff < 30 ~ 'Moderately Impaired',
+                 buff >= 30 ~ 'Functioning'),
+             ht >= 23 & ht < 33 ~ 
+               case_when(
+                 buff >= 30 ~ 'Moderately Impaired',
+                 buff < 30 ~ 'Impaired'),
+             ht < 23 ~ 'Impaired'),
+           Habitat == 'LgRiver' ~ case_when (
+             ht >= 33 ~
+               case_when(
+                 buff < 15 ~ 'Moderately Impaired',
+                 buff >= 15 ~ 'Functioning'),
+             ht >= 23 & ht < 33 ~
+               case_when(buff < 15 ~ 'Impaired',
+                         buff >= 15 & buff < 30 ~ 'Moderately Impaired',
+                         buff >= 30 ~ 'Functioning'),
+             ht < 23 ~ 'Impaired'))
 
 flowline <- flowline_noculv %>% 
   select(noaaid,Reach,culv_list) %>%
