@@ -59,29 +59,26 @@ source('lcm/LCM.sim.R')
 
 # Summarize
 # Difference between current and ScenarioY.X12 is the differnece made by doing ScenarioY in basin 12
-df_diff <- read.csv('outputs/coho/lcm/coho_abundance_by_subbasin_raw.csv') %>%
-  select(natal.basin, scenario, spawners) %>%
-  group_by(natal.basin) %>%
+df_diff <- file.path('outputs',fishtype,'lcm') %>%
+  list.files(pattern = 'abundance_basinwide', full.names = TRUE) %>%
+  read.csv() %>%
+  filter(scenario == 'Current' | str_detect(scenario, '.X')) %>%
+  rename(spawners = basinwide_spawners) %>%
   mutate(curr = spawners[scenario == 'Current'],
          diff = spawners - curr,
          diff_prcnt = diff/curr, 
-         hist_basin = str_extract(scenario, "[^X]+$") %>% as.integer) %>%
-  left_join(subbasins %>% rename(natal.basin = Subbasin)) %>%
-  filter(hist_basin == Subbasin_num) %>%
-  rename(noaa_sub_num = Subbasin_num) %>%
-  select(noaa_sub_num, scenario, spawners, curr, diff, diff_prcnt)
+         noaa_sub_num = str_extract(scenario, "[^X]+$") %>% as.integer) %>%
+  filter(!is.na(noaa_sub_num)) %>%
+  mutate(scenario = resto_scenario) %>%
+  select(scenario, noaa_sub_num, curr, diff, diff_prcnt)
 
 
 # Delete extra files
 list.files(path_to_hab, pattern = ".X", full.names = TRUE) %>% unlink
 
-# # Create shapefile
-# gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190604/Inputs.gdb'
-# 
-# st_read(dsn = gdb_in, layer = 'NOAA_subbasins_w_fp') %>%
-#   left_join(df_diff) %>%
-#   st_write('../maps/Floodplain_resto_benefit.shp')
+# Create shapefile
+gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190604/Inputs.gdb'
 
-  
-
-
+st_read(dsn = gdb_in, layer = 'NOAA_subbasins_w_fp') %>%
+  left_join(df_diff) %>%
+  st_write(paste0(resto_scenario,'_resto_benefit.shp'))
