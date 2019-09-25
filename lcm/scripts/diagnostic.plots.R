@@ -8,19 +8,22 @@ if (dir.exists(save.diagnostic) == F) {
 
 # Join all of the scenarios together and clean them up ----
 
+r_names <- row.names(dat) %>% str_subset('movement|adults', negate = T)
+
 if (pop == "coho") {
   params.to.lifestages <- data.frame(
-    stage_nm = row.names(dat),
+    stage_nm = r_names,
     lifestage = c("eggs", "spawners", "eggs", rep("parr", 2), rep("smolts", 2)),
     type = c("prod", rep("cap", 3), "prod", "cap", "prod")
   )
 }
 
 if (pop == "fall.chinook" | pop == "spring.chinook") {
+  
   params.to.lifestages <- data.frame(
-    stage_nm = row.names(dat),
-    lifestage = c("eggs", "spawners", "eggs", rep("sub.yr", 2), "prespawn"),
-    type = c("prod", rep("cap", 3), "prod", "prod")
+    stage_nm = r_names,
+    lifestage = c("eggs", "eggs", rep("rearing",2), 'rearing_temp', "prespawn"),
+    type = c("prod", rep("cap", 2), rep("prod", 3))
   )
 }
 
@@ -28,8 +31,9 @@ filename <- dir(file.path("outputs", fishtype, "hab.scenarios"), full.names = T,
 
 all.scenarios <- filename %>%
   map_dfr(read.csv, h = T, .id = "name") %>%
-  mutate(scenario = filename[as.numeric(name)] %>% basename(.) %>% gsub("_", "\\.", .) %>% sub("\\.csv", "", .)) %>%
+  mutate(scenario = filename[as.numeric(name)] %>% basename %>% gsub("_", "\\.", .) %>% sub("\\.csv", "", .)) %>%
   left_join(params.to.lifestages) %>%
+  filter(!is.na(lifestage)) %>%
   select(-X, -name, -stage_nm)
 
 colnames(all.scenarios) <- c(reach.names, "scenario", "lifestage", "type")
@@ -46,40 +50,28 @@ all.scenarios <- all.scenarios %>%
 if (pop == "fall.chinook" | pop == "spring.chinook") {
   all.scenarios <- all.scenarios %>%
     mutate(
-      prod = ifelse(lifestage == "sub.yr", prod^(7 / 8), prod),
-      lifestage = ifelse(lifestage == "sub.yr", "natal.sub.yr", as.character(lifestage))
+      prod = ifelse(lifestage == "rearing", prod^(1/12), prod),
+      cap = ifelse(lifestage == "rearing", cap * 3, cap),
+      lifestage = ifelse(lifestage == "rearing", "natal.fry", as.character(lifestage))
     ) %>%
     rbind(all.scenarios %>%
-      filter(lifestage == "sub.yr") %>%
+      filter(lifestage == "rearing") %>%
       mutate(
         cap = cap * 3,
-        prod = prod^(1 / 8),
-        lifestage = "natal.fry"
-      )) %>%
-    rbind(all.scenarios %>%
-      filter(lifestage == "sub.yr") %>%
-      mutate(
-        cap = cap * 3,
-        prod = prod^(1 / 8),
-        lifestage = "ms.fry"
-      )) %>%
-    rbind(all.scenarios %>%
-      filter(lifestage == "sub.yr") %>%
-      mutate(
-        prod = prod^(7 / 8),
-        lifestage = "non.natal.sub.yr"
+        prod = prod ^ (11/12),
+        lifestage = 'sub.yr.distrib'
       ))
 }
 
 # Create plot of basinwide fish populations for each lifestage ----
 
 if (pop == "coho") lifestages.to.plot <- unlist(c(lifestages[4:8], lifestages[1], lifestages[9:10]))
-if (pop == "fall.chinook" | pop == "spring.chinook") lifestages.to.plot <- unlist(c(lifestages[c(9:17)], lifestages[1]))
+if (pop == "fall.chinook" | pop == "spring.chinook") lifestages.to.plot <- unlist(c(lifestages[c(7:15)], lifestages[1]))
 
-scenario.to.plot <- scenario.file[scenario.file != "Historical.no.beaver"]
+scenario.to.plot <- scenario.file
 
 model.all.df <- model.all[, , lifestages.to.plot, , scenario.to.plot] %>%
-  round(., 0) %>%
+  round(0) %>%
   as.data.frame.table(.) %>%
   rename(run = Var1, year = Var2, lifestage = Var3, subbasin = Var4, scenario = Var5, n = Freq) %>%
   group_by(run, year, lifestage, scenario) %>%

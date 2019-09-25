@@ -24,7 +24,7 @@ noaa_model <- lapply(spp, function(s) {
   fp <- file.path('outputs', s, 'lcm')
   
   dat <- list.files(fp, 
-                    pattern = 'abundance_by_sub', # Name of csv with LCM spawner data
+                    pattern = 'abundance_by_subbasin_raw.csv', # Name of csv with LCM spawner data
                     full.names = TRUE) %>%
     read.csv %>%
     mutate(species = s)
@@ -43,7 +43,7 @@ noaa_model <- lapply(spp, function(s) {
 # 2. observations after year 2000
 dat_plot <- bind_rows(wdfw_data, noaa_model) %>%
   mutate(species = sub("_", " ", species)) %>%
-  filter(spawners > 0,
+  filter(spawners >= 1,
          #natal.basin != "",
          natal.basin %in% unique(wdfw_data$natal.basin),
          year > 2000 | is.na(year))

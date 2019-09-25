@@ -45,12 +45,8 @@ if (pop == "coho") {
   
   # Fall redistribution
   # Historical wood gets 7% redistribution, historical ponds and all historical get 3%. All other scenarios get 11%.
-  redist_7 <- c('Wood')
-  redist_3 <- c('Beaver','Historical')
-  redist <- if (scenario.file[n] %in% redist_7) {redist.histwood
-            } else if (scenario.file[n] %in% redist_3) {redist.histpond
-            } else if (substr(scenario.file[n],1,4) == 'ASRP') {dat["movement", ]/100 # If starts with ASRP
-            }else redist.current
+
+  redist <- dat["movement", ]/100 # If starts with ASRP
     
   # Parr-to-smolt survival and capacity
   parr.smolt.surv <- dat["surv_w",]*ps.surv.adj
@@ -61,26 +57,6 @@ if (pop == "coho") {
   
   
 } #end if coho
-
-if (pop == "steelhead") {
- 
-  #first summer parr
-  parr.cap <-  dat["capacity_s", ]
-  parr.surv <- dat["surv_s", ]
-  
-  #1st overwinter Age1
-  first.winter.cap <-  dat["capacity_w", ]
-  first.winter.surv <- dat["surv_w", ]
-  
-  #2nd summer: Age1.plus
-  second.summer.cap <-  dat["capacity_s_2", ]
-  second.summer.surv <- dat["surv_s_2", ]
-
-  #2nd overwinter: Age2
-  second.winter.cap <-  dat["capacity_w_2", ]
-  second.winter.surv <- dat["surv_w_2", ]
-}
-
 
 if (pop == "fall.chinook" | pop == "spring.chinook") {
   
@@ -96,5 +72,23 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   
 } 
 
+if (pop == "steelhead") {
+  
+  #first summer parr
+  parr.cap <-  dat["capacity_s", ]
+  parr.surv <- dat["surv_s", ]
+  
+  #1st overwinter Age1
+  first.winter.cap <-  dat["capacity_w", ]
+  first.winter.surv <- dat["surv_w", ]
+  
+  #2nd summer: Age1.plus
+  second.summer.cap <-  dat["capacity_s_2", ]
+  second.summer.surv <- dat["surv_s_2", ]
+  
+  #2nd overwinter: Age2
+  second.winter.cap <-  dat["capacity_w_2", ]
+  second.winter.surv <- dat["surv_w_2", ]
+}
 
 

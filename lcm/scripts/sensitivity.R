@@ -51,17 +51,19 @@ if (pop == "coho") {
 if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   # Fry to sub yearling migrant survival and capacity
-  fry.surv.adj <- adj() # 1 week of freshwater mortality
-  fry.cap.adj <- adj()
-  sub.yr.surv.adj <- adj() # 11 more weeks of freshwater mortality
-  sub.yr.cap.adj  <- adj()
+  surv.adj <- adj() # 1 week of freshwater mortality
+  cap.adj <- adj()
+  surv.temp.adj <- adj() # 1 week of freshwater mortality using June 1 - 21 temps
   
+  rear_s <- dat['surv_s', ] * surv.adj
+  rear_s_temp <- dat['surv_s_2', ] *  surv.temp.adj
   
-  fry.surv <- (dat['surv_s', ]^(1/12)) * fry.surv.adj # 1 week of freshwater mortality
-  fry.cap <- dat['capacity_s',] * 3 * fry.cap.adj
+  weekly.surv <- (rear_s^(1/12)) 
+  cap <- dat['capacity_s', ] * cap.adj
   
-  sub.yr.surv <- (dat['surv_s', ]^(11/12)) * sub.yr.surv.adj # 11 more weeks of freshwater mortality
-  sub.yr.cap  <- dat['capacity_s', ] * sub.yr.cap.adj
+  w <- (0.45 * 4/11)
+  
+  weekly.surv.temp <- (w * rear_s_temp^(1/12)) + ((1 - w) * weekly.surv)
   
 } #end if chinook
 
@@ -103,8 +105,8 @@ surv.params <- c('egg.fry.surv',
                  'S.up',
                  'parr.surv',
                  'parr.smolt.surv',
-                 'fry.surv',
-                 'sub.yr.surv',
+                 'weekly.surv',
+                 'weekly.surv.temp',
                  'first.winter.surv',
                  'second.summer.surv',
                  'second.winter.surv',

@@ -50,6 +50,10 @@ run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", g
 run_stochastic_eggtofry_query <- c('no', 'yes')
 run_stochastic_eggtofry <- run_stochastic_eggtofry_query[menu(run_stochastic_eggtofry_query, title = 'Run stochastic egg to fry?', graphics = TRUE)]
 
+# Run single action scenarios?
+run_single_action_query <- c('no', 'yes')
+run_single_action <- run_single_action_query[menu(run_single_action_query, title = 'Run single action scenarios?', graphics = TRUE)]
+
 # Store branch name ----
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
@@ -80,7 +84,7 @@ if (fishtype == 'all_species') {
   
   for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')) {
     fishtype <- s
-    source("hab/R_files/Run_Habitat_Model.R")
+    source("hab/R_files/0-Run_Habitat_Model.R")
     source("lcm/LCM.sim.R")
     print(paste0("finished ", s))
   }
@@ -88,7 +92,7 @@ if (fishtype == 'all_species') {
 } else {
   
   unlink(file.path("outputs", fishtype), recursive = TRUE) # WARNING -- Entire outptus folder for species will be deleted
-  source("hab/R_files/Run_Habitat_Model.R")
+  source("hab/R_files/0-Run_Habitat_Model.R")
   source("lcm/LCM.sim.R")
 }
 

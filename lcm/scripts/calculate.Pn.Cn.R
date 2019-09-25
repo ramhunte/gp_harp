@@ -16,6 +16,13 @@ sr.years <- 10 # How many generations
 
 csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
 
+# Lifestages for clean output
+if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smolts')}
+
+if (pop == "fall.chinook" | pop == "spring.chinook") { summary.stages <- c('spawners','fry.migrants','sub.yr')}
+
+if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}
+
 # Initialize arrays to capture data ----
 
 N.sr <- matrix(
@@ -72,11 +79,34 @@ df.sr <- model.all.sr[ , "spawners", , ] %>%
   mutate(Pn = Pn/sr.init)
 
 
-# Write to the abundance CSV
+# Pn and Cn by subbasin
 abundance_by_subbasin %>%
+  select(scenario, natal.basin, summary.stages) %>%
+  mutate_at(vars(summary.stages), list(~round(., 0))) %>% # round to whole fish 
   left_join(df.sr) %>%
   mutate(Cn = (spawners * Pn) / (Pn - 1),
-         Cn = ifelse(Cn > 0, Cn, 0),
-         Pn = ifelse(Pn > 1, Pn, 0)) %>%
+         Cn = ifelse(Pn < 1, NA, Cn)) %>%
+  #mutate_at(vars(summary.stages), list(~ifelse(Pn < 0, 0, .))) %>%   # Zero out abundance when Pn < 0  
   write.csv(file.path(outputs_lcm, csv.name))
 
+
+# Pn and Cn basinwide
+read.csv(file.path(outputs_lcm, csv.name)) %>%
+  select(-X) %>%
+  group_by(scenario) %>%
+  summarize(basinwide_spawners = sum(spawners),
+            Pn = weighted.mean(Pn, spawners)) %>%
+  mutate(Cn = (basinwide_spawners * Pn) / (Pn - 1)) %>%
+  write.csv(file.path(outputs_lcm, paste0(pop, '_abundance_basinwide.csv')))
+
+
+# Pn and Cn by EDR
+read.csv(file.path(outputs_lcm, csv.name)) %>%
+  select(-X) %>%
+  left_join(read.csv('lcm/data/Subbasin_names.csv') %>%
+              rename(natal.basin = Subbasin)) %>%
+  group_by(scenario, EcoRegion) %>%
+  summarize(basinwide_spawners = sum(spawners),
+            Pn = weighted.mean(Pn, spawners)) %>%
+  mutate(Cn = (basinwide_spawners * Pn) / (Pn - 1)) %>%
+  write.csv(file.path(outputs_lcm, paste0(pop, '_abundance_by_EDR.csv')))
