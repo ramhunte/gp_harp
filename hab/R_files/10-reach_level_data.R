@@ -175,7 +175,9 @@ mutate(asrp_temp_w_growth = case_when(
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
          asrp_temp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',# Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
-                    asrp_temp - (1 * rest_perc),
+                    ifelse(species %in% c('spring_chinook', 'fall_chinook'),
+                           asrp_temp - (mwmt_to_mdm_func(1) * rest_perc),
+                           asrp_temp - (1 * rest_perc)),
                     asrp_temp),
          asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
                             ifelse(year == 2040,
