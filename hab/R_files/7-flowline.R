@@ -94,7 +94,17 @@ flowline_noculv <- flowline %>%
   select(-buff, -ht) %>%
   spread(side, rip_func) %>%
   rename(rip_func_left = left,
-         rip_func_right = right)
+         rip_func_right = right) %>%
+  mutate(rip_func = case_when(
+    rip_func_left == 'Impaired' | rip_func_right == 'Impaired' ~ 'Impaired',
+    rip_func_left == 'Moderately Impaired' ~ ifelse(rip_func_right == 'Impaired',
+                                                    'Impaired',
+                                                    'Moderately Impaired'),
+    rif_func_left == 'Functioning' ~ ifelse(rip_func_right == 'Functioning',
+                                            'Functioning',
+                                            'Moderately Impaired')
+    ))
+    
 
 flowline <- flowline_noculv %>% 
   select(noaaid,Reach,culv_list) %>%
