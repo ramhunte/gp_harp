@@ -65,8 +65,11 @@ flowline_noculv <- flowline %>%
          hist.tempmult = temp_func(hist_temp),
          can_ang = ifelse(is.na(can_ang), # We are still working on calculating canopy opening angle in some reaches.  For reaches without canopy opening angle measurements, 
                           0, # we set canopy opening angle to 0 because the majority of these reaches are far upstream and few of them are clearcut.
-                          can_ang)) %>%
-  gather(key, value, c(left_ht, right_ht, left_buff, right_buff)) %>%
+                          can_ang),
+         mean_ht = (left_ht + right_ht) / 2,
+         mean_buff = (left_buff + right_buff) / 2)%>%
+  
+  gather(key, value, c(left_ht, right_ht, left_buff, right_buff, mean_ht, mean_buff)) %>%
   separate(col = key, c('side', 'measurement'), sep = '_') %>%
   spread(measurement, value) %>%
   mutate(rip_func = case_when(
@@ -94,16 +97,8 @@ flowline_noculv <- flowline %>%
   select(-buff, -ht) %>%
   spread(side, rip_func) %>%
   rename(rip_func_left = left,
-         rip_func_right = right) %>%
-  mutate(rip_func = case_when(
-    rip_func_left == 'Impaired' | rip_func_right == 'Impaired' ~ 'Impaired',
-    rip_func_left == 'Moderately Impaired' ~ ifelse(rip_func_right == 'Impaired',
-                                                    'Impaired',
-                                                    'Moderately Impaired'),
-    rif_func_left == 'Functioning' ~ ifelse(rip_func_right == 'Functioning',
-                                            'Functioning',
-                                            'Moderately Impaired')
-    ))
+         rip_func_right = right,
+         rip_func = mean)
     
 
 flowline <- flowline_noculv %>% 
