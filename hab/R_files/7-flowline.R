@@ -77,21 +77,21 @@ flowline_noculv <- flowline %>%
       ht >= 33 ~
         case_when(
           buff < 15 ~ 'Impaired',
-          buff >= 15 & buff < 30 ~ 'Moderately Impaired',
+          buff >= 15 & buff < 30 ~ 'Moderately_Impaired',
           buff >= 30 ~ 'Functioning'),
       ht >= 23 & ht < 33 ~ 
         case_when(
-          buff >= 30 ~ 'Moderately Impaired',
+          buff >= 30 ~ 'Moderately_Impaired',
           buff < 30 ~ 'Impaired'),
       ht < 23 ~ 'Impaired'),
     Habitat == 'LgRiver' ~ case_when (
       ht >= 33 ~
         case_when(
-          buff < 15 ~ 'Moderately Impaired',
+          buff < 15 ~ 'Moderately_Impaired',
           buff >= 15 ~ 'Functioning'),
       ht >= 23 & ht < 33 ~
         case_when(buff < 15 ~ 'Impaired',
-                  buff >= 15 & buff < 30 ~ 'Moderately Impaired',
+                  buff >= 15 & buff < 30 ~ 'Moderately_Impaired',
                   buff >= 30 ~ 'Functioning'),
       ht < 23 ~ 'Impaired'))) %>% 
   select(-buff, -ht) %>%
@@ -129,3 +129,5 @@ if (fishtype == 'fall_chinook') {
   flowline %<>% 
     mutate(chino_mult = 1)
 }
+
+write.csv(flowline, file = 'Report figures/fl_rip_func.csv')
