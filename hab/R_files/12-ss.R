@@ -133,5 +133,5 @@ asrp_ss_mvmt <- asrp_ss %>%
 
 if (run_single_action == 'no') {
   asrp_ss %<>%
-    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", diag_scenarios))
+    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }

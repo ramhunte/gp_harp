@@ -5,14 +5,16 @@
 "4","ASRP.scenario.2.2080","ASRP 2 - 2080","ASRP_scenario_2_2080.csv",750.652654713246
 "5","ASRP.scenario.3.2040","ASRP 3 - 2040","ASRP_scenario_3_2040.csv",1271.9324739994
 "6","ASRP.scenario.3.2080","ASRP 3 - 2080","ASRP_scenario_3_2080.csv",790.816522970753
-"7","Current","Current","Current.csv",858.918910668239
-"8","Beaver","Current, w/ historical beaver ponds","Beaver.csv",887.242408906019
-"9","Fine.sediment","Current, w/ historical fine sediment","Fine_sediment.csv",1309.07790833487
-"10","Floodplain","Current, w/ historical floodplain habitat","Floodplain.csv",1311.05474415961
-"11","FP.wood.comb","Current, w/ historical floodplains and wood","FP_wood_comb.csv",1679.33030277505
-"12","LR.bank","Current, w/ historical large river bank conditions","LR_bank.csv",887.896027723215
-"13","LR.length","Current, w/ historical large river length","LR_length.csv",914.560610604714
-"14","Shade","Current, w/ historical shade","Shade.csv",1326.77469832166
-"15","Wood","Current, w/ historical wood loading","Wood.csv",1128.38263676084
-"16","Barriers","Current, w/ no barriers","Barriers.csv",858.918910668239
-"17","Historical","Historical conditions","Historical.csv",3410.48318083219
+"7","ASRP.dev.and.climate.2040","ASRP No action, with future development 2040","ASRP_dev_and_climate_2040.csv",753.136369728407
+"8","ASRP.dev.and.climate.2080","ASRP No action, with future development 2080","ASRP_dev_and_climate_2080.csv",341.14354713284
+"9","Current","Current","Current.csv",858.918910668239
+"10","Beaver","Current, w/ historical beaver ponds","Beaver.csv",887.242408906019
+"11","Fine.sediment","Current, w/ historical fine sediment","Fine_sediment.csv",1309.07790833487
+"12","Floodplain","Current, w/ historical floodplain habitat","Floodplain.csv",1311.05474415961
+"13","FP.wood.comb","Current, w/ historical floodplains and wood","FP_wood_comb.csv",1679.33030277505
+"14","LR.bank","Current, w/ historical large river bank conditions","LR_bank.csv",887.896027723215
+"15","LR.length","Current, w/ historical large river length","LR_length.csv",914.560610604714
+"16","Shade","Current, w/ historical shade","Shade.csv",1326.77469832166
+"17","Wood","Current, w/ historical wood loading","Wood.csv",1128.38263676084
+"18","Barriers","Current, w/ no barriers","Barriers.csv",858.918910668239
+"19","Historical","Historical conditions","Historical.csv",3410.48318083219

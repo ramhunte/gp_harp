@@ -71,23 +71,26 @@ if (sensitivity.mode == 'no') {
 # Create spawners data frame from diagnostic scenarios only
   spawners.diag <- spawners %>%  
     filter(!scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
-                                  "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action')) %>%
+                                  "ASRP 2 - 2080", "ASRP 3 - 2080", 'ASRP No action, with future development 2040', 
+                                  'ASRP No action, with future development 2080')) %>%
     droplevels()
   
 # Create spawners data frame from asrp scenarios only  
   spawners.asrp <- spawners %>%  
     filter(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
-                                 "ASRP 2 - 2080", "ASRP 3 - 2080", '2040 No action', '2080 No action', "Current")) %>%
-    mutate(year = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", '2040 No action'),
+                                 "ASRP 2 - 2080", "ASRP 3 - 2080", 'ASRP No action, with future development 2040', 
+                                 'ASRP No action, with future development 2080', "Current")) %>%
+    mutate(year = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", 'ASRP No action, with future development 2040'),
                           'mid-century',
-                          ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080", '2080 No action'),
+                          ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080", 
+                                                       'ASRP No action, with future development 2080'),
                                  'late-century',
                                  'current')),
            scenario.label.nm = case_when(
              scenario.label %in% c("ASRP 1 - 2040", "ASRP 1 - 2080") ~ "ASRP 1",
              scenario.label %in% c("ASRP 2 - 2040", "ASRP 2 - 2080") ~ "ASRP 2",
              scenario.label %in% c("ASRP 3 - 2040", "ASRP 3 - 2080") ~ "ASRP 3",
-             scenario.label %in% c("2040 No action", "2080 No action") ~ "No action",
+             scenario.label %in% c('ASRP No action, with future development 2040', 'ASRP No action, with future development 2080') ~ "No action",
              scenario.label %in% c("Current") ~ "Current"))
 
 # reorder factors for asrp spawners so that x axis plotting order is correct
@@ -117,7 +120,7 @@ spawners.asrp %<>%
     left_join(spawners %>%
                 distinct(scenario.label,color) %>%
                 mutate_if(is.factor,as.character)) %>%
-    slice(c(1, 3, 5,7, 9)) %>%
+    slice(c(1, 9, 3, 5,7)) %>%
     select(color) %>%
     unlist(use.names = FALSE)
   
