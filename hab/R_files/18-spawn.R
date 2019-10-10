@@ -73,7 +73,7 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
     mutate(Scenario_num = as.character(n))
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_culvs) %>%
@@ -108,4 +108,6 @@ egg_cap_weight_asrp <- bind_rows(asrp_spawn_ss, asrp_spawn_fp, asrp_spawn_lr) %>
   mutate(eggs_by_sub = sum(eggs), # egg cap per subbasin
          eggs_weight = eggs / eggs_by_sub) %>% # egg cap weights
   select(-eggs, -eggs_by_sub)
+
+rm(asrp_spawn_fp, asrp_spawn_fp_curr, asrp_spawn_fp_hist, asrp_spawn_fp_raw, asrp_spawn_lr, asrp_spawn_lr_year, asrp_spawn_ss, asrp_fp_spawn, asrp_ss_spawn)
 

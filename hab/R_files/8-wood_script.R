@@ -47,3 +47,5 @@ wood_data %<>%
          woodmult_w = ifelse(is.na(woodmult_w),
                              woodmult_w_avg,
                              woodmult_w))
+
+rm(LgRiver_raw_wood)

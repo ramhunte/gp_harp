@@ -95,3 +95,5 @@ if (fishtype == 'fall_chinook') {
   flowline %<>% 
     mutate(chino_mult = 1)
 }
+
+rm(flowline_noculv, all_temps, culvs)

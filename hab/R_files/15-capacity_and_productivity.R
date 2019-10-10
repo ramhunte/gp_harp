@@ -1,6 +1,11 @@
 # Capacity calculation ----
 
-asrp_cap <- bind_rows(asrp_lr, asrp_ss, asrp_fp)
+asrp_cap <- bind_rows(asrp_lr, asrp_ss, asrp_fp) %>%
+  select(-GSU, -pass_tot_asrp, -both_chk, -Barriers, -Floodplain, -Beaver, -Riparian, -chino_mult, -lc, -slope.class, -curr_area, -hist_area,
+         -curr_temp, -Reach, -species, -can_ang, -prespawn_temp,
+         -hist_temp, -managed_forest, -temp_intensity_scalar, -fp_intensity_scalar, -beaver_intensity_scalar, -primary_cr_only, 
+         -woodmult_s, -woodmult_w, -prespawn_temp_asrp, -future_imperv)
+  
 
 # rm(asrp_ss)
 # rm(asrp_lr)
@@ -40,9 +45,7 @@ asrp_cap %<>%
 
 source("hab/R_files/16-movement.R", local = TRUE)
 
-rm(asrp_fp_mvmt)
-rm(asrp_ss_mvmt)
-rm(asrp_lr_mvmt)
+rm(asrp_fp_mvmt, asrp_ss_mvmt, asrp_lr_mvmt, asrp_mvmt_1)
 
 # Productivity calculations ----
 
@@ -104,8 +107,4 @@ asrp_prod <- asrp_prod %>%
                            survival)) %>%
   select(Scenario_num, year, life.stage, capacity, survival)
   
-
-# 
-#   summarize(capacity = sum(capacity, na.rm = T),
-#             survival = sum(survival, na.rm = T)) %>%
-#   ungroup()
+rm(asrp_fp, asrp_lr, asrp_ss, asrp_prod_adjustment, mvmt_data, mvmt_data_curr, asrp_cap)
