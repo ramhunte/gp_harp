@@ -20,8 +20,9 @@ if (fishtype == "spring_chinook") {
     summarize(prespawn_temp_asrp = mean(prespawn_temp_asrp, na.rm = T),
               pass_tot_asrp_weight = sum(pass_tot_asrp_weight, na.rm = T)) %>%
     ungroup() %>%
+    mutate(survival = bowerman_ps(prespawn_temp_asrp) * pass_tot_asrp_weight) %>%
     # mutate(survival = cramer.prespawn(prespawn_temp_asrp) * pass_tot_asrp_weight) %>%
-    mutate(survival = prespawn.chin.func(prespawn_temp_asrp) * pass_tot_asrp_weight) %>%
+    # mutate(survival = prespawn.chin.func(prespawn_temp_asrp) * pass_tot_asrp_weight) %>%
     select(-prespawn_temp_asrp, -pass_tot_asrp_weight) %>%
     mutate(life.stage = "prespawn")
 } else {

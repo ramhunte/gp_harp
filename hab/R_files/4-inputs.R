@@ -21,8 +21,8 @@ cc_late_rear = 1.917
 cc_mid_rear = 1.024
 cc_late_rear = 2.049
 }
-cc_mid_prespawn = .9265
-cc_late_prespawn = 1.853
+cc_mid_prespawn = 1.024
+cc_late_prespawn = 2.049
 
 bw_scalar = .16 # see Tim's description in Trello card, V4
 

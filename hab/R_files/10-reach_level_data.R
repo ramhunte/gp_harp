@@ -197,7 +197,7 @@ mutate(asrp_temp_w_growth = case_when(
                                      prespawn_temp + cc_late_prespawn,
                                      prespawn_temp + temp_diff_2080_prespawn))),
          prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
-                                                           prespawn_temp_asrp - mwmt_to_prespawn_func(1),
+                                                           prespawn_temp_asrp - (1 * rest_perc),
                                                            prespawn_temp_asrp),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,

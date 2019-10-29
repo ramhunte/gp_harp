@@ -50,7 +50,7 @@ prespawn.chin.func <- function(temps, a = 0.7919, b = -13.2061, c = 0){
   # convert PSU/ICF 7DADM to mean of daily means, July1 - Sept15
   #  using this fitted relationship:
   # temps.converted <- -3.277448 + 1.011789*temps
-  temps.converted <- temps - 1.868
+  temps.converted <- temps
 
   inverse.logit <- function(a, b, c, x){
     # This function back-transforms a prespawn
@@ -92,6 +92,18 @@ cramer.prespawn <- function(x){
 # plot(x, cramer.prespawn(x), las=1,
 #      xlab=expression(Temperature~~(degree~C)),
 #      ylab="Prespawn survival", type="l")
+
+
+bowerman_ps <- function(t,
+                        phos = 0,
+                        b0 = -9.053,
+                        b1 = .387,
+                        b2 = .029) {
+  log_p <- b0 + b1 * t + b2 * phos
+  p <- 1 - plogis(log_p)
+  return(p)
+}
+
 
 
 
@@ -143,9 +155,9 @@ calc_coho_imperv <- function(imperv) {
   } else {return(1)}
 }
 
-mwmt_to_prespawn_func <- function(mwmt) { # Where necessary, convert temp_diff due to tree growth from mwmt to mean of daily mean
-  .82749 * mwmt
-}
+# mwmt_to_prespawn_func <- function(mwmt) { # Where necessary, convert temp_diff due to tree growth from mwmt to mean of daily mean
+#   .82749 * mwmt
+# }
 
 mwmt_to_mdm_func <- function(mwmt) {
   .97550 * mwmt
