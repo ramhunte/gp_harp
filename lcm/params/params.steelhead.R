@@ -56,8 +56,13 @@ sub.yr.cap.adj <- 1.0 #summer capacity adjustment
 ow.surv.adj <- 1.0 #winter surv, parr to smolt adjustment
 ow.cap.adj <- 1.0 #winter capacity adjustment
 
-# Age1 smolts [Larsen and Ward (1955) scale analysis]
-prop.age1.smolts <- 0.02
+# Age1 smolts 
+# updated 10/30/2019 per Larry Lestelle. See 1974-2019 Summaries for Queets-Chehalsi-Hump Sth Age
+# adjustments here to match the 
+# ages 1-3 smolt composition of adults in steelhead catch data
+prop.age1.smolts <- 0.003
+prop.age2.smolts <- 0.8#0.87
+prop.age3.smolts <- 1 - prop.age2.smolts - prop.age1.smolts # 0.11
 
 
 # Delta survivals and capacities --------------------------------------------------------------------------------------------------
@@ -70,7 +75,7 @@ prop.age1.smolts <- 0.02
 # Capacity is assumed unlimited (transient)
 # stochastic survival between min and max
 
-bay.surv <- 0.30
+bay.surv <- 0.3
 
 bay.surv.adj <- 1
 
@@ -95,9 +100,9 @@ age1.ocean.correction <- 1
 #  [note: assume 'respawn.return' governs return rate of respawners (see farther below)]
 # Used agecomposition.xlxs to calibrate b values to match age structured return
 
-b3 <- 0.05 # propensity to return as 3 year olds
-b4 <- 0.4 # propensity to return as 4 year olds
-b5 <- 0.6 # propensity to return as 5 year olds
+b3 <- 0.01#0.05 # propensity to return as 3 year olds
+b4 <- 0.43#0.4 # propensity to return as 4 year olds
+b5 <- 0.76#0.6 # propensity to return as 5 year olds
 # Any age 6 that still hasn't spawned will return
 
 

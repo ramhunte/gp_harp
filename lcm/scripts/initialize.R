@@ -132,10 +132,11 @@ if (pop == "steelhead") {
                   'pre.fry',
                   'fry',
                   'parr',
-                  'age1',
+                  'age1.stayers',
                   'age1.smolts',
-                  'age1.plus',
-                  'age2.smolts'
+                  'age2.stayers',
+                  'age2.smolts',
+                  'age3.smolts'
   )
   
   sens.params <- c(

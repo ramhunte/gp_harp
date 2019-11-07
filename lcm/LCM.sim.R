@@ -274,7 +274,8 @@ for (n in 1:length(scenario.file)) {
   }
   
   if (pop == "steelhead") {
-    SAR <- sum(N['total.run', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ])
+    SAR <- (sum(N[firstspawn.stages,] %>% colSums) /
+            sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ]))
     SAR <- SAR %>% round(3)
   }
   
