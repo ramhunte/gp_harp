@@ -6,9 +6,10 @@ redd_area = 5.4
 defended_redd_area = NA
 adult_per_redd = 1.3
 
-PR_redd_density = 2.5
-F_redd_density = 7.3
-NF_redd_density = 2.3
+psp_lwls = 12.5 # pool spacing for low wood, low slope reaches
+psp_hwls = 6.25 # pool spacing for high wood, low slope reaches
+psp_lwhs = 27.5 # pool spacing for low wood, high slope reahces
+psp_hwhs = 5 # pool spacing for high wood, high slope reaches
 
 # winter_pool_scalar_cold = .14
 winter_pool_scalar_warm = .43
