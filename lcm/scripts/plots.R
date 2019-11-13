@@ -50,22 +50,10 @@ if (sensitivity.mode == 'no') {
   cur.scenario.labs <- scenario.label[substr(scenario.label, 1, 1) != 'H']
   hist.scenario.labs <- scenario.label[substr(scenario.label, 1, 1) == 'H']
   
-  if (pop == "coho") levs.obs <- c("Observed, 1982-2014","Observed, 1906-1914")
-  if (pop == "fall.chinook") levs.obs <- c("Observed, 1986-2014","Observed, 1910-1919 (90% of reported)")
-  if (pop == "spring.chinook") levs.obs <- c("Observed, 1982-2014","Observed, 1910-1919 (10% of reported Fall run)")
-  if (pop == "steelhead") levs.obs <- c("Observed, 1983-2013","Observed, 1983-2013 Escapement")
+  ordered.levels <- c(cur.scenario.labs,hist.scenario.labs)
   
-  ordered.levels <- c(levs.obs[1],cur.scenario.labs,levs.obs[2],hist.scenario.labs)
-  
-  # Join oberseved and modeled data
   spawners <- spawners %>%
-    bind_rows(read.csv(paste0("lcm/data/",pop,".observed.csv")) %>%
-                mutate(scenario.label = as.character(ifelse(Year > 1980, levs.obs[1], levs.obs[2])),
-                       color = "grey90") %>%
-                filter(lifestage == 'total.run') %>%
-                select(-Year,-period,-lifestage)) %>%
-    mutate(scenario.label = factor(scenario.label,levels = ordered.levels)) %>%
-    filter(scenario.label != levs.obs[2]) %>%
+    mutate(scenario.label = factor(scenario.label, levels = ordered.levels)) %>%
     droplevels()
   
 # Create spawners data frame from diagnostic scenarios only
@@ -98,65 +86,65 @@ spawners.asrp$scenario.label.nm <- factor(spawners.asrp$scenario.label.nm, level
 spawners.asrp$year <- factor(spawners.asrp$year, levels = c("current", "mid-century", "late-century"))
 spawners.asrp %<>% 
   droplevels()
-  
-  colors.diag <- data.frame(scenario.label = levels(spawners.diag$scenario.label)) %>%
-    mutate_if(is.factor,as.character) %>%
-    left_join(spawners %>%
-                distinct(scenario.label,color) %>%
-                mutate_if(is.factor,as.character)) %>%
-    select(color) %>%
-    unlist(use.names = FALSE)
-  
-  colors.asrp <- data.frame(scenario.label = levels(spawners.asrp$scenario.label)) %>%
-    mutate_if(is.factor,as.character) %>%
-    left_join(spawners %>%
-                distinct(scenario.label,color) %>%
-                mutate_if(is.factor,as.character)) %>%
-    select(color) %>%
-    unlist(use.names = FALSE)
-  
-  colors.asrp.stack <- data.frame(scenario.label = levels(spawners.asrp$scenario.label)) %>%
-    mutate_if(is.factor,as.character) %>%
-    left_join(spawners %>%
-                distinct(scenario.label,color) %>%
-                mutate_if(is.factor,as.character)) %>%
-    slice(c(1, 9, 3, 5,7)) %>%
-    select(color) %>%
-    unlist(use.names = FALSE)
-  
-  label.df.diag <- spawners.diag %>%
-    group_by(scenario.label) %>%
-    summarize(n = mean(n)) %>%
-    mutate(spawners.change = n - n[scenario.label == 'Current'],
-           prcnt.change = ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']),
-           prcnt.change = ifelse(prcnt.change >= 0,
-                                 paste0('+', percent(prcnt.change)),
-                                 percent(prcnt.change)),
-           y.pos = n,
-           curr.spawn = n[scenario.label == 'Current']) %>%
-    filter(!scenario.label %in% c('Current', levs.obs[1]))
-  
-  label.df.asrp <- spawners.asrp %>%
-    group_by(scenario.label) %>%
-    summarize(n = mean(n)) %>%
-    mutate(spawners.change = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
-                                    n - n[scenario.label == '2040 No action'],
-                                    ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
-                                           n - n[scenario.label == '2080 No action'],
-                                           n - n[scenario.label == 'Current'])),
-           prcnt.change = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
-                                 ((n - n[scenario.label == '2040 No action']) / n[scenario.label == '2040 No action']),
-                                 ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
-                                        ((n - n[scenario.label == '2080 No action']) / n[scenario.label == '2080 No action']),
-                                        ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']))),
-           prcnt.change = ifelse(prcnt.change >= 0,
-                                 paste0('+', percent(prcnt.change)),
-                                 percent(prcnt.change)),
-           y.pos = n,
-           base.spawn = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
-                               n[scenario.label == '2040 No action'],
-                               n[scenario.label == '2080 No action'])) %>%
-    filter(!scenario.label %in% c('Current', levs.obs[1]))
+
+colors.diag <- data.frame(scenario.label = levels(spawners.diag$scenario.label)) %>%
+  mutate_if(is.factor,as.character) %>%
+  left_join(spawners %>%
+              distinct(scenario.label,color) %>%
+              mutate_if(is.factor,as.character)) %>%
+  select(color) %>%
+  unlist(use.names = FALSE)
+
+colors.asrp <- data.frame(scenario.label = levels(spawners.asrp$scenario.label)) %>%
+  mutate_if(is.factor,as.character) %>%
+  left_join(spawners %>%
+              distinct(scenario.label,color) %>%
+              mutate_if(is.factor,as.character)) %>%
+  select(color) %>%
+  unlist(use.names = FALSE)
+
+colors.asrp.stack <- data.frame(scenario.label = levels(spawners.asrp$scenario.label)) %>%
+  mutate_if(is.factor,as.character) %>%
+  left_join(spawners %>%
+              distinct(scenario.label,color) %>%
+              mutate_if(is.factor,as.character)) %>%
+  slice(c(1, 9, 3, 5,7)) %>%
+  select(color) %>%
+  unlist(use.names = FALSE)
+
+label.df.diag <- spawners.diag %>%
+  group_by(scenario.label) %>%
+  summarize(n = mean(n)) %>%
+  mutate(spawners.change = n - n[scenario.label == 'Current'],
+         prcnt.change = ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']),
+         prcnt.change = ifelse(prcnt.change >= 0,
+                               paste0('+', percent(prcnt.change)),
+                               percent(prcnt.change)),
+         y.pos = n,
+         curr.spawn = n[scenario.label == 'Current']) %>%
+  filter(!scenario.label == 'Current')
+
+label.df.asrp <- spawners.asrp %>%
+  group_by(scenario.label) %>%
+  summarize(n = mean(n)) %>%
+  mutate(spawners.change = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
+                                  n - n[scenario.label == '2040 No action'],
+                                  ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
+                                         n - n[scenario.label == '2080 No action'],
+                                         n - n[scenario.label == 'Current'])),
+         prcnt.change = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
+                               ((n - n[scenario.label == '2040 No action']) / n[scenario.label == '2040 No action']),
+                               ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
+                                      ((n - n[scenario.label == '2080 No action']) / n[scenario.label == '2080 No action']),
+                                      ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']))),
+         prcnt.change = ifelse(prcnt.change >= 0,
+                               paste0('+', percent(prcnt.change)),
+                               percent(prcnt.change)),
+         y.pos = n,
+         base.spawn = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
+                             n[scenario.label == '2040 No action'],
+                             n[scenario.label == '2080 No action'])) %>%
+    filter(!scenario.label == 'Current')
   
   
   
@@ -164,21 +152,12 @@ spawners.asrp %<>%
   print(
     ggplot() +
       theme_bw() +
-      geom_boxplot(data = spawners.diag %>% filter(scenario.label == levs.obs[1]), 
-                   aes(scenario.label, n, fill = scenario.label), 
-                   outlier.shape = NA) +
-      geom_jitter(data = spawners.diag %>% filter(scenario.label == levs.obs[1]),
-                  aes(scenario.label, n, fill = scenario.label),
-                  color = 'black', 
-                  pch = 21,
-                  size = 2, 
-                  width = .3) +
-      geom_bar(data = spawners.diag %>% filter(!scenario.label %in% c(levs.obs[1])) , 
+      geom_bar(data = spawners.diag, 
                    aes(scenario.label, n, fill = scenario.label),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.diag %>% filter(!scenario.label %in% c(levs.obs[1])) %>% 
+      geom_bar(data = spawners.diag %>% 
                  mutate(base.spawn = mean(n[scenario.label == 'Current'])), 
                aes(scenario.label, base.spawn, fill = scenario.label),
                color = 'black',
@@ -211,12 +190,12 @@ spawners.asrp %<>%
   print(
     ggplot() +
       theme_bw() +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1])) , 
+      geom_bar(data = spawners.asrp, 
                aes(scenario.label.nm, n, fill = scenario.label),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1])) %>% 
+      geom_bar(data = spawners.asrp %>% 
                  mutate(base.spawn = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
                                             unique(n[scenario.label == '2040 No action']),
                                             ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
@@ -248,22 +227,22 @@ spawners.asrp %<>%
    print(
     ggplot() +
       theme_bw() +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 3')), 
+      geom_bar(data = spawners.asrp %>% filter(scenario.label.nm %in% c("Current", 'ASRP 3')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 2')), 
+      geom_bar(data = spawners.asrp %>% filter(scenario.label.nm %in% c("Current", 'ASRP 2')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'ASRP 1')), 
+      geom_bar(data = spawners.asrp %>% filter(scenario.label.nm %in% c("Current", 'ASRP 1')), 
                aes(year, n, fill = scenario.label.nm),
                color = 'black',
                stat = "summary", 
                fun.y = "mean") +
-    geom_bar(data = spawners.asrp %>% filter(!scenario.label %in% c(levs.obs[1]), scenario.label.nm %in% c("Current", 'No action')), 
+    geom_bar(data = spawners.asrp %>% filter(scenario.label.nm %in% c("Current", 'No action')), 
              aes(year, n, fill = scenario.label.nm),
              color = 'black',
              stat = "summary", 
