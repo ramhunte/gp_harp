@@ -82,7 +82,7 @@ if (fishtype != 'steelhead') {
     mutate(spawn_area = ifelse(LW == 'y' | lc == 'Forest',
                       (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5),
                       (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5)),
-           eggs = spawn_area * pass_tot_asrp * fecundity)
+           eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
 }
 
 if (fishtype == "spring_chinook") {
