@@ -42,16 +42,16 @@ age.test <- function(age.target, grid.search){
   #  bay.surv.age1 
   #  bay.surv.age2
   #  bay.surv.age3
-  
-  grid.search <- expand.grid(b3=seq(0.01, 0.20, by=0.03), 
-                             b4=seq(0.30, 0.55, by=0.03), 
-                             b5=seq(0.65, 0.80, by=0.03), 
+  set.length <- 5
+  grid.search <- expand.grid(b3=seq(0.01, 0.20, length=set.length), 
+                             b4=seq(0.30, 0.55, length=set.length), 
+                             b5=seq(0.65, 0.80, length=set.length), 
                              b6=1,
-                             bay.surv.age1=seq(0.01, 0.20, by=0.03),
-                             bay.surv.age2=seq(0.05, 0.40, by=0.03),
-                             bay.surv.age3=seq(0.15, 0.60, by=0.03),
-                             prop.age1=seq(0.01, 0.10, by=0.03),
-                             prop.age2=seq(0.60, 0.80, by=0.03))
+                             bay.surv.age1=seq(0.01, 0.20, length=set.length),
+                             bay.surv.age2=seq(0.05, 0.40, length=set.length),
+                             bay.surv.age3=seq(0.15, 0.60, length=set.length),
+                             prop.age1=seq(0.01, 0.50, length=set.length),
+                             prop.age2=seq(0.01, 0.50, length=set.length))
   # store outputs
   my.dif <- data.frame(grid.search=grid.search, dif=rep(NA, dim(grid.search)[1]), 
                        ocean.surv.age1 = rep(NA, dim(grid.search)[1]),
@@ -134,8 +134,16 @@ age.test <- function(age.target, grid.search){
   my.dif
 }
 
-sthd.propensity.ocean.surv <- age.test()# runs the above function and stores its output
+
+system.time(sthd.propensity.ocean.surv <- age.test())# runs the above function and stores its output
 # results, sorted by difference between target age structure and search grid age values
-results <- sthd.propensity.ocean.surv[order(sthd.propensity.ocean.surv$dif),]
+results <- sthd.propensity.ocean.surv#[which(sthd.propensity.ocean.surv$grid.search.prop.age1 + sthd.propensity.ocean.surv$grid.search.prop.age2 + sthd.propensity.ocean.surv$grid.search.prop.age3 == 1),]
+results$sum.smolt.age.props <- results$grid.search.prop.age1 + results$grid.search.prop.age2
+results <- results[results$sum.smolt.age.props < 1,]
+results <- results[order(results$dif, 
+                                            -results$grid.search.prop.age1, # descending order on this
+                                            results$SAR),]
 # first 10 results:
-results[1:10,]
+#write.csv(results[1:150,],"~/jorgensen/data/R/Chehalis.LCM/steelhead.grid.search.11.14.2019.csv") 
+max(sthd.propensity.ocean.surv$SAR)
+MASS::truehist(sthd.propensity.ocean.surv$SAR)
