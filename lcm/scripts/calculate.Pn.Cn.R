@@ -11,7 +11,7 @@
 
 # Input params ----
 
-sr.init <- 1 # What abundance to start with?
+sr.init <- 5 # What abundance to start with?
 sr.years <- 10 # How many generations
 
 csv.name <- paste0(pop, '_abundance_by_subbasin.csv')
@@ -21,7 +21,7 @@ if (pop == 'coho') {summary.stages <- c('spawners','natal.smolts','non.natal.smo
 
 if (pop == "fall.chinook" | pop == "spring.chinook") { summary.stages <- c('spawners','fry.migrants','sub.yr')}
 
-if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts')}
+if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts', 'age3.smolts')}
 
 # Initialize arrays to capture data ----
 
