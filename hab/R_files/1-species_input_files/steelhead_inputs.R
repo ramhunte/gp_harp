@@ -12,7 +12,7 @@ psp_lwhs = 27.5 # pool spacing for low wood, high slope reahces
 psp_hwhs = 5 # pool spacing for high wood, high slope reaches
 
 # winter_pool_scalar_cold = .14
-winter_pool_scalar_warm = .43
+winter_pool_scalar_warm = .3
 # winter_riffle_scalar_cold = 1 + (1-winter_pool_scalar_cold)
 # winter_riffle_scalar_warm = 1 + (1-winter_pool_scalar_warm)
 
