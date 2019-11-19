@@ -32,13 +32,13 @@ fishmult = 1
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond", "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", 
                   "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"), times = 4))
 life.stage = c(rep("summer", times = length(Habitat)/4), rep("winter", times = length(Habitat)/4), rep("summer.2", times = length(Habitat)/4), rep("winter.2", times = length(Habitat)/4))
-surv.base = c(rep(.27, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
+surv.base = c(rep(.47, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
               rep(.32, times = length(Habitat)/9), rep(.48, times = length(Habitat)/ 7),
-              rep(.56, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
+              rep(.7, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
               rep(.45, times = length(Habitat)/9), rep(.48, times = length(Habitat)/ 7))
-wood.surv.base = c(rep(.27, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
+wood.surv.base = c(rep(.47, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
                    rep(.32, times = length(Habitat)/9), rep(.48, times = length(Habitat)/ 7),
-                   rep(.56, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
+                   rep(.7, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
                    rep(.45, times = length(Habitat)/9), rep(.48, times = length(Habitat)/ 7))
 survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
 
