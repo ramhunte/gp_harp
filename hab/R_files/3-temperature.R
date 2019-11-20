@@ -33,19 +33,6 @@ psu_temps_mwmt <- read.csv("hab/Inputs/temperature_inputs/PSU_Modeled_Temperatur
   summarize(mwmt = max(mwmt, na.rm = T)) %>%
   mutate(prespawn_temp_psu = mwmt)
 
-# psu_temps_prespawn <- read.csv("hab/Inputs/temperature_inputs/PSU_Modeled_Temperatures_current.csv") %>%
-#   separate(col = JDAY, c("month", "day"), sep = "/") %>%
-#   gather(reach_pt, Temperature, X1:X322) %>%
-#   filter(month %in% 7:9,
-#          day %in% ifelse(month == 9,
-#                          1:15,
-#                          1:31),
-#          Temperature > 0) %>%
-#   mutate(mean_temp = .856679 * Temperature + 1.469950) %>%
-#   group_by(reach_pt) %>%
-#   summarize(mdmean = mean(mean_temp, na.rm = T))
-
-
 # June 1-21 mean daily maximum used for chinook downstream migration rearing
 psu_temps_mean_daily_max_june <- read.csv("hab/Inputs/temperature_inputs/PSU_Modeled_Temperatures_current.csv") %>%
   separate(col = JDAY, c("month", "day"), sep = "/") %>%
@@ -58,7 +45,6 @@ psu_temps_mean_daily_max_june <- read.csv("hab/Inputs/temperature_inputs/PSU_Mod
 
 
 psu_temps <- psu_temps_mwmt %>%
-  # left_join(., psu_temps_prespawn, by = "reach_pt") %>%
   left_join(., psu_temps_mean_daily_max_june, by = "reach_pt") %>%
   mutate(Seg = as.numeric(sub('.', '', reach_pt))) %>%
   select(-reach_pt) %>%

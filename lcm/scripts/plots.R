@@ -186,43 +186,6 @@ label.df.asrp <- spawners.asrp %>%
  
   ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
  if (run_asrp == 'yes') { 
- # Bar plot of asrp scenarios ----
-  print(
-    ggplot() +
-      theme_bw() +
-      geom_bar(data = spawners.asrp, 
-               aes(scenario.label.nm, n, fill = scenario.label),
-               color = 'black',
-               stat = "summary", 
-               fun.y = "mean") +
-      geom_bar(data = spawners.asrp %>% 
-                 mutate(base.spawn = ifelse(scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040"),
-                                            unique(n[scenario.label == '2040 No action']),
-                                            ifelse(scenario.label %in% c("ASRP 1 - 2080", "ASRP 2 - 2080", "ASRP 3 - 2080"),
-                                                   unique(n[scenario.label == '2080 No action']),
-                                                   0))), 
-               aes(scenario.label.nm, base.spawn, fill = scenario.label),
-               color = 'black',
-               stat = "summary", 
-               fun.y = "mean",
-               fill = 'grey',
-               alpha = .6) +
-      facet_grid(~year, scales = 'free_x', space = 'free') +
-      scale_x_discrete(drop = T) +
-      scale_fill_manual(values = colors.asrp, 
-                        guide = F, drop = F) +
-      scale_y_continuous(labels = comma, 
-                         expand = c(0, 0,.05,0)) +
-      labs(x = NULL,
-           y = paste0('Spawners'),
-           caption = paste0('Model version = ',hab.ver)
-      ) +
-      theme(axis.text.x = element_text(angle = 45,hjust = 1),
-            text = element_text( size = 16))
-  ) #close print()
- 
-  ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
-  
  #bar plot of asrp scenarios with stacked scenarios ----
    print(
     ggplot() +

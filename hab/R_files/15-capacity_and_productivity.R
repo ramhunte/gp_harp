@@ -5,11 +5,6 @@ asrp_cap <- bind_rows(asrp_lr, asrp_ss, asrp_fp) %>%
          -curr_temp, -Reach, -species, -can_ang, -prespawn_temp,
          -hist_temp, -managed_forest, -temp_intensity_scalar, -fp_intensity_scalar, -beaver_intensity_scalar, -primary_cr_only, 
          -woodmult_s, -woodmult_w, -prespawn_temp_asrp, -future_imperv)
-  
-
-# rm(asrp_ss)
-# rm(asrp_lr)
-# rm(asrp_fp)
 
 # Create second year for steelhead rearing
 

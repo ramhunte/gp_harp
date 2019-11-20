@@ -1,9 +1,6 @@
-steelhead_vars = "yes"
-
 #Spawning#
 fecundity = 4000
 redd_area = 5.4
-defended_redd_area = NA
 adult_per_redd = 1.3
 
 psp_lwls = 12.5 # pool spacing for low wood, low slope reaches
@@ -11,10 +8,7 @@ psp_hwls = 6.25 # pool spacing for high wood, low slope reaches
 psp_lwhs = 27.5 # pool spacing for low wood, high slope reahces
 psp_hwhs = 5 # pool spacing for high wood, high slope reaches
 
-# winter_pool_scalar_cold = .14
-winter_pool_scalar_warm = .3
-# winter_riffle_scalar_cold = 1 + (1-winter_pool_scalar_cold)
-# winter_riffle_scalar_warm = 1 + (1-winter_pool_scalar_warm)
+#Rearing
 
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond", "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", 
                   "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"), times = 4))
@@ -26,8 +20,6 @@ Density = c(3200, 2600, 4200, 2800, 200, 2000, 6300, 4600, 0, 0, 0, 0, 0, 0, 630
             c(3200, 2600, 4200, 2800, 200, 2000, 8500, 1500, 3500, 0, 0, 0, 3500, 3500, 8500, 1500, 0, 0) * year2_scalar, 
             c(2100, 1800, 1300, 2000, 0, 800, 3500, 1500, 500, 0, 0, 0, 500, 500, 3500, 1500, 0, 0) * year2_scalar)
 density <- data.frame(Habitat, life.stage, Density)
-
-fishmult = 1
 
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond", "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", 
                   "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"), times = 4))
@@ -41,15 +33,6 @@ wood.surv.base = c(rep(.47, times = length(Habitat)/9), rep(.59, times = length(
                    rep(.7, times = length(Habitat)/9), rep(.59, times = length(Habitat)/ 7),
                    rep(.45, times = length(Habitat)/9), rep(.48, times = length(Habitat)/ 7))
 survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
-
-
-LgRiver_habs = c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater")
-SmStream_habs = c("Pool", "Riffle", "Beaver.Pond")
-Floodplain_habs = c("FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", "Slough_lg", "Slough_sm", "SC_pool", "SC_riffle", "Side_Channel")
-
-fry_colonization_surv = .78
-
-Scalar = 1
 
 # Wood multipliers for large river ----
 # Summer
