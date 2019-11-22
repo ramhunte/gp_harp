@@ -49,4 +49,4 @@ primary_cr <- c(lapply(primary_cr_list, function(z) {
 })) %>%
   unlist()
 
-rm(all_habs, all_habs_year, all_scenarios_char, asrp_scenarios_char, asrp_scenarios_raw)
+rm(asrp_scenarios_raw)

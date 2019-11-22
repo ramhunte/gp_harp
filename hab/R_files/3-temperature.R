@@ -84,4 +84,4 @@ all_temps <- flowline %>%
   spread(type, temp) %>%
   select(noaaid, prespawn_temp, rear_temp)
   
-rm(thermalscape_temps, psu_temps, psu_temps_mean_daily_max_june, psu_temps_mwmt, psu_temps_prespawn)
+rm(thermalscape_temps, psu_temps, psu_temps_mean_daily_max_june, psu_temps_mwmt)
