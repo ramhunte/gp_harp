@@ -56,8 +56,7 @@ if (pop == "coho") {
     'total.run',
     'spawners',
     # Above here is needed for spawner matrix
-    'eggs',
-    # Here and below are stored for diagnostics
+    'eggs',# Here and below are stored for diagnostics
     'pre.fry',
     'fry',
     'parr',

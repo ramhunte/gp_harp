@@ -12,59 +12,59 @@ if (dir.exists(out.path.compare) == F) {dir.create(out.path.compare, recursive =
 
 
 # Path to csv with spawners by EDR ----
-path_to_edr <- file.path('outputs', fishtype, 'lcm', 'edr_plots') %>% 
-  list.files( ., pattern = ".csv", full.names = T) 
+path_to_data <- file.path('outputs', fishtype, 'lcm') %>% 
+  list.files( ., pattern = "raw.csv", full.names = T) 
 
 
 # Bring file back from dev ----
-shell_cmd <- paste0('git show dev:', path_to_edr, ' > dev_spawners_edr.csv')
+shell_cmd <- paste0('git show dev:', path_to_data, ' > dev_spawners.csv')
 shell(cmd = shell_cmd)
-dev_edr <- read.csv('dev_spawners_edr.csv')
-unlink('dev_spawners_edr.csv') # Delete dev version
+dev_spawners <- read.csv('dev_spawners.csv')
+unlink('dev_spawners.csv') # Delete dev version
 ver_dev <- shell(cmd = paste0("git describe dev --tags"), intern = TRUE)
 
-no_asrp_scenarios <- as.character(str_replace_all(diag_scenarios, "_", "\\."))
-if (run_asrp == "no") {
-  dev_edr %<>% 
-    filter(scenario %in% no_asrp_scenarios)
-}
 
-
-df <- path_to_edr %>%
+df <- path_to_data %>%
   read.csv() %>%
-  rename(total.run.feature = spawners,
-         file.feature = habitat.file) %>%
-  mutate(scenario = ifelse(scenario == 'Temperature','Shade',as.character(scenario))) %>%
-  full_join(dev_edr %>%
-              rename(total.run.dev = spawners,
-                     file.dev = habitat.file) %>%
-              mutate(scenario = ifelse(scenario == 'Temperature','Shade',as.character(scenario)))
-            ,by = c('scenario','EcoRegion')
+  rename(spawners.feature = spawners) %>%
+  full_join(dev_spawners %>%
+              rename(spawners.dev = spawners),
+            by = c('scenario','natal.basin')
   ) %>%
   select(scenario, 
-         EcoRegion,
-         total.run.feature,
-         total.run.dev
+         natal.basin,
+         spawners.feature,
+         spawners.dev
   ) %>%
-  gather(version, total.run, total.run.feature:total.run.dev) %>%
-  mutate(version = ifelse(version == 'total.run.feature',
-                          branch
-                          ,
-                          'dev'
-  )
+  gather(version, spawners, spawners.feature:spawners.dev) %>%
+  mutate(version = ifelse(version == 'spawners.feature',
+                          branch,
+                          'dev')
   ) %>%
   mutate(version = factor(version, levels = c('dev', branch)))
 
+if (species != 'spring.chinook') {
+  df %<>%
+    left_join(read.csv('lcm/data/Subbasin_names.csv') %>%
+                rename(natal.basin = Subbasin)) %>%
+    group_by(version, scenario, EcoRegion) %>%
+    summarize(spawners = sum(spawners, na.rm = TRUE))
+} else {
+  df %<>%
+    rename(EcoRegion = natal.basin) %>%
+    filter(spawners > 1)
+}
+  
 labs_df <- df %>%
   group_by(scenario, version) %>%
-  summarize(n = prettyNum(sum(total.run, na.rm = T), big.mark = ','),
-            max_edr = max(total.run, na.rm = T)) %>%
+  summarize(n = prettyNum(sum(spawners, na.rm = T), big.mark = ',', digits = 0),
+            max_edr = max(spawners, na.rm = T)) %>%
   ungroup %>%
   mutate(max = max(max_edr, na.rm = T),
          y = ifelse(version == branch, max + max * .15, max)) %>%
   bind_rows(df %>%
               group_by(scenario,version) %>%
-              summarize(n = sum(total.run)) %>%
+              summarize(n = sum(spawners)) %>%
               mutate(prcnt_diff = (n[version == branch] - n) / n,
                      n = ifelse(abs(prcnt_diff) > 0, scales::percent(prcnt_diff), '0%')) %>%
               filter(version == 'dev') %>%
@@ -83,7 +83,7 @@ if (nrow(labs_df_test) != 0) {
   print(
     ggplot(df) +
       theme_bw() +
-      geom_bar(aes(EcoRegion,total.run,fill = version),
+      geom_bar(aes(EcoRegion,spawners,fill = version),
                stat = 'identity',position = 'dodge') +
       facet_wrap(~scenario) +
       geom_text(data = labs_df, 
@@ -105,20 +105,11 @@ if (nrow(labs_df_test) != 0) {
          height = 8, 
          dpi = 300)
   
-  # Create output csv
-  # df %>%
-  #   spread(version, total.run) %>%
-  #   write.csv(file.path(out.path.compare,
-  #                       paste('LCM_comparison',
-  #                             pop,
-  #                             paste0(format(Sys.time(), "%Y%m%d"),'.csv'),
-  #                             sep = "_")))
-  
   # Print summary metrics to the screen
   print(paste0(pop, " --------------- summary of percent differences from HEAD of dev branch -----------------"))
   print(df %>%
           group_by(scenario,version) %>%
-          summarize(n = sum(total.run, na.rm = T)) %>%
+          summarize(n = sum(spawners, na.rm = T)) %>%
           spread(version, n) %>%
           mutate(prcnt_diff = (get(branch) - dev) / dev,
                  prcnt_diff = ifelse(abs(prcnt_diff) > 0, scales::percent(prcnt_diff), '0%'))

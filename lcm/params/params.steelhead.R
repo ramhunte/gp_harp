@@ -12,24 +12,6 @@ respawners.init <- rep(50, 19)
 fecund.first <- 6700 # First time spawner fecundity
 fecund.respawn <- 8000 # Respawner fecundity
 
-# fecundity factor
-fecund.fac <- 1.00 
-
-
-
-#Egg capacity --------------------------------------------------------------------------------------------------------------------
-# Values calculated using GIS
-#
-egg.cap.adj <- 1.0 #
-
-
-
-# Egg-fry survival ---------------------------------------------------------------------------------------------------------------
-# Values calculated using GIS
-
-egg.fry.surv.adj <- 1.0 #egg to fry survival adjustment
-
-
 
 # spring redistribution ------------------------------------------------------------------------------------------------
 # Percent of fish that move from natal basin down to mainstem in the spring
@@ -43,18 +25,6 @@ percent.spring.migrants <- read.csv('lcm/data/Subbasin_names.csv') %>%
   )) %>%
   pull(prcnt_movers)
 
-
-# Fry to migrants survival & capacity (summer) --------------------------------------------------------------------------------------------
-# Values calculated in GIS
-sub.yr.surv.adj <- 1.0 #summer surv, sub-yearling adjustment
-sub.yr.cap.adj <- 1.0 #summer capacity adjustment
-
-
-
-# Parr to smolt survival & capacity (Overwinter) --------------------------------------------------------------------------------------------
-# Values calculated in GIS
-ow.surv.adj <- 1.0 #winter surv, parr to smolt adjustment
-ow.cap.adj <- 1.0 #winter capacity adjustment
 
 # Age1 smolts 
 # updated 10/30/2019 per Larry Lestelle. See 1974-2019 Summaries for Queets-Chehalsi-Hump Sth Age
@@ -77,8 +47,6 @@ prop.age3.smolts <- 1 - prop.age2.smolts - prop.age1.smolts # 0.11
 
 bay.surv <- 0.2
 
-bay.surv.adj <- 1
-
 
 
 
@@ -88,9 +56,6 @@ bay.surv.adj <- 1
 So <- 0.80# ocean survival after first year
 so.min <- 0.80
 so.max <- 0.80
-
-# Lowering of survival for age 1 smolts
-age1.ocean.correction <- 1
 
 
 # Propensity to return from the ocean as age bx ----------------------------------------------------------------------------
@@ -125,48 +90,8 @@ respawn.return <- 0.50
 kelt.rate <- respawn.rate * kelt.recond * respawn.return
 
 
-# Pre harvest SAR
-# smolts <- 1000
-# 
-# prcnt.age1 <- 0.15
-# 
-# age1.smolts <- smolts * prcnt.age1
-# age2.smolts <- smolts * (1 - prcnt.age1)
-# 
-# age1 <- age1.smolts * So
-# age2 <- (age1 + age2.smolts) * So
-# age3 <- age2 * So * (1 - b3)
-# age4 <- age3 * So * (1 - b4)
-# age5 <- age4 * So * (1 - b5)
-# 
-# age3_return <- age2 * b3
-# age4_return <- age3 * b4
-# age5_return <- age4 * b5
-# age6_return <- age5
-# 
-# returns <- age3_return + age4_return + age5_return + age6_return
-# 
-# so_w <- returns / smolts
-# 
-# SAR <- so_w * bay.surv
-# SAR
-
 # Harvest rate -------------------------------------------------------------------------------------------------------------
 Hr <- 0 #.16 # latest estimate (from Eric Walther, May 2017; average)
-# harvest adjustment
-hr.adj <- 1.0 # rep(1.0, num.reaches)
-
-
-
-# Upstream survival ------------------------------------------------------------------------------------------------------
-# Calculated in the hab model using barriers
-S.up <- 1.0
-S.up.adj <- 1.0
-
-
-
-# prespawn survival ------------------------------------------------------------------------------------------------------
-S.sb <- 1#0.90 # 1.0
 
 
 

@@ -86,7 +86,6 @@ abundance_by_subbasin %>%
   left_join(df.sr) %>%
   mutate(Cn = (spawners * Pn) / (Pn - 1),
          Cn = ifelse(Pn < 1, NA, Cn)) %>%
-  #mutate_at(vars(summary.stages), list(~ifelse(Pn < 0, 0, .))) %>%   # Zero out abundance when Pn < 0  
   write.csv(file.path(outputs_lcm, csv.name))
 
 

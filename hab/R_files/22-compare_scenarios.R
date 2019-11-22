@@ -50,7 +50,7 @@ hab_compare_csv <- hab_compare %>%
   mutate(diff = get(branch) - dev,
          prcnt_diff = scales::percent(diff / dev)) %>%
   filter(abs(diff) > 0.000001) %>%
-  select(hab.scenario, life.stage, parameter, Subbasin_num, Subbasin, EcoRegion, dev, branch, diff) 
+  select(hab.scenario, life.stage, parameter, Subbasin_num, Subbasin, EcoRegion, dev, branch, diff, hab.param) 
 
 
 if (nrow(hab_compare_csv) != 0) {
@@ -69,20 +69,12 @@ if (nrow(hab_compare_csv) != 0) {
       rename(Subbasin = EcoRegion)
   }
   
-  # Remove ASRP scenarios if not running ASRP
-  if (run_asrp == "no") {
-    hab_compare %<>% 
-      filter(hab.scenario %in% diag_scenarios)
-  }
-  
-  
-  
-  
-  
+
   # Create the percent diff labels
   
   labs_df <- hab_compare %>%
     ungroup() %>%
+    select(-one_of('value_mean', 'value_sum')) %>%
     mutate(version = ifelse(version == branch, 'value_feat', 'value_dev')) %>%
     spread(version, value) %>%
     mutate(prcnt_diff = (value_feat - value_dev) / value_dev) %>%
@@ -96,15 +88,8 @@ if (nrow(hab_compare_csv) != 0) {
     mutate(mean_prcnt_diff = scales::percent(prcnt_diff),
            y = max * 1.15)
   
-  # Remove ASRP scenarios if not running ASRP
-  if (run_asrp == "no") {
-    labs_df %<>% 
-      filter(hab.scenario %in% diag_scenarios)
-  }
-  
-  
   # Loop through the plots
-  for (h in labs_df$hab.param %>% unique) {
+  for (h in hab_compare_csv$hab.param %>% unique()) {
     
     hab_compare %>%
       filter(hab.param == h) %>%

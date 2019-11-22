@@ -12,9 +12,18 @@
 #    Choose a species to run.  Options are spring chinook, fall chinook, coho, steelhead or all_species
 #    WARNING - the contents of the outputs folder will be deleted and recreated
 
-# Prompt #3 -- Would you like to run asrp scenarios?
-#    Choose if you want to run the model including the ASRP restoration scenarios (e.g. ASRP Scenario 1 - 2040)
-#    If 'no', only the diagnostic scenarios will be run
+# Prompt #3 -- Would you like to run stochastic egg to fry survival?
+#    Choose if you want to run the model including the schostic effect of flow
+#    If 'no', the model will be run in a steady state
+
+# Prompt #4 -- Would you like to run single action scenarios?
+#    Choose if you want to run additional scenarios testing the impact of each ASRP
+#    action one at a time
+#    If 'no', the model will run diagnostic and full ASRP scenarios only
+
+# Prompt #5 -- Would you like to run in sensitivity mode?
+#    Choose if you want to run the sensitivity analysis
+#    If 'no', the model will run diagnostic and full ASRP scenarios only
 
 
 
@@ -41,11 +50,6 @@ spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead')
 fishtype <- spp[menu(spp,title = "Choose a species", graphics = TRUE)]
 
 
-# Run the ASRP scenarios?
-run_asrp_query <- c('yes', 'no')
-run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", graphics = TRUE)]
-
-
 # Run stochastic egg to fry ?
 run_stochastic_eggtofry_query <- c('no', 'yes')
 run_stochastic_eggtofry <- run_stochastic_eggtofry_query[menu(run_stochastic_eggtofry_query, title = 'Run stochastic egg to fry?', graphics = TRUE)]
@@ -53,6 +57,11 @@ run_stochastic_eggtofry <- run_stochastic_eggtofry_query[menu(run_stochastic_egg
 # Run single action scenarios?
 run_single_action_query <- c('no', 'yes')
 run_single_action <- run_single_action_query[menu(run_single_action_query, title = 'Run single action scenarios?', graphics = TRUE)]
+
+# Run sensitivity mode?
+run_sensitivity_query <- c('no', 'yes')
+sensitivity.mode <- run_single_action_query[menu(run_single_action_query, title = 'Run sensitivity mode?', graphics = TRUE)]
+
 
 # Store branch name ----
 branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
@@ -101,14 +110,11 @@ if (fishtype == 'all_species') {
 # Call plot of observed vs modeled spawner return ----
 
 # Check to see if the necessary files exist
-chk_files <- lapply(spp, function(s) {
-  fp <- file.path('outputs', s, 'lcm')
+chk_files <- lapply(spp[-1], function(s) {
   
-  f <- list.files(fp, 
-                  pattern = 'abundance_by_sub', # Name of csv with LCM spawner data
-                  full.names = TRUE)
+  species <- str_replace(s, '_', '.')
+  file.path('outputs', s, 'lcm', paste0(species, '_abundance_by_subbasin.csv')) %>% file.exists
   
-  file.exists(f)
 }) %>%
   unlist
 
@@ -117,5 +123,7 @@ chk_files <- lapply(spp, function(s) {
 if (all(chk_files)) {
   print('Creating plot of observed vs modeled abundance')
   source('lcm/scripts/plot_observed_vs_modeled.R')
+} else {
+  print('Skipping plot of observed vs modeled')
 }
 

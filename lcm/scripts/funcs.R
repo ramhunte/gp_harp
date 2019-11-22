@@ -194,7 +194,7 @@ if (pop == "coho") {
     mat.new['parr', ] <- parr 
     mat.new['smolts', ] <- smolts
     mat.new['total.run', ] <- (b2*mat['ocean1', ] + mat['ocean2', ]) # Total run
-    mat.new['spawners', ] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj)) #spawners
+    mat.new['spawners', ] <- mat.new['total.run', ] * S.up * (1 - Hr) #spawners
     
     mat.new['fry.movers', ] <- fry.distributed['after_movement', ] - fry.distributed['before_movement', ]
     mat.new['parr.movers', ] <- parr.distributed['after_movement', ] - parr.distributed['before_movement', ]
@@ -263,7 +263,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     mat.new['ocean5', ] <- mat[5, ] * (1 - b5) * So.func(so.5[1], so.5[2]) # 6 year olds, ocean5
     
     mat.new['total.run',] <- (b2 * mat['ocean1', ] + b3 * mat['ocean2', ] + b4 * mat['ocean3', ] + b5 * mat['ocean4',] + mat['ocean5', ]) #Total run
-    mat.new['spawners',] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj)) # Spawners
+    mat.new['spawners',] <- mat.new['total.run', ] * S.up * (1 - Hr) # Spawners
     
     mat.new['eggs', ] <- eggs
     mat.new['pre.fry', ] <- pre.fry 
@@ -349,7 +349,7 @@ if (pop == "steelhead") {
     age3.bay <- mat.new['age3.smolts', ] * bay.surv # age3 smolts after bay
 
     # Ocean stages - before any spawning
-    mat.new['age2.ocean', ] <-   age1.bay * So.func(so.min, so.max) * age1.ocean.correction # age1 smolts 1st ocean year
+    mat.new['age2.ocean', ] <-   age1.bay * So.func(so.min, so.max) # age1 smolts 1st ocean year
     mat.new['age3.ocean', ] <-  (mat['age2.ocean', ] + age2.bay) * So.func(so.min, so.max) # age1 smolts 2nd ocean year, age2 smolts 1st ocean year
     mat.new['age4.ocean', ] <-  (mat['age3.ocean', ] + age3.bay) * (1 - b3)  * So.func(so.min, so.max) # age1 smolts 3rd ocean year, age2 smolts 2nd ocean year, age3 smolts 1st ocean year
     mat.new['age5.ocean', ] <-   mat['age4.ocean', ] * (1 - b4)  * So.func(so.min, so.max) # age1 smolts 4th ocean year, age2 smolts 3rd ocean year, age3 smolts 2nd ocean year
@@ -379,7 +379,7 @@ if (pop == "steelhead") {
     # NOTE: How do we turn "off" harvest when we have kelts that have been subject to harvest twice, once as first time returning spawners
     # and again as returning respawners?
     mat.new['total.run', ] <- mat.new[c(firstspawn.stages, kelt.stages), ] %>% colSums() 
-    mat.new['spawners', ] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj))
+    mat.new['spawners', ] <- mat.new['total.run', ] * S.up * (1 - Hr)
   
     N <- mat.new
     N[is.na(N)] <- 0 # convert NAN to zero
