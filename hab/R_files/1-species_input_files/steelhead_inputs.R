@@ -1,5 +1,5 @@
 #Spawning#
-fecundity = 4000
+fecundity = 5400
 redd_area = 5.4
 adult_per_redd = 1.3
 

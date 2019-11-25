@@ -9,7 +9,7 @@ respawners.init <- rep(50, 19)
 
 
 # Fecundity ----------------------------------------------------------------------------------------------------------------------
-fecund.first <- 6700 # First time spawner fecundity
+fecund.first <- 5400 # First time spawner fecundity
 fecund.respawn <- 8000 # Respawner fecundity
 
 
