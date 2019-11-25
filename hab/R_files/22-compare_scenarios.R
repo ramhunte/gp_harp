@@ -1,7 +1,13 @@
 # Script to compare two habitat scenarios
 
 # show dev version of outputs
-shell(paste0("git show dev:", outputs_hab, "/outputs_long/habmodel_outputs.csv>", outputs_hab, "/outputs_long/habmodel_outputs_dev.csv"))
+git_show_cmd <- paste0("git show dev:", outputs_hab, "/outputs_long/habmodel_outputs.csv>", outputs_hab, "/outputs_long/habmodel_outputs_dev.csv")
+
+if (os == 'windows') {
+  shell(cmd = git_show_cmd)
+} else {
+  system(git_show_cmd)
+}
 
 save.compare <- file.path('outputs', fishtype,'hab.scenarios', 'diagnostics')
 if (dir.exists(save.compare) == F) {dir.create(save.compare,recursive = T)}
@@ -20,9 +26,16 @@ feature_file <- paste0(outputs_hab, "/outputs_long/habmodel_outputs.csv") %>%
 
 
 # store version #s
-ver_dev <- shell(cmd = "git describe dev --tags", intern = TRUE) 
-ver_feat <- shell(cmd = "git describe --tags", intern = TRUE) 
+ver_dev_cmd <- paste0('git describe dev --tags')
+ver_feat_cmd <- paste0('git describe --tags')
 
+if(os == 'windows') {
+  ver_dev <- shell(cmd = ver_dev_cmd, intern = TRUE)
+  ver_feat = shell(cmd = ver_feat_cmd, intern = TRUE)
+} else{
+  ver_dev <- system(ver_dev_cmd, intern = TRUE) 
+  ver_feat <- system(ver_feat_cmd, intern = TRUE) 
+}
 
 # Create single dataframe
 hab_compare <- rbind(

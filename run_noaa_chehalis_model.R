@@ -64,7 +64,7 @@ sensitivity.mode <- run_single_action_query[menu(run_single_action_query, title 
 
 
 # Store branch name ----
-branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
+branch <- system("git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
 
 # Load packages ----
@@ -83,6 +83,23 @@ invisible(
   )
 )
 
+# Run function to determine operating system of computer.  This is used for the scripts that compare the current branch to dev
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+os <- get_os()
 
 
 # Source the scripts ----

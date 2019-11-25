@@ -17,11 +17,23 @@ path_to_data <- file.path('outputs', fishtype, 'lcm') %>%
 
 
 # Bring file back from dev ----
+
 shell_cmd <- paste0('git show dev:', path_to_data, ' > dev_spawners.csv')
-shell(cmd = shell_cmd)
+
+if (os == 'windows') {
+  shell(cmd = shell_cmd)
+} else{
+  system(shell_cmd)
+}
+
 dev_spawners <- read.csv('dev_spawners.csv')
 unlink('dev_spawners.csv') # Delete dev version
-ver_dev <- shell(cmd = paste0("git describe dev --tags"), intern = TRUE)
+
+if (os == 'windows') {
+  ver_dev <- shell(cmd = paste0(ver_dev_cmd), intern = TRUE)
+} else{
+  ver_dev <- system(paste0(ver_dev_cmd), intern = TRUE)
+}
 
 
 df <- path_to_data %>%
