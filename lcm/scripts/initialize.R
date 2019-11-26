@@ -7,7 +7,7 @@
 
 # Path to habitat scenario data ----
 
-hab.path <- outputs_hab
+hab.path <- 'outputs/fall_chinook/'
 
 # File names that hold habitat senario data ----
 habitat.file <- list.files(path = hab.path,pattern = ".csv")

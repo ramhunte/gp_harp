@@ -4,7 +4,7 @@
 
 # Read in habitat scenario file ----
 
-dat <- read.csv(file.path(hab.path, habitat.file[n]), header = TRUE, row.names = 2)
+dat <- read.csv('outputs/fall_chinook/hab.scenarios/Current.csv', header = TRUE, row.names = 2)
 
 
 

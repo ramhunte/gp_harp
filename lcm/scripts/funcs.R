@@ -78,12 +78,9 @@ range.rescale <- function(x, min = 0.005554976, max = 0.1322917) {
 # at the egg --> fry line, as in:
 # pre.fry <- eggs * egg.fry.surv * egg.flow.dec() # Eggs --> freshly emerged fry
 if (run_stochastic_eggtofry == 'yes') {
-  egg.flow.dec <- function(){
-    # egg survival multiplier
+  egg.flow.dec <- function(q){
     # requires inv.logit(), range.rescale()
-    temp.flow <- sample(seq(0.05, 100, by = 1), size = 1, 
-                        prob = 1/seq(0.05, 100, by = 1))
-    temp.decl <- range.rescale(inv.logit(-1.88084588 - 0.05511075 * temp.flow))
+    temp.decl <- range.rescale(inv.logit(-1.88084588 - 0.05511075 * q))
     temp.decl  
   }
 } else {
@@ -166,7 +163,7 @@ if (pop == "coho") {
     
     eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Hockey stick
     #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
-    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()# Eggs --> freshly emerged fry
+    pre.fry <- eggs * egg.fry.surv * ef_flow# Eggs --> freshly emerged fry
     
     # Spring distribution
     fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix.spring * percent.fry.migrants)
@@ -235,7 +232,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     
     eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
     #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
-    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
+    pre.fry <- eggs * egg.fry.surv * ef_flow
     
     # Natal fry - All basins
     natal.fry <- BH.func(S = pre.fry, p = weekly.surv^1, c = cap * 3) # Density dependent survival in fresh (first week after fry), 3x capacity
