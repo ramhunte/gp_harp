@@ -46,7 +46,7 @@ if (clear_env == 'yes') {
 }
 
 # Which species to run?
-spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead')
+spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum')
 fishtype <- spp[menu(spp,title = "Choose a species", graphics = TRUE)]
 
 
@@ -108,7 +108,7 @@ if (fishtype == 'all_species') {
   
   unlink("outputs", recursive = TRUE) # WARNING -- If running all species the entire outptus folder will be deleted
   
-  for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')) {
+  for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum')) {
     fishtype <- s
     source("hab/R_files/0-Run_Habitat_Model.R")
     source("lcm/LCM.sim.R")

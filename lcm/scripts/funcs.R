@@ -389,3 +389,57 @@ if (pop == "steelhead") {
   } #End sub basin function 
   
 } #end if() steelhead
+
+# Main chum function -----
+#Lifestages
+# 1)  Eggs
+# 2)  Pre Fry
+# 4)  Fry/Smolts
+# 5)  Ocean0 mat[1],
+# 6)  Ocean1 mat[2,]
+# 7)  Ocean2 mat[3,]
+# 8)  Total Run
+# 9)  Spawners
+
+if (pop == 'chum') {
+  
+  subbasin <- function(mat = N, ...){
+    
+    NOR.total <- mat['spawners',]
+    #NOR.total <- N["spawners",] # Run this line to be able to step through func
+    
+    eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
+    # eggs <- BH.func(S = NOR.total * .5, p = fecund, c = egg.cap) # B-H
+    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
+    
+    fry <- BH.func(pre.fry, p = fry.colonization.surv, c = fry.colonization.cap)
+    
+    fry.migrant <- fry * fry.migrant.surv
+
+    
+    # Apply bay survival (ds migration, delta, bay, nearshore productivity)
+    fry.migrant.bay <- fry.migrant * bay.surv
+    
+    # Ocean survival
+    mat.new['ocean0', ] <- fry.migrant.bay # smolts leaving bay, ocean0
+    mat.new['ocean1', ] <- mat[1, ] * So.func(so.1[1], so.1[2]) # 2 year olds, ocean1
+    mat.new['ocean2', ] <- mat[2, ] * (1 - b2) * So.func(so.2[1], so.2[2]) # 3 year olds, ocean2
+    mat.new['ocean3', ] <- mat[3, ] * (1 - b3) * So.func(so.3[1], so.3[2]) # 4 year olds, ocean3
+    mat.new['ocean4', ] <- mat[4, ] * (1 - b4) * So.func(so.4[1], so.4[2]) # 5 year olds, ocean4
+    
+    mat.new['total.run',] <- (b2 * mat['ocean1', ] + b3 * mat['ocean2', ] + b4 * mat['ocean3', ] + b5 * mat['ocean4',]) #Total run
+    mat.new['spawners',] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj)) # Spawners
+    
+    mat.new['eggs', ] <- eggs
+    mat.new['pre.fry', ] <- pre.fry 
+    mat.new['fry', ] <- fry
+    mat.new['fry.migrant', ] <- fry.migrant
+    # mat.new['estuary.resident', ] <- estuary.resident # 10 week survival in estuary
+    mat.new['fry.migrant.bay', ] <- fry.migrant.bay
+
+    N <- mat.new
+    N
+  } # end subbasin func
+  
+  
+} # end if() chum

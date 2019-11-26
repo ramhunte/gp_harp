@@ -63,7 +63,7 @@ asrp_ss <- asrp_ss_scenario %>%
                width_w_curr),
       year == 2040 ~ width_w_2040,
       year == 2080 ~ width_w_2080),
-    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook"), # Added because of spring chinook w/temp survival 
+    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook", 'chum'), # Added because of spring chinook w/temp survival 
                            1,
                            tempmult.asrp),
     width_s = ifelse(is.na(width_s),

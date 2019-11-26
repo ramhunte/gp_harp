@@ -3,11 +3,6 @@ fecundity = 5400
 redd_area = 5.4
 adult_per_redd = 1.3
 
-psp_lwls = 12.5 # pool spacing for low wood, low slope reaches
-psp_hwls = 6.25 # pool spacing for high wood, low slope reaches
-psp_lwhs = 27.5 # pool spacing for low wood, high slope reahces
-psp_hwhs = 5 # pool spacing for high wood, high slope reaches
-
 #Rearing
 
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond", "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", 

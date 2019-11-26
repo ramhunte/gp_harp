@@ -195,7 +195,7 @@ for (n in 1:length(scenario.file)) {
     
     mean()
   
-  if (pop == "fall.chinook" | pop == "spring.chinook" | pop == "coho") {
+  if (pop == "fall.chinook" | pop == "spring.chinook" | pop == "coho" | pop == 'chum') {
     RS.preH <- Recruits.preharvest / Spawners
     RS.postH <- Recruits.postharvest / Spawners
   }
@@ -215,6 +215,10 @@ for (n in 1:length(scenario.file)) {
       ) 
     
     SAR.weighted <- (SAR.fry * SAR.ratio) + (SAR.parr * (1 - SAR.ratio))
+  }
+  
+  if (pop == 'chum') {
+    SAR.weighted <- SAR.fry
   }
   
   if (pop == "steelhead") {

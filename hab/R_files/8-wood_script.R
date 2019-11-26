@@ -47,5 +47,10 @@ wood_data %<>%
          woodmult_w = ifelse(is.na(woodmult_w),
                              woodmult_w_avg,
                              woodmult_w))
+if(fishtype == 'chum') {
+  wood_data %<>% 
+    mutate(woodmult_s = 1,
+           woodmult_w = 1)
+} 
 
 rm(LgRiver_raw_wood)

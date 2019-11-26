@@ -89,3 +89,13 @@ if (pop == "steelhead") {
 }
 
 
+if (pop == 'chum') {
+  # fry colonization
+  fry.colonization.cap <- dat['fry_colonization_cap', ]
+  fry.colonization.surv <- dat['fry_colonization_surv', ]
+  
+  # fry to smolt 
+  fry.migrant.surv <- dat['surv_s', ]
+  
+}
+

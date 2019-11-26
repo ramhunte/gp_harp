@@ -6,7 +6,7 @@ if (run_single_action == 'no') {
     filter(!Scenario_num %in% single_action_scenarios)
 }
 
-if (fishtype != 'steelhead') {
+if (!fishtype %in% c('steelhead', 'chum')) {
   asrp_spawn_ss <- asrp_ss_spawn %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
@@ -74,7 +74,7 @@ asrp_spawn_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
          Length_sc = ifelse(Floodplain == 'y',
                             Length_sc_curr + ((Length_sc_hist - Length_sc_curr) * rest_perc * fp_intensity_scalar),
                             Length_sc_curr))
-if (fishtype != 'steelhead') {
+if (!fishtype %in% c('steelhead', 'chum')) {
   asrp_spawn_fp %<>%
          mutate(eggs = Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity)
 } else {
