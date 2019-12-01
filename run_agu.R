@@ -14,27 +14,43 @@ spawner.init <- read.csv('outputs/fall_chinook/lcm/fall.chinook_abundance_by_sub
 
 # Peak flows at Doty
 source('flow_ef_surv.R')
+source('cig.R')
 
 
 surv_gm <- usgs_gm %>%
-  mutate(surv_cur = RI_to_surv(RI),
-         surv_2040 = flow_to_RI_gm(Q_max * 1.3) %>% RI_to_surv(),
-         surv_2080 = flow_to_RI_gm(Q_max * 1.6) %>% RI_to_surv())
+  rename(returnYr = RI) %>%
+  mutate(#surv_cur = RI_to_surv(RI),
+         diff_perc_rcp45_2050 = predict(mods$fit[[1]], newdata = .),
+         diff_perc_rcp45_2080 = predict(mods$fit[[2]], newdata = .),
+         diff_perc_rcp85_2050 = predict(mods$fit[[3]], newdata = .),
+         diff_perc_rcp85_2080 = predict(mods$fit[[4]], newdata = .),
+         surv_cur = RI_to_surv(returnYr),
+         surv_rcp45_2050 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp45_2050) %>% RI_to_surv(),
+         surv_rcp45_2080 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp45_2080) %>% RI_to_surv(),
+         surv_rcp85_2050 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp85_2050) %>% RI_to_surv(),
+         surv_rcp85_2080 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp85_2080) %>% RI_to_surv())
+         #surv_2080 = flow_to_RI_gm(Q_max * 1.6) %>% RI_to_surv())
 
 surv_gm <- list(
   surv_gm %>%
     pull(surv_cur)
   ,
   surv_gm %>%
-    pull(surv_2040)
+    pull(surv_rcp45_2050)
   ,
   surv_gm %>%
-    pull(surv_2080)
+    pull(surv_rcp45_2080)
+  ,
+  surv_gm %>%
+    pull(surv_rcp85_2050)
+  ,
+  surv_gm %>%
+    pull(surv_rcp85_2080)
 )
 
 # Number of years the model will run for
 years <- length(peak_gm$Q_max)
-runs <- 3
+runs <- 5
 
 
 
@@ -43,16 +59,6 @@ source('lcm/scripts/initialize.R')
 source("lcm/scripts/assign.dat.R")
 source('lcm/params/params.fall.chinook.R')
 
-
-# Create arrays
-# N <- N.init <- matrix(
-#   0, 
-#   nrow = length(lifestages), 
-#   ncol = num.reaches, 
-#   dimnames = list(
-#     lifestages,
-#     reach.names) 
-# ) 
 
 
 model.all.agu <- array(
@@ -107,18 +113,6 @@ x <- model.all.agu[,,'spawners',] %>%
   as.data.frame.table() %>%
   rename(run = Var1, year = Var2, n = Freq)
 
-# x %>%
-#   mutate(Q_max = daily_plot %>%
-#            filter(param == 'Q_max') %>%
-#            pull(Q)
-#   ) %>%
-#   gather(param, value, c(spawners, Q_max)) %>%
-#   ggplot() +
-#   geom_path(aes(years,value)) +
-#   #scale_x_discrete(breaks=seq(0,100,10)) +
-#   facet_wrap(~param, ncol = 1, scales = 'free_y') +
-#   theme_bw()
-
 
 x %>%
   mutate(year = as.numeric(year),
@@ -126,8 +120,8 @@ x %>%
                         ifelse(run == 2, year + years,
                                year + years*2))) %>%
   ggplot +
-  geom_line(aes(year,n, color = run)) +
-  facet_wrap(~run, ncol = 3)
+  geom_line(aes(year,n, color = run)) #+
+  #facet_wrap(~run)
 
 
 usgs_gm %>%
