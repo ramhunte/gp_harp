@@ -86,7 +86,7 @@ model_diff <- list.files('../misc/AGU_poster/CIG_model_results/streamflow_summar
 mods <- model_diff %>%
   group_by(emissions, era) %>%
   nest %>%
-  mutate(fit = map(data, ~ lm(diff_perc ~ 0 + log(returnYr), data = .x)))
+  mutate(fit = map(data, ~ lm(diff_perc ~ log(returnYr), data = .x)))
          #params = map(fit, broom::tidy)) %>%
  # select(emissions, era, fit, params) %>%
   #unnest

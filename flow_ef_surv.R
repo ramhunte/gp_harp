@@ -17,39 +17,94 @@ ecdf_gm <- ecdf(peak_gm$Q_max) # create prob function
 flow_to_RI_gm <- function(q) {(1 / (1 - ecdf_gm(q)))}
 
 usgs_gm <- peak_gm %>%
-  mutate(RI = flow_to_RI_gm(Q_max))
+  mutate(returnYr = flow_to_RI_gm(Q_max),
+         returnYr = ifelse(is.infinite(returnYr), 100, returnYr)) %>%
+  mutate(diff_perc_rcp45_2050 = predict(mods$fit[[1]], newdata = .),
+         diff_perc_rcp45_2080 = predict(mods$fit[[2]], newdata = .),
+         diff_perc_rcp85_2050 = predict(mods$fit[[3]], newdata = .),
+         diff_perc_rcp85_2080 = predict(mods$fit[[4]], newdata = .),
+         Q_rcp45_2050 = Q_max + Q_max * diff_perc_rcp45_2050,
+         Q_rcp45_2080 = Q_max + Q_max * diff_perc_rcp45_2080,
+         Q_rcp85_2050 = Q_max + Q_max * diff_perc_rcp85_2050,
+         Q_rcp85_2080 = Q_max + Q_max * diff_perc_rcp85_2080
+         )
 
-# Skagit ----
-siteNumber <- "12200500" # Skagit
-startDate <- "" # Get earliest date
-endDate <- "2019-9-30" # Get latest date
-Daily_sk <- readNWISDaily(siteNumber,"00060",startDate,endDate)
+usgs_gm %>%
+  select(waterYear,Q_max,Q_rcp45_2050:Q_rcp85_2080) %>%
+  gather(model, Q, Q_max:Q_rcp85_2080) %>%
+  mutate(era = ifelse(model == 'Q_max' , 'Observed',
+               ifelse(str_detect(model,'2050'), 'Mid-century',
+                      'Late-century')),
+         era = factor(era, levels = c('Observed', 'Mid-century', 'Late-century')),
+         climate = ifelse(model == 'Q_max' , 'Current',
+                          ifelse(str_detect(model,'rcp45'), 'RCP 4.5',
+                                 'RCP 8.5')),
+         Q = Q * 35.3147,
+         waterYear = waterYear - min(waterYear)) %>%
+  filter(climate != 'Current') %>%
+  ggplot +
+  geom_line(aes(waterYear, Q, color = climate, size = climate)) +
+  facet_wrap(~era, ncol = 1) +
+  scale_color_manual(values = c('orange1','orangered2')) +
+  scale_size_manual(values = c(1, 0.8)) +
+  theme_bw() +
+  labs(x = 'Year',
+       y = bquote('Peak Annual Flow (' ~ ft^3 ~s^-1* ')'),
+       color = 'Emissions\nscenario',
+       size = 'Emissions\nscenario')
 
-peak_sk <- Daily_sk %>%
-  group_by(waterYear) %>%
-  summarize(Q_max = max(Q))
+ggsave('../misc/AGU_poster/modeled_peakQ.jpg', dpi = 300, width = 8, height = 4)
 
-ecdf_sk <- ecdf(peak_sk$Q_max)
+
+# Observed flow ----
+usgs_gm %>%
+  select(waterYear, Q_max, returnYr) %>%
+  mutate(Q_max = Q_max * 35.3147) %>%
+  gather(metric, value, Q_max:returnYr) %>%
+  mutate(metric = ifelse(metric == 'Q_max', 'Peak Annual Flow (cfs)', 'Return Interval')) %>%
+  ggplot +
+  geom_line(aes(waterYear, value)) +
+  facet_wrap(~metric, 
+             ncol = 1, 
+             scales = 'free_y',
+             strip.position = 'left') +
+  labs(y = NULL, x = NULL) +
+  theme_bw() +
+  theme(strip.background = element_blank(),
+        strip.placement = "outside")
+  
+ggsave('../misc/AGU_poster/observed_peakQ.jpg', dpi = 300, width = 8, height = 4)
+# # Skagit ----
+# siteNumber <- "12200500" # Skagit
+# startDate <- "" # Get earliest date
+# endDate <- "2019-9-30" # Get latest date
+# Daily_sk <- readNWISDaily(siteNumber,"00060",startDate,endDate)
+# 
+# peak_sk <- Daily_sk %>%
+#   group_by(waterYear) %>%
+#   summarize(Q_max = max(Q))
+# 
+# ecdf_sk <- ecdf(peak_sk$Q_max)
 
 
 
 # Join them ----
-ri_gm <- quantile(ecdf_gm, probs = seq(.01,.99,.01)) %>%
-  enframe() %>%
-  rename(Q_gm = value) %>%
-  mutate(prob = 1 - as.numeric(sub("%", "", name))/100,
-         RI = 1/prob) %>%
-  select(RI, Q_gm)
-
-ri_sk <- quantile(ecdf_sk, probs = seq(.01,.99,.01)) %>%
-  enframe() %>%
-  rename(Q_sk = value) %>%
-  mutate(prob = 1 - as.numeric(sub("%", "", name))/100,
-         RI = 1/prob) %>%
-  select(RI, Q_sk)
-
-
-ri_translate <- full_join(ri_gm, ri_sk)
+# ri_gm <- quantile(ecdf_gm, probs = seq(.01,.99,.01)) %>%
+#   enframe() %>%
+#   rename(Q_gm = value) %>%
+#   mutate(prob = 1 - as.numeric(sub("%", "", name))/100,
+#          RI = 1/prob) %>%
+#   select(RI, Q_gm)
+# 
+# ri_sk <- quantile(ecdf_sk, probs = seq(.01,.99,.01)) %>%
+#   enframe() %>%
+#   rename(Q_sk = value) %>%
+#   mutate(prob = 1 - as.numeric(sub("%", "", name))/100,
+#          RI = 1/prob) %>%
+#   select(RI, Q_sk)
+# 
+# 
+# ri_translate <- full_join(ri_gm, ri_sk)
 
 
 
@@ -76,10 +131,6 @@ points(seq(0,60, by=1),
        inv.logit(predict(lm1, 
                          newdata=data.frame(recurr=seq(0,60, by=1)))), 
        type="l")
-
-
-
-predict(lm1, newdata = data.frame(recurr = ri_gm$RI))
 
 
 range.rescale <- function(x, 

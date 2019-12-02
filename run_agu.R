@@ -13,22 +13,17 @@ spawner.init <- read.csv('outputs/fall_chinook/lcm/fall.chinook_abundance_by_sub
   pull(spawners)
 
 # Peak flows at Doty
-source('flow_ef_surv.R')
 source('cig.R')
+source('flow_ef_surv.R')
+
 
 
 surv_gm <- usgs_gm %>%
-  rename(returnYr = RI) %>%
-  mutate(#surv_cur = RI_to_surv(RI),
-         diff_perc_rcp45_2050 = predict(mods$fit[[1]], newdata = .),
-         diff_perc_rcp45_2080 = predict(mods$fit[[2]], newdata = .),
-         diff_perc_rcp85_2050 = predict(mods$fit[[3]], newdata = .),
-         diff_perc_rcp85_2080 = predict(mods$fit[[4]], newdata = .),
-         surv_cur = RI_to_surv(returnYr),
-         surv_rcp45_2050 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp45_2050) %>% RI_to_surv(),
-         surv_rcp45_2080 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp45_2080) %>% RI_to_surv(),
-         surv_rcp85_2050 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp85_2050) %>% RI_to_surv(),
-         surv_rcp85_2080 = flow_to_RI_gm(Q_max + Q_max * diff_perc_rcp85_2080) %>% RI_to_surv())
+  mutate(surv_cur = RI_to_surv(returnYr),
+         surv_rcp45_2050 = flow_to_RI_gm(Q_rcp45_2050) %>% RI_to_surv(),
+         surv_rcp45_2080 = flow_to_RI_gm(Q_rcp45_2080) %>% RI_to_surv(),
+         surv_rcp85_2050 = flow_to_RI_gm(Q_rcp85_2050) %>% RI_to_surv(),
+         surv_rcp85_2080 = flow_to_RI_gm(Q_rcp85_2080) %>% RI_to_surv())
          #surv_2080 = flow_to_RI_gm(Q_max * 1.6) %>% RI_to_surv())
 
 surv_gm <- list(
@@ -113,19 +108,29 @@ x <- model.all.agu[,,'spawners',] %>%
   as.data.frame.table() %>%
   rename(run = Var1, year = Var2, n = Freq)
 
+print(
+  x %>%
+    mutate(year = as.numeric(year),
+           era = ifelse(run == 1 , 'Current',
+                        ifelse(run %in% c(2,4), 'Mid-century',
+                               'Late-century')),
+           era = factor(era, levels = c('Current', 'Mid-century', 'Late-century')),
+           climate = ifelse(run == 1, 'Current',
+                            ifelse(run %in% c(2,3), 'RCP 4.5',
+                                   'RCP 8.5'))) %>%
+    ggplot +
+    geom_line(aes(year,n, color = climate)) +
+    facet_wrap(~era, ncol = 1) +
+    theme_bw() +
+    scale_color_manual(values = c('black','orange1','orangered2')) +
+    labs(x = 'Year', y = 'Spawners')
+)
 
-x %>%
-  mutate(year = as.numeric(year),
-         years = ifelse(run == 1 , year,
-                        ifelse(run == 2, year + years,
-                               year + years*2))) %>%
-  ggplot +
-  geom_line(aes(year,n, color = run)) #+
-  #facet_wrap(~run)
+ggsave('../misc/AGU_poster/spawners.jpg', dpi = 300, width = 8, height = 4)
 
-
-usgs_gm %>%
-  gather(metric, value, Q_max:RI) %>%
-  ggplot +
-  geom_line(aes(waterYear, value)) +
-  facet_wrap(~metric, ncol = 1, scales = 'free_y')
+# usgs_gm %>%
+#   gather(metric, value, Q_max:RI) %>%
+#   ggplot +
+#   geom_line(aes(waterYear, value)) +
+#   facet_wrap(~metric, ncol = 1, scales = 'free_y') +
+#   theme_bw()
