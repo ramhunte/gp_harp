@@ -7,7 +7,7 @@
 
 # Path to habitat scenario data ----
 
-hab.path <- 'outputs/fall_chinook/'
+hab.path <- file.path('outputs', pop)
 
 # File names that hold habitat senario data ----
 habitat.file <- list.files(path = hab.path,pattern = ".csv")
@@ -81,7 +81,7 @@ if (pop == "coho") {
 
 
 
-if (pop == "fall.chinook" | pop == "spring.chinook") {
+if (pop == "fall_chinook" | pop == "spring_chinook") {
   lifestages <- c('ocean0',
                   'ocean1',
                   'ocean2',

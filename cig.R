@@ -98,11 +98,16 @@ mods <- model_diff %>%
 # 
 # 
 # lm(diff_perc ~ log(returnYr) + emissions + era, data = model_diff)
-# 
-# 
-# 
-# model_diff %>%
-#  # filter(returnYr < 200) %>%
-#   ggplot +
-#   geom_point(aes(log(returnYr), diff_perc, color = emissions, shape = era)) +
-#   geom_abline(slope = .18, intercept = -0.05)
+df_pred <- data.frame(returnYr = 1:500) %>%
+  mutate(diff_perc_rcp45_2050 = predict(mods$fit[[1]], newdata = .),
+         diff_perc_rcp45_2080 = predict(mods$fit[[2]], newdata = .),
+         diff_perc_rcp85_2050 = predict(mods$fit[[3]], newdata = .),
+         diff_perc_rcp85_2080 = predict(mods$fit[[4]], newdata = .)) %>%
+  gather(model, value, diff_perc_rcp45_2050:diff_perc_rcp85_2080)
+
+model_diff %>%
+ # filter(returnYr < 200) %>%
+  ggplot +
+  geom_point(aes(returnYr, diff_perc, color = emissions, shape = era)) +
+  geom_line(data = df_pred, aes(returnYr, value, group = model), color = 'gray75') +
+  theme_bw()

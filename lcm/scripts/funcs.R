@@ -223,7 +223,7 @@ if (pop == "coho") {
 # 12)  Spawners
 
 
-if (pop == "fall.chinook" | pop == "spring.chinook") {
+if (pop == "fall_chinook" | pop == "spring_chinook") {
   
   subbasin <- function(mat = N, ...){
     
@@ -306,7 +306,7 @@ if (pop == "steelhead") {
     
     # 1st year
     eggs <- eggs.func(NOR.total, egg.total = egg.cap.wt, fecund = fecund) # Hockey stick
-    pre.fry <- eggs*egg.fry.surv # Eggs --> freshly emerged fry
+    pre.fry <- eggs * egg.fry.surv * ef_flow # Eggs --> freshly emerged fry
 
     parr <- BH.func(pre.fry, p = parr.surv, c = parr.cap)# summer parr
     age1 <- BH.func(parr, p = first.winter.surv, c = first.winter.cap) # overwinter

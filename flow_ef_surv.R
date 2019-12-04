@@ -41,17 +41,21 @@ usgs_gm %>%
                                  'RCP 8.5')),
          Q = Q * 35.3147,
          waterYear = waterYear - min(waterYear)) %>%
-  filter(climate != 'Current') %>%
+  filter(era != 'Mid-century') %>%
   ggplot +
   geom_line(aes(waterYear, Q, color = climate, size = climate)) +
-  facet_wrap(~era, ncol = 1) +
-  scale_color_manual(values = c('orange1','orangered2')) +
-  scale_size_manual(values = c(1, 0.8)) +
+  # geom_area(aes(x = waterYear, y = Q, fill = climate), 
+  #           stat = 'identity', 
+  #           position = position_stack(reverse = T)) +
+  scale_color_manual(values = c('black', 'orange1','orangered2')) +
+  #scale_fill_manual(values = c('black', 'orange1','orangered2')) +
+  scale_size_manual(values = c(1,1, 0.8)) +
   theme_bw() +
-  labs(x = 'Year',
-       y = bquote('Peak Annual Flow (' ~ ft^3 ~s^-1* ')'),
-       color = 'Emissions\nscenario',
-       size = 'Emissions\nscenario')
+  labs(x = 'Model Year',
+       y = bquote('Peak Annual Flow (cfs)'), # bquote('Peak Annual Flow (' ~ ft^3 ~s^-1* ')')
+       color = NULL,
+       size = NULL) +
+  theme(legend.position = c(0.1,0.8))
 
 ggsave('../misc/AGU_poster/modeled_peakQ.jpg', dpi = 300, width = 8, height = 4)
 
@@ -61,7 +65,7 @@ usgs_gm %>%
   select(waterYear, Q_max, returnYr) %>%
   mutate(Q_max = Q_max * 35.3147) %>%
   gather(metric, value, Q_max:returnYr) %>%
-  mutate(metric = ifelse(metric == 'Q_max', 'Peak Annual Flow (cfs)', 'Return Interval')) %>%
+  mutate(metric = ifelse(metric == 'Q_max', 'Peak Annual Flow (cfs)', 'Return Interval (year)')) %>%
   ggplot +
   geom_line(aes(waterYear, value)) +
   facet_wrap(~metric, 
@@ -71,9 +75,10 @@ usgs_gm %>%
   labs(y = NULL, x = NULL) +
   theme_bw() +
   theme(strip.background = element_blank(),
-        strip.placement = "outside")
+        strip.placement = "outside") +
+  scale_y_continuous(labels = scales::comma)
   
-ggsave('../misc/AGU_poster/observed_peakQ.jpg', dpi = 300, width = 8, height = 4)
+ggsave('../misc/AGU_poster/observed_peakQ.jpg', dpi = 500, width = 6, height = 4)
 # # Skagit ----
 # siteNumber <- "12200500" # Skagit
 # startDate <- "" # Get earliest date
@@ -133,6 +138,21 @@ points(seq(0,60, by=1),
        type="l")
 
 
+dat %>%
+  mutate(pred = predict(lm1, newdata = .) %>% 
+           inv.logit()) %>%
+  ggplot +
+  geom_point(aes(recurr, surv)) +
+  geom_line(aes(recurr, pred), data = data.frame(recurr = 0:100) %>%
+              mutate(pred = predict(lm1, newdata = .) %>% 
+                       inv.logit()) ) +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = 'Return Interval (years)', y = 'Egg to Migrant Survival')
+
+ggsave('../misc/AGU_poster/RI_vs_surv.jpg', dpi = 400, width = 4, height = 3)
+
+
 range.rescale <- function(x, 
                           min=inv.logit(predict(lm1, 
                                                 newdata=data.frame(recurr=seq(0,60, 
@@ -177,7 +197,6 @@ RI_to_surv <- function(RI) {
   return(x)
 }
 
-RI_to_surv(2)
 
 # Flows and survs from Kinsel 2008, Table 14 https://wdfw.wa.gov/publications/00093
 # surv <- c(9,1.2,13.7,14.4,16.7,10.2,3.8,15.6,16.4,16.5,12.7,13.5,12.9,10.8,7.0,7.4,11.4,3.9)
@@ -209,3 +228,46 @@ RI_to_surv(2)
 #        inv.logit(predict(lm1, 
 #                          newdata=data.frame(RI=seq(0,100, by=1)))), 
 #        type="l")
+
+
+
+Daily_gm %>%
+  mutate(month = month(Date)) %>%
+  group_by(month) %>%
+  summarize(Q = mean(Q) * 35.3147) %>%
+  mutate(year = (c(rep(2001, 7), rep(2000, 5))),
+         #month = factor(month, levels = c(6:12,1:5)),
+         #month = month.abb[month]
+         date = as.POSIXct(dmy(paste(1, month, year)))) %>%
+  ggplot + 
+  geom_line(aes(date, Q), lwd = 1.5) +
+  labs(x = NULL, y = 'Average Flow (cfs)') +
+  scale_x_datetime(date_labels = "%b") +
+  scale_y_continuous(labels = scales::comma) +
+  theme_classic()
+
+ggsave('../misc/AGU_poster/averageQ.jpg', dpi = 400, width = 4, height = 2)
+
+
+
+
+data.frame(month = c(11,12,1:4),
+           year = c(2000, 2000, rep(2001, 4)),
+           species = 'Coho') %>%
+  rbind(data.frame(month = c(9:12, 1:3),
+                   year = c(rep(2000, 4), rep(2001, 3)),
+                   species = 'Spring Chinook'),
+        data.frame(month = c(10:12, 1:4),
+                   year = c(rep(2000, 3), rep(2001, 4)),
+                   species = 'Fall Chinook'),
+        data.frame(month = 3:9,
+                   year = c(rep(2001, 5), rep(2000, 2)),
+                   species = 'Steelhead')) %>%
+  mutate(date = as.POSIXct(dmy(paste(1, month, year)))) %>%
+  ggplot +
+  geom_path(aes(date, reorder(species, desc(species))), stat = 'identity') +
+  scale_x_datetime(date_labels = "%b") +
+  theme_classic() +
+  labs(x = NULL, y = NULL)
+
+ggsave('../misc/AGU_poster/incubation_timing.jpg', dpi = 400, width = 4, height = 2)
