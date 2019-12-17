@@ -335,7 +335,8 @@ if (pop == "steelhead") {
     
     
     # 3rd year, age 2+ stayers from previous year rear for one more year, then all smolt
-    age3.outmigrants <- BH.func(mat['age2.stayers', ], p = second.winter.surv, c = second.winter.cap)# in their rearing basins
+    age3 <- BH.func(mat['age2.stayers', ], p = second.summer.surv, c = second.summer.cap)# in their rearing basins
+    age3.outmigrants <- BH.func(age3, p = second.winter.surv, c = second.winter.cap)# in their rearing basins
     
     
     # Reallocate fish back into natal basins -- helps for keeping track in the ocean
