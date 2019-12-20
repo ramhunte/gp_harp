@@ -314,8 +314,9 @@ if (pop == "steelhead") {
 
     parr <- BH.func(pre.fry, p = parr.surv, c = parr.cap)# summer parr
     
+    parr.distributed <- distribute.fish(fish.in = parr, move.matrix * 0.05)
     
-    age1 <- BH.func(parr, p = first.winter.surv, c = first.winter.cap) # overwinter
+    age1 <- BH.func(parr.distributed['after_movement', ], p = first.winter.surv, c = first.winter.cap) # overwinter
     
     
     # Age1 smolts leave, age1 stay for another year
@@ -344,11 +345,15 @@ if (pop == "steelhead") {
     
     
     # Reallocate fish back into natal basins -- helps for keeping track in the ocean
-    age2.smolts.realloc <- reallocate.fish(fish.in = age2.smolts,
+    age2.smolts.realloc1 <- reallocate.fish(fish.in = age2.smolts,
                                            redist.matrix = age1.stayers.dist[return.rows, ])['after_movement', ]
+    age2.smolts.realloc <- reallocate.fish(fish.in = age2.smolts.realloc1,
+                                           redist.matrix = parr.distributed[return.rows, ])['after_movement', ]
     
-    age3.smolts.realloc <- reallocate.fish(fish.in = age3.smolts,
+    age3.smolts.realloc1 <- reallocate.fish(fish.in = age3.smolts,
                                            redist.matrix = age1.stayers.dist[return.rows, ])['after_movement', ]
+    age3.smolts.realloc <- reallocate.fish(fish.in = age3.smolts.realloc1,
+                                            redist.matrix = parr.distributed[return.rows, ])['after_movement', ]
     
     
     age1.bay <- age1.smolts         * bay.surv # age1 smolts after bay
