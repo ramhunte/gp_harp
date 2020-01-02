@@ -34,7 +34,7 @@ asrp_ss_scenario <- lapply(scenario.nums, function(y) {
     mutate(Scenario_num = y)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios, 'cc_only')),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
              year %in% c(2040, 2080)))
 
@@ -133,7 +133,7 @@ asrp_ss_mvmt <- asrp_ss %>%
 
 if (run_single_action == 'no') {
   asrp_ss %<>%
-    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
+    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios, 'cc_only'))
 }
 
 rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year, edt_width)
