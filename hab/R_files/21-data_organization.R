@@ -20,7 +20,8 @@ ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
 asrp_results <- asrp_results_inputs %>%
   left_join(., asrp_mvmt) %>%
   mutate(movement = ifelse(Scenario_num %in% c("Current", 'dev_and_climate', 'Barriers', 'Shade', 'LR_bank', 'LR_length',
-                                               'Fine_sediment', single_action_scenarios[!single_action_scenarios %in% single_action_mvmt_scenarios], 'cc_only'),
+                                               'Fine_sediment', single_action_scenarios[!single_action_scenarios %in% single_action_mvmt_scenarios], 
+                                               'cc_only', 'rip_and_climate', 'fp_temp', 'rip_and_flp'),
                            11,
                            ifelse(Scenario_num %in% c('Floodplain', 'Beaver', 'FP_wood_comb', 'Historical'),
                                   3,

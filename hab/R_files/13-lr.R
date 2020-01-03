@@ -29,7 +29,8 @@ asrp_bw <- lapply(scenario.nums, function(y) {
     mutate(Scenario_num = y)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios, 'cc_only')),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios, 'cc_only', 
+                                              'rip_and_climate', 'fp_temp', 'rip_and_flp')),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_reach_data) %>%
@@ -53,7 +54,8 @@ asrp_lr_scenario <- lapply(scenario.nums, function(a) {
     mutate(Scenario_num = a)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios, 'cc_only')),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios, 'cc_only', 
+                                              'rip_and_climate', 'fp_temp', 'rip_and_flp')),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
              year %in% c(2040, 2080)))
 
@@ -127,7 +129,8 @@ asrp_lr_mvmt <- asrp_lr %>%
 
 if (run_single_action == 'no') {
 asrp_lr %<>%
-  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios, 'cc_only'))
+  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios, 'cc_only', 'rip_and_climate', 'fp_temp',
+                             'rip_and_flp'))
 }
 
 rm(asrp_bw, asrp_bw_raw, asrp_bw_year, asrp_lr_raw, asrp_lr_scenario, asrp_lr_year, Backwater_raw)

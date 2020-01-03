@@ -17,7 +17,8 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
     mutate(year = k)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios, 'dev_and_climate', 'cc_only')),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios, 'dev_and_climate', 'cc_only', 
+                                              'rip_and_climate', 'fp_temp', 'rip_and_flp')),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_scenarios %>%
@@ -38,8 +39,8 @@ mutate(asrp_temp_w_growth = case_when(
          year == 2040 ~ tm_2040_cc_only,
          year == 2080 ~ tm_2080_cc_only),
        temp_intensity_scalar = case_when(
-         Scenario_num %in% c('Shade', 'Historical') ~ 1,
-         !Scenario_num %in% c('Shade', 'Historical') ~
+         Scenario_num %in% c('Shade', 'Historical', 'rip_and_climate', 'rip_and_flp') ~ 1,
+         !Scenario_num %in% c('Shade', 'Historical', 'rip_and_climate', 'rip_and_flp') ~
            case_when(
              year == 2019 ~ 0,
              year %in% c(2040, 2080) ~ 
@@ -82,8 +83,8 @@ mutate(asrp_temp_w_growth = case_when(
               select(-managed_forest)) %>%
   mutate(
     rest_perc = case_when(
-      Scenario_num %in% diag_scenarios ~ 1,
-      !Scenario_num %in% diag_scenarios ~
+      Scenario_num %in% c(diag_scenarios, 'fp_temp', 'rip_and_climate', 'rip_and_flp') ~ 1,
+      !Scenario_num %in% c(diag_scenarios, 'fp_temp', 'rip_and_climate', 'rip_and_flp') ~
         ifelse(is.na(rest_perc),
                0,
                rest_perc)),
@@ -106,8 +107,8 @@ mutate(asrp_temp_w_growth = case_when(
           is.na(Barriers) | Barriers == 'n' ~ 'n',
           Barriers == 'y' ~ 'y')),
     Riparian = case_when(
-      Scenario_num %in% c('Shade', 'Historical') ~ 'y',
-      !Scenario_num %in% c('Shade', 'Historical') ~
+      Scenario_num %in% c('Shade', 'Historical', 'rip_and_climate', 'rip_and_flp') ~ 'y',
+      !Scenario_num %in% c('Shade', 'Historical', 'rip_and_climate', 'rip_and_flp') ~
         case_when(
           is.na(Riparian) | Riparian == 'n' ~ 'n',
           Riparian == 'y' ~
@@ -145,19 +146,19 @@ mutate(asrp_temp_w_growth = case_when(
             ifelse(LW == 'y',
                    'y',
                    'n')))) %>%
-  mutate(LW = ifelse(str_detect(Scenario_num, regex('beaver|riparian|barrier|fp_only|lr|fine|shade|cc', ignore_case = TRUE)),
+  mutate(LW = ifelse(str_detect(Scenario_num, regex('beaver|riparian|barrier|fp_only|lr|fine|shade|cc|rip|fp_temp', ignore_case = TRUE)),
                      'n',
                      as.character(LW)),
-         Floodplain = ifelse(str_detect(Scenario_num, regex('wood_only|beaver|riparian|barrier|lr|fine|shade|cc', ignore_case = TRUE)),
+         Floodplain = ifelse(str_detect(Scenario_num, regex('wood_only|beaver|riparian|barrier|lr|fine|shade|cc|rip|fp_temp', ignore_case = TRUE)),
                              'n',
                              as.character(Floodplain)),
-         Riparian = ifelse(str_detect(Scenario_num, regex('wood|beaver|fp|barrier|lr|fine|cc', ignore_case = TRUE)),
+         Riparian = ifelse(str_detect(Scenario_num, regex('wood|beaver|fp|barrier|lr|fine|cc|fp_temp', ignore_case = TRUE)),
                            'n',
                            as.character(Riparian)),
-         Barriers = ifelse(str_detect(Scenario_num, regex('wood|beaver|fp|riparian|lr|fine|shade|cc', ignore_case = TRUE)),
+         Barriers = ifelse(str_detect(Scenario_num, regex('wood|beaver|fp|riparian|lr|fine|shade|cc|rip|fp_temp', ignore_case = TRUE)),
                            'n',
                            as.character(Barriers)),
-         Beaver = ifelse(str_detect(Scenario_num, regex('wood|fp|barrier|riparian|lr|fine|shade|cc', ignore_case = TRUE)),
+         Beaver = ifelse(str_detect(Scenario_num, regex('wood|fp|barrier|riparian|lr|fine|shade|cc|rip|fp_temp', ignore_case = TRUE)),
                          'n',
                          as.character(Beaver))) %>%
   left_join(., wood_data) %>%
@@ -167,8 +168,8 @@ mutate(asrp_temp_w_growth = case_when(
          woodmult_w_asrp = ifelse(LW == 'y',
                                   1 + ((woodmult_w - 1) * rest_perc * wood_intensity_scalar),
                                   1),
-         asrp_temp = case_when(Scenario_num == 'cc_only' ~ asrp_temp_cc_only,
-                               !Scenario_num == 'cc_only' ~ ifelse(Riparian == 'y',
+         asrp_temp = case_when(Scenario_num %in% c('cc_only', 'fp_temp') ~ asrp_temp_cc_only,
+                               !Scenario_num %in% c('cc_only', 'fp_temp') ~ ifelse(Riparian == 'y',
                                                                    ifelse(can_ang > 170,
                                                                           asrp_temp_cc_only - (asrp_temp_cc_only - asrp_temp_w_growth) * temp_intensity_scalar,
                                                                           asrp_temp_w_growth),
@@ -177,9 +178,11 @@ mutate(asrp_temp_w_growth = case_when(
                                                                           asrp_temp_w_growth))),
          asrp_temp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',# Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
                     ifelse(species %in% c('spring_chinook', 'fall_chinook'),
-                           asrp_temp - (mwmt_to_mdm_func(1) * rest_perc),
+                           asrp_temp - (1 * rest_perc),
                            asrp_temp - (1 * rest_perc)),
-                    asrp_temp),
+                    ifelse(Habitat == 'LgRiver' & Scenario_num %in% c('fp_temp', 'rip_and_flp'),
+                           asrp_temp - (1 * rest_perc),
+                           asrp_temp)),
          asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
                             ifelse(year == 2040,
                                    asrp_temp - cc_mid_rear,
@@ -191,17 +194,19 @@ mutate(asrp_temp_w_growth = case_when(
            !Scenario_num %in% c('Shade', 'Historical') ~
              case_when(
                year == 2019 ~ prespawn_temp,
-               year == 2040 ~ case_when(Scenario_num == 'cc_only' ~ prespawn_temp + cc_mid_prespawn,
-                                        !Scenario_num == 'cc_only' ~ifelse(!Riparian == 'y' & can_ang > 170,
+               year == 2040 ~ case_when(Scenario_num %in% c('cc_only', 'fp_temp') ~ prespawn_temp + cc_mid_prespawn,
+                                        !Scenario_num %in% c('cc_only', 'fp_temp') ~ifelse(!Riparian == 'y' & can_ang > 170,
                                                                            prespawn_temp + cc_mid_prespawn,
                                                                            prespawn_temp + temp_diff_2040_prespawn)), 
-               year == 2080 ~ case_when(Scenario_num == 'cc_only' ~ prespawn_temp + cc_late_prespawn,
-                                        !Scenario_num == 'cc_only' ~ifelse(!Riparian == 'y' & can_ang > 170,
+               year == 2080 ~ case_when(Scenario_num %in% c('cc_only', 'fp_temp') ~ prespawn_temp + cc_late_prespawn,
+                                        !Scenario_num %in% c('cc_only', 'fp_temp') ~ifelse(!Riparian == 'y' & can_ang > 170,
                                                                            prespawn_temp + cc_late_prespawn,
                                                                            prespawn_temp + temp_diff_2080_prespawn)))),
-           prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
-                                                           prespawn_temp_asrp - (1 * rest_perc),
-                                                           prespawn_temp_asrp),
+         prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
+                                     prespawn_temp_asrp - (1 * rest_perc),
+                                     ifelse(Habitat == 'LgRiver' & Scenario_num %in% c('fp_temp', 'rip_and_flp'),
+                                            prespawn_temp_asrp - (1 * rest_perc),
+                                            prespawn_temp_asrp)),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,
                                             prespawn_temp_asrp - cc_mid_prespawn,
