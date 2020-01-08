@@ -15,13 +15,14 @@ LgRiver_raw_wood <- LgRiver_raw %>%
                            Habitat == "Bank" ~ 0.084 * width + 0.33,
                            Habitat == "HM_Bank" ~ 0.089 * width + .33))
 LgRiver_wood <- LgRiver_raw_wood %>%
-  bind_rows(., test <- LgRiver_raw_wood %>%
+  bind_rows(., LgRiver_raw_wood %>%
               mutate(center = 'center') %>%
               unite(Habitat, Habitat, center) %>%
               mutate(width = (width_tot/2) - width,
                      width = ifelse(width < 0, # a small number of reaches where edge width is greater than wetted width.  For now, we set the mid-channel width for 
                                     0,         # these to 0
                                     width))) %>%
+  select(-width_tot) %>%
   spread(value, width) %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs)
 
