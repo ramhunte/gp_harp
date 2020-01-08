@@ -11,9 +11,9 @@ LgRiver_raw_wood <- LgRiver_raw %>%
   gather(value, width, width_s:width_w_2080) %>%
   filter(width < 200) %>% # remove the wynoochee reservoir
   mutate(width_tot = width,
-         width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width + 2.11,
-                           Habitat == "Bank" ~ 0.084 * width + 0.33,
-                           Habitat == "HM_Bank" ~ 0.089 * width + .33))
+         width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width_tot + 2.11,
+                           Habitat == "Bank" ~ 0.084 * width_tot + 0.33,
+                           Habitat == "HM_Bank" ~ 0.089 * width_tot + .33))
 LgRiver_wood <- LgRiver_raw_wood %>%
   bind_rows(., LgRiver_raw_wood %>%
               mutate(center = 'center') %>%
