@@ -110,4 +110,9 @@ model_diff %>%
   ggplot +
   geom_point(aes(returnYr, diff_perc, color = emissions, shape = era)) +
   geom_line(data = df_pred, aes(returnYr, value, group = model), color = 'gray75') +
-  theme_bw()
+  scale_y_continuous(labels = scales::percent) +
+  theme_bw() +
+  labs(x = 'Return Interval (year)',
+       y = 'Difference from current',
+       color = 'Emissions scenario',
+       shape = 'Time period')
