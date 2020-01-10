@@ -1,0 +1,134 @@
+---
+title: "Future flow changes"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+
+## Purpose
+
+This document holds the code used to calculate the changes in peak flow under future conditions. Here we take the results from the [CIG study](https://cig.uw.edu/news-and-events/datasets/hydrology-in-the-chehalis-basin/) and create regressions used to translate recurrance interval into percecnt change to annual peak flow.
+
+## Load and prep data
+
+The first step is to load all of the data, and convert it into a useable format. We load the data from all bias corrected sites and put variable names into seperate columns. 
+
+```{r}
+cig_dat <- list.files('../../misc/AGU_poster/CIG_model_results/streamflow_summaries/summaries_BCsites/',
+           pattern = 'ALL_BCsites.*Flood',
+           full.names = TRUE) %>%
+  map_dfr(., function(x) {
+    
+    y <- x %>% 
+      read.csv %>%
+      mutate(file = basename(x))
+    
+    y[y == "--"] <- NA
+    
+    return(y)
+  }) %>%
+  mutate(era = str_extract(file, "\\d{4}"),
+         ri = str_extract(file, "\\d+\\b(?=\\-yr)")) %>%
+  gather(col_name, value, RAW.WRF.DHSVM.min....:MACA_RCP_8.5.VIC.max....) %>%
+  mutate(hydro_model = str_extract(col_name, "DHSVM|VIC"),
+         climate_model = str_extract(col_name, "4.5|8.5"),
+         metric = str_extract(col_name, 'min|max|avg'),
+         ri = factor(ri, levels = c('2', '10', '50', '100', '500')))
+
+head(as_tibble(cig_dat))
+```
+Next we subset to only the 'average' data points for the Grand Mound site at flows less than 500 year RI. For example data from the column `MACA_RCP_4.5-VIC-avg (%)` would be included here, but *not* data from the column `MACA_RCP_4.5-VIC-min (%)`.
+
+```{r}
+cig_ave <- cig_dat %>%
+  mutate(ri = as.numeric(as.character(ri))) %>%
+  filter(metric == 'avg',
+         site.name == 'ChehalisR-nrGrandMound',
+         ri < 500)
+```
+
+
+## Create regression models
+
+Next we create the regression models for each of the four future scenarios
+
+1. RCP 4.5 - 2040
+2. RCP 4.5 - 2080
+3. RCP 8.5 - 2040
+4. RCP 8.5 - 2080
+
+Regressions are created using log transformed recurrance interval, and include an intercept
+
+$$\Delta Q = \beta_0 + ln(RI)$$
+
+```{r}
+mods <- cig_ave %>%
+  group_by(climate_model, era) %>%
+  nest %>%
+  mutate(fit = map(data, ~ lm(value ~ log(ri), data = .x)))
+```
+
+Models are now created and ready to be used. 
+
+## Visualize it
+
+In order to visualize what we have done, we will plot the modeled CIG data with the regressions overlain. First we will create some predicted data using the regressions.
+
+```{r}
+mods_pred <- data.frame(ri = 1:max(cig_ave$ri)) %>%
+  mutate(diff_perc_rcp4.5_2050 = predict(mods$fit[[1]], newdata = .),
+         diff_perc_rcp4.5_2080 = predict(mods$fit[[2]], newdata = .),
+         diff_perc_rcp8.5_2050 = predict(mods$fit[[3]], newdata = .),
+         diff_perc_rcp8.5_2080 = predict(mods$fit[[4]], newdata = .)) %>%
+  gather(model, value, diff_perc_rcp4.5_2050:diff_perc_rcp8.5_2080) %>%
+  mutate(climate_model = str_extract(model, "4.5|8.5"),
+         era = str_extract(model, "2050|2080")) %>%
+  mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5'))
+```
+
+Then we plot it! 
+
+```{r fig.height=4, fig.width=7}
+cig_ave %>%
+  mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5')) %>%
+  ggplot +
+  theme_bw() +
+  geom_point(aes(ri, 
+                 value/100, 
+                 shape = hydro_model),
+             size = 2) +
+  geom_line(data = mods_pred, 
+            aes(ri, value/100)) +    
+  facet_grid(era~climate_model) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = 'Recurrence interval (years)',
+       y = 'Change from current',
+       shape = 'Hydrologic model',
+       color = 'Site',
+       title = cig_ave$site.name[1])
+```
+
+## Calculate a couple of summary metrics
+
+Average change
+
+```{r}
+cig_ave %>%
+  group_by(era, climate_model) %>%
+  summarize(mean_change = mean(value))
+
+```
+
+```{r}
+mods %>%
+  mutate(tidy = map(fit, broom::tidy)) %>%
+  unnest(cols = c(tidy)) %>%
+  select(era, climate_model, term, estimate) %>%
+  spread(term, estimate)
+```
+

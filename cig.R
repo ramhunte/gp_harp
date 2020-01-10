@@ -80,7 +80,8 @@ model_diff <- list.files('../misc/AGU_poster/CIG_model_results/streamflow_summar
   filter(file != 'historical') %>%
   separate(file, c('emissions', 'era')) %>%
   group_by(returnYr, emissions, era) %>%
-  summarize(diff_perc = mean(diff_perc))
+  summarize(diff_perc = mean(diff_perc)) %>%
+  filter(returnYr != 500)
 
 
 mods <- model_diff %>%
@@ -98,7 +99,7 @@ mods <- model_diff %>%
 # 
 # 
 # lm(diff_perc ~ log(returnYr) + emissions + era, data = model_diff)
-df_pred <- data.frame(returnYr = 1:500) %>%
+df_pred <- data.frame(returnYr = 1:100) %>%
   mutate(diff_perc_rcp45_2050 = predict(mods$fit[[1]], newdata = .),
          diff_perc_rcp45_2080 = predict(mods$fit[[2]], newdata = .),
          diff_perc_rcp85_2050 = predict(mods$fit[[3]], newdata = .),
@@ -107,8 +108,9 @@ df_pred <- data.frame(returnYr = 1:500) %>%
 
 model_diff %>%
  # filter(returnYr < 200) %>%
+  
   ggplot +
-  geom_point(aes(returnYr, diff_perc, color = emissions, shape = era)) +
+  geom_point(aes(returnYr, diff_perc, color = emissions, shape = era), size = 3) +
   geom_line(data = df_pred, aes(returnYr, value, group = model), color = 'gray75') +
   scale_y_continuous(labels = scales::percent) +
   theme_bw() +
