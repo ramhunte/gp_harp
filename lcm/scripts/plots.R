@@ -87,6 +87,35 @@ if (sensitivity.mode == 'no') {
   spawners.asrp %<>% 
     droplevels()
   
+  spawners.paper <- spawners %>%
+    filter(scenario.label %in% c('Climate change only 2040', 'Climate change only 2080', 'Riparian growth and climate change 2040',
+                                 'Riparian growth and climate change 2080', 'Floodplain reconnection and climate change 2040', 
+                                 'Floodplain reconnection and climate change 2080', 'Combined scenario 2040', 'Combined scenario 2080', 'Current')) %>%
+    group_by(scenario.label) %>%
+    summarize(n = mean(n, na.rm = T)) %>%
+    mutate(year = ifelse(scenario.label %in% c('Climate change only 2040', 'Riparian growth and climate change 2040', 
+                                               'Floodplain reconnection and climate change 2040', 'Combined scenario 2040'),
+                         'Mid-century',
+                         ifelse(scenario.label %in% c('Climate change only 2080', 'Riparian growth and climate change 2080', 
+                                                      'Floodplain reconnection and climate change 2080', 'Combined scenario 2080'),
+                                'Late-century',
+                                'current')),
+           scenario.label.nm = case_when(
+             scenario.label %in% c('Climate change only 2040', 'Climate change only 2080') ~ 'Climate Change',
+             scenario.label %in% c('Riparian growth and climate change 2040', 'Riparian growth and climate change 2080') ~ 'Riparian',
+             scenario.label %in% c('Floodplain reconnection and climate change 2040', 'Floodplain reconnection and climate change 2080') ~ 'Floodplain',
+             scenario.label %in% c('Combined scenario 2040', 'Combined scenario 2080') ~ 'Combined',
+             scenario.label == 'Current' ~ 'Current'),
+           spawners.change = n - n[scenario.label == 'Current'],
+           prcnt.change = ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']) * 100,
+           spawners.change = round(spawners.change, digits = 0))
+  spawners.paper$scenario.label.nm <- factor(spawners.paper$scenario.label.nm, levels = c('Current', 'Climate Change', 'Floodplain', 'Riparian',
+                                                                                          'Combined'))
+  spawners.paper$year <- factor(spawners.paper$year, levels = c('current', 'Mid-century', 'Late-century'))
+  spawners.paper %<>%
+    droplevels()
+  
+  
   colors.diag <- data.frame(scenario.label = levels(spawners.diag$scenario.label)) %>%
     mutate_if(is.factor,as.character) %>%
     left_join(spawners %>%
@@ -109,6 +138,15 @@ if (sensitivity.mode == 'no') {
                 distinct(scenario.label,color) %>%
                 mutate_if(is.factor,as.character)) %>%
     slice(c(1, 9, 3, 5,7)) %>%
+    select(color) %>%
+    unlist(use.names = FALSE)
+  
+  colors.paper <- data.frame(scenario.label = levels(spawners.paper$scenario.label)) %>%
+    mutate_if(is.factor, as.character) %>%
+    left_join(spawners %>% 
+                distinct(scenario.label, color) %>%
+                mutate_if(is.factor, as.character)) %>%
+    # slice(1, 2, 4, 6) %>%
     select(color) %>%
     unlist(use.names = FALSE)
   
@@ -145,6 +183,11 @@ if (sensitivity.mode == 'no') {
                                n[scenario.label == '2040 No action'],
                                n[scenario.label == '2080 No action'])) %>%
     filter(!scenario.label == 'Current')
+  
+  label.df.paper <- spawners.paper %>%
+    group_by(scenario.label) %>%
+    filter(!scenario.label == 'Current') %>%
+    mutate(y.pos = prcnt.change)
   
   
   
@@ -224,8 +267,32 @@ if (sensitivity.mode == 'no') {
   ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_',pop,'_asrp_stacked','.jpg')), width = 10, height = 8, dpi = 300)#pdfs 10x10
 } #close if not sensitivity mode if() statement
 
-
-
+# Spawner plots for temperature paper
+ggplot() +
+  theme_bw() +
+  geom_bar(data = spawners.paper %>% filter(!scenario.label == 'Current'),
+           aes(scenario.label.nm, prcnt.change, fill = scenario.label),
+           color = 'black',
+           stat = 'summary',
+           fun.y = 'mean') +
+  geom_text(data = label.df.paper, 
+            aes(x = scenario.label.nm , 
+                y = prcnt.change + 7 * sign(prcnt.change), 
+                label = spawners.change),
+            vjust = -0.5) +
+  facet_wrap(~year) +
+  scale_x_discrete(drop = T) + 
+  scale_fill_manual(values = colors.paper, drop = F, name = 'Scenario') + 
+  ylim(-100, 100) +
+  # scale_y_continuous(labels = comma, 
+  #                    expand = c(0, 0,.05,0)) +
+  labs(x = NULL,
+       y = paste0('Change in Spawners from Current Conditons')
+  ) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1),
+        text = element_text( size = 16)) +
+  theme(legend.position = 'none')
+ggsave(file.path(outputs_lcm, paste0('spawners_basinwide_', pop, '_temp_paper','.jpg')), width = 10, height = 8, dpi = 300)
 
 # If in sensitivity mode ---------
 if (sensitivity.mode == 'yes') {
