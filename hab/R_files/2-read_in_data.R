@@ -13,7 +13,17 @@ edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T
   mutate(Reach_low = tolower(Reach)) %>%
   rename(width_w = X1,
          width_s = X8) %>%
-  select(Reach_low, width_w, width_s, year)
+  select(Reach_low, width_w, width_s, year) %>%
+  group_by(Reach_low) %>%
+  mutate(width_s_curr = ifelse(year == 2019,
+                               width_s,
+                               0),
+         width_s_curr = sum(width_s_curr),
+         width_s = ifelse(year %in% c(2040, 2080),
+                          width_s_curr * .95,
+                          # width_s,
+                          width_s)) %>%
+  select(-width_s_curr)
 
 # Culverts.  This file reads in the most recent Chehalis obstructions layer from the spatial model outputs. ----
 injunction_culvs <- read.csv(file.path(Inputs, 'Injunction_Culverts.csv')) %>%

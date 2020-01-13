@@ -314,7 +314,11 @@ if (pop == "steelhead") {
 
     parr <- BH.func(pre.fry, p = parr.surv, c = parr.cap)# summer parr
     
-    parr.distributed <- distribute.fish(fish.in = parr, move.matrix * 0.05)
+    parr.distributed <- distribute.fish(fish.in = parr, 
+                                        move.matrix = sweep(move.matrix.spring, 
+                                                            MARGIN = 2, 
+                                                            percent.fall.migrants, 
+                                                            '*'))
     
     age1 <- BH.func(parr.distributed['after_movement', ], p = first.winter.surv, c = first.winter.cap) # overwinter
     

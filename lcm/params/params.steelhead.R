@@ -13,6 +13,19 @@ fecund.first <- 5400 # First time spawner fecundity
 fecund.respawn <- 8000 # Respawner fecundity
 
 
+# fall redistribution ------------------------------------------------------------------------------------------------
+# Percent of fish that move from natal basin down to mainstem in the fall
+# See trello card: https://trello.com/c/DjGWaYoX/204-add-fall-movement-for-age-0-steelhead-end-of-first-summer
+
+percent.fall.migrants <- read.csv('lcm/data/Subbasin_names.csv') %>%
+  mutate(prcnt_movers = case_when(
+    Area_km2 > 450             ~ 0.0,
+    between(Area_km2, 50, 450) ~ 0.02,
+    Area_km2 < 50              ~ 0.1
+  )) %>%
+  pull(prcnt_movers)
+
+
 # spring redistribution ------------------------------------------------------------------------------------------------
 # Percent of fish that move from natal basin down to mainstem in the spring
 # See memo from Tim (NOAA LCM steelhead juvenile movement 2019-07-17)
