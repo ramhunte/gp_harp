@@ -58,7 +58,7 @@ prop.age3.smolts <- 1 - prop.age2.smolts - prop.age1.smolts
 # Capacity is assumed unlimited (transient)
 # stochastic survival between min and max
 
-bay.surv <- 0.2
+bay.surv <- 0.14
 
 
 
