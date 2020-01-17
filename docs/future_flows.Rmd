@@ -10,13 +10,13 @@ library(tidyverse)
 
 
 
-## Purpose
+# Change in peak flow
 
-This document holds the code used to calculate the changes in peak flow under future conditions. Here we take the results from the [CIG study](https://cig.uw.edu/news-and-events/datasets/hydrology-in-the-chehalis-basin/) and create regressions used to translate recurrance interval into percecnt change to annual peak flow.
+This section holds the code used to calculate the changes in peak flow under future conditions. Here we take the results from the [CIG study](https://cig.uw.edu/news-and-events/datasets/hydrology-in-the-chehalis-basin/) and create regressions used to translate recurrence interval into percent change to annual peak flow.
 
 ## Load and prep data
 
-The first step is to load all of the data, and convert it into a useable format. We load the data from all bias corrected sites and put variable names into seperate columns. 
+The first step is to load all of the data, and convert it into a usable format. We load the data from all bias corrected sites and put variable names into separate columns. 
 
 ```{r}
 cig_dat <- list.files('../../misc/AGU_poster/CIG_model_results/streamflow_summaries/summaries_BCsites/',
@@ -46,10 +46,13 @@ Next we subset to only the 'average' data points for the Grand Mound site at flo
 
 ```{r}
 cig_ave <- cig_dat %>%
-  mutate(ri = as.numeric(as.character(ri))) %>%
+  mutate(ri = as.numeric(as.character(ri)),
+         value = value / 100) %>%
   filter(metric == 'avg',
-         site.name == 'ChehalisR-nrGrandMound',
-         ri < 500)
+         #site.name == 'ChehalisR-nrGrandMound',
+         site.name == 'ChehalisR-atPorter',
+         ri < 500
+         )
 ```
 
 
@@ -62,7 +65,7 @@ Next we create the regression models for each of the four future scenarios
 3. RCP 8.5 - 2040
 4. RCP 8.5 - 2080
 
-Regressions are created using log transformed recurrance interval, and include an intercept
+Regressions are created using log transformed recurrence interval, and include an intercept
 
 $$\Delta Q = \beta_0 + ln(RI)$$
 
@@ -96,19 +99,22 @@ Then we plot it!
 ```{r fig.height=4, fig.width=7}
 cig_ave %>%
   mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5')) %>%
+  group_by(ri, era, climate_model) %>%
+  summarize(value = mean(value)) %>%
   ggplot +
   theme_bw() +
   geom_point(aes(ri, 
-                 value/100, 
-                 shape = hydro_model),
+                 value#, 
+                 #shape = hydro_model
+                 ),
              size = 2) +
   geom_line(data = mods_pred, 
-            aes(ri, value/100)) +    
+            aes(ri, value)) +    
   facet_grid(era~climate_model) +
   scale_y_continuous(labels = scales::percent) +
   labs(x = 'Recurrence interval (years)',
        y = 'Change from current',
-       shape = 'Hydrologic model',
+       #shape = 'Hydrologic model',
        color = 'Site',
        title = cig_ave$site.name[1])
 ```
@@ -130,5 +136,299 @@ mods %>%
   unnest(cols = c(tidy)) %>%
   select(era, climate_model, term, estimate) %>%
   spread(term, estimate)
+```
+
+
+# Recurrence intervals
+
+## Log-Pearson Type III
+
+To create recurrence intervals, we use a log-pearson type III distribution. The inputs to a USGS function from the `swmrBase` package are mean, standard deviation and skewness of the peak flow data. 
+
+See the swmrBase github page for directions on how to install: https://github.com/USGS-R/smwrBase#package-installation. The following code must be run and R restarted before the package can be installed.
+
+NOTE: Should we choose skew from here? http://www.dimensionengine.com/excel/hydrotools/functions/logpearson.html
+
+The package `moments` is needed for the `skewness()` function. 
+```{r, eval= FALSE}
+rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
+write('\noptions(repos=c(getOption(\'repos\'),
+  CRAN=\'https://cloud.r-project.org\',
+  USGS=\'https://owi.usgs.gov/R\'))\n',
+    rprofile_path, 
+    append =  TRUE)
+
+cat('Your Rprofile has been updated to include GRAN.
+  Please restart R for changes to take effect.')
+```
+
+
+```{r}
+library(smwrBase)
+#library(moments)
+
+ri_to_q <- function(ri, q_record, sk) {
+  # ri = vector of one or more recurrance intervals, eg. c(2, 10, 100)
+  # q_record = vector of peak annual flows
+  
+  non_exeed_prob <- 1 - (1/ri)
+  
+  q_log <- log10(q_record)
+  
+  mn_log <- mean(q_log)
+  sd_log <- sd(q_log)
+  sk_log <- sk#0.12#skewness(log10(q_record))
+  
+  lp3 <- qpearsonIII(p = non_exeed_prob,
+                     mean =  mn_log,
+                     sd =  sd_log,
+                     skew = sk_log)
+  
+  return(10^lp3)
+  
+}
+```
+
+We also need to be able to translate flow to recurrance intervals.
+
+```{r}
+q_to_ri <- function(q, q_record, sk) {
+  
+  q_log <- log10(q_record)
+  
+  mn_log <- mean(q_log)
+  sd_log <- sd(q_log)
+  sk_log <- sk#skewness(log10(q_record))
+  
+  exeed_prob <- ppearsonIII(q = log10(q),
+                            mean =  mn_log,
+                            sd =  sd_log,
+                            skew = sk_log)
+  
+  ri <- 1 / (1 - exeed_prob)
+    
+  return(ri)
+
+}
+```
+
+
+## Skagit
+
+The recurrence intervals for the skagit are needed to reanalyze the data in (Kinsel 2006)[https://wdfw.wa.gov/publications/00092].
+
+The data are from USGS gage #12200500, Skagit River Near Mt. Vernon.
+
+```{r}
+library(EGRET)
+
+# Load Skagit data
+peak_mv <- readNWISDaily(12200500,'00060') %>%
+ # filter(between(waterYear, 1970, 1999)) %>%
+  group_by(waterYear) %>%
+  summarize(q_cfs = max(Q) * 35.31467)
+```
+
+```{r}
+# Calculate the 2, 10, 50 and 100 year floods
+data.frame(ris = c(2, 10, 50, 100)) %>%
+  mutate(Q = ri_to_q(ris, peak_mv$q_cfs, 0.12))
+
+```
+
+Here we set up the Skagit data used to make the regression between survival and recurrence interval. Q and survival data from Kincel et al. (2006; Table 14).
+
+```{r}
+
+q_sk <- c(88200,142000,40100,27600,32100,55700,132000,47600,35600,51900,76800,19300,73700,53000,110000,66700,57400)
+surv <- c(9,1.2,13.7,14.4,16.7,10.2,3.8,15.6,16.4,16.5,12.7,13.5,12.9,10.8,5.8,7.3,11.4)
+
+dat_sk <- data.frame(q_sk = q_sk,
+                     surv = surv/100) %>%
+  mutate(ri = q_to_ri(q_sk, peak_mv$q_cfs, 0.12))
+
+dat_sk
+
+```
+
+
+### Create the regression between flow and survival
+
+We logit transform the survival data then fit a regression with recurrence interval. 
+
+```{r}
+
+ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
+
+summary(ri_to_surv)
+```
+
+In order to make predictions of survival, we need to use the regression to make a prediction then inverse the logit transform. 
+
+```{r}
+# Inverse logit function
+inv.logit <- function(x){
+  y <- exp(x)/(exp(x) + 1)
+  return(y)
+}
+
+sk_pred <- data.frame(ri = 1:100) %>%
+  mutate(surv_pred = predict(ri_to_surv, newdata = .) %>% inv.logit())
+```
+
+
+```{r}
+ggplot() +
+  theme_classic() +
+  geom_point(data = dat_sk, aes(ri, surv)) +
+  geom_line(data = sk_pred, aes(ri, surv_pred)) +
+  scale_x_log10() +
+  geom_vline(xintercept = 1.5, lty = 2)
+  
+```
+
+Compare Jeff's function to this new one
+
+```{r}
+data.frame(ri = 1:100) %>%
+  mutate(j_pred = -1.88084588 +  -0.05511075 * ri,
+         j_surv = j_pred %>% inv.logit(),
+         c_surv = predict(ri_to_surv, newdata = .) %>% inv.logit()) %>%
+  select(-j_pred) %>%
+  gather(model,surv, j_surv:c_surv) %>%
+  ggplot +
+  geom_line(aes(ri, surv, color = model))
+```
+
+
+#### Rescale the function
+
+```{r}
+range.rescale <- function(x, 
+                          min = predict(ri_to_surv, newdata = data.frame(ri = 100)) %>% inv.logit(),
+                          max = predict(ri_to_surv, newdata = data.frame(ri = 1)) %>% inv.logit()) 
+{
+  y <- (x - min) / diff(c(min,max))
+  return(y)
+}
+```
+
+
+```{r}
+ggplot() +
+  theme_classic() +
+  geom_point(data = dat_sk %>% 
+               mutate(surv_rescale = range.rescale(surv)), 
+             aes(ri, surv_rescale)) +
+  geom_line(data = sk_pred %>%
+              mutate(surv_pred_rescale = range.rescale(surv_pred)), 
+                     aes(ri, surv_pred_rescale)) +
+  scale_x_log10(limits=c(1, 100)) +
+  geom_vline(xintercept = 1.5, lty = 2)
+```
+
+Bring it all together in one function to turn RI into a survival scalar
+
+```{r}
+ri_to_surv_rescale <- function(ri) {
+  df_new <- data.frame(ri = ri)
+  
+  surv_rescale <- predict(ri_to_surv, newdata = df_new) %>% 
+    inv.logit() %>%
+    range.rescale()
+  
+  # If survival is negative, make zero
+  surv_rescale[surv_rescale < 0] <- 0
+  
+  
+  return(surv_rescale)
+}
+
+ri_to_surv_rescale(c(2, 10, 50, 200))
+```
+
+
+# Chehalis at Porter
+
+The lowest gage in the mainstem is Chehalis at Porter. We use this one to calculate a time series of recurrence intervals and survivals.
+
+```{r}
+library(EGRET)
+
+# Load Chehalis data
+daily_ch <- readNWISDaily(12031000,'00060') # Porter gage
+#daily_ch <- readNWISDaily(12027500,'00060') # Grand Mound gage
+
+ # filter(between(waterYear, 1970, 1999)) %>%
+
+peak_ch <- daily_ch %>%
+  group_by(waterYear) %>%
+  summarize(q_cfs = max(Q) * 35.31467)
+
+```
+
+```{r}
+
+# data.frame(ri = c(2, 10, 50, 100, 500),
+#            q_cig = c(28584, 44790, 58377, 63952, 76464)) %>%
+#   mutate(q_lp3 = ri_to_q(ri, peak_ch$q_cfs, 0.14)) %>%
+#   gather(model, q, q_cig:q_lp3) %>%
+#   ggplot +
+#   geom_point(aes(ri, q, color = model))
+
+```
+```{r}
+
+ri_ch <- peak_ch %>%
+  mutate(ri = q_to_ri(q_cfs, q_cfs, 0.14),
+         surv_rescale = ri_to_surv_rescale(ri))
+
+ri_ch %>%
+  gather(param, value, q_cfs:surv_rescale) %>%
+  ggplot() +
+  geom_line(aes(waterYear, value)) +
+  facet_wrap(~param, ncol = 1, scales = 'free_y')
+```
+
+# Run the LCM
+
+
+
+```{r}
+#source('../run_peak_flow.R')
+```
+
+```{r}
+# x <- model.all.pf[,,'spawners',] %>%
+#   as.data.frame.table() %>%
+#   rename(run = Var1, year = Var2, species = Var3, n = Freq)
+```
+
+```{r}
+ # x %>%
+ #    mutate(year = as.numeric(year),
+ #           era = ifelse(run == 1 , 'Current',
+ #                        ifelse(run %in% c(2,4), 'Mid-century',
+ #                               'Late-century')),
+ #           era = factor(era, levels = c('Current', 'Mid-century', 'Late-century')),
+ #           climate = ifelse(run == 1, 'Current',
+ #                            ifelse(run %in% c(2,3), 'RCP 4.5',
+ #                                   'RCP 8.5')),
+ #           species = recode_factor(species, 
+ #                                   coho = 'Coho', 
+ #                                   spring_chinook = 'Spring Chinook', 
+ #                                   fall_chinook = 'Fall Chinook', 
+ #                                   steelhead = 'Steelhead')) %>%
+ #   # filter(!(n < 6500 & species == 'Steelhead')) %>%
+ #    group_by(species) %>%
+ #    mutate(n = (n - median(n[era == 'Current']))/median(n[era == 'Current'])) %>%
+ #    ggplot(aes(era,n, color = climate)) +
+ #    geom_boxplot(outlier.shape = NA) +
+ #    geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
+ #    facet_wrap(~species) +
+ #    theme_bw() +
+ #    scale_color_manual(values = c('black','orange1','orangered2')) +
+ #    scale_y_continuous(labels = scales::percent) +
+ #    labs(x = NULL, y = 'Spawner Change from Current (%)', color = NULL)
 ```
 
