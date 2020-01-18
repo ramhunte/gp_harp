@@ -22,11 +22,11 @@ Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "B
 life.stage = c(rep("summer", times = length(Habitat)/4), rep("winter", times = length(Habitat)/4), rep("summer.2", times = length(Habitat)/4), rep("winter.2", times = length(Habitat)/4))
 surv.base = c(rep(.6, times = 8), rep(.74, times = 6), rep(.6, times = 2), rep(.74, times = 2), rep(.6, times = 5),
               rep(.35, times = 8), rep(.52, times = 6), rep(.35, times = 2), rep(.52, times = 2), rep(.35, times = 5),
-              rep(.7, times = 8), rep(.74, times = 6), rep(.7, times = 2), rep(.74, times = 2), rep(.7, times = 5),
+              rep(.85, times = 8), rep(.74, times = 6), rep(.85, times = 2), rep(.74, times = 2), rep(.85, times = 5),
               rep(.49, times = 8), rep(.52, times = 6), rep(.49, times = 2), rep(.52, times = 2), rep(.49, times = 5))
 wood.surv.base = c(rep(.6, times = 6), rep(.62, times = 2),  rep(.74, times = 6), rep(.62, times = 2), rep(.74, times = 2), rep(.6, times = 5),
                    rep(.35, times = 6), rep(.58, times = 2), rep(.52, times = 6), rep(.58, times = 2), rep(.52, times = 2), rep(.35, times = 5),
-                   rep(.7, times = 6), rep(.73, times = 2), rep(.74, times = 6), rep(.73, times = 2), rep(.74, times = 7),
+                   rep(.85, times = 6), rep(.73, times = 2), rep(.88, times = 6), rep(.73, times = 2), rep(.88, times = 2), rep(.85, times = 5),
                    rep(.49, times = 6), rep(.53, times = 2), rep(.52, times = 6), rep(.53, times = 2), rep(.52, times = 2), rep(.49, times = 5))
 survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
 
@@ -40,4 +40,4 @@ lr_wd_w_bank <- 1.069
 lr_wd_w_bar <- 1.108
 
 # Prespawn survival ----
-prespawn_surv_raw <- .9
+prespawn_surv_raw <- .95
