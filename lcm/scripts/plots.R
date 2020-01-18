@@ -118,8 +118,8 @@ if (sensitivity.mode == 'no') {
     mutate(spawners.change = n - n[scenario.label == 'Current'],
            prcnt.change = ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']),
            prcnt.change = ifelse(prcnt.change >= 0,
-                                 paste0('+', percent(prcnt.change)),
-                                 percent(prcnt.change)),
+                                 paste0('+', percent(prcnt.change, 1)),
+                                 percent(prcnt.change, 1)),
            y.pos = n,
            curr.spawn = n[scenario.label == 'Current']) %>%
     filter(!scenario.label == 'Current')

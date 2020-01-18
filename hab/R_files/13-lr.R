@@ -99,7 +99,7 @@ asrp_lr <- asrp_lr_scenario %>%
   bind_rows(., asrp_bw) %>%
   left_join(., asrp_culvs) %>%
   mutate(
-    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook"), # Added because of spring chinook w/temp survival 
+    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook", 'chum'), # Added because of spring chinook w/temp survival 
                            1,
                            tempmult.asrp),
     summer.area = area_s * tempmult.asrp * woodmult_s_asrp,

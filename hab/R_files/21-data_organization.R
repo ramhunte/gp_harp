@@ -9,12 +9,12 @@ assign('data', data , envir = .GlobalEnv)
 
 life.stage.nm <- c("egg.to.fry.survival", "adults.capacity", "eggs.capacity", "prespawn.survival", "summer.capacity", "summer.survival", 
                    "winter.capacity", "winter.survival","winter.movement", "summer.2.capacity", "summer.2.survival", "winter.2.capacity", 
-                   "winter.2.survival")
+                   "winter.2.survival", 'fry.colonization.capacity', 'fry.colonization.survival')
 
 life.stage <- life.stage.nm
 stage_nm <- c("eggtofry_surv", "adults", "eggs", "prespawn_surv", "capacity_s", "surv_s", "capacity_w", "surv_w", "movement", "capacity_s_2",
-              "surv_s_2", "capacity_w_2", "surv_w_2")
-stage_nums <- c(1, 2, 3, 8, 4, 5, 6, 7, 9, 10, 11, 12, 13)
+              "surv_s_2", "capacity_w_2", "surv_w_2", 'fry_colonization_cap', 'fry_colonization_surv')
+stage_nums <- c(1, 2, 3, 8, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15)
 ls.to.names <- data.frame(life.stage, stage_nm, stage_nums)
 
 asrp_results <- asrp_results_inputs %>%
@@ -59,6 +59,11 @@ if (fishtype == "steelhead") {
 if (fishtype %in% c('spring_chinook','fall_chinook')) {
   asrp_results %<>%
     filter(!stage_nm %in% c("capacity_s_2", "capacity_w_2", "surv_w_2", 'capacity_w', 'surv_w'))
+}
+
+if (fishtype == 'chum') {
+  asrp_results %<>%
+    filter(stage_nm %in% c('adults', 'eggs', 'eggtofry_surv', 'prespawn_surv', 'fry_colonization_cap', 'fry_colonization_surv', 'surv_s'))
 }
 
 

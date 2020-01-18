@@ -37,3 +37,8 @@ LgRiver_habs = c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Ba
 SmStream_habs = c("Pool", "Riffle", "Beaver.Pond")
 Floodplain_habs = c("FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm", "Side_Channel")
 
+psp_lwls = 12.5 # pool spacing for low wood, low slope reaches
+psp_hwls = 6.25 # pool spacing for high wood, low slope reaches
+psp_lwhs = 27.5 # pool spacing for low wood, high slope reahces
+psp_hwhs = 5 # pool spacing for high wood, high slope reaches
+

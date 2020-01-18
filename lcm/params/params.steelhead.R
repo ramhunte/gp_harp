@@ -13,6 +13,19 @@ fecund.first <- 5400 # First time spawner fecundity
 fecund.respawn <- 8000 # Respawner fecundity
 
 
+# fall redistribution ------------------------------------------------------------------------------------------------
+# Percent of fish that move from natal basin down to mainstem in the fall
+# See trello card: https://trello.com/c/DjGWaYoX/204-add-fall-movement-for-age-0-steelhead-end-of-first-summer
+
+percent.fall.migrants <- read.csv('lcm/data/Subbasin_names.csv') %>%
+  mutate(prcnt_movers = case_when(
+    Area_km2 > 450             ~ 0.0,
+    between(Area_km2, 50, 450) ~ 0.02,
+    Area_km2 < 50              ~ 0.1
+  )) %>%
+  pull(prcnt_movers)
+
+
 # spring redistribution ------------------------------------------------------------------------------------------------
 # Percent of fish that move from natal basin down to mainstem in the spring
 # See memo from Tim (NOAA LCM steelhead juvenile movement 2019-07-17)
@@ -26,13 +39,13 @@ percent.spring.migrants <- read.csv('lcm/data/Subbasin_names.csv') %>%
   pull(prcnt_movers)
 
 
-# Age1 smolts 
-# updated 10/30/2019 per Larry Lestelle. See 1974-2019 Summaries for Queets-Chehalsi-Hump Sth Age
-# adjustments here to match the 
-# ages 1-3 smolt composition of adults in steelhead catch data
+# Updated 10/30/2019 per Larry Lestelle. See 1974-2019 Summaries for Queets-Chehalsi-Hump Sth Age
+# values adjusted here so age 1-3 smolt composition matches age composition of adults from QIN
+# Age 1: 2%, Age 2: 87%, Age 3: 11%
+
 prop.age1.smolts <- 0.003
-prop.age2.smolts <- 0.8#0.87
-prop.age3.smolts <- 1 - prop.age2.smolts - prop.age1.smolts # 0.11
+prop.age2.smolts <- 0.70
+prop.age3.smolts <- 1 - prop.age2.smolts - prop.age1.smolts
 
 
 # Delta survivals and capacities --------------------------------------------------------------------------------------------------
@@ -45,7 +58,7 @@ prop.age3.smolts <- 1 - prop.age2.smolts - prop.age1.smolts # 0.11
 # Capacity is assumed unlimited (transient)
 # stochastic survival between min and max
 
-bay.surv <- 0.2
+bay.surv <- 0.14
 
 
 

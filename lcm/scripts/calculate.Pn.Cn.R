@@ -23,6 +23,8 @@ if (pop == "fall.chinook" | pop == "spring.chinook") { summary.stages <- c('spaw
 
 if (pop == 'steelhead') {summary.stages <- c('spawners','age1.smolts','age2.smolts', 'age3.smolts')}
 
+if (pop == 'chum') {summary.stages <- c('spawners', 'fry.migrant')}
+
 # Initialize arrays to capture data ----
 
 N.sr <- matrix(
