@@ -161,6 +161,7 @@ print(
 
 print(
   ggplot(x) +
+    theme_bw() +
     geom_line(aes(year, n, color = era, lty = climate)) +
     facet_wrap(~species, ncol = 1, scales = 'free_y')
 )

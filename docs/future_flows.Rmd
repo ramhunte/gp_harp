@@ -279,11 +279,15 @@ sk_pred <- data.frame(ri = 1:100) %>%
 
 ```{r}
 ggplot() +
-  theme_classic() +
+  theme_bw() +
   geom_point(data = dat_sk, aes(ri, surv)) +
   geom_line(data = sk_pred, aes(ri, surv_pred)) +
   scale_x_log10() +
-  geom_vline(xintercept = 1.5, lty = 2)
+  scale_y_continuous(labels = scales::percent) +
+  geom_vline(xintercept = 1.5, lty = 2) +
+  labs(x = 'Recurrence interval (years)',
+       y = 'Egg to migrant survival') +
+  annotation_logticks(sides = 'b')
   
 ```
 
@@ -292,11 +296,12 @@ Compare Jeff's function to this new one
 ```{r}
 data.frame(ri = 1:100) %>%
   mutate(j_pred = -1.88084588 +  -0.05511075 * ri,
-         j_surv = j_pred %>% inv.logit(),
-         c_surv = predict(ri_to_surv, newdata = .) %>% inv.logit()) %>%
+         original = j_pred %>% inv.logit(),
+         redo = predict(ri_to_surv, newdata = .) %>% inv.logit()) %>%
   select(-j_pred) %>%
-  gather(model,surv, j_surv:c_surv) %>%
+  gather(model,surv, original:redo) %>%
   ggplot +
+  theme_classic() +
   geom_line(aes(ri, surv, color = model))
 ```
 
