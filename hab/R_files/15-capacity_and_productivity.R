@@ -71,7 +71,10 @@ asrp_prod_step_1 <- asrp_cap %>%
     ),
     surv.base.asrp = ifelse(life.stage %in% c("summer", "summer.2"),
                             surv.base.asrp.summer,
-                            surv.base.asrp.winter)) %>%
+                            surv.base.asrp.winter),
+    surv.base.asrp = ifelse(surv.base.asrp > 1,
+                            1,
+                            surv.base.asrp)) %>%
   select(-surv.base.asrp.summer, -surv.base.asrp.winter)
 
   asrp_prod <- asrp_prod_step_1 %<>%
