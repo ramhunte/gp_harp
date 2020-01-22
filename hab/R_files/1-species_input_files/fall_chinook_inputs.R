@@ -13,7 +13,7 @@ Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "B
                   "HM_Bank_center", "Bar_boulder_center", "Bar_gravel_center", "Bar_sand_center"), times = 4))
 life.stage = c(rep("summer", times = length(Habitat)/4), rep("winter", times = length(Habitat)/4), rep('summer.2', times = length(Habitat) / 4), 
                rep('winter.2', times = length(Habitat) / 4))
-Density = c(rep(c(6766, 2738, 511, 1463, 449, 9671, 922, 57, 922, 922, 376, 0, 0, 922, 922, 922, 57, 1183, 1183, rep(6766*.003, times = 5),
+Density = c(rep(c(12700, 6400, 0, 6400, 3200, 19100, 500, 200, 500, 500, 376, 0, 0, 500, 500, 500, 200, 500, 500, rep(38, times = 5),
                   rep(NA, times = 24)), times = 2))
 density <- data.frame(Habitat, life.stage, Density)
 
