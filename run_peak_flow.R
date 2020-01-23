@@ -5,7 +5,7 @@
 library(tidyverse)
 library(lubridate)
 
-rmarkdown::render('docs/future_flows.Rmd')
+rmarkdown::render('docs/future_flows/future_flows.Rmd')
 
 pops <-  c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')
 run_stochastic_eggtofry <- 'yes'

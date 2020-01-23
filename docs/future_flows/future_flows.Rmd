@@ -19,7 +19,7 @@ This section holds the code used to calculate the changes in peak flow under fut
 The first step is to load all of the data, and convert it into a usable format. We load the data from all bias corrected sites and put variable names into separate columns. 
 
 ```{r}
-cig_dat <- list.files('../../misc/AGU_poster/CIG_model_results/streamflow_summaries/summaries_BCsites/',
+cig_dat <- list.files('../../../misc/AGU_poster/CIG_model_results/streamflow_summaries/summaries_BCsites/',
            pattern = 'ALL_BCsites.*Flood',
            full.names = TRUE) %>%
   map_dfr(., function(x) {
@@ -240,12 +240,15 @@ Here we set up the Skagit data used to make the regression between survival and 
 
 ```{r}
 
-q_sk <- c(88200,142000,40100,27600,32100,55700,132000,47600,35600,51900,76800,19300,73700,53000,110000,66700,57400)
-surv <- c(9,1.2,13.7,14.4,16.7,10.2,3.8,15.6,16.4,16.5,12.7,13.5,12.9,10.8,5.8,7.3,11.4)
+#q_sk <- c(88200,142000,40100,27600,32100,55700,132000,47600,35600,51900,76800,19300,73700,53000,110000,66700,57400)
+#surv <- c(9,1.2,13.7,14.4,16.7,10.2,3.8,15.6,16.4,16.5,12.7,13.5,12.9,10.8,5.8,7.3,11.4)
 
-dat_sk <- data.frame(q_sk = q_sk,
-                     surv = surv/100) %>%
-  mutate(ri = q_to_ri(q_sk, peak_mv$q_cfs, 0.12))
+dat_sk <- read.csv('kinsel_2008_survival_and_flow.csv') %>%
+  mutate(ri = q_to_ri(q_cfs, peak_mv$q_cfs, 0.12))
+
+# dat_sk <- data.frame(q_sk = q_sk,
+#                      surv = surv/100) %>%
+#   mutate(ri = q_to_ri(q_sk, peak_mv$q_cfs, 0.12))
 
 dat_sk
 
@@ -258,7 +261,8 @@ We logit transform the survival data then fit a regression with recurrence inter
 
 ```{r}
 
-ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
+#ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
+ri_to_surv <- lm(log(surv) ~ ri, data = dat_sk)
 
 summary(ri_to_surv)
 ```
@@ -268,13 +272,19 @@ In order to make predictions of survival, we need to use the regression to make 
 ```{r}
 # Inverse logit function
 inv.logit <- function(x){
-  y <- exp(x)/(exp(x) + 1)
+  #y <- exp(x)/(exp(x) + 1)
+  
+  y <- exp(x)
+  
   return(y)
 }
 
 sk_pred <- data.frame(ri = 1:100) %>%
   mutate(surv_pred = predict(ri_to_surv, newdata = .) %>% inv.logit())
 ```
+
+
+
 
 
 ```{r}
