@@ -23,8 +23,8 @@ Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "B
             "Bar_sand_center"), times = 2))
 life.stage = c(rep("summer", times = length(Habitat)/2), rep("winter", times = length(Habitat)/2), rep('summer.2', times = length(Habitat) / 2),
                rep('winter.2', times = length(Habitat) / 2))
-surv.base = c(rep(c(rep(.26, times = 8), rep(.46, times = 6), .26, .26, .46, .46, rep(.26, times = 5), rep(NA, times = 23)), times = 2))
-wood.surv.base = c(rep(c(rep(.26, times = 6), rep(.43, times = 2), rep(.46, times = 6), .43, .43, .46, .46, rep(.26, times = 5), rep(NA, times = 23)), times = 2))
+surv.base = c(rep(c(rep(.26, times = 8), rep(.5, times = 6), .26, .26, .5, .5, rep(.26, times = 5), rep(NA, times = 23)), times = 2))
+wood.surv.base = c(rep(c(rep(.26, times = 6), rep(.43, times = 2), rep(.5, times = 6), .43, .43, .5, .5, rep(.26, times = 5), rep(NA, times = 23)), times = 2))
 
 survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
  
