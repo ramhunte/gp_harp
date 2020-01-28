@@ -38,5 +38,3 @@ source("hab/R_files/21-data_organization.R")
 if (!branch %in% c('dev','master')) {
   source("hab/R_files/22-compare_scenarios.R")
 }
-
-# save.image(file ='R files/myEnvironment.RData')

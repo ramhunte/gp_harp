@@ -11,36 +11,6 @@ pop.init <- 20000
 fecund <- 5400
 
 
-
-#Egg capacity --------------------------------------------------------------------------------------------------------------------
-# Values calculated using GIS
-#
-egg.cap.adj <- 1.0 
-
-
-
-# Egg-fry survival ---------------------------------------------------------------------------------------------------------------
-# Values calculated using GIS
-
-egg.fry.surv.adj <- 1.0 #egg to fry survival adjustment
-
-
-
-# Fry to migrants survival & capacity (summer) --------------------------------------------------------------------------------------------
-# Values calculated in GIS
-
-sub.yr.surv.adj <- 1 #summer surv, sub-yearling adjustment
-sub.yr.cap.adj <- 3.0 #summer capacity adjustment. x3 to represent 3 cohorts of fish emerging over ~24 weeks and staying for ~8 weeks
-
-fry.surv.adj <- 1 
-
-
-
-# Delta survivals and capacities --------------------------------------------------------------------------------------------------
-# Delta survivials lumped with bay
-
-
-
 # Bay survival ------------------------------------------------------------------------------------------------------------
 # Capacity is assumed unlimited (transient)
 # stochastic survival between min and max
@@ -48,17 +18,6 @@ fry.surv.adj <- 1
 # Values including delta
 bay.parr.surv <- .061 # Delta and bay for parr (freshwater rearing)
 bay.fry.surv <- .001 # Freshwater outmigration, delta and bay for fry
-
-#Stochastically vary the bay-delta survival by 20%
-bay.parr.range <- c(bay.parr.surv, bay.parr.surv)#c(bay.parr.surv*.8, bay.parr.surv*1.2)
-bay.fry.range <- c(bay.fry.surv, bay.fry.surv)#c(bay.fry.surv*.8, bay.fry.surv*1.2)
-
-
-bay.parr.surv.adj <- 1
-bay.fry.surv.adj <- 1
-
-
-
 
 
 # Post-s3 ocean survival ---------------------------------------------------------------------------------------------------
@@ -122,10 +81,6 @@ SAR.fry <- (so_w * bay.fry.surv)[1]
 # Harvest rate -------------------------------------------------------------------------------------------------------------
 
 Hr <- 0#.36 # latest estimate (from Eric Walther, May 2017; average)
-
-# harvest adjustment
-hr.adj <- 1.0 # rep(1.0, num.reaches)
-
 
 
 

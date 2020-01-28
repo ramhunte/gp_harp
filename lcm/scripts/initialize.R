@@ -56,8 +56,7 @@ if (pop == "coho") {
     'total.run',
     'spawners',
     # Above here is needed for spawner matrix
-    'eggs',
-    # Here and below are stored for diagnostics
+    'eggs',# Here and below are stored for diagnostics
     'pre.fry',
     'fry',
     'parr',
@@ -130,12 +129,13 @@ if (pop == "steelhead") {
                   'spawners',
                   'eggs',
                   'pre.fry',
-                  'fry',
                   'parr',
                   'age1',
+                  'age1.stayers',
                   'age1.smolts',
-                  'age1.plus',
-                  'age2.smolts'
+                  'age2.stayers',
+                  'age2.smolts',
+                  'age3.smolts'
   )
   
   sens.params <- c(
@@ -154,7 +154,31 @@ if (pop == "steelhead") {
 } #end if steelhead
 
 
-
+if (pop == 'chum') {
+  lifestages <- c('ocean0',
+                  'ocean1',
+                  'ocean2',
+                  'ocean3',
+                  'ocean4',
+                  'ocean5',
+                  'total.run',
+                  'spawners',  # Above here is needed for spawner matrix
+                  'eggs', # Here and below are stored for diagnostics
+                  'fry',
+                  'pre.fry',
+                  'fry.migrant',
+                  'fry.migrant.bay'
+  )
+  
+  
+  sens.params <- c(
+    "Egg.capacity",
+    "Incubation.productivity",
+    "Rearing.productivity",
+    "Prespawn.productivity",
+    "geomean")
+  
+} # end if chinook
 
 
 # Create arrays to hold fish lifestages by spatial units ----

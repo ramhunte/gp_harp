@@ -17,7 +17,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
     mutate(year = k)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios, 'dev_and_climate')),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_scenarios %>%
@@ -197,14 +197,14 @@ mutate(asrp_temp_w_growth = case_when(
                                      prespawn_temp + cc_late_prespawn,
                                      prespawn_temp + temp_diff_2080_prespawn))),
          prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
-                                                           prespawn_temp_asrp - mwmt_to_prespawn_func(1),
+                                                           prespawn_temp_asrp - (1 * rest_perc),
                                                            prespawn_temp_asrp),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,
                                             prespawn_temp_asrp - cc_mid_prespawn,
                                             prespawn_temp_asrp - cc_late_prespawn),
                                      prespawn_temp_asrp)) %>%
-  select(-Habitat) %>%
+  select(-Habitat, -asrp_temp_w_growth, -asrp_temp, -asrp_temp_cc_only, -tm_2040, -tm_2080, -tm_2040_cc_only, -tm_2080_cc_only) %>%
   
   # add in future impervious area by GSU, scenario and year ----
 
@@ -212,4 +212,4 @@ left_join(., fut_imperv, by = c('GSU', 'year')) %>%
   mutate(future_imperv = ifelse(is.na(future_imperv),
                                 0,
                                 future_imperv))
-rm(asrp_reach_data_scenarios)
+rm(asrp_reach_data_scenarios, asrp_scenarios)

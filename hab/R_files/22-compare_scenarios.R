@@ -1,7 +1,13 @@
 # Script to compare two habitat scenarios
 
 # show dev version of outputs
-shell(paste0("git show dev:", outputs_hab, "/outputs_long/habmodel_outputs.csv>", outputs_hab, "/outputs_long/habmodel_outputs_dev.csv"))
+git_show_cmd <- paste0("git show dev:", outputs_hab, "/outputs_long/habmodel_outputs.csv>", outputs_hab, "/outputs_long/habmodel_outputs_dev.csv")
+
+if (os == 'windows') {
+  shell(cmd = git_show_cmd)
+} else {
+  system(git_show_cmd)
+}
 
 save.compare <- file.path('outputs', fishtype,'hab.scenarios', 'diagnostics')
 if (dir.exists(save.compare) == F) {dir.create(save.compare,recursive = T)}
@@ -20,9 +26,16 @@ feature_file <- paste0(outputs_hab, "/outputs_long/habmodel_outputs.csv") %>%
 
 
 # store version #s
-ver_dev <- shell(cmd = "git describe dev --tags", intern = TRUE) 
-ver_feat <- shell(cmd = "git describe --tags", intern = TRUE) 
+ver_dev_cmd <- paste0('git describe dev --tags')
+ver_feat_cmd <- paste0('git describe --tags')
 
+if(os == 'windows') {
+  ver_dev <- shell(cmd = ver_dev_cmd, intern = TRUE)
+  ver_feat = shell(cmd = ver_feat_cmd, intern = TRUE)
+} else{
+  ver_dev <- system(ver_dev_cmd, intern = TRUE) 
+  ver_feat <- system(ver_feat_cmd, intern = TRUE) 
+}
 
 # Create single dataframe
 hab_compare <- rbind(
@@ -50,7 +63,7 @@ hab_compare_csv <- hab_compare %>%
   mutate(diff = get(branch) - dev,
          prcnt_diff = scales::percent(diff / dev)) %>%
   filter(abs(diff) > 0.000001) %>%
-  select(hab.scenario, life.stage, parameter, Subbasin_num, Subbasin, EcoRegion, dev, branch, diff) 
+  select(hab.scenario, life.stage, parameter, Subbasin_num, Subbasin, EcoRegion, dev, branch, diff, hab.param) 
 
 
 if (nrow(hab_compare_csv) != 0) {
@@ -69,20 +82,12 @@ if (nrow(hab_compare_csv) != 0) {
       rename(Subbasin = EcoRegion)
   }
   
-  # Remove ASRP scenarios if not running ASRP
-  if (run_asrp == "no") {
-    hab_compare %<>% 
-      filter(hab.scenario %in% diag_scenarios)
-  }
-  
-  
-  
-  
-  
+
   # Create the percent diff labels
   
   labs_df <- hab_compare %>%
     ungroup() %>%
+    select(-one_of('value_mean', 'value_sum')) %>%
     mutate(version = ifelse(version == branch, 'value_feat', 'value_dev')) %>%
     spread(version, value) %>%
     mutate(prcnt_diff = (value_feat - value_dev) / value_dev) %>%
@@ -96,15 +101,8 @@ if (nrow(hab_compare_csv) != 0) {
     mutate(mean_prcnt_diff = scales::percent(prcnt_diff),
            y = max * 1.15)
   
-  # Remove ASRP scenarios if not running ASRP
-  if (run_asrp == "no") {
-    labs_df %<>% 
-      filter(hab.scenario %in% diag_scenarios)
-  }
-  
-  
   # Loop through the plots
-  for (h in labs_df$hab.param %>% unique) {
+  for (h in hab_compare_csv$hab.param %>% unique()) {
     
     hab_compare %>%
       filter(hab.param == h) %>%

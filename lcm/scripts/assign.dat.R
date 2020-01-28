@@ -21,12 +21,12 @@ dat <- as.matrix(dat)
 
 
 # Egg capacity
-egg.cap <- dat["eggs", ]*egg.cap.adj
+egg.cap <- dat["eggs", ]
 
 
 
 # Egg to fry survival
-egg.fry.surv <- dat["eggtofry_surv", ]*egg.fry.surv.adj
+egg.fry.surv <- dat["eggtofry_surv", ]
 
 
 #Proportions of total run in each DU
@@ -40,8 +40,8 @@ S.up <- dat['prespawn_surv', ]
 if (pop == "coho") {
   
   # Fry to parr survival and capacity
-  parr.surv <- dat["surv_s", ]*sub.yr.surv.adj
-  parr.cap  <- dat["capacity_s", ]*sub.yr.cap.adj
+  parr.surv <- dat["surv_s", ]
+  parr.cap  <- dat["capacity_s", ]
   
   # Fall redistribution
   # Historical wood gets 7% redistribution, historical ponds and all historical get 3%. All other scenarios get 11%.
@@ -49,14 +49,11 @@ if (pop == "coho") {
   redist <- dat["movement", ]/100 # If starts with ASRP
     
   # Parr-to-smolt survival and capacity
-  parr.smolt.surv <- dat["surv_w",]*ps.surv.adj
-  parr.smolt.cap <- dat["capacity_w",]*ps.cap.adj
-  
-  #Harvest for the historical no beaver scenario set to 0.67
-  Hr <- ifelse(substr(habitat.file[n],1,15) == "Historical_no_b",Hr.hist,Hr.cur)
-  
+  parr.smolt.surv <- dat["surv_w",]
+  parr.smolt.cap <- dat["capacity_w",]
   
 } #end if coho
+
 
 if (pop == "fall.chinook" | pop == "spring.chinook") {
   
@@ -70,7 +67,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   weekly.surv.temp <- (w * dat['surv_s_2', ]^(1/12)) + ((1 - w) * weekly.surv) 
   
-} 
+} # end if chinook
 
 if (pop == "steelhead") {
   
@@ -91,4 +88,14 @@ if (pop == "steelhead") {
   second.winter.surv <- dat["surv_w_2", ]
 }
 
+
+if (pop == 'chum') {
+  # fry colonization
+  fry.colonization.cap <- dat['fry_colonization_cap', ]
+  fry.colonization.surv <- dat['fry_colonization_surv', ]
+  
+  # fry to smolt 
+  fry.migrant.surv <- dat['surv_s', ]
+  
+}
 

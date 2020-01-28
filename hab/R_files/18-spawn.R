@@ -6,7 +6,8 @@ if (run_single_action == 'no') {
     filter(!Scenario_num %in% single_action_scenarios)
 }
 
-asrp_spawn_ss <- asrp_ss_spawn %>%
+if (!fishtype %in% c('steelhead', 'chum')) {
+  asrp_spawn_ss <- asrp_ss_spawn %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   filter(slope < .03) %>%
@@ -21,6 +22,24 @@ asrp_spawn_ss <- asrp_ss_spawn %>%
                                      Shape_Length * pass_tot_asrp * (NF_redd_density + (F_redd_density - NF_redd_density) * rest_perc * 
                                                                        wood_intensity_scalar) / 1000 * fecundity,
                                      Shape_Length * pass_tot_asrp * NF_redd_density / 1000 * fecundity))))
+} else {
+  asrp_spawn_ss <- asrp_ss_spawn %>%
+    left_join(., asrp_culvs) %>%
+    left_join(., asrp_reach_data) %>%
+    filter(slope < .03) %>%
+    
+    mutate(Shape_Length = ifelse(Beaver == 'y',
+                                          Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
+                                          Shape_Length * curr_beaver_mult),
+           psp = case_when(slope < .01 ~ ifelse(LW == 'y'| lc == 'Forest',
+                                                psp_hwls,
+                                                psp_lwls),
+                           slope >= .01 ~ ifelse(LW == 'y' | lc == 'Forest',
+                                                 psp_hwhs,
+                                                 psp_lwhs)),
+           spawn_area = (Shape_Length / (width_w * psp)) * width_w * (width_w * .5),
+           eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
+}
 
 asrp_spawn_fp_raw <- asrp_fp_spawn %>%
   left_join(., asrp_culvs) %>%
@@ -54,8 +73,17 @@ asrp_spawn_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
                                  Length_sc_hist),
          Length_sc = ifelse(Floodplain == 'y',
                             Length_sc_curr + ((Length_sc_hist - Length_sc_curr) * rest_perc * fp_intensity_scalar),
-                            Length_sc_curr),
-         eggs = Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity)
+                            Length_sc_curr))
+if (!fishtype %in% c('steelhead', 'chum')) {
+  asrp_spawn_fp %<>%
+         mutate(eggs = Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity)
+} else {
+  asrp_spawn_fp %<>%
+    mutate(spawn_area = ifelse(LW == 'y' | lc == 'Forest',
+                      (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5),
+                      (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5)),
+           eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
+}
 
 if (fishtype == "spring_chinook") {
   asrp_spawn_fp %<>%
@@ -73,7 +101,7 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
     mutate(Scenario_num = as.character(n))
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_culvs) %>%
@@ -108,4 +136,6 @@ egg_cap_weight_asrp <- bind_rows(asrp_spawn_ss, asrp_spawn_fp, asrp_spawn_lr) %>
   mutate(eggs_by_sub = sum(eggs), # egg cap per subbasin
          eggs_weight = eggs / eggs_by_sub) %>% # egg cap weights
   select(-eggs, -eggs_by_sub)
+
+rm(asrp_spawn_fp, asrp_spawn_fp_curr, asrp_spawn_fp_hist, asrp_spawn_fp_raw, asrp_spawn_lr, asrp_spawn_lr_year, asrp_spawn_ss, asrp_fp_spawn, asrp_ss_spawn)
 

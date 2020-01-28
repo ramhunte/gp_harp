@@ -2,18 +2,9 @@
 #
 # Chehalis matrix-type life cycle model
 # 
-# To run the model: 
-# 1) Adjust model control parameters
-# 2) "Source" this script
+# To run the model, see run_noaa_chehalis_model.R
 #################################################
 
-
-# Model control parameters ----
-
-# Run model in sensitivity mode? 
-# Running in sensitivity mode will create only one ouput which is the sensitivity plot
-sensitivity.mode <- 'no' # 'yes' or 'no'
- 
 
 
 #--------   Use caution when adjusting code below here   -----------------------------------------------------------------
@@ -39,11 +30,15 @@ years <- 100
 # Number of model runs (iterations)
 if (run_stochastic_eggtofry == 'yes') {
   runs  <- 500
-} else{
+}
+
+if (sensitivity.mode == 'yes') {
+  runs <- 50
+} else {
   runs <- 2
 }
 
-if (sensitivity.mode == 'yes') {runs <- 100}
+
 
 # Load functions ----
 
@@ -77,11 +72,6 @@ if (sensitivity.mode == "no") {
     cat("SAR", "\t")
     cat("SAR.fry", "\t")
     cat("SAR.parr", "\t")
-  }
-  if (pop == "fall.chinook" | pop == "spring.chinook" |
-      pop == "coho") {
-    cat("RS.preH", "\t")
-    cat("RS.postH", "\t")
   }
   cat("scenario", "\n")
 } else {
@@ -120,20 +110,6 @@ for (n in 1:length(scenario.file)) {
       N <- N.new
     }
     
-    # Find true equilibrium before running 100 years - Takes a long time 
-    # Better solution?
-    # equilibrium <- FALSE 
-    # while (!equilibrium) {  
-    #   N.new <- subbasin(mat=N)
-    #   if (all(N.new["spawners",] == N["spawners",])) {
-    #     for (i in 1:5){
-    #       N <- N.new
-    #       N.new <- subbasin(mat=N)
-    #     }
-    #     equilibrium <- all(N.new["spawners", ] == N["spawners", ])
-    #   }
-    #   N <- N.new
-    # } # End burn in
     
     #  Sensitivity ----
     #  Randomly adjust params from hab scenario:
@@ -151,38 +127,6 @@ for (n in 1:length(scenario.file)) {
       # Store all model results in 5 dimensional array: runs (j) x years (i) x lifestage x DUs x scenarios (n)
       model.all[j,i,,,n] <- N 
       
-      if (pop == "fall.chinook" | pop == "spring.chinook") {
-        Spawners[i] <- sum(N['spawners', ])
-        # Total run recruits (preharvest), 
-        #  and spawner recruits (postharvest)
-        #  referenced to brood year
-        if (i > 2 && i <= (years - 1)) {
-          Recruits.preharvest[i - 2] <- sum(b2*N[2, ])
-          Recruits.postharvest[i - 2] <- sum(b2*N[2, ])*(S.up)*(S.sb)*(1 - (Hr*hr.adj)) }
-        if (i > 3 && i <= (years - 1)) {
-          Recruits.preharvest[i - 3] <- Recruits.preharvest[i - 3] + sum(b3*N[3, ])
-          Recruits.postharvest[i - 3] <- Recruits.postharvest[i - 3] + sum(b3*N[3, ])*(S.up)*(S.sb)*(1-(Hr*hr.adj))}
-        if (i > 4 && i <= (years - 1)) {
-          Recruits.preharvest[i - 4] <- Recruits.preharvest[i - 4] + sum(b4*N[4, ])
-          Recruits.postharvest[i - 4] <- Recruits.postharvest[i - 4] + sum(b4*N[4, ])*(S.up)*(S.sb)*(1-(Hr*hr.adj))}
-        if (i > 5 && i <= (years - 1)) {
-          Recruits.preharvest[i - 5] <- Recruits.preharvest[i - 5] + sum(b5*N[5, ])
-          Recruits.postharvest[i - 5] <- Recruits.postharvest[i - 5] + sum(b5*N[5, ])*(S.up)*(S.sb)*(1-(Hr*hr.adj))}
-        if (i > 6 && i <= (years - 1)) {
-          Recruits.preharvest[i - 6] <- Recruits.preharvest[i - 6] + sum(N[6, ])
-          Recruits.postharvest[i - 6] <- Recruits.postharvest[i - 6] + sum(N[6, ])*(S.up)*(S.sb)*(1-(Hr*hr.adj))}
-        }
-          
-      if (pop=="coho") {
-        Spawners[i] <- sum(N['spawners', ])
-        if (i > 2 && i <= (years - 1)) {
-          Recruits.preharvest[i - 2] <- sum(b2*N[2, ])
-          Recruits.postharvest[i - 2] <- sum(b2*N[2, ])*(S.up)*(S.sb)*(1-(Hr*hr.adj)) }
-        if (i > 3 && i <= (years - 1)) {
-          Recruits.preharvest[i - 3] <- Recruits.preharvest[i - 3] + sum(N[3, ])
-          Recruits.postharvest[i - 3] <- Recruits.postharvest[i - 3] + sum(N[3, ])*(S.up)*(S.sb)*(1-(Hr*hr.adj))}
-        }
-        
     }# end years loop, i
     
     # Fill array with sensitivity results. 
@@ -207,7 +151,7 @@ for (n in 1:length(scenario.file)) {
         S.up.adj,
         tr.geomean)
     } #ends fill coho sensitivty[] array
-
+    
     
     if (pop %in% c("fall.chinook", "spring.chinook") & sensitivity.mode == "yes") {
       sensitivity[j, , n] <- c(
@@ -235,7 +179,7 @@ for (n in 1:length(scenario.file)) {
         S.up.adj,
         tr.geomean)
     } #ends fill chinook sensitivty[] array
-
+    
   }# end runs loop, j
   
   
@@ -251,7 +195,7 @@ for (n in 1:length(scenario.file)) {
     
     mean()
   
-  if (pop == "fall.chinook" | pop == "spring.chinook" | pop == "coho") {
+  if (pop == "fall.chinook" | pop == "spring.chinook" | pop == "coho" | pop == 'chum') {
     RS.preH <- Recruits.preharvest / Spawners
     RS.postH <- Recruits.postharvest / Spawners
   }
@@ -262,7 +206,7 @@ for (n in 1:length(scenario.file)) {
     SAR.ratio <- sum(N['fry.migrants',]) / 
       sum(N['fry.migrants',], 
           N['sub.yr',]
-          ) 
+      ) 
     
     # % fry migrants in returning adults
     ratio <- sum(N['fry.migrants.bay',]) / 
@@ -273,8 +217,13 @@ for (n in 1:length(scenario.file)) {
     SAR.weighted <- (SAR.fry * SAR.ratio) + (SAR.parr * (1 - SAR.ratio))
   }
   
+  if (pop == 'chum') {
+    SAR.weighted <- SAR.fry
+  }
+  
   if (pop == "steelhead") {
-    SAR <- sum(N['total.run', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ])
+    SAR <- (sum(N[firstspawn.stages,] %>% colSums) /
+              sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ]))
     SAR <- SAR %>% round(3)
   }
   
@@ -290,11 +239,6 @@ for (n in 1:length(scenario.file)) {
       cat(round(SAR.weighted, 4), "\t")
       cat(round(SAR.fry, 5), "\t")
       cat(round(SAR.parr, 4), "\t", "\t")
-    }
-    if (pop == "fall.chinook" |
-        pop == "spring.chinook" | pop == "coho") {
-      cat(round(mean(RS.preH), 2), "\t", "\t")
-      cat(round(mean(RS.postH), 2), "\t", "\t")
     }
     cat(scenario.file[n], "\n")
   }
@@ -330,21 +274,6 @@ if (sensitivity.mode == 'no') {
 } # end if sensitivity.mode
 
 
-# Call spatial plots
-# if (save.plots == "yes" & sensitivity.mode == "no"){
-#   packages.spatial.plots <- c("gridExtra","rgdal", "rgeos", "maptools","TeachingDemos")
-#   invisible(lapply(packages.spatial.plots,pkgCheck))
-#   source("lcm/scripts/spatial.plots.R")
-# } 
-
-# 
-# # Call diagnostic plots
-# if (diag.plots == 'yes') {
-#   print('Creating spawner abundance plots')
-#   source("lcm/scripts/diagnostic.plots.R")
-# } 
-
-
 # Call S-R curve plots
 if (sensitivity.mode == 'no') {
   print('Creating spawner recruit (Pn and Cn) values')
@@ -358,7 +287,7 @@ invisible(lapply(packages.plots,pkgCheck))
 source("lcm/scripts/plots.R")
 
 # Call comparison plots
-if (!branch %in% c('dev','master')) {
+if (!branch %in% c('dev','master') & sensitivity.mode == 'no') {
   print('Compare current run to dev branch')
   source('lcm/scripts/compare.model.runs.R')
 }

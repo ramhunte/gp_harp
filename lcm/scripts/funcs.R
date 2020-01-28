@@ -194,7 +194,7 @@ if (pop == "coho") {
     mat.new['parr', ] <- parr 
     mat.new['smolts', ] <- smolts
     mat.new['total.run', ] <- (b2*mat['ocean1', ] + mat['ocean2', ]) # Total run
-    mat.new['spawners', ] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj)) #spawners
+    mat.new['spawners', ] <- mat.new['total.run', ] * S.up * (1 - Hr) #spawners
     
     mat.new['fry.movers', ] <- fry.distributed['after_movement', ] - fry.distributed['before_movement', ]
     mat.new['parr.movers', ] <- parr.distributed['after_movement', ] - parr.distributed['before_movement', ]
@@ -238,14 +238,14 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
     # Natal fry - All basins
-    natal.fry <- BH.func(S = pre.fry, p = weekly.surv^1, c = cap * 3) # Density dependent survival in fresh (first week after fry), 3x capacity
+    natal.fry <- BH.func(S = pre.fry, p = weekly.surv^1, c = cap * 2) # Density dependent survival in fresh (first week after fry), 3x capacity
     
     # Non natal fry 
     fry.migrants <- (pre.fry * weekly.surv) - natal.fry # Density dependent slice to create non natal fry
     
     # Natal sub yearlings - all basins
     natal.fry.distrib <- distribute.fish(fish.in = natal.fry, move.matrix = move.matrix.w.natal)
-    sub.yr.distrib <- BH.func(S = natal.fry.distrib['after_movement', ], p = weekly.surv.temp^11, c = cap * 3)
+    sub.yr.distrib <- BH.func(S = natal.fry.distrib['after_movement', ], p = weekly.surv.temp^11, c = cap * 2)
     sub.yr <- reallocate.fish(fish.in = sub.yr.distrib,
                               redist.matrix = natal.fry.distrib[return.rows, ])['after_movement', ]
     
@@ -263,7 +263,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     mat.new['ocean5', ] <- mat[5, ] * (1 - b5) * So.func(so.5[1], so.5[2]) # 6 year olds, ocean5
     
     mat.new['total.run',] <- (b2 * mat['ocean1', ] + b3 * mat['ocean2', ] + b4 * mat['ocean3', ] + b5 * mat['ocean4',] + mat['ocean5', ]) #Total run
-    mat.new['spawners',] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj)) # Spawners
+    mat.new['spawners',] <- mat.new['total.run', ] * S.up * (1 - Hr) # Spawners
     
     mat.new['eggs', ] <- eggs
     mat.new['pre.fry', ] <- pre.fry 
@@ -301,47 +301,76 @@ if (pop == "steelhead") {
       fecund <- fecund.first
     } else {
       fecund <- fecund.first * wts.firstspawn + fecund.respawn * wts.respawn
+      fecund[is.na(fecund)] <- 0
     }
     
-    # 1st year
     # Weight egg cap by number of respawners
     egg.cap.wt <- (egg.cap / fecund.first) * fecund
     
+    
+    # 1st year
     eggs <- eggs.func(NOR.total, egg.total = egg.cap.wt, fecund = fecund) # Hockey stick
     pre.fry <- eggs*egg.fry.surv # Eggs --> freshly emerged fry
-    
-    # Oversummer
+
     parr <- BH.func(pre.fry, p = parr.surv, c = parr.cap)# summer parr
     
-    # Overwinter
-    age1 <- BH.func(parr, p = first.winter.surv, c = first.winter.cap) # overwinter
+    parr.distributed <- distribute.fish(fish.in = parr, 
+                                        move.matrix = sweep(move.matrix.spring, 
+                                                            MARGIN = 2, 
+                                                            percent.fall.migrants, 
+                                                            '*'))
     
-    # 2% of fish smolt after the first winter, 98% remain for another year (age 1, will become age 1+ the next year)
-    mat.new['age1.smolts', ] <- age1 * prop.age1.smolts # 2% smolt
-    mat.new['age1', ]        <- age1 * (1 - prop.age1.smolts) # 98% stay to rear the next year
+    age1 <- BH.func(parr.distributed['after_movement', ], p = first.winter.surv, c = first.winter.cap) # overwinter
     
-    # 2nd year, age 1+, Start with previous year's fish
-    #Spring redistribution of 1+ (0, 20, 50%, depending on basin size)
-    age1.plus <- distribute.fish(fish.in = mat['age1', ], 
-                                 move.matrix = sweep(move.matrix.spring, 
-                                                     MARGIN = 2, 
-                                                     percent.spring.migrants, 
-                                                     '*'))
     
-    age1.plus.distributed <- BH.func(age1.plus['after_movement', ], p = second.summer.surv, c = second.summer.cap)# end of 2nd summer
-    age2 <- BH.func(age1.plus.distributed, p = second.winter.surv, c = second.winter.cap) # in their rearing basins
-    mat.new['age2.smolts', ] <- reallocate.fish(fish.in = age2,
-                                                redist.matrix = age1.plus[return.rows, ])['after_movement', ] # Redistribute to natal basins # 1 year old smolts
+    # Age1 smolts leave, age1 stay for another year
+    age1.smolts               <- age1 * prop.age1.smolts       
+    mat.new['age1.stayers', ] <- age1 * (1 - prop.age1.smolts)
     
-    age1.bay <- mat.new['age1.smolts', ] * bay.surv # age1 smolts after bay
-    age2.bay <- mat.new['age2.smolts', ] * bay.surv # age2 smolts after bay
+    
+    # 2nd year, age 1+, Start with previous year's fish - first fish redistribute to MS, then go through summer and winter
+    # Spring redistribution of 1+ (0, 20, 50%, depending on basin size)
+    age1.stayers.dist <- distribute.fish(fish.in = mat['age1.stayers', ], 
+                                         move.matrix = sweep(move.matrix.spring, 
+                                                             MARGIN = 2, 
+                                                             percent.spring.migrants, 
+                                                             '*'))
+    
+    age1.plus <- BH.func(age1.stayers.dist['after_movement', ], p = second.summer.surv, c = second.summer.cap)# end of 2nd summer, 1.5 years old
+    age2 <- BH.func(age1.plus, p = second.winter.surv, c = second.winter.cap) # End of 2nd winter, 2 yo
+    
+    age2.smolts               <- age2 * prop.age2.smolts
+    mat.new['age2.stayers', ] <- age2 * (1 - prop.age2.smolts)
+    
+    
+    # 3rd year, age 2+ stayers from previous year rear for one more year, then all smolt
+    age3 <- BH.func(mat['age2.stayers', ], p = second.summer.surv, c = second.summer.cap)# in their rearing basins
+    age3.smolts <- BH.func(age3, p = second.winter.surv, c = second.winter.cap)# in their rearing basins
+    
+    
+    # Reallocate fish back into natal basins -- helps for keeping track in the ocean
+    age2.smolts.realloc1 <- reallocate.fish(fish.in = age2.smolts,
+                                           redist.matrix = age1.stayers.dist[return.rows, ])['after_movement', ]
+    age2.smolts.realloc <- reallocate.fish(fish.in = age2.smolts.realloc1,
+                                           redist.matrix = parr.distributed[return.rows, ])['after_movement', ]
+    
+    age3.smolts.realloc1 <- reallocate.fish(fish.in = age3.smolts,
+                                           redist.matrix = age1.stayers.dist[return.rows, ])['after_movement', ]
+    age3.smolts.realloc <- reallocate.fish(fish.in = age3.smolts.realloc1,
+                                            redist.matrix = parr.distributed[return.rows, ])['after_movement', ]
+    
+    
+    age1.bay <- age1.smolts         * bay.surv # age1 smolts after bay
+    age2.bay <- age2.smolts.realloc * bay.surv # age2 smolts after bay
+    age3.bay <- age3.smolts.realloc * bay.surv # age3 smolts after bay
 
+    
     # Ocean stages - before any spawning
-    mat.new['age2.ocean', ] <-   age1.bay * So.func(so.min, so.max) * age1.ocean.correction # age1 smolts 1st ocean year
+    mat.new['age2.ocean', ] <-   age1.bay * So.func(so.min, so.max) # age1 smolts 1st ocean year
     mat.new['age3.ocean', ] <-  (mat['age2.ocean', ] + age2.bay) * So.func(so.min, so.max) # age1 smolts 2nd ocean year, age2 smolts 1st ocean year
-    mat.new['age4.ocean', ] <-   mat['age3.ocean', ] * (1 - b3)  * So.func(so.min, so.max) # age1 smolts 3rd ocean year, age2 smolts 2nd ocean year
-    mat.new['age5.ocean', ] <-   mat['age4.ocean', ] * (1 - b4)  * So.func(so.min, so.max) # age1 smolts 4th ocean year, age2 smolts 3rd ocean year
-    mat.new['age6.ocean', ] <-   mat['age5.ocean', ] * (1 - b5)  * So.func(so.min, so.max) # age1 smolts 5th ocean year, age2 smolts 4th ocean year
+    mat.new['age4.ocean', ] <-  (mat['age3.ocean', ] + age3.bay) * (1 - b3)  * So.func(so.min, so.max) # age1 smolts 3rd ocean year, age2 smolts 2nd ocean year, age3 smolts 1st ocean year
+    mat.new['age5.ocean', ] <-   mat['age4.ocean', ] * (1 - b4)  * So.func(so.min, so.max) # age1 smolts 4th ocean year, age2 smolts 3rd ocean year, age3 smolts 2nd ocean year
+    mat.new['age6.ocean', ] <-   mat['age5.ocean', ] * (1 - b5)  * So.func(so.min, so.max) # age1 smolts 5th ocean year, age2 smolts 4th ocean year, age3 smolts 3rd ocean year
     
     # Adult returns
     mat.new['age3.firstspawn', ] <- mat['age3.ocean', ] * b3
@@ -360,20 +389,73 @@ if (pop == "steelhead") {
     mat.new['eggs', ] <- eggs
     mat.new['pre.fry', ] <- pre.fry 
     mat.new['parr', ] <- parr 
-    # mat.new['age1', ] <- age1
-    # mat.new['age1.smolts', ] <- age1.smolts
-    # mat.new['age1.plus', ] <- age1.plus
-    # mat.new['age2.smolts', ] <- age2.smolts
+    mat.new['age1', ] <- age1
+    mat.new['age1.smolts', ] <- age1.smolts
+    mat.new['age2.smolts', ] <- age2.smolts
+    mat.new['age3.smolts', ] <- age3.smolts
     # NOTE: How do we turn "off" harvest when we have kelts that have been subject to harvest twice, once as first time returning spawners
     # and again as returning respawners?
     mat.new['total.run', ] <- mat.new[c(firstspawn.stages, kelt.stages), ] %>% colSums() 
-    mat.new['spawners', ] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj))
+    mat.new['spawners', ] <- mat.new['total.run', ] * S.up * (1 - Hr)
   
     N <- mat.new
-    N[is.na(N)] <- 0 # convert NAN to zero
     N[N < 0 & N > -1] <- 0 # convert fractional negative fish to zero (some very small negative numbers from movement function)
     N
     
   } #End sub basin function 
   
 } #end if() steelhead
+
+# Main chum function -----
+#Lifestages
+# 1)  Eggs
+# 2)  Pre Fry
+# 4)  Fry/Smolts
+# 5)  Ocean0 mat[1],
+# 6)  Ocean1 mat[2,]
+# 7)  Ocean2 mat[3,]
+# 8)  Total Run
+# 9)  Spawners
+
+if (pop == 'chum') {
+  
+  subbasin <- function(mat = N, ...){
+    
+    NOR.total <- mat['spawners',]
+    #NOR.total <- N["spawners",] # Run this line to be able to step through func
+    
+    eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
+    # eggs <- BH.func(S = NOR.total * .5, p = fecund, c = egg.cap) # B-H
+    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
+    
+    fry <- BH.func(pre.fry, p = fry.colonization.surv, c = fry.colonization.cap)
+    
+    fry.migrant <- fry * fry.migrant.surv
+
+    
+    # Apply bay survival (ds migration, delta, bay, nearshore productivity)
+    fry.migrant.bay <- fry.migrant * bay.surv
+    
+    # Ocean survival
+    mat.new['ocean0', ] <- fry.migrant.bay # smolts leaving bay, ocean0
+    mat.new['ocean1', ] <- mat[1, ] * So.func(so.1[1], so.1[2]) # 2 year olds, ocean1
+    mat.new['ocean2', ] <- mat[2, ] * (1 - b2) * So.func(so.2[1], so.2[2]) # 3 year olds, ocean2
+    mat.new['ocean3', ] <- mat[3, ] * (1 - b3) * So.func(so.3[1], so.3[2]) # 4 year olds, ocean3
+    mat.new['ocean4', ] <- mat[4, ] * (1 - b4) * So.func(so.4[1], so.4[2]) # 5 year olds, ocean4
+    
+    mat.new['total.run',] <- (b2 * mat['ocean1', ] + b3 * mat['ocean2', ] + b4 * mat['ocean3', ] + b5 * mat['ocean4',]) #Total run
+    mat.new['spawners',] <- mat.new['total.run', ] * (S.up) * (S.sb) * (1 - (Hr * hr.adj)) # Spawners
+    
+    mat.new['eggs', ] <- eggs
+    mat.new['pre.fry', ] <- pre.fry 
+    mat.new['fry', ] <- fry
+    mat.new['fry.migrant', ] <- fry.migrant
+    # mat.new['estuary.resident', ] <- estuary.resident # 10 week survival in estuary
+    mat.new['fry.migrant.bay', ] <- fry.migrant.bay
+
+    N <- mat.new
+    N
+  } # end subbasin func
+  
+  
+} # end if() chum

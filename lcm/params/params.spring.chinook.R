@@ -11,36 +11,6 @@ pop.init <- 3000
 fecund <- 5400
 
 
-
-#Egg capacity --------------------------------------------------------------------------------------------------------------------
-# Values calculated using GIS
-
-egg.cap.adj <- 1.0 #
-
-
-
-# Egg-fry survival ---------------------------------------------------------------------------------------------------------------
-# Values calculated using GIS
-
-egg.fry.surv.adj <- 1.0 #egg to fry survival adjustment
-
-
-
-# Fry to migrants survival & capacity (summer) --------------------------------------------------------------------------------------------
-# Values calculated in GIS
-
-sub.yr.surv.adj <- 1 #summer surv, sub-yearling adjustment
-sub.yr.cap.adj <- 1.0 #summer capacity adjustment. x3 to represent 3 cohorts of fish emerging over ~24 weeks and staying for ~8 weeks
-
-fry.surv.adj <- 1 
-
-
-
-# Delta survivals and capacities --------------------------------------------------------------------------------------------------
-
-
-
-
 # Bay survival ------------------------------------------------------------------------------------------------------------
 # Capacity is assumed unlimited (transient)
 # stochastic survival between min and max
@@ -127,22 +97,3 @@ SAR.fry <- (so_w * bay.fry.surv)[1]
 # Harvest rate -------------------------------------------------------------------------------------------------------------
 
 Hr <- 0#.056 #  latest estimate from harvest spreadsheet (from Eric Walther, May 2017; average)
-
-# harvest adjustment
-hr.adj <- 1.0 # rep(1.0, num.reaches)
-
-
-
-
-# Upstream survival ---------------------------------------------------------------------------------------------------------
-# USGS paper on Spring Chinook radio tracking (tagged 12 fish and 1 died)
-# Calculated in the hab model using temperature and barriers
-S.up.curr <- 1.0  
-S.up.hist <- 1.0
-
-S.up.adj <- 1.0
-
-
-# Prespawn survival ---------------------------------------------------------------------------------------------------------
-S.sb <- 1.0
-

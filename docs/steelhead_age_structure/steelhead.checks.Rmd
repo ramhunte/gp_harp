@@ -1,0 +1,217 @@
+---
+title: "steelhead.age.structure.and.SAR"
+author: "nwfsc"
+header-includes:
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \usepackage{subfig}
+- \usepackage{float}
+#- \fancyhead[CO,CE]{\bf{\emph{DRAFT}}}
+- \fancyhead[L]{}
+- \fancyhead[R]{}
+- \fancyfoot[C]{\bf{\emph{DRAFT}}}
+- \fancyfoot[R]{\thepage}
+- \raggedright
+- \setlength{\parindent}{1em}
+- \setlength{\parskip}{1em}
+- \usepackage{lineno}
+- \usepackage{units}
+- \makeatletter\renewcommand*{\fps@figure}{H}\makeatother
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: yes
+    toc: yes
+    toc_depth: 6
+  html_document:
+    depth: 6
+    number_sections: yes
+    theme: readable
+    toc: yes
+    toc_float:
+      collapsed: yes
+  word_document:
+    toc: yes
+---
+
+***`r format(Sys.time(), "%Y %B %d %X %Z")`***
+
+```{r load-tidyverse, echo=FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+```
+
+
+# Examining age structure
+
+First, we look at how closely the Chehalis winter steelhead LCM adheres to observations from fisheries data collections from the Quinault Indian Nation. Below are comparisons of ages of first-time spawning winter steelhead.
+
+A crosswalk between definition of age terms is needed before proceeding. The QIN data names fish ages according to X.Y, where X = freshwater age and Y = saltwater age. In their data, they define that an age of 2.1 corresponds to a 2 year smolt outmigrant (2 freshwater years), followed by 1 saltwater year with migration to freshwater in winter, resulting in a 4 year old spawner. In the NOAA LCM, this would correspond to a 2.2, which is also a 4 year old spawner. Below, we translate QIN age into the NOAA LCM definition.
+
+The winter steelhead NOAA LCM must be run first (or load a saved workspace that includes outputs from a run of the winter steelhead LCM) before this do
+
+```{r run-steelheadLCM}
+mypath <- "~/jorgensen/data/R/chehalis.LCM/chehalis.asrp/outputs/steelhead/lcm/"
+load(paste0(mypath,"steelhead.age.test.11.01.2019.RData"))
+
+```
+
+```{r calculate-age-info, echo=FALSE}
+# Age composition smolt ages in adult return
+
+#    proportions of smolts going out of Chehalis basin, by age:
+age1smolts.firstspawn <- sum(N['age1.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age2smolts.firstspawn <- sum(N['age2.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age3smolts.firstspawn <- sum(N['age3.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+
+#    number age in adult returns:
+age3.firstspawn.age1.2 <- sum(N['age3.ocean', ]) * b3 * sum(N['age1.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ]) # 100% age1 and age2 smolts
+age3.firstspawn.age2.1 <- sum(N['age3.ocean', ]) * b3 * sum(N['age2.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ])# 100% age1 and age2 smolts
+
+age4.firstspawn.age1.3 <- sum(N['age4.ocean', ]) * b4 * sum(N['age1.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age4.firstspawn.age2.2 <- sum(N['age4.ocean', ]) * b4 * sum(N['age2.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age4.firstspawn.age3.1 <- sum(N['age4.ocean', ]) * b4 * sum(N['age3.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+  
+age5.firstspawn.age1.4 <- sum(N['age5.ocean', ]) * b5 * sum(N['age1.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age5.firstspawn.age2.3 <- sum(N['age5.ocean', ]) * b5 * sum(N['age2.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age5.firstspawn.age3.2 <- sum(N['age5.ocean', ]) * b5 * sum(N['age3.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+
+age6.firstspawn.age1.5 <- sum(N['age6.ocean', ]) * 1 * sum(N['age1.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age6.firstspawn.age2.4 <- sum(N['age6.ocean', ]) * 1 * sum(N['age2.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+age6.firstspawn.age3.3 <- sum(N['age6.ocean', ]) * 1 * sum(N['age3.smolts', ]) / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ])
+
+total.all.ages <- sum(#NA, #1.1
+                      age3.firstspawn.age1.2,
+                      age4.firstspawn.age1.3,
+                      age5.firstspawn.age1.4,
+                      age6.firstspawn.age1.5,
+                      
+                      age3.firstspawn.age2.1,
+                      age4.firstspawn.age2.2,
+                      age5.firstspawn.age2.3,
+                      age6.firstspawn.age2.4,
+                      
+                      age4.firstspawn.age3.1,
+                      age5.firstspawn.age3.2,
+                      age6.firstspawn.age3.3
+                      )
+
+prop.total.all.ages <- c(  age3.firstspawn.age1.2,
+                           age4.firstspawn.age1.3,
+                           age5.firstspawn.age1.4,
+                           age6.firstspawn.age1.5,
+                           
+                           age3.firstspawn.age2.1,
+                           age4.firstspawn.age2.2,
+                           age5.firstspawn.age2.3,
+                           age6.firstspawn.age2.4,
+                           
+                           age4.firstspawn.age3.1,
+                           age5.firstspawn.age3.2,
+                           age6.firstspawn.age3.3,
+                           NA# for their 3.3 (corresponding to our 3.4, we don't have that)
+                         )/total.all.ages
+
+# Checking to see if math works out right, looks like 
+# total.all.ages  is the same as this below:
+# sum(N[firstspawn.stages,] %>% colSums)
+
+# Age composition from L Lestelle (QIN data):
+
+QIN.age.comp <- c(0.007,# 1.1, 1.2
+                  0.010,# 1.2, 1.3
+                  0.001,# 1.3, 1.4
+                  NA, # 1.4, 1.5
+                  NA,# need for our 2.1
+                  0.469,# 2.1, 2.2
+                  0.388,# 2.2, 2.3
+                  0.021,# 2.3, 2.4
+                  NA,# need for our 3.1
+                  0.001,# 3.1, 3.2
+                  0.069,# 3.2, 3.3
+                  0.032# 3.3
+                  )
+age.comparison <- data.frame(lcm.age = c("1.2", "1.3", "1.4", "1.5",
+                                      "2.1",  
+                                      "2.2", "2.3", "2.4",
+                                      "3.1", 
+                                      "3.2", "3.3", NA),
+                             qin.age = c("1.1", "1.2", "1.3", NA,
+                                          NA, 
+                                          "2.1",  "2.2", "2.3",
+                                          NA,
+                                          "3.1", "3.2", "3.3"),
+                             lcm.prop = round(prop.total.all.ages, digits=3), 
+                             QIN.prop = QIN.age.comp, 
+                             lcm.minus.qin = prop.total.all.ages - QIN.age.comp,
+                             stringsAsFactors = FALSE)
+
+```
+
+
+
+```{r lineplot-age-structure, echo=FALSE, fig.cap="Line plot comparison of ages of first-time Chehalis winter steelhead observations from QIN fisheries data and from output from the NOAA LCM.", fig.align='center'}
+plot(1:length(age.comparison$lcm.age),
+     age.comparison$lcm.prop, type="b",
+     ylab="Proportion", xlab="Age (Fresh.Salt; LCM age method)",
+     ylim=c(0,0.6), axes=FALSE,
+     yaxs="i", xpd=NA,
+     main="Chehalis Winter steelhead\nadult return age structure (first-time spawners)")
+axis(1, at=1:length(age.comparison$lcm.age), c(age.comparison$lcm.age))
+axis(1, at=12, "3.4")
+axis(2, las=1)
+box()
+points(1:length(age.comparison$lcm.age), age.comparison$QIN.prop, 
+       pch=21, bg="black", xpd=NA)
+text("QIN-NA", x=c(4, 5, 9), y=c(0.05, 0.02, 0.01), cex=0.6)
+text("LCM-NA", x=12, y=0.02, cex=0.6)
+legend("topleft",
+       legend=c("QIN mean observed 1981-2019", "LCM model estimates"),
+       pch=21, pt.bg=c("black", "white"), bty = "n")
+
+```
+
+
+```{r lineplot-age-structure-diff, echo=FALSE, fig.cap="Line plot differences of ages of first-time Chehalis winter steelhead observations from QIN fisheries data and from output from the NOAA LCM.", fig.align='center'}
+plot(1:length(age.comparison$lcm.age), age.comparison$lcm.minus.qin,
+     type="b", axes=FALSE, ylim=c(-0.1, 0.1),
+     xlab="Age (Fresh.Salt; LCM age method)",
+     ylab="LCM age prop. - QIN age prop.")
+abline(h=0, lty=2)
+axis(1, at=1:length(age.comparison$lcm.age), age.comparison$lcm.age)
+axis(1, at=12, "3.4")
+axis(2, las=1)
+```
+
+The following is a representation in barplot form.
+
+```{r barplot-age-structure, echo=FALSE, fig.cap="Barplot comparison of ages of first-time Chehalis winter steelhead observations from QIN fisheries data and from output from the NOAA LCM.", fig.align='center'}
+# barplot
+bp1 <- barplot(t(age.comparison[,c(4,3)]), beside=TRUE, las=1,
+               ylab="Proportion", xlab="Age (Fresh.Salt; LCM age method)",
+               ylim=c(0,0.6), col=c("black", "white"),
+               main="Chehalis Winter steelhead\nadult return age structure (first-time spawners)")
+#bp1
+axis(1, at=apply(bp1, 2, median), age.comparison$lcm.age)
+axis(1, at=median(bp1[,12]), "3.4")
+legend("topleft",
+       legend=c("QIN mean observed 1981-2019", "LCM model estimates"),
+       fill=c("black", "white"), bty = "n")
+
+```
+
+
+There are some ages for which each data source does not have representations. For example, QIN observations include age 3.4, corresponding to a 7 year old first-time spawner, and there is no NOAA LCM equivalent. The NOAA LCM does include 7 and 8 year olds that are re-spawners. And, the NOAA LCM includes some ages that the QIN data do not include: 1.5, 2.1, and 3.1 first-time spawners.
+
+# SAR
+
+```{r SAR-calcs, echo=TRUE}
+# SAR
+#  including kelts
+(sum(N['total.run', ]) 
+ / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ]))
+#  excluding kelts
+(sum(N[firstspawn.stages,] %>% colSums) 
+  / sum(N['age1.smolts', ] + N['age2.smolts', ] + N['age3.smolts', ]))
+
+
+```

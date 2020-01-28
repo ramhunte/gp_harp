@@ -1,0 +1,97 @@
+---
+title: "Proposal to use new prespawn function"
+author: "Caleb Fogel"
+date: "October 9, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+The `bowerman_ps` function comes from `Bowerman, 2018, Prespawn Mortality of Female Chinook Salmon Increases with Water Temperature and Percent Hatchery Origin`.  The inputs for this function are 7-DADM temperature (t, °C) and percent hatchery origin fish (phos).  For our purposes we assume 0% hatchery fish, as we do not model hatchery origin fish in the NOAA model. This model was developed from observations within the Willamette River basin, Oregon.
+
+First, we model prespawn mortality (psm), which is what they model in the report:
+
+```{r}
+bowerman_psm <- function(t,
+                        phos = 0,
+                        b0 = -9.053,
+                        b1 = .387,
+                        b2 = .029) {
+  logit_psm <- b0 + b1 * t + b2 * phos
+  psm <- plogis(logit_psm)
+  plot(t, psm, type = 'l')
+}
+bowerman_psm(t = 12:28)
+```
+
+Next, we model prespawn survival, which is simply `1 - psm).  This is what we use to calculate prespawn survival in the NOAA model:
+
+```{r}
+bowerman_ps <- function(t,
+                        phos = 0,
+                        b0 = -9.053,
+                        b1 = .387,
+                        b2 = .029) {
+  logit_pss <- b0 + b1 * t + b2 * phos
+  pss <- 1 - plogis(logit_pss)
+  
+  plot(t, pss, type = 'l', xaxt = 'n', ylab = '')
+  axis(side = 1, at = c(12:28))
+  title(xlab = 'Temperature (Maximum 7-DADM, in °C)', ylab = 'Productivity Multiplier')
+  
+}
+bowerman_ps(t = 12:28)
+```
+
+We model both prespawn mortality and prespawn survival above from 12° - 28° in order to include all temperature values that we experience in the Chehalis River basin in the NOAA model
+
+Next we plot a comparison between the Bowerman, Cramer, and Willamette functions:
+
+```{r}
+bowerman_ps.alt <- function(t,
+                            phos = 0,
+                            b0 = -9.053,
+                            b1 = .387,
+                            b2 = .029) {
+  logit_pss <- b0 + b1 * t + b2 * phos
+  pss <- 1- plogis(logit_pss)
+  plot(t, pss, type = 'l', ylim=c(0,1), las=1)
+}
+
+bowerman_ps.alt(t = 12:28)
+
+willamette <- function(t,
+                       phos=0,
+                       b0 = -13.2061,
+                       b1 = 0.7919,
+                       b2 = 2.0923) {
+  # temps.converted <- -3.277448 + 1.011789*temps
+  logit_pss <- b0 + b1 * (-3.277448 + 1.011789*t) + b2 * phos
+  pss <- 1- plogis(logit_pss)
+  pss
+}
+
+lines(12:28, willamette(t = 12:28), col="blue")
+
+cramer.prespawn <- function(t){
+  # cites go to Cramer 2001
+  # Cramer, S. 2001. The relationship of stream habitat features to potential
+  # for production of four salmonid species. S.P. Cramer & Associates, Inc.,
+  # February 2001 report to Oregon Building Industry Association, Gresham, OR.
+  # where x = prespawning temperature
+  # Applications where it's been used in LCMs:
+  # mean of daily max 15 July through 15 August; Bartz et al. 2006; Scheuerell et al. 2006
+  # mean of daily max Aug. - Sept.; Jorgensen et al. 2009; Honea et al. 2009; Honea et al. 2016
+  y <- rep(NA, length(t))
+  for(i in 1:length(t)){
+    if (t[i] < 16) {y[i] <- 1}
+    if (t[i] >= 16 & t[i] < 22.6) {y[i] <- 1 - 0.15*(t[i] - 16)}
+    if (t[i] >= 22.6) {y[i] <- 0.01}
+  }
+  y
+}
+lines(12:28, cramer.prespawn(t=12:28), col="purple")
+
+```

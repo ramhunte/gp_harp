@@ -12,9 +12,18 @@
 #    Choose a species to run.  Options are spring chinook, fall chinook, coho, steelhead or all_species
 #    WARNING - the contents of the outputs folder will be deleted and recreated
 
-# Prompt #3 -- Would you like to run asrp scenarios?
-#    Choose if you want to run the model including the ASRP restoration scenarios (e.g. ASRP Scenario 1 - 2040)
-#    If 'no', only the diagnostic scenarios will be run
+# Prompt #3 -- Would you like to run stochastic egg to fry survival?
+#    Choose if you want to run the model including the schostic effect of flow
+#    If 'no', the model will be run in a steady state
+
+# Prompt #4 -- Would you like to run single action scenarios?
+#    Choose if you want to run additional scenarios testing the impact of each ASRP
+#    action one at a time
+#    If 'no', the model will run diagnostic and full ASRP scenarios only
+
+# Prompt #5 -- Would you like to run in sensitivity mode?
+#    Choose if you want to run the sensitivity analysis
+#    If 'no', the model will run diagnostic and full ASRP scenarios only
 
 
 
@@ -37,13 +46,8 @@ if (clear_env == 'yes') {
 }
 
 # Which species to run?
-spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead')
+spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum')
 fishtype <- spp[menu(spp,title = "Choose a species", graphics = TRUE)]
-
-
-# Run the ASRP scenarios?
-run_asrp_query <- c('yes', 'no')
-run_asrp <- run_asrp_query[menu(run_asrp_query, title = "Run ASRP scenarios?", graphics = TRUE)]
 
 
 # Run stochastic egg to fry ?
@@ -54,8 +58,13 @@ run_stochastic_eggtofry <- run_stochastic_eggtofry_query[menu(run_stochastic_egg
 run_single_action_query <- c('no', 'yes')
 run_single_action <- run_single_action_query[menu(run_single_action_query, title = 'Run single action scenarios?', graphics = TRUE)]
 
+# Run sensitivity mode?
+run_sensitivity_query <- c('no', 'yes')
+sensitivity.mode <- run_single_action_query[menu(run_single_action_query, title = 'Run sensitivity mode?', graphics = TRUE)]
+
+
 # Store branch name ----
-branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
+branch <- system("git rev-parse --abbrev-ref HEAD", intern = TRUE)
 
 
 # Load packages ----
@@ -74,6 +83,23 @@ invisible(
   )
 )
 
+# Run function to determine operating system of computer.  This is used for the scripts that compare the current branch to dev
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+os <- get_os()
 
 
 # Source the scripts ----
@@ -82,7 +108,7 @@ if (fishtype == 'all_species') {
   
   unlink("outputs", recursive = TRUE) # WARNING -- If running all species the entire outptus folder will be deleted
   
-  for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')) {
+  for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum')) {
     fishtype <- s
     source("hab/R_files/0-Run_Habitat_Model.R")
     source("lcm/LCM.sim.R")
@@ -101,14 +127,11 @@ if (fishtype == 'all_species') {
 # Call plot of observed vs modeled spawner return ----
 
 # Check to see if the necessary files exist
-chk_files <- lapply(spp, function(s) {
-  fp <- file.path('outputs', s, 'lcm')
+chk_files <- lapply(spp[-1], function(s) {
   
-  f <- list.files(fp, 
-                  pattern = 'abundance_by_sub', # Name of csv with LCM spawner data
-                  full.names = TRUE)
+  species <- str_replace(s, '_', '.')
+  file.path('outputs', s, 'lcm', paste0(species, '_abundance_by_subbasin.csv')) %>% file.exists
   
-  file.exists(f)
 }) %>%
   unlist
 
@@ -117,5 +140,7 @@ chk_files <- lapply(spp, function(s) {
 if (all(chk_files)) {
   print('Creating plot of observed vs modeled abundance')
   source('lcm/scripts/plot_observed_vs_modeled.R')
+} else {
+  print('Skipping plot of observed vs modeled')
 }
 

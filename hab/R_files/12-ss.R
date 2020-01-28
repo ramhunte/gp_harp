@@ -34,7 +34,7 @@ asrp_ss_scenario <- lapply(scenario.nums, function(y) {
     mutate(Scenario_num = y)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios)),
+  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
              year %in% c(2040, 2080)))
 
@@ -63,7 +63,7 @@ asrp_ss <- asrp_ss_scenario %>%
                width_w_curr),
       year == 2040 ~ width_w_2040,
       year == 2080 ~ width_w_2080),
-    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook"), # Added because of spring chinook w/temp survival 
+    tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook", 'chum'), # Added because of spring chinook w/temp survival 
                            1,
                            tempmult.asrp),
     width_s = ifelse(is.na(width_s),
@@ -129,9 +129,14 @@ if (fishtype %in% c("spring_chinook", "fall_chinook")) {
 }
 
 asrp_ss_mvmt <- asrp_ss %>%
-  filter(!Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
+  filter(Scenario_num %in% single_action_mvmt_scenarios)
 
 if (run_single_action == 'no') {
   asrp_ss %<>%
-    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", diag_scenarios))
+    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }
+
+rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year, edt_width)
+
+asrp_ss_spawn %<>%
+  filter(slope < .03)
