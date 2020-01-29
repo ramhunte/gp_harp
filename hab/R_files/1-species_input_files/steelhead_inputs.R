@@ -10,10 +10,10 @@ Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "B
 life.stage = c(rep("summer", times = length(Habitat)/4), rep("winter", times = length(Habitat)/4), rep("summer.2", times = length(Habitat)/4), rep("winter.2", times = length(Habitat)/4))
 
 year2_scalar = 0.2 # density scalar for juveniles in year 1 vs year 2
-Density = c(11000, 6400, 7300, 7300, 0, 4200, 7000, 5300, 0, 0, 0, 0, 0, 0, 7000, 5300, 0, 0, .055, .055, .055, .055, .055, 
-            7800, 90, 1800, 1800, 0, 300, 1600, 1100, 300, 0, 0, 0, 300, 300, 1600, 1100, 0, 0, .039, .039, .039, .039, .039,
-            3400, 2000, 2300, 2300, 0, 1300, 1800, 700, 700, 0, 0, 0, 700, 700, 1800, 700, 0, 0, .095, .095, .095, .095, .095, 
-            2400, 0, 600, 600, 0, 100, 900, 400, 100, 0, 0, 0, 100, 100, 900, 400, 0, 0, .068, .068, .068, .068, .068)
+Density = c(12700, 6400, 15900, 15900, 0, 12700, 7000, 5300, 0, 0, 0, 0, 0, 0, 7000, 5300, 0, 0, 640, 640, 640, 640, 640, 
+            3100, 3100, 3100, 3100, 0, 0, 1600, 1100, 300, 0, 0, 0, 300, 300, 1600, 1100, 0, 0, 160, 160, 160, 160, 160,
+            3900, 2000, 4900, 4900, 0, 3900, 1800, 700, 700, 0, 0, 0, 700, 700, 1800, 700, 0, 0, 1100, 1100, 1100, 1100, 1100, 
+            960, 960, 960, 960, 0, 0, 900, 400, 100, 0, 0, 0, 100, 100, 900, 400, 0, 0, 270, 270, 270, 270, 270)
 density <- data.frame(Habitat, life.stage, Density)
 
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond", "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", 
