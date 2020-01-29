@@ -33,16 +33,6 @@ if (sensitivity.mode == 'no') {
            color = ifelse(is.na(color),'red',as.character(color))) %>%
     select(n, scenario.label,color)
   
-  # Save summary output
-  spawners %>%
-    group_by(scenario.label) %>%
-    summarize(n = mean(n,na.rm = T)) %>%
-    mutate(scenario.label = as.character(scenario.label)) %>%
-    inner_join(.,data.frame(habitat.file,scenario = scenario.file) %>%
-                 mutate(scenario = as.character(scenario)) %>%
-                 left_join(.,plot.params)) %>%
-    select(scenario,scenario.label,habitat.file,n) %>%
-    write.csv(.,file.path(outputs_lcm,paste0('spawners_',pop,'.csv')))
   
   # Organize labels to plot
   scenario.label <- plot.params$scenario.label[plot.params$scenario.label %in% unique(spawners$scenario.label)]

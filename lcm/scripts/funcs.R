@@ -235,14 +235,14 @@ if (pop == "fall_chinook" | pop == "spring_chinook") {
     pre.fry <- eggs * egg.fry.surv * ef_flow
     
     # Natal fry - All basins
-    natal.fry <- BH.func(S = pre.fry, p = weekly.surv^1, c = cap * 3) # Density dependent survival in fresh (first week after fry), 3x capacity
+    natal.fry <- BH.func(S = pre.fry, p = weekly.surv^1, c = cap * 2) # Density dependent survival in fresh (first week after fry), 3x capacity
     
     # Non natal fry 
     fry.migrants <- (pre.fry * weekly.surv) - natal.fry # Density dependent slice to create non natal fry
     
     # Natal sub yearlings - all basins
     natal.fry.distrib <- distribute.fish(fish.in = natal.fry, move.matrix = move.matrix.w.natal)
-    sub.yr.distrib <- BH.func(S = natal.fry.distrib['after_movement', ], p = weekly.surv.temp^11, c = cap * 3)
+    sub.yr.distrib <- BH.func(S = natal.fry.distrib['after_movement', ], p = weekly.surv.temp^11, c = cap * 2)
     sub.yr <- reallocate.fish(fish.in = sub.yr.distrib,
                               redist.matrix = natal.fry.distrib[return.rows, ])['after_movement', ]
     
