@@ -78,9 +78,12 @@ range.rescale <- function(x, min = 0.005554976, max = 0.1322917) {
 # at the egg --> fry line, as in:
 # pre.fry <- eggs * egg.fry.surv * egg.flow.dec() # Eggs --> freshly emerged fry
 if (run_stochastic_eggtofry == 'yes') {
-  egg.flow.dec <- function(q){
+  egg.flow.dec <- function(){
+    # egg survival multiplier
     # requires inv.logit(), range.rescale()
-    temp.decl <- range.rescale(inv.logit(-1.88084588 - 0.05511075 * q))
+    temp.flow <- sample(seq(0.05, 100, by = 1), size = 1, 
+                        prob = 1/seq(0.05, 100, by = 1))
+    temp.decl <- range.rescale(inv.logit(-1.88084588 - 0.05511075 * temp.flow))
     temp.decl  
   }
 } else {
@@ -163,7 +166,7 @@ if (pop == "coho") {
     
     eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Hockey stick
     #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
-    pre.fry <- eggs * egg.fry.surv * ef_flow# Eggs --> freshly emerged fry
+    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()# Eggs --> freshly emerged fry
     
     # Spring distribution
     fry.distributed <- distribute.fish(fish.in = pre.fry, move.matrix = move.matrix.spring * percent.fry.migrants)
@@ -223,7 +226,7 @@ if (pop == "coho") {
 # 12)  Spawners
 
 
-if (pop == "fall_chinook" | pop == "spring_chinook") {
+if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   subbasin <- function(mat = N, ...){
     
@@ -232,7 +235,7 @@ if (pop == "fall_chinook" | pop == "spring_chinook") {
     
     eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
     #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
-    pre.fry <- eggs * egg.fry.surv * ef_flow
+    pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
     # Natal fry - All basins
     natal.fry <- BH.func(S = pre.fry, p = weekly.surv^1, c = cap * 2) # Density dependent survival in fresh (first week after fry), 3x capacity
@@ -307,7 +310,7 @@ if (pop == "steelhead") {
     
     # 1st year
     eggs <- eggs.func(NOR.total, egg.total = egg.cap.wt, fecund = fecund) # Hockey stick
-    pre.fry <- eggs * egg.fry.surv * ef_flow # Eggs --> freshly emerged fry
+    pre.fry <- eggs*egg.fry.surv # Eggs --> freshly emerged fry
 
     parr <- BH.func(pre.fry, p = parr.surv, c = parr.cap)# summer parr
     

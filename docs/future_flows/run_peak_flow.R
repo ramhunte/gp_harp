@@ -7,10 +7,21 @@ library(lubridate)
 
 rmarkdown::render('docs/future_flows/future_flows.Rmd')
 
-pops <-  c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')
-run_stochastic_eggtofry <- 'yes'
+fishtype <-  c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')
+
+pops <- fishtype
+
+
+# Convert fishtype (Hab model) to pop and species (LCM)
+
+pops[pops == 'fall_chinook'] <- 'fall.chinook' 
+pops[pops == 'spring_chinook'] <- 'spring.chinook'
+
+
+run_stochastic_eggtofry <- 'no'
 sensitivity.mode <- 'no'
 
+scenarios <- c('Current.csv', 'Historical.csv')
 
 # Number of years the model will run for
 years <- length(peak_ch$q_cfs)
@@ -24,21 +35,24 @@ model.all.pf <- array(
   NA,
   c(runs,
     years,
-    1,
-    length(pops)
+    1, # lifestages
+    length(pops),
+    length(scenarios)
   ),
   dimnames = list(
     1:runs,
     1:years, 
     'spawners', 
-    pops
+    pops,
+    scenarios
   )
 )
 
 
 incubation_months <- list(
   c(11,12,1:4), # coho
-  c(9:12, 1:3), # spring chinook
+  #c(9:12, 1:3), # spring chinook
+  c(10:12, 1:4),
   c(10:12, 1:4), # fall chinook
   c(3:9) # steelhead
 )
@@ -66,7 +80,7 @@ for (pop in pops) {
            surv_rcp85_2080 = q_to_ri(Q_rcp85_2080, Q_max, 0.14) %>% ri_to_surv_rescale())
   
   
-  surv_gm <- list(
+  surv_ch <- list(
     surv_df %>%
       pull(surv_cur)
     ,
@@ -85,50 +99,59 @@ for (pop in pops) {
   
   source(list.files('lcm/params', pattern = str_extract(pop, "[^_]+"), full.names = TRUE))
   source('lcm/scripts/funcs.R')
+  
+  outputs_hab <- file.path('outputs', fishtype[which(pop == pops)], 'hab.scenarios')
   source('lcm/scripts/initialize.R')
-  source("lcm/scripts/assign.dat.R")
+  habitat.file <- habitat.file[habitat.file %in% c('Current.csv', 'Historical.csv')]
   
-  spawner.init <- list.files(file.path('outputs',pop), 
-                             pattern = 'abundance_by_subbasin.csv', 
-                             recursive = TRUE,
-                             full.names = TRUE) %>%
-    read.csv %>%
-    filter(scenario == 'Current') %>%
-    pull(spawners)
-  
-  # Run model 7 generations for each scenario ----
-  
-  for (r in 1:runs) { # runs loop
-    
-    ef_flows <- surv_gm[[r]]
-    
-    ef_flow <- 1
-    # initialize
-    for (y in 1:10) {
-      N.initialize['spawners', ] <- spawner.init * 0.75
-      N.initialize <- subbasin(mat = N.initialize) 
-    }
-    
-    N <- N.initialize
+  for (n in 1:length(habitat.file)) {
     
     
-    for (y in 1:years) {
+    source("lcm/scripts/assign.dat.R")
+    
+    egg.fry.surv.orig <- egg.fry.surv
+    
+    spawner.init <- list.files(file.path('outputs',fishtype[which(pop == pops)]), 
+                               pattern = 'abundance_by_subbasin.csv', 
+                               recursive = TRUE,
+                               full.names = TRUE) %>%
+      read.csv %>%
+      filter(scenario == str_remove(habitat.file[n], '.csv')) %>%
+      pull(spawners)
+    
+    
+    for (r in 1:runs) { # runs loop
       
-      ef_flow <- ef_flows[y]
+      ef_scalar <- surv_ch[[r]]
       
-      N <- subbasin(mat = N)
+      # initialize
+      for (y in 1:10) {
+        N.initialize['spawners', ] <- spawner.init# * 0.75
+        N.initialize <- subbasin(mat = N.initialize) 
+      }
       
-      model.all.pf[r, y, "spawners", pop] <- sum(N['spawners',])
+      N <- N.initialize
+      
+      
+      for (y in 1:years) { # length(surv_df$waterYear)
+        
+        egg.fry.surv <- ef_scalar[y] * egg.fry.surv.orig
+        
+        N <- subbasin(mat = N)
+        
+        model.all.pf[r, y, "spawners", pop, n] <- sum(N['spawners',])
+      }
     }
   }
-}
+}  
+  
 
-
-
-x <- model.all.pf[,,'spawners',] %>%
+x <- model.all.pf[,,'spawners',,] %>%
   as.data.frame.table() %>%
-  rename(run = Var1, year = Var2, species = Var3, n = Freq) %>%
+  rename(run = Var1, year = Var2, species = Var3, scenario = Var4, n = Freq) %>%
+ # filter(n > 0) %>%
   mutate(year = as.numeric(year),
+         scenario = str_remove(scenario, '.csv'),
          era = case_when(
            run == 1 ~ 'Current',
            run %in% c(2,4) ~ 'Mid-century',
@@ -139,16 +162,17 @@ x <- model.all.pf[,,'spawners',] %>%
            run %in% c(4,5) ~ 'RCP 8.5'),
          species = recode_factor(species,
                                  coho = 'Coho',
-                                 spring_chinook = 'Spring Chinook',
-                                 fall_chinook = 'Fall Chinook',
+                                 spring.chinook = 'Spring Chinook',
+                                 fall.chinook = 'Fall Chinook',
                                  steelhead = 'Steelhead')) %>%
-  group_by(species) %>%
+  group_by(species, scenario) %>%
   mutate(perc_diff = (n - median(n[era == 'Current']))/median(n[era == 'Current']))
 
         
 
 print(
   x %>%
+    filter(scenario == 'Current') %>%
     ggplot(aes(era,perc_diff, color = climate)) +
     geom_boxplot(outlier.shape = NA) +
     geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
@@ -160,10 +184,17 @@ print(
 )
 
 print(
-  ggplot(x) +
+  # ggplot(x) +
+  #   theme_bw() +
+  #   geom_line(aes(year, n, color = era, lty = climate)) +
+  #   facet_wrap(species~scenario, scales = 'free_y')
+  
+  x %>%
+    filter(scenario == 'Current') %>%
+    ggplot +
     theme_bw() +
     geom_line(aes(year, n, color = era, lty = climate)) +
-    facet_wrap(~species, ncol = 1, scales = 'free_y')
+    facet_wrap(~species, scales = 'free_y', ncol = 1)
 )
 
 x %>%

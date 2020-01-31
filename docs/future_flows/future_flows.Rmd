@@ -261,8 +261,8 @@ We logit transform the survival data then fit a regression with recurrence inter
 
 ```{r}
 
-#ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
-ri_to_surv <- lm(log(surv) ~ ri, data = dat_sk)
+ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
+#ri_to_surv <- lm(log(surv) ~ ri, data = dat_sk)
 
 summary(ri_to_surv)
 ```
@@ -272,9 +272,9 @@ In order to make predictions of survival, we need to use the regression to make 
 ```{r}
 # Inverse logit function
 inv.logit <- function(x){
-  #y <- exp(x)/(exp(x) + 1)
+  y <- exp(x)/(exp(x) + 1)
   
-  y <- exp(x)
+  #y <- exp(x)
   
   return(y)
 }
@@ -371,7 +371,8 @@ The lowest gage in the mainstem is Chehalis at Porter. We use this one to calcul
 library(EGRET)
 
 # Load Chehalis data
-daily_ch <- readNWISDaily(12031000,'00060') # Porter gage
+daily_ch <- readNWISDaily(12031000,'00060') %>% # Porter gage
+  filter(!waterYear %in% c(1975, 2020))
 #daily_ch <- readNWISDaily(12027500,'00060') # Grand Mound gage
 
  # filter(between(waterYear, 1970, 1999)) %>%
@@ -380,6 +381,13 @@ peak_ch <- daily_ch %>%
   group_by(waterYear) %>%
   summarize(q_cfs = max(Q) * 35.31467)
 
+ # surv_df <- daily_ch %>%
+ #    mutate(month = month(Date)) %>%
+ #    filter(month %in% incubation_months[[which(pop == pops)]]) %>%
+ #    group_by(waterYear) %>%
+ #    summarize(Q_max = max(Q))
+ # 
+ # surv_df$waterYear == peak_ch$waterYear
 ```
 
 ```{r}

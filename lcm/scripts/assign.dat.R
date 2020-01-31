@@ -4,7 +4,7 @@
 
 # Read in habitat scenario file ----
 
-dat <- read.csv(file.path('outputs',pop,'hab.scenarios','Current.csv'), header = TRUE, row.names = 2)
+dat <- read.csv(file.path(hab.path, habitat.file[n]), header = TRUE, row.names = 2)
 
 
 
@@ -55,7 +55,7 @@ if (pop == "coho") {
 } #end if coho
 
 
-if (pop == "fall_chinook" | pop == "spring_chinook") {
+if (pop == "fall.chinook" | pop == "spring.chinook") {
   
   # Fry to sub yearling migrant survival and capacity
   weekly.surv <- dat['surv_s', ]^(1/12) # 1 week of freshwater mortality
