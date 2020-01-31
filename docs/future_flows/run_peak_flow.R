@@ -197,10 +197,11 @@ print(
     facet_wrap(~species, scales = 'free_y', ncol = 1)
 )
 
-x %>%
-  group_by(species, era, climate) %>%
-  summarize(min = min(perc_diff),
-            median = median(perc_diff),
-            max = max(perc_diff))
-
+print(
+  x %>%
+    group_by(species, era, climate) %>%
+    summarize(min = min(perc_diff),
+              median = median(perc_diff),
+              max = max(perc_diff))
+)
 

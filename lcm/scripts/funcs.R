@@ -50,11 +50,11 @@ BH.func <- function(S, p, c){
 
 # Inverse logit function
 # helper function called by another function
-inv.logit <- function(x){
-  # transforms x on logit back to a survival
-  temp <- exp(x)/(exp(x) + 1)
-  temp
-}
+# inv.logit <- function(x){
+#   # transforms x on logit back to a survival
+#   temp <- exp(x)/(exp(x) + 1)
+#   temp
+# }
 
 # Change rescale egg survival to 0:1 scale
 # helper function called by another function

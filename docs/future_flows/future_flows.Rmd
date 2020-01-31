@@ -240,15 +240,24 @@ Here we set up the Skagit data used to make the regression between survival and 
 
 ```{r}
 
-#q_sk <- c(88200,142000,40100,27600,32100,55700,132000,47600,35600,51900,76800,19300,73700,53000,110000,66700,57400)
-#surv <- c(9,1.2,13.7,14.4,16.7,10.2,3.8,15.6,16.4,16.5,12.7,13.5,12.9,10.8,5.8,7.3,11.4)
+
+#dat_sk_peakfq <- 'PEAKFQ_SKAGIT_NR_MT_VERNON_1983_2013.EXP' %>%
+#dat_sk_peakfq <- 'PEAKFQ_SKAGIT_NR_MT_VERNON_1907_2017.EXP' %>%
+dat_sk_peakfq <- 'PEAKFQ_SKAGIT_NR_MT_VERNON_1941_2017.EXP' %>%
+  read.delim(skip = 7,
+             header = TRUE) %>%
+  mutate(ri = 1/EMAEst) %>%
+  rename(migration_year = WaterYr) %>%
+  select(migration_year, RankedQ, ri)
 
 dat_sk <- read.csv('kinsel_2008_survival_and_flow.csv') %>%
-  mutate(ri = q_to_ri(q_cfs, peak_mv$q_cfs, 0.12))
+  # mutate(ri = q_to_ri(q_cfs, peak_mv$q_cfs, 0.12))
+  left_join(dat_sk_peakfq)
 
-# dat_sk <- data.frame(q_sk = q_sk,
-#                      surv = surv/100) %>%
-#   mutate(ri = q_to_ri(q_sk, peak_mv$q_cfs, 0.12))
+
+# Read in PeakFQ data
+
+
 
 dat_sk
 
@@ -261,8 +270,9 @@ We logit transform the survival data then fit a regression with recurrence inter
 
 ```{r}
 
-ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
-#ri_to_surv <- lm(log(surv) ~ ri, data = dat_sk)
+#ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
+#ri_to_surv <- lm(surv ~ log(ri), data = dat_sk)
+ri_to_surv <- nls(surv ~ a*(ri^b), data = dat_sk)
 
 summary(ri_to_surv)
 ```
@@ -275,8 +285,9 @@ inv.logit <- function(x){
   y <- exp(x)/(exp(x) + 1)
   
   #y <- exp(x)
+  #return(y)
   
-  return(y)
+  return(x)
 }
 
 sk_pred <- data.frame(ri = 1:100) %>%
@@ -300,6 +311,7 @@ ggplot() +
   annotation_logticks(sides = 'b')
   
 ```
+
 
 Compare Jeff's function to this new one
 
@@ -372,10 +384,17 @@ library(EGRET)
 
 # Load Chehalis data
 daily_ch <- readNWISDaily(12031000,'00060') %>% # Porter gage
-  filter(!waterYear %in% c(1975, 2020))
+  #filter(!waterYear %in% c(1975, 2020))
+  filter(waterYear %in% 1983:2013)
 #daily_ch <- readNWISDaily(12027500,'00060') # Grand Mound gage
 
- # filter(between(waterYear, 1970, 1999)) %>%
+
+# peak_ch_peakfq <- 'PEAKFQ_CHEHALIS_AT_PORTER_1947_2017.EXP' %>%
+#   read.delim(skip = 7,
+#              header = TRUE) %>%
+#   mutate(ri = 1/EMAEst) %>%
+#   rename(migration_year = WaterYr) %>%
+#   select(migration_year, RankedQ, ri)
 
 peak_ch <- daily_ch %>%
   group_by(waterYear) %>%
@@ -400,6 +419,8 @@ peak_ch <- daily_ch %>%
 #   geom_point(aes(ri, q, color = model))
 
 ```
+
+
 ```{r}
 
 ri_ch <- peak_ch %>%
@@ -411,47 +432,5 @@ ri_ch %>%
   ggplot() +
   geom_line(aes(waterYear, value)) +
   facet_wrap(~param, ncol = 1, scales = 'free_y')
-```
-
-# Run the LCM
-
-
-
-```{r}
-#source('../run_peak_flow.R')
-```
-
-```{r}
-# x <- model.all.pf[,,'spawners',] %>%
-#   as.data.frame.table() %>%
-#   rename(run = Var1, year = Var2, species = Var3, n = Freq)
-```
-
-```{r}
- # x %>%
- #    mutate(year = as.numeric(year),
- #           era = ifelse(run == 1 , 'Current',
- #                        ifelse(run %in% c(2,4), 'Mid-century',
- #                               'Late-century')),
- #           era = factor(era, levels = c('Current', 'Mid-century', 'Late-century')),
- #           climate = ifelse(run == 1, 'Current',
- #                            ifelse(run %in% c(2,3), 'RCP 4.5',
- #                                   'RCP 8.5')),
- #           species = recode_factor(species, 
- #                                   coho = 'Coho', 
- #                                   spring_chinook = 'Spring Chinook', 
- #                                   fall_chinook = 'Fall Chinook', 
- #                                   steelhead = 'Steelhead')) %>%
- #   # filter(!(n < 6500 & species == 'Steelhead')) %>%
- #    group_by(species) %>%
- #    mutate(n = (n - median(n[era == 'Current']))/median(n[era == 'Current'])) %>%
- #    ggplot(aes(era,n, color = climate)) +
- #    geom_boxplot(outlier.shape = NA) +
- #    geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
- #    facet_wrap(~species) +
- #    theme_bw() +
- #    scale_color_manual(values = c('black','orange1','orangered2')) +
- #    scale_y_continuous(labels = scales::percent) +
- #    labs(x = NULL, y = 'Spawner Change from Current (%)', color = NULL)
 ```
 
