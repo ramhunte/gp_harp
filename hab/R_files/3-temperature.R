@@ -73,12 +73,14 @@ all_temps <- flowline %>%
     prespawn_temp_psu = ifelse(Habitat == 'LgRiver',
                                prespawn_temp_psu,
                                NA),
-    rear_temp = case_when(
-      !is.na(rearing_temp_psu) ~ rearing_temp_psu,
-      is.na(rearing_temp_psu) & !is.na(rearing_temp_thermal) ~ rearing_temp_thermal),
-    prespawn_temp = case_when(
-      !is.na(prespawn_temp_psu) ~ prespawn_temp_psu,
-      is.na(prespawn_temp_psu) & !is.na(prespawn_temp_thermal) ~ prespawn_temp_thermal)
+    rear_temp = rearing_temp_thermal,
+      # case_when(
+      # !is.na(rearing_temp_psu) ~ rearing_temp_psu,
+      # is.na(rearing_temp_psu) & !is.na(rearing_temp_thermal) ~ rearing_temp_thermal),
+    prespawn_temp = prespawn_temp_thermal
+      # case_when(
+      # !is.na(prespawn_temp_psu) ~ prespawn_temp_psu,
+      # is.na(prespawn_temp_psu) & !is.na(prespawn_temp_thermal) ~ prespawn_temp_thermal)
     ) %>%
   gather(type, temp, c(rear_temp, prespawn_temp)) %>%
   spread(type, temp) %>%
