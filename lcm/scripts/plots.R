@@ -270,14 +270,16 @@ ggplot() +
                 y = prcnt.change + 7 * sign(prcnt.change), 
                 label = spawners.change),
             vjust = -0.5) +
+  # scale_fill_grey() +
   facet_wrap(~year) +
   scale_x_discrete(drop = T) + 
-  scale_fill_manual(values = colors.paper, drop = F, name = 'Scenario') + 
+  
+  scale_fill_manual(values = colors.paper, drop = F, name = 'Scenario') +
   ylim(-100, 100) +
   # scale_y_continuous(labels = comma, 
   #                    expand = c(0, 0,.05,0)) +
   labs(x = NULL,
-       y = paste0('Change in Spawners from Current Conditons')
+       y = paste0('Percent Change in Spawners from Current Conditons')
   ) +
   theme(axis.text.x = element_text(angle = 45,hjust = 1),
         text = element_text( size = 16)) +
