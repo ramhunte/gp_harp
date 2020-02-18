@@ -1,0 +1,60 @@
+---
+title: "Untitled"
+author: "Caleb Fogel"
+date: "2/4/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+bowerman <- function(t,
+                        phos = 0,
+                        b0 = -9.053,
+                        b1 = .387,
+                        b2 = .029) {
+  1 - plogis(logit_psm <- b0 + b1 * t + b2 * phos)
+}
+coho <- function(t){
+                 ifelse(t < 18,
+           1,
+           ifelse(t >= 18 & t < 24,
+                  -(1/6) * t + 4,
+                  0))
+}
+chinook <- function(t){
+  ifelse(t < (18/.98),
+         1,
+         ifelse(t >= (18/.98) & t <(24/.98),
+                -(1/(6/.98)) * t + (4),
+                0))
+}
+sthd <- function(t) {
+  ifelse(t <= 17,
+           t/t,
+           (97.8846 / (1 + exp(-((t - 24.3522) / -.5033)))) / 100 )
+}
+ggplot(data.frame(x = c(12, 32)), aes(x = x)) +
+  stat_function(fun = coho,aes(color = 'coho juvenile summer rearing', linetype = 'coho juvenile summer rearing'))+
+  stat_function(fun = chinook,  aes(color = 'chinook juvenile outmigration', linetype ='chinook juvenile outmigration'))+
+  stat_function(fun = sthd,  aes(color = 'steelhead juvenile summer rearing', linetype = 'steelhead juvenile summer rearing'))+
+  stat_function(fun = bowerman, aes(color = 'spring Chinook prespawning', linetype = 'spring Chinook prespawning'))+
+  theme_bw()+
+  xlab('Temperature (7-DADM, in °C)')+
+  ylab('Productivity Multiplier')+
+  scale_linetype_manual(values = c('solid', 'dashed', 'dotdash', 'dotted'), 
+                        guide = FALSE) +
+  scale_color_manual(
+                     values = c('firebrick1', 'maroon', 'darkorange4', 'navy'),
+                     guide = guide_legend(override.aes = list(
+                       linetype = c('solid', 'dashed', 'dotdash', 'dotted'))))+
+  theme(legend.position = 'bottom')+#c(.88, .92)) +
+  # theme(legend.background = element_rect(fill = 'white',
+                                         # size = .25, linetype = 'solid', colour = 'black'))+
+  theme(legend.title = element_blank())
+  
+ggsave('temp_prod_funcs.jpg', width = 10, height = 8, dpi = 300)
+```
