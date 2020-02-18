@@ -19,10 +19,10 @@ bowerman <- function(t,
   1 - plogis(logit_psm <- b0 + b1 * t + b2 * phos)
 }
 coho <- function(t){
-                 ifelse(t < 18,
+                 ifelse(t < 17,
            1,
-           ifelse(t >= 18 & t < 24,
-                  -(1/6) * t + 4,
+           ifelse(t >= 17 & t < 28,
+                  -(1/11) * t + 2.54,
                   0))
 }
 chinook <- function(t){
