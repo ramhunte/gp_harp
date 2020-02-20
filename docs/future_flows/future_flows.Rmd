@@ -270,9 +270,9 @@ We logit transform the survival data then fit a regression with recurrence inter
 
 ```{r}
 
-#ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
+ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
 #ri_to_surv <- lm(surv ~ log(ri), data = dat_sk)
-ri_to_surv <- nls(surv ~ a*(ri^b), data = dat_sk)
+#ri_to_surv <- nls(log(surv) ~ a*ri^b, data = dat_sk, start = list(a = 1, b = 0))
 
 summary(ri_to_surv)
 ```
@@ -285,13 +285,15 @@ inv.logit <- function(x){
   y <- exp(x)/(exp(x) + 1)
   
   #y <- exp(x)
-  #return(y)
+  return(y)
   
-  return(x)
+  #return(x)
 }
 
 sk_pred <- data.frame(ri = 1:100) %>%
   mutate(surv_pred = predict(ri_to_surv, newdata = .) %>% inv.logit())
+  #mutate(surv_pred = 0.1747 * ri^-0.573)
+  #mutate(surv_pred = 0.1715 * ri^-0.488)
 ```
 
 
@@ -302,6 +304,7 @@ sk_pred <- data.frame(ri = 1:100) %>%
 ggplot() +
   theme_bw() +
   geom_point(data = dat_sk, aes(ri, surv)) +
+  #stat_smooth(method = 'nls', formula = 'surv~a*ri^b')
   geom_line(data = sk_pred, aes(ri, surv_pred)) +
   scale_x_log10() +
   scale_y_continuous(labels = scales::percent) +
@@ -354,6 +357,17 @@ ggplot() +
   geom_vline(xintercept = 1.5, lty = 2)
 ```
 
+
+```{r}
+dat_sk %>% 
+  mutate(surv_rescale = range.rescale(surv) %>% round(2), 
+         ri = ri %>% round(1)) %>%
+  rename(Year = migration_year, Q = RankedQ, RI = ri, p = surv,  p_rescale = surv_rescale) %>%
+  select(Year, Q, RI, p, p_rescale) %>%
+  flextable::flextable()
+```
+
+
 Bring it all together in one function to turn RI into a survival scalar
 
 ```{r}
@@ -383,22 +397,26 @@ The lowest gage in the mainstem is Chehalis at Porter. We use this one to calcul
 library(EGRET)
 
 # Load Chehalis data
-daily_ch <- readNWISDaily(12031000,'00060') %>% # Porter gage
+daily_ch <- readNWISDaily(12031000,'00060') #%>% # Porter gage
   #filter(!waterYear %in% c(1975, 2020))
-  filter(waterYear %in% 1983:2013)
+ #filter(waterYear %in% 1970:1999,
+#        waterYear != 1975)
 #daily_ch <- readNWISDaily(12027500,'00060') # Grand Mound gage
 
 
-# peak_ch_peakfq <- 'PEAKFQ_CHEHALIS_AT_PORTER_1947_2017.EXP' %>%
-#   read.delim(skip = 7,
-#              header = TRUE) %>%
-#   mutate(ri = 1/EMAEst) %>%
-#   rename(migration_year = WaterYr) %>%
-#   select(migration_year, RankedQ, ri)
+peak_ch_peakfq <- 'PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.EXP' %>%
+  read.delim(skip = 7,
+             header = TRUE) %>%
+  mutate(ri = 1/EMAEst) %>%
+  rename(waterYear = WaterYr) %>%
+  select(waterYear, RankedQ, ri)
 
 peak_ch <- daily_ch %>%
   group_by(waterYear) %>%
-  summarize(q_cfs = max(Q) * 35.31467)
+  summarize(q_cfs = max(Q) * 35.31467) %>%
+  left_join(peak_ch_peakfq)
+
+peak_ch$ri[peak_ch$waterYear == 1986] <- peak_ch$ri[peak_ch$waterYear == 1987]
 
  # surv_df <- daily_ch %>%
  #    mutate(month = month(Date)) %>%
@@ -432,5 +450,19 @@ ri_ch %>%
   ggplot() +
   geom_line(aes(waterYear, value)) +
   facet_wrap(~param, ncol = 1, scales = 'free_y')
+```
+
+```{r}
+library(readxl)
+
+zimmerman <- read_excel('../../../flow_paper/Zimmerman 2015.xlsx',
+           skip = 2, 
+           n_max = 17) 
+
+zimmerman %>%
+ select(`year (i)`, Surv) %>%
+  rename(migration_year = `year (i)`) %>%
+  left_join(dat_sk_peakfq) %>%
+  mutate(ri = ri %>% round(0))
 ```
 

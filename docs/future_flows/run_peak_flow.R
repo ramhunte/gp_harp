@@ -124,6 +124,8 @@ for (pop in pops) {
       
       ef_scalar <- surv_ch[[r]]
       
+      egg.fry.surv <- egg.fry.surv.orig
+      
       # initialize
       for (y in 1:10) {
         N.initialize['spawners', ] <- spawner.init# * 0.75
