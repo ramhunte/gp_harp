@@ -31,7 +31,8 @@ flowline_temps <- asrp_reach_data %>%
               filter(Scenario_num == 'Historical') %>%
               select(noaaid, year, asrp_temp) %>%
               spread(year, asrp_temp) %>%
-              rename(historical = '2019'))
+              rename(historical = '2019')) %>%
+  mutate()
   write.csv(flowline_temps,  'temp_paper/flowline_temps.csv')
 
 
