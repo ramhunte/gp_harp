@@ -24,6 +24,7 @@ sensitivity.mode <- 'no'
 scenarios <- c('Current.csv', 'Historical.csv')
 
 # Number of years the model will run for
+runs <- 2 # dummy variable for now
 years <- 100 #length(peak_ch$q_cfs)
 climates <- c('Current', '2050-4.5','2080-4.5','2050-8.5', '2080-8.5')
 reach.names <- read.csv("lcm/data/subbasin_names.csv") %>%
@@ -139,7 +140,13 @@ for (pop in pops) {
       
       N <- N.initialize
       
+      # burn in
+      for (y in 1:50) {
+        egg.fry.surv <- ef_scalar[y] * egg.fry.surv.orig
+        N <- subbasin(mat = N)
+      }
       
+      # 100 year run
       for (y in 1:years) { # length(surv_df$waterYear)
         
         egg.fry.surv <- ef_scalar[y] * egg.fry.surv.orig
@@ -197,10 +204,6 @@ print(
 
 
 print(
-  # ggplot(x) +
-  #   theme_bw() +
-  #   geom_line(aes(year, n, color = era, lty = climate)) +
-  #   facet_wrap(species~scenario, scales = 'free_y')
   
   x %>%
     filter(scenario == 'Current') %>%
@@ -209,13 +212,26 @@ print(
     geom_line(aes(year, n, color = era, lty = climate)) +
     facet_wrap(~species, scales = 'free_y', ncol = 1) +
     geom_hline(data = y, aes(yintercept = median, color = era), lty = 5)
+  
+)
+
+
+print(  
+  
+  x %>%
+    ggplot +
+    theme_bw() +
+    geom_line(aes(year, n/1000, color = era, lty = climate)) +
+    facet_grid(species~scenario, scales = 'free_y')
 )
 
 print(
   x %>%
-    group_by(species, era, climate) %>%
-    summarize(min = min(perc_diff),
-              median = median(perc_diff),
-              max = max(perc_diff))
+   # filter(scenario == 'Current') %>%
+    group_by(scenario, species, era, climate) %>%
+    summarize(min = min(perc_diff) %>% scales::percent(),
+              mean = mean(perc_diff) %>% scales::percent(),
+              max = max(perc_diff) %>% scales::percent()) %>%
+    as.data.frame()
 )
 
