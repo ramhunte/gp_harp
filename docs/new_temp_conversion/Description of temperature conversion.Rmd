@@ -11,6 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(sf)
+library(ggplot2)
 rmarkdown::paged_table
 
 ```
@@ -139,11 +140,14 @@ We now compare MWMT with mean of daily mean for each site:
 ```{r}
 mwmt_comp <- mwmt %>%
   filter(Site_ID %in% riverscape_siteid) %>%
-  full_join(., riverscape_locs)
+  full_join(., riverscape_locs) 
 
 mwmt_comp_plot <- ggplot(mwmt_comp, aes(x = meanT, y = mwmt)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = FALSE)
+  geom_smooth(method = 'lm', se = FALSE) +
+  annotate("text", x = 22, y = 15, label = 'y = 1.02x + 3.81')+
+  annotate("text", x = 22, y = 14, label = 'R^2 = .76') +
+  annotate("text", x = 22, y = 13, label = "p ~ 0.0")
 print(mwmt_comp_plot)
 
 lm_mwmt <- lm(mwmt ~ meanT, data = mwmt_comp)
@@ -319,4 +323,58 @@ lm_mdm_rear_vs_mwmt <- lm(mdm_rear~mwmt, data = mdm_rear_vs_mwmt)
 summary(lm_mdm_rear_vs_mwmt)
 ```
 
+# Conversion plots for temperature paper:
+```{r}
+library(cowplot)
+
+mwmt_comp <- mwmt %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs) 
+
+mwmt_comp_plot <- ggplot(mwmt_comp, aes(x = meanT, y = mwmt)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE) +
+  ylim(12, 28)+
+  annotate("text", x = 21, y = 15, label = 'y = 1.02x + 3.81')+
+  annotate("text", x = 21, y = 14, label = 'R^2 = .76') +
+  annotate("text", x = 21, y = 13, label = "p ~ 0.0")+
+  xlab('August ADA') +
+  ylab('7DADM')
+print(mwmt_comp_plot + labs(y = '7DADM', x = 'August ADA'))
+
+lm_mwmt <- lm(mwmt ~ meanT, data = mwmt_comp)
+summary(lm_mwmt)
+
+mdm_rear <- riverscape_data %>%
+  filter(Month == 6,
+         Day %in% 1:21) %>%
+  group_by(Site_ID, Day, Year) %>% 
+  summarize(max_temp = max(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  summarize(mdm_rear = mean(max_temp, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mdm_rear = max(mdm_rear, na.rm = T))
+
+mdm_rear_comp <- mdm_rear %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs)
+
+mdm_rear_comp_plot <- ggplot(mdm_rear_comp, aes(x = meanT, y = mdm_rear)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE) +
+  ylim(12, 28)+
+  annotate('text', x = 21, y = 15, label = 'y = .96x + .61') + 
+  annotate('text', x = 21, y = 14, label = 'R^2 = .69') +
+  annotate ('text', x = 21, y = 13, label = 'p ~ 0.0') +
+  xlab('August ADA') +
+  ylab('June 1-21 ADM')
+print(mdm_rear_comp_plot + labs(y = 'June 1-21 ADM', x = 'August ADA'))
+
+lm_mdm_rear <- lm(mdm_rear ~ meanT, data = mdm_rear_comp)
+summary(lm_mdm_rear)
+
+conversion_plot <-plot_grid(mwmt_comp_plot, mdm_rear_comp_plot, ncol = 2) 
+conversion_plot
+save_plot('temp_paper/conversion_plots.jpg', conversion_plot, ncol = 2, base_asp = 1.1)
+```
 
