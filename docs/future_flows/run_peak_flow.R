@@ -24,8 +24,8 @@ sensitivity.mode <- 'no'
 scenarios <- c('Current.csv', 'Historical.csv')
 
 # Number of years the model will run for
-years <- length(peak_ch$q_cfs)
-runs <- 5
+years <- 100 #length(peak_ch$q_cfs)
+climates <- c('Current', '2050-4.5','2080-4.5','2050-8.5', '2080-8.5')
 reach.names <- read.csv("lcm/data/subbasin_names.csv") %>%
   select(Subbasin) %>%
   mutate(Subbasin = as.character(Subbasin)) %>%
@@ -33,14 +33,14 @@ reach.names <- read.csv("lcm/data/subbasin_names.csv") %>%
 
 model.all.pf <- array(
   NA,
-  c(runs,
+  c(length(climates),
     years,
     1, # lifestages
     length(pops),
     length(scenarios)
   ),
   dimnames = list(
-    1:runs,
+    1:length(climates),
     1:years, 
     'spawners', 
     pops,
@@ -63,8 +63,8 @@ for (pop in pops) {
     mutate(month = month(Date)) %>%
     filter(month %in% incubation_months[[which(pop == pops)]]) %>%
     group_by(waterYear) %>%
-    summarize(Q_max = max(Q)) %>%
-    mutate(ri = q_to_ri(Q_max, Q_max, 0.14)) %>% # chehalis = 0.14 skewness
+    summarize(Q_max = max(Q) * 35.31467) %>%
+    mutate(ri = q_to_ri(Q_max)) %>% # chehalis = 0.14 skewness
     mutate(diff_perc_rcp45_2050 = predict(mods$fit[[1]], newdata = .),
            diff_perc_rcp45_2080 = predict(mods$fit[[2]], newdata = .),
            diff_perc_rcp85_2050 = predict(mods$fit[[3]], newdata = .),
@@ -74,27 +74,32 @@ for (pop in pops) {
            Q_rcp85_2050 = Q_max + Q_max * diff_perc_rcp85_2050,
            Q_rcp85_2080 = Q_max + Q_max * diff_perc_rcp85_2080) %>%
     mutate(surv_cur = ri_to_surv_rescale(ri),
-           surv_rcp45_2050 = q_to_ri(Q_rcp45_2050, Q_max, 0.14) %>% ri_to_surv_rescale(),
-           surv_rcp45_2080 = q_to_ri(Q_rcp45_2080, Q_max, 0.14) %>% ri_to_surv_rescale(),
-           surv_rcp85_2050 = q_to_ri(Q_rcp85_2050, Q_max, 0.14) %>% ri_to_surv_rescale(),
-           surv_rcp85_2080 = q_to_ri(Q_rcp85_2080, Q_max, 0.14) %>% ri_to_surv_rescale())
+           surv_rcp45_2050 = q_to_ri(Q_rcp45_2050) %>% ri_to_surv_rescale(),
+           surv_rcp45_2080 = q_to_ri(Q_rcp45_2080) %>% ri_to_surv_rescale(),
+           surv_rcp85_2050 = q_to_ri(Q_rcp85_2050) %>% ri_to_surv_rescale(),
+           surv_rcp85_2080 = q_to_ri(Q_rcp85_2080) %>% ri_to_surv_rescale())
   
   
   surv_ch <- list(
     surv_df %>%
-      pull(surv_cur)
+      pull(surv_cur) %>%
+      loop_series()
     ,
     surv_df %>%
-      pull(surv_rcp45_2050)
+      pull(surv_rcp45_2050) %>%
+      loop_series()
     ,
     surv_df %>%
-      pull(surv_rcp45_2080)
+      pull(surv_rcp45_2080) %>%
+      loop_series()
     ,
     surv_df %>%
-      pull(surv_rcp85_2050)
+      pull(surv_rcp85_2050) %>%
+      loop_series()
     ,
     surv_df %>%
-      pull(surv_rcp85_2080)
+      pull(surv_rcp85_2080) %>%
+      loop_series()
   )
   
   source(list.files('lcm/params', pattern = str_extract(pop, "[^_]+"), full.names = TRUE))
@@ -120,9 +125,9 @@ for (pop in pops) {
       pull(spawners)
     
     
-    for (r in 1:runs) { # runs loop
+    for (c in 1:length(climates)) { # runs loop
       
-      ef_scalar <- surv_ch[[r]]
+      ef_scalar <- surv_ch[[c]]
       
       egg.fry.surv <- egg.fry.surv.orig
       
@@ -141,7 +146,7 @@ for (pop in pops) {
         
         N <- subbasin(mat = N)
         
-        model.all.pf[r, y, "spawners", pop, n] <- sum(N['spawners',])
+        model.all.pf[c, y, "spawners", pop, n] <- sum(N['spawners',])
       }
     }
   }
@@ -168,9 +173,14 @@ x <- model.all.pf[,,'spawners',,] %>%
                                  fall.chinook = 'Fall Chinook',
                                  steelhead = 'Steelhead')) %>%
   group_by(species, scenario) %>%
-  mutate(perc_diff = (n - median(n[era == 'Current']))/median(n[era == 'Current']))
+  mutate(median = median(n),
+         diff = n - median(n[era == 'Current']),
+         perc_diff = diff / median(n[era == 'Current']))
 
-        
+y <-  x %>%
+  filter(scenario == 'Current') %>%
+  group_by(species, era, climate) %>%
+  summarize(median = median(n)) 
 
 print(
   x %>%
@@ -185,6 +195,7 @@ print(
     labs(x = NULL, y = 'Spawner Change from Current (%)', color = NULL)
 )
 
+
 print(
   # ggplot(x) +
   #   theme_bw() +
@@ -196,7 +207,8 @@ print(
     ggplot +
     theme_bw() +
     geom_line(aes(year, n, color = era, lty = climate)) +
-    facet_wrap(~species, scales = 'free_y', ncol = 1)
+    facet_wrap(~species, scales = 'free_y', ncol = 1) +
+    geom_hline(data = y, aes(yintercept = median, color = era), lty = 5)
 )
 
 print(

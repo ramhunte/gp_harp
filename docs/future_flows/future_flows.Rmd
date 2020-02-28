@@ -167,49 +167,49 @@ cat('Your Rprofile has been updated to include GRAN.
 library(smwrBase)
 #library(moments)
 
-ri_to_q <- function(ri, q_record, sk) {
-  # ri = vector of one or more recurrance intervals, eg. c(2, 10, 100)
-  # q_record = vector of peak annual flows
-  
-  non_exeed_prob <- 1 - (1/ri)
-  
-  q_log <- log10(q_record)
-  
-  mn_log <- mean(q_log)
-  sd_log <- sd(q_log)
-  sk_log <- sk#0.12#skewness(log10(q_record))
-  
-  lp3 <- qpearsonIII(p = non_exeed_prob,
-                     mean =  mn_log,
-                     sd =  sd_log,
-                     skew = sk_log)
-  
-  return(10^lp3)
-  
-}
+# ri_to_q <- function(ri, q_record, sk) {
+#   # ri = vector of one or more recurrance intervals, eg. c(2, 10, 100)
+#   # q_record = vector of peak annual flows
+#   
+#   non_exeed_prob <- 1 - (1/ri)
+#   
+#   q_log <- log10(q_record)
+#   
+#   mn_log <- mean(q_log)
+#   sd_log <- sd(q_log)
+#   sk_log <- sk#0.12#skewness(log10(q_record))
+#   
+#   lp3 <- qpearsonIII(p = non_exeed_prob,
+#                      mean =  mn_log,
+#                      sd =  sd_log,
+#                      skew = sk_log)
+#   
+#   return(10^lp3)
+#   
+# }
 ```
 
 We also need to be able to translate flow to recurrance intervals.
 
 ```{r}
-q_to_ri <- function(q, q_record, sk) {
-  
-  q_log <- log10(q_record)
-  
-  mn_log <- mean(q_log)
-  sd_log <- sd(q_log)
-  sk_log <- sk#skewness(log10(q_record))
-  
-  exeed_prob <- ppearsonIII(q = log10(q),
-                            mean =  mn_log,
-                            sd =  sd_log,
-                            skew = sk_log)
-  
-  ri <- 1 / (1 - exeed_prob)
-    
-  return(ri)
-
-}
+# q_to_ri <- function(q, q_record, sk) {
+#   
+#   q_log <- log10(q_record)
+#   
+#   mn_log <- mean(q_log)
+#   sd_log <- sd(q_log)
+#   sk_log <- sk#skewness(log10(q_record))
+#   
+#   exeed_prob <- ppearsonIII(q = log10(q),
+#                             mean =  mn_log,
+#                             sd =  sd_log,
+#                             skew = sk_log)
+#   
+#   ri <- 1 / (1 - exeed_prob)
+#     
+#   return(ri)
+# 
+# }
 ```
 
 
@@ -222,45 +222,38 @@ The data are from USGS gage #12200500, Skagit River Near Mt. Vernon.
 ```{r}
 library(EGRET)
 
-# Load Skagit data
-peak_mv <- readNWISDaily(12200500,'00060') %>%
- # filter(between(waterYear, 1970, 1999)) %>%
-  group_by(waterYear) %>%
-  summarize(q_cfs = max(Q) * 35.31467)
+# # Load Skagit data
+# peak_mv <- readNWISDaily(12200500,'00060') %>%
+#  # filter(between(waterYear, 1970, 1999)) %>%
+#   group_by(waterYear) %>%
+#   summarize(q_cfs = max(Q) * 35.31467)
 ```
 
 ```{r}
-# Calculate the 2, 10, 50 and 100 year floods
-data.frame(ris = c(2, 10, 50, 100)) %>%
-  mutate(Q = ri_to_q(ris, peak_mv$q_cfs, 0.12))
+# # Calculate the 2, 10, 50 and 100 year floods
+# data.frame(ris = c(2, 10, 50, 100)) %>%
+#   mutate(Q = ri_to_q(ris, peak_mv$q_cfs, 0.12))
 
 ```
 
-Here we set up the Skagit data used to make the regression between survival and recurrence interval. Q and survival data from Kincel et al. (2006; Table 14).
+Here we set up the Skagit data used to make the regression between survival and recurrence interval. Q and survival data from Zimmerman 2015.
 
 ```{r}
 
 
-#dat_sk_peakfq <- 'PEAKFQ_SKAGIT_NR_MT_VERNON_1983_2013.EXP' %>%
-#dat_sk_peakfq <- 'PEAKFQ_SKAGIT_NR_MT_VERNON_1907_2017.EXP' %>%
-dat_sk_peakfq <- 'PEAKFQ_SKAGIT_NR_MT_VERNON_1941_2017.EXP' %>%
-  read.delim(skip = 7,
-             header = TRUE) %>%
-  mutate(ri = 1/EMAEst) %>%
-  rename(migration_year = WaterYr) %>%
-  select(migration_year, RankedQ, ri)
-
-dat_sk <- read.csv('kinsel_2008_survival_and_flow.csv') %>%
-  # mutate(ri = q_to_ri(q_cfs, peak_mv$q_cfs, 0.12))
-  left_join(dat_sk_peakfq)
+zimmerman <- read.csv('Zimmerman_2015.csv')
 
 
-# Read in PeakFQ data
+dat_z <- zimmerman %>%
+  select(year:Peak) %>%
+  mutate(surv = (Fry + Parr + Yearlings)/(PED*1e6)) %>%
+  rename(ri = Peak)
 
+#ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_z)
+#ri_to_surv <- lm(surv ~ log(ri), data = dat_z)
+ri_to_surv <- nls(log(surv) ~ a*ri^b, data = dat_z, start = list(a = 1, b = 0))
 
-
-dat_sk
-
+summary(ri_to_surv)
 ```
 
 
@@ -270,9 +263,9 @@ We logit transform the survival data then fit a regression with recurrence inter
 
 ```{r}
 
-ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_sk)
+#ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_z)
 #ri_to_surv <- lm(surv ~ log(ri), data = dat_sk)
-#ri_to_surv <- nls(log(surv) ~ a*ri^b, data = dat_sk, start = list(a = 1, b = 0))
+ri_to_surv <- nls(log(surv) ~ a*ri^b, data = dat_z, start = list(a = 1, b = 0))
 
 summary(ri_to_surv)
 ```
@@ -281,17 +274,28 @@ In order to make predictions of survival, we need to use the regression to make 
 
 ```{r}
 # Inverse logit function
-inv.logit <- function(x){
-  y <- exp(x)/(exp(x) + 1)
+ri.to.surv <- function(ri){
+  
+  x <- data.frame(ri = ri) %>%
+    mutate(surv_pred = predict(ri_to_surv, newdata = .),
+           surv_pred = surv_pred %>% exp)
+  
+  return(x$surv_pred)
+  
+  #y <- exp(x)/(exp(x) + 1)
+  
+  
   
   #y <- exp(x)
-  return(y)
+  #return(y)
   
   #return(x)
 }
 
+ri.to.surv(1:100)
+
 sk_pred <- data.frame(ri = 1:100) %>%
-  mutate(surv_pred = predict(ri_to_surv, newdata = .) %>% inv.logit())
+  mutate(surv_pred = ri.to.surv(ri))
   #mutate(surv_pred = 0.1747 * ri^-0.573)
   #mutate(surv_pred = 0.1715 * ri^-0.488)
 ```
@@ -303,12 +307,12 @@ sk_pred <- data.frame(ri = 1:100) %>%
 ```{r}
 ggplot() +
   theme_bw() +
-  geom_point(data = dat_sk, aes(ri, surv)) +
+  geom_point(data = dat_z, aes(ri, surv)) +
   #stat_smooth(method = 'nls', formula = 'surv~a*ri^b')
   geom_line(data = sk_pred, aes(ri, surv_pred)) +
   scale_x_log10() +
   scale_y_continuous(labels = scales::percent) +
-  geom_vline(xintercept = 1.5, lty = 2) +
+  #geom_vline(xintercept = 1.5, lty = 2) +
   labs(x = 'Recurrence interval (years)',
        y = 'Egg to migrant survival') +
   annotation_logticks(sides = 'b')
@@ -321,8 +325,8 @@ Compare Jeff's function to this new one
 ```{r}
 data.frame(ri = 1:100) %>%
   mutate(j_pred = -1.88084588 +  -0.05511075 * ri,
-         original = j_pred %>% inv.logit(),
-         redo = predict(ri_to_surv, newdata = .) %>% inv.logit()) %>%
+         original = exp(j_pred)/(exp(j_pred) + 1),
+         redo = ri.to.surv(ri)) %>%
   select(-j_pred) %>%
   gather(model,surv, original:redo) %>%
   ggplot +
@@ -335,19 +339,28 @@ data.frame(ri = 1:100) %>%
 
 ```{r}
 range.rescale <- function(x, 
-                          min = predict(ri_to_surv, newdata = data.frame(ri = 100)) %>% inv.logit(),
-                          max = predict(ri_to_surv, newdata = data.frame(ri = 1)) %>% inv.logit()) 
+                          min = ri.to.surv(100),
+                          max = ri.to.surv(1)) 
 {
-  y <- (x - min) / diff(c(min,max))
+  y <- (x - min) / (max - min)
   return(y)
 }
+
+# range.rescale <- function(c,
+#                           y = ri.to.surv(100),
+#                           z = 1)
+# {
+#   (c - ri.to.surv(100)) * (z - y) / (ri.to.surv(1) - ri.to.surv(100)) + y
+# }
+# 
+range.rescale(ri.to.surv(1:100))
 ```
 
 
 ```{r}
 ggplot() +
   theme_classic() +
-  geom_point(data = dat_sk %>% 
+  geom_point(data = dat_z %>% 
                mutate(surv_rescale = range.rescale(surv)), 
              aes(ri, surv_rescale)) +
   geom_line(data = sk_pred %>%
@@ -359,11 +372,11 @@ ggplot() +
 
 
 ```{r}
-dat_sk %>% 
+dat_z %>% 
   mutate(surv_rescale = range.rescale(surv) %>% round(2), 
          ri = ri %>% round(1)) %>%
-  rename(Year = migration_year, Q = RankedQ, RI = ri, p = surv,  p_rescale = surv_rescale) %>%
-  select(Year, Q, RI, p, p_rescale) %>%
+  rename(Year = year, RI = ri, p = surv,  p_rescale = surv_rescale) %>%
+  select(Year, RI, p, p_rescale) %>%
   flextable::flextable()
 ```
 
@@ -372,10 +385,8 @@ Bring it all together in one function to turn RI into a survival scalar
 
 ```{r}
 ri_to_surv_rescale <- function(ri) {
-  df_new <- data.frame(ri = ri)
   
-  surv_rescale <- predict(ri_to_surv, newdata = df_new) %>% 
-    inv.logit() %>%
+  surv_rescale <- ri.to.surv(ri) %>%
     range.rescale()
   
   # If survival is negative, make zero
@@ -385,7 +396,7 @@ ri_to_surv_rescale <- function(ri) {
   return(surv_rescale)
 }
 
-ri_to_surv_rescale(c(2, 10, 50, 200))
+ri_to_surv_rescale(c(1, 2, 10, 50, 100))
 ```
 
 
@@ -397,26 +408,66 @@ The lowest gage in the mainstem is Chehalis at Porter. We use this one to calcul
 library(EGRET)
 
 # Load Chehalis data
-daily_ch <- readNWISDaily(12031000,'00060') #%>% # Porter gage
-  #filter(!waterYear %in% c(1975, 2020))
- #filter(waterYear %in% 1970:1999,
+daily_ch <- readNWISDaily(12031000,'00060') %>% # Porter gage
+ filter(waterYear %in% 1970:1999)
 #        waterYear != 1975)
+
 #daily_ch <- readNWISDaily(12027500,'00060') # Grand Mound gage
 
 
-peak_ch_peakfq <- 'PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.EXP' %>%
-  read.delim(skip = 7,
-             header = TRUE) %>%
-  mutate(ri = 1/EMAEst) %>%
-  rename(waterYear = WaterYr) %>%
-  select(waterYear, RankedQ, ri)
+q_to_ri <- function(q_cfs){
+  
+  # Values from Chehalis_at_Port_1970_1999.EXP
+  lp3_stat <- ppearsonIII(q = log10(q_cfs),
+                          mean =  4.496,
+                          sd =  0.188,
+                          skew = 0.025)
+  
+  return(1 / (1 - lp3_stat))
+}
 
-peak_ch <- daily_ch %>%
-  group_by(waterYear) %>%
-  summarize(q_cfs = max(Q) * 35.31467) %>%
-  left_join(peak_ch_peakfq)
+```
 
-peak_ch$ri[peak_ch$waterYear == 1986] <- peak_ch$ri[peak_ch$waterYear == 1987]
+```{r}
+# Setup function to generate 100 year time series from 30 years of data
+
+loop_series <- function(ts, start_point = 20, years = 100){ 
+  # Input an arbitrary time series/vector
+  # Choose a random starting point
+  # Repeat series up to length(years)
+  
+  ts_len <- length(ts)
+  
+  ts_start <- ts[start_point:ts_len]
+
+  mult <- ((years - length(ts_start))/ts_len) + 1
+  
+  ts_rep <- rep(ts, mult)
+  
+  ts_years <- c(ts_start, ts_rep)[1:years]
+  
+  return(ts_years)
+  
+}
+
+#random_start(1:30, 100)
+```
+
+
+``` {r}
+# peak_ch_peakfq <- 'PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.EXP' %>%
+#   read.delim(skip = 7,
+#              header = TRUE) %>%
+#   mutate(ri = 1/EMAEst) %>%
+#   rename(waterYear = WaterYr) %>%
+#   select(waterYear, RankedQ, ri)
+# 
+# peak_ch <- daily_ch %>%
+#   group_by(waterYear) %>%
+#   summarize(q_cfs = max(Q) * 35.31467) %>%
+#   left_join(peak_ch_peakfq)
+# 
+# peak_ch$ri[peak_ch$waterYear == 1986] <- peak_ch$ri[peak_ch$waterYear == 1987]
 
  # surv_df <- daily_ch %>%
  #    mutate(month = month(Date)) %>%
@@ -441,28 +492,64 @@ peak_ch$ri[peak_ch$waterYear == 1986] <- peak_ch$ri[peak_ch$waterYear == 1987]
 
 ```{r}
 
-ri_ch <- peak_ch %>%
-  mutate(ri = q_to_ri(q_cfs, q_cfs, 0.14),
-         surv_rescale = ri_to_surv_rescale(ri))
-
-ri_ch %>%
-  gather(param, value, q_cfs:surv_rescale) %>%
-  ggplot() +
-  geom_line(aes(waterYear, value)) +
-  facet_wrap(~param, ncol = 1, scales = 'free_y')
+# ri_ch <- peak_ch %>%
+#   mutate(ri = q_to_ri(q_cfs, q_cfs, 0.14),
+#          surv_rescale = ri_to_surv_rescale(ri))
+# 
+# ri_ch %>%
+#   gather(param, value, q_cfs:surv_rescale) %>%
+#   ggplot() +
+#   geom_line(aes(waterYear, value)) +
+#   facet_wrap(~param, ncol = 1, scales = 'free_y')
 ```
 
 ```{r}
-library(readxl)
+# 
+# 
+# zimmerman <- read.csv('Zimmerman_2015.csv')
+# 
+# 
+# dat_z <- zimmerman %>%
+#   select(year:Peak) %>%
+#   mutate(surv = (Fry + Parr + Yearlings)/(PED*1e6)) %>%
+#   rename(ri = Peak)# %>%
+#   # left_join(dat_sk_peakfq) %>%
+#   # mutate(ri = ri %>% round(0))
+# 
+# #ri_to_surv <- lm(log(surv/(1-surv)) ~ ri, data = dat_z)
+# #ri_to_surv <- lm(surv ~ log(ri), data = dat_z)
+# ri_to_surv <- nls(log(surv) ~ a*ri^b, data = dat_z, start = list(a = 1, b = 0))
+# 
+# summary(ri_to_surv)
+# 
+# # Inverse logit function
+# inv.logit <- function(x){
+#   #y <- exp(x)/(exp(x) + 1)
+#   
+#   y <- exp(x)
+#   return(y)
+#   
+#   #return(x)
+# }
+# 
+# sk_pred <- data.frame(ri = 1:100) %>%
+#   mutate(surv_pred = predict(ri_to_surv, newdata = .) %>% inv.logit())
+#   #mutate(surv_pred2 = (-1.86901 * ri^0.10797) %>% exp)
+#   #mutate(surv_pred = 0.1715 * ri^-0.488)
+# 
+# 
+# ggplot() +
+#   theme_bw() +
+#   geom_point(data = dat_z, aes(ri, surv)) +
+#   #stat_smooth(method = 'nls', formula = 'surv~a*ri^b')
+#   geom_line(data = sk_pred, aes(ri, surv_pred)) +
+#   scale_x_log10() +
+#   scale_y_continuous(labels = scales::percent) +
+#   geom_vline(xintercept = 1.5, lty = 2) +
+#   labs(x = 'Recurrence interval (years)',
+#        y = 'Egg to migrant survival') +
+#   annotation_logticks(sides = 'b')
 
-zimmerman <- read_excel('../../../flow_paper/Zimmerman 2015.xlsx',
-           skip = 2, 
-           n_max = 17) 
 
-zimmerman %>%
- select(`year (i)`, Surv) %>%
-  rename(migration_year = `year (i)`) %>%
-  left_join(dat_sk_peakfq) %>%
-  mutate(ri = ri %>% round(0))
 ```
 

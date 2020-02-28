@@ -58,20 +58,20 @@ BH.func <- function(S, p, c){
 
 # Change rescale egg survival to 0:1 scale
 # helper function called by another function
-range.rescale <- function(x, min = 0.005554976, max = 0.1322917) {
-  # rescales x the range of predictions,
-  # where x is the inv.logit from a fitted 
-  # logit(surv) to recurrence interval relationship:
-  # logit(surv) ~ -1.88084588 - 0.05511075 * peak.winter.flow
-  # from Skagit River Age0+ Chinook salmon
-  # egg-outmigrating juveniles data, rescaled to
-  # 0 to 1 scale, with the minimum surv of 0.005554976 
-  # at high winter flows, and
-  # a maximum surv of 0.1322917 at low winter flows
-
-  temp <- (x - min) / diff(range(c(min, max))) * 1
-  temp
-}
+# range.rescale <- function(x, min = 0.005554976, max = 0.1322917) {
+#   # rescales x the range of predictions,
+#   # where x is the inv.logit from a fitted 
+#   # logit(surv) to recurrence interval relationship:
+#   # logit(surv) ~ -1.88084588 - 0.05511075 * peak.winter.flow
+#   # from Skagit River Age0+ Chinook salmon
+#   # egg-outmigrating juveniles data, rescaled to
+#   # 0 to 1 scale, with the minimum surv of 0.005554976 
+#   # at high winter flows, and
+#   # a maximum surv of 0.1322917 at low winter flows
+# 
+#   temp <- (x - min) / diff(range(c(min, max))) * 1
+#   temp
+# }
 
 # Egg survival as a function of flow recurrence
 # called within subbasin() function
