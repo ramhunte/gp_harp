@@ -5,7 +5,7 @@
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp,
-           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat) %>%
+           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat, BF_width) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -168,6 +168,15 @@ mutate(asrp_temp_w_growth = case_when(
          woodmult_w_asrp = ifelse(LW == 'y',
                                   1 + ((woodmult_w - 1) * rest_perc * wood_intensity_scalar),
                                   1),
+         fp_temp_reduction = case_when(
+           Habitat == 'LgRiver' ~ ifelse(BF_width > 30,
+                                         1.43,
+                                         1),
+           Habitat == 'SmStream' ~ case_when(
+             noaaid %in% ss_fp_reconnect ~ ifelse(BF_width > 10,
+                                                  .72,
+                                                  .29),
+             !noaaid %in% ss_fp_reconnect ~ 0)),
          asrp_temp = ifelse(Riparian == 'y',
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only - (asrp_temp_cc_only - asrp_temp_w_growth) * temp_intensity_scalar,
@@ -175,13 +184,13 @@ mutate(asrp_temp_w_growth = case_when(
                             ifelse(can_ang > 170,
                                    asrp_temp_cc_only,
                                    asrp_temp_w_growth)),
-         asrp_temp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',# Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
-                    ifelse(species %in% c('spring_chinook', 'fall_chinook'),
-                           asrp_temp - (1 * rest_perc),
-                           asrp_temp - (1 * rest_perc)),
-                    ifelse(Habitat == 'LgRiver' & Scenario_num %in% c('fp_temp', 'rip_and_flp'),
-                           asrp_temp - (1 * rest_perc),
-                           asrp_temp)),
+         asrp_temp = ifelse(Floodplain == 'y',# Where floodplain reconnection occurs, we expect a 1° reduction in temperature.  This gets scaled by the restoration percentage.
+                            ifelse(species %in% c('spring_chinook', 'fall_chinook'),
+                                   asrp_temp - (fp_temp_reduction * rest_perc),
+                                   asrp_temp - (fp_temp_reduction * rest_perc)),
+                            ifelse( Scenario_num %in% c('fp_temp', 'rip_and_flp'),
+                                    asrp_temp - (fp_temp_reduction * rest_perc),
+                                    asrp_temp)),
          asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
                             ifelse(year == 2040,
                                    asrp_temp - cc_mid_rear,
@@ -199,10 +208,10 @@ mutate(asrp_temp_w_growth = case_when(
                year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
                                      prespawn_temp + cc_late_prespawn,
                                      prespawn_temp + temp_diff_2080_prespawn))),
-         prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
-                                     prespawn_temp_asrp - (1 * rest_perc),
-                                     ifelse(Habitat == 'LgRiver' & Scenario_num %in% c('fp_temp', 'rip_and_flp'),
-                                            prespawn_temp_asrp - (1 * rest_perc),
+         prespawn_temp_asrp = ifelse(Floodplain == 'y',
+                                     prespawn_temp_asrp - (fp_temp_reduction * rest_perc),
+                                     ifelse(Scenario_num %in% c('fp_temp', 'rip_and_flp'),
+                                            prespawn_temp_asrp - (fp_temp_reduction * rest_perc),
                                             prespawn_temp_asrp)),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,
