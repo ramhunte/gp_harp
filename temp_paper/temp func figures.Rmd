@@ -38,10 +38,10 @@ sthd <- function(t) {
            (97.8846 / (1 + exp(-((t - 24.3522) / -.5033)))) / 100 )
 }
 ggplot(data.frame(x = c(12, 32)), aes(x = x)) +
-  stat_function(fun = coho,aes(color = 'coho juvenile summer rearing', linetype = 'coho juvenile summer rearing'))+
-  stat_function(fun = chinook,  aes(color = 'chinook juvenile outmigration', linetype ='chinook juvenile outmigration'))+
-  stat_function(fun = sthd,  aes(color = 'steelhead juvenile summer rearing', linetype = 'steelhead juvenile summer rearing'))+
-  stat_function(fun = bowerman, aes(color = 'spring Chinook prespawning', linetype = 'spring Chinook prespawning'))+
+  stat_function(fun = coho,aes(color = 'coho juvenile\n summer rearing', linetype = 'coho juvenile summer rearing'), size = .6)+
+  stat_function(fun = chinook,  aes(color = 'chinook juvenile\n outmigration', linetype ='chinook juvenile outmigration'), size = .6)+
+  stat_function(fun = sthd,  aes(color = 'steelhead juvenile\n summer rearing', linetype = 'steelhead juvenile summer rearing'), size = .6)+
+  stat_function(fun = bowerman, aes(color = 'spring-run Chinook\n prespawning', linetype = 'spring-run Chinook prespawning'), size = .6)+
   theme_bw()+
   xlab('Temperature (7-DADM, in °C)')+
   ylab('Productivity Multiplier')+
@@ -54,7 +54,12 @@ ggplot(data.frame(x = c(12, 32)), aes(x = x)) +
   theme(legend.position = 'bottom')+#c(.88, .92)) +
   # theme(legend.background = element_rect(fill = 'white',
                                          # size = .25, linetype = 'solid', colour = 'black'))+
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank())+
+  theme(legend.text = element_text(size = 12))+
+  theme(axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12))
   
 ggsave('temp_prod_funcs.jpg', width = 10, height = 8, dpi = 300)
 ```
