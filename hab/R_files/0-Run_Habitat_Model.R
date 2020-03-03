@@ -12,7 +12,7 @@ if (dir.exists(file.path(outputs_hab, "outputs_long")) == F) {
   dir.create(file.path(outputs_hab, "outputs_long"), recursive = T)
 }
 
-source('temp_paper/fp_temp_reduction/R')
+source('temp_paper/fp_temp_reduction.R')
 source(file.path("hab", "R_files", '1-species_input_files', paste0(fishtype, "_inputs.R"))) #source fish specific variables (density, etc)
 source("hab/R_files/2-read_in_data.R")
 source("hab/R_files/3-temperature.R")
