@@ -21,7 +21,7 @@ pops[pops == 'spring_chinook'] <- 'spring.chinook'
 run_stochastic_eggtofry <- 'no'
 sensitivity.mode <- 'no'
 
-scenarios <- c('Current.csv', 'Historical.csv')
+scenarios <- c('Current.csv', 'Floodplain.csv')
 
 # Number of years the model will run for
 runs <- 2 # dummy variable for now
@@ -232,6 +232,7 @@ print(
     summarize(min = min(perc_diff) %>% scales::percent(),
               mean = mean(perc_diff) %>% scales::percent(),
               max = max(perc_diff) %>% scales::percent()) %>%
+    arrange(species) %>%
     as.data.frame()
 )
 
