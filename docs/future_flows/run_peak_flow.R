@@ -21,7 +21,7 @@ pops[pops == 'spring_chinook'] <- 'spring.chinook'
 run_stochastic_eggtofry <- 'no'
 sensitivity.mode <- 'no'
 
-scenarios <- c('Current.csv', 'Floodplain.csv')
+scenarios <- c('Current.csv', 'Floodplain.csv', 'Shade.csv', 'Historical.csv')
 
 # Number of years the model will run for
 runs <- 2 # dummy variable for now
@@ -108,7 +108,7 @@ for (pop in pops) {
   
   outputs_hab <- file.path('outputs', fishtype[which(pop == pops)], 'hab.scenarios')
   source('lcm/scripts/initialize.R')
-  habitat.file <- habitat.file[habitat.file %in% c('Current.csv', 'Historical.csv')]
+  habitat.file <- habitat.file[habitat.file %in% scenarios]
   
   for (n in 1:length(habitat.file)) {
     
@@ -225,14 +225,30 @@ print(
     facet_grid(species~scenario, scales = 'free_y')
 )
 
+summary_tab <-  x %>%
+  # filter(scenario == 'Current') %>%
+  group_by(scenario, species, era, climate) %>%
+  summarize(min = min(perc_diff) %>% scales::percent(),
+            mean = mean(perc_diff) %>% scales::percent(),
+            max = max(perc_diff) %>% scales::percent()) %>%
+  arrange(species) %>%
+  as.data.frame()
+
 print(
-  x %>%
-   # filter(scenario == 'Current') %>%
-    group_by(scenario, species, era, climate) %>%
-    summarize(min = min(perc_diff) %>% scales::percent(),
-              mean = mean(perc_diff) %>% scales::percent(),
-              max = max(perc_diff) %>% scales::percent()) %>%
-    arrange(species) %>%
-    as.data.frame()
+ summary_tab
 )
 
+
+write.csv(summary_tab, 'summary_tab.csv')
+
+print(
+  x %>%
+    ggplot(aes(era,perc_diff, color = climate)) +
+    geom_boxplot(outlier.shape = NA) +
+    #geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
+    facet_grid(scenario~species) +
+    theme_bw() +
+    scale_color_manual(values = c('black','orange1','orangered2')) +
+    scale_y_continuous(labels = scales::percent) +
+    labs(x = NULL, y = 'Spawner Change from Current (%)', color = NULL)
+)
