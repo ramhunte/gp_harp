@@ -105,6 +105,8 @@ if (sensitivity.mode == 'no') {
   spawners.paper %<>%
     droplevels()
   
+  write.csv(spawners.paper, paste0('spawners_paper_', fishtype, '.csv'))
+  
   
   colors.diag <- data.frame(scenario.label = levels(spawners.diag$scenario.label)) %>%
     mutate_if(is.factor,as.character) %>%
@@ -139,6 +141,8 @@ if (sensitivity.mode == 'no') {
     # slice(1, 2, 4, 6) %>%
     select(color) %>%
     unlist(use.names = FALSE)
+  
+ write.csv(colors.paper, paste0('colors_paper_',fishtype, '.csv'))
   
   label.df.diag <- spawners.diag %>%
     group_by(scenario.label) %>%
@@ -178,6 +182,8 @@ if (sensitivity.mode == 'no') {
     group_by(scenario.label) %>%
     filter(!scenario.label == 'Current') %>%
     mutate(y.pos = prcnt.change)
+  
+  write.csv(label.df.paper, paste0('label_df_paper_', fishtype, '.csv'))
   
   
   

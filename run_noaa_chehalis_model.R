@@ -122,6 +122,7 @@ if (fishtype == 'all_species') {
   source("lcm/LCM.sim.R")
 }
 
+source('temp_paper/spawner_plots.R')
 
 
 # Call plot of observed vs modeled spawner return ----
