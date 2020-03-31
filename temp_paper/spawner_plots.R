@@ -1,27 +1,33 @@
-spawners_paper_spring_chinook <- read.csv('spawners_paper_spring_chinook.csv', header = TRUE) %>%
+spawners_paper_spring_chinook <- read.csv('temp_paper/spawners_figure/spawners_paper_spring_chinook.csv', header = TRUE) %>%
   mutate(species = 'Spring chinook')
-spawners_paper_fall_chinook <- read.csv('spawners_paper_fall_chinook.csv', header = TRUE) %>%
+spawners_paper_fall_chinook <- read.csv('temp_paper/spawners_figure/spawners_paper_fall_chinook.csv', header = TRUE) %>%
   mutate(species = 'Fall chinook')
-spawners_paper_coho <- read.csv('spawners_paper_coho.csv', header = TRUE) %>%
+spawners_paper_coho <- read.csv('temp_paper/spawners_figure/spawners_paper_coho.csv', header = TRUE) %>%
   mutate(species = 'Coho')
-spawners_paper_steelhead <- read.csv('spawners_paper_steelhead.csv', header = TRUE) %>%
+spawners_paper_steelhead <- read.csv('temp_paper/spawners_figure/spawners_paper_steelhead.csv', header = TRUE) %>%
   mutate(species = 'Steelhead')
 
-spawners.paper.all <- bind_rows(spawners_paper_spring_chinook, spawners_paper_coho, spawners_paper_fall_chinook, spawners_paper_steelhead) 
+species_order <- c('Spring chinook', 'Coho', 'Steelhead', 'Fall chinook')
+year_order <- c('Current', 'Mid-century', 'Late-century')
+
+spawners.paper.all <- bind_rows(spawners_paper_spring_chinook, spawners_paper_coho, spawners_paper_fall_chinook, spawners_paper_steelhead)
+spawners.paper.all$species <- factor(spawners.paper.all$species, levels = species_order)
+spawners.paper.all$year <- factor(spawners.paper.all$year, levels = year_order)
 
 
-label_df_spring_chinook <- read.csv('label_df_paper_spring_chinook.csv', header = TRUE) %>%
+label_df_spring_chinook <- read.csv('temp_paper/spawners_figure/label_df_paper_spring_chinook.csv', header = TRUE) %>%
   mutate(species = 'Spring chinook')
-label_df_fall_chinook <- read.csv('label_df_paper_fall_chinook.csv', header = TRUE) %>%
+label_df_fall_chinook <- read.csv('temp_paper/spawners_figure/label_df_paper_fall_chinook.csv', header = TRUE) %>%
   mutate(species = 'Fall chinook')
-label_df_coho <- read.csv('label_df_paper_coho.csv', header = TRUE) %>%
+label_df_coho <- read.csv('temp_paper/spawners_figure/label_df_paper_coho.csv', header = TRUE) %>%
   mutate(species = 'Coho')
-label_df_steelhead <- read.csv('label_df_paper_steelhead.csv', header = TRUE) %>%
+label_df_steelhead <- read.csv('temp_paper/spawners_figure/label_df_paper_steelhead.csv', header = TRUE) %>%
   mutate(species = 'Steelhead')
 
 label.df.all <- bind_rows(label_df_spring_chinook, label_df_fall_chinook, label_df_coho, label_df_steelhead)
+label.df.all$species <- factor(label.df.all$species, levels = species_order)
 
-colors.paper.all <- read.csv('colors_paper_coho.csv', header = TRUE) %>%
+colors.paper.all <- read.csv('temp_paper/spawners_figure/colors_paper_coho.csv', header = TRUE) %>%
   select(-1)
 
 
@@ -54,4 +60,4 @@ ggplot() +
   theme(axis.text.x = element_text(angle = 45,hjust = 1),
         text = element_text( size = 16)) +
   theme(legend.position = 'none')
-ggsave(file.path(paste0('spawners_basinwide_all', '_temp_paper','.jpg')), width = 10, height = 15, dpi = 300)
+ggsave(file.path(paste0('temp_paper/spawners_figure/spawners_basinwide_all', '_temp_paper','.jpg')), width = 10, height = 15, dpi = 300)
