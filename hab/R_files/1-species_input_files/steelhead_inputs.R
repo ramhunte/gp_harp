@@ -26,7 +26,7 @@ surv.base = c(rep(.6, times = 8), rep(.74, times = 6), rep(.6, times = 2), rep(.
               rep(.49, times = 8), rep(.52, times = 6), rep(.49, times = 2), rep(.52, times = 2), rep(.49, times = 5))
 wood.surv.base = c(rep(.6, times = 6), rep(.62, times = 2),  rep(.74, times = 6), rep(.62, times = 2), rep(.74, times = 2), rep(.6, times = 5),
                    rep(.35, times = 6), rep(.58, times = 2), rep(.52, times = 6), rep(.58, times = 2), rep(.52, times = 2), rep(.35, times = 5),
-                   rep(.85, times = 6), rep(.73, times = 2), rep(.88, times = 6), rep(.73, times = 2), rep(.88, times = 2), rep(.85, times = 5),
+                   rep(.85, times = 6), rep(.88, times = 2), rep(.74, times = 6), rep(.88, times = 2), rep(.74, times = 2), rep(.85, times = 5),
                    rep(.49, times = 6), rep(.53, times = 2), rep(.52, times = 6), rep(.53, times = 2), rep(.52, times = 2), rep(.49, times = 5))
 survival <- data.frame(Habitat, life.stage, surv.base, wood.surv.base)
 
