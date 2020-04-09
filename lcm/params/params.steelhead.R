@@ -34,7 +34,7 @@ percent.spring.migrants <- read.csv('lcm/data/Subbasin_names.csv') %>%
   mutate(prcnt_movers = case_when(
     Area_km2 > 450              ~ 0.0,
     between(Area_km2, 150, 450) ~ 0.2,
-    Area_km2 < 250              ~ 0.5
+    Area_km2 < 150              ~ 0.5
   )) %>%
   pull(prcnt_movers)
 
