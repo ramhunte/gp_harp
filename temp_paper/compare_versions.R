@@ -16,9 +16,9 @@ path_to_data <- file.path('outputs', fishtype, 'lcm') %>%
   list.files( ., pattern = "raw.csv", full.names = T) 
 
 
-# Bring file back from paper_figures ----
+# Bring file back from temperature_paper ----
 
-shell_cmd <- paste0('git show paper_figures:', path_to_data, ' > paper_figures_spawners.csv')
+shell_cmd <- paste0('git show temperature_paper:', path_to_data, ' > temperature_paper_spawners.csv')
 
 if (os == 'windows') {
   shell(cmd = shell_cmd)
@@ -26,36 +26,36 @@ if (os == 'windows') {
   system(shell_cmd)
 }
 
-paper_figures_spawners <- read.csv('paper_figures_spawners.csv')
-unlink('paper_figures_spawners.csv') # Delete paper_figures version
+temperature_paper_spawners <- read.csv('temperature_paper_spawners.csv')
+unlink('temperature_paper_spawners.csv') # Delete temperature_paper version
 
-ver_paper_figures_cmd <- paste0('git describe paper_figures --tags')
+ver_temperature_paper_cmd <- paste0('git describe temperature_paper --tags')
 
 if (os == 'windows') {
-  ver_paper_figures <- shell(cmd = paste0(ver_paper_figures_cmd), intern = TRUE)
+  ver_temperature_paper <- shell(cmd = paste0(ver_temperature_paper_cmd), intern = TRUE)
 } else{
-  ver_paper_figures <- system(paste0(ver_paper_figures_cmd), intern = TRUE)
+  ver_temperature_paper <- system(paste0(ver_temperature_paper_cmd), intern = TRUE)
 }
 
 
 df <- path_to_data %>%
   read.csv() %>%
   rename(spawners.feature = spawners) %>%
-  full_join(paper_figures_spawners %>%
-              rename(spawners.paper_figures = spawners),
+  full_join(temperature_paper_spawners %>%
+              rename(spawners.temperature_paper = spawners),
             by = c('scenario','natal.basin')
   ) %>%
   select(scenario, 
          natal.basin,
          spawners.feature,
-         spawners.paper_figures
+         spawners.temperature_paper
   ) %>% 
-  gather(version, spawners, spawners.feature:spawners.paper_figures) %>%
+  gather(version, spawners, spawners.feature:spawners.temperature_paper) %>%
   mutate(version = ifelse(version == 'spawners.feature',
                           branch,
-                          'paper_figures')
+                          'temperature_paper')
   ) %>%
-  mutate(version = factor(version, levels = c('paper_figures', branch)))
+  mutate(version = factor(version, levels = c('temperature_paper', branch)))
 
 if (species != 'spring.chinook') {
   df %<>%
@@ -81,7 +81,7 @@ labs_df <- df %>%
               summarize(n = sum(spawners)) %>%
               mutate(prcnt_diff = (n[version == branch] - n) / n,
                      n = ifelse(abs(prcnt_diff) > 0, scales::percent(prcnt_diff), '0%')) %>%
-              filter(version == 'paper_figures') %>%
+              filter(version == 'temperature_paper') %>%
               mutate(version = 'percent diff')
             
   ) %>%
@@ -105,13 +105,13 @@ if (nrow(labs_df_test) != 0) {
                 aes(y = y, label = paste(version,' - ', n)),
                 size = 2) +
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0)) +
-      labs(caption = paste0(pop, ' - paper_figures version = ', ver_paper_figures),
+      labs(caption = paste0(pop, ' - temperature_paper version = ', ver_temperature_paper),
            y = 'spawners')
   )
   
   
   ggsave(file.path(out.path.compare,
-                   paste('Comparison_Total_run_paper_figures',
+                   paste('Comparison_Total_run_temperature_paper',
                          pop,
                          paste0(format(Sys.time(), "%Y%m%d"),'.jpg'),
                          sep = "_")),
@@ -120,12 +120,12 @@ if (nrow(labs_df_test) != 0) {
          dpi = 300)
   
   # Print summary metrics to the screen
-  print(paste0(pop, " --------------- summary of percent differences from HEAD of paper_figures branch -----------------"))
+  print(paste0(pop, " --------------- summary of percent differences from HEAD of temperature_paper branch -----------------"))
   print(df %>%
           group_by(scenario,version) %>%
           summarize(n = sum(spawners, na.rm = T)) %>%
           spread(version, n) %>%
-          mutate(prcnt_diff = (get(branch) - paper_figures) / paper_figures,
+          mutate(prcnt_diff = (get(branch) - temperature_paper) / temperature_paper,
                  prcnt_diff = ifelse(abs(prcnt_diff) > 0, scales::percent(prcnt_diff), '0%'))
   )
 } else {print("No changes to lcm results")}
