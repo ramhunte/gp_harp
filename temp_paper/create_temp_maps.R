@@ -32,12 +32,12 @@ flowline_temps <- asrp_reach_data %>%
               select(noaaid, year, asrp_temp) %>%
               spread(year, asrp_temp) %>%
               rename(historical = '2019')) %>%
-  mutate(rip_diff_mid = rip_mid - cc_only_mid,
-         rip_diff_late = rip_late - cc_only_late,
+  mutate(rip_diff_mid = rip_mid - current - cc_mid_rear,
+         rip_diff_late = rip_late - current - cc_late_rear,
          fp_diff_mid = fp_mid - cc_only_mid,
          fp_diff_late = fp_late - cc_only_late,
-         comb_diff_mid = rip_flp_mid - cc_only_mid,
-         comb_diff_late = rip_flp_late - cc_only_late)
+         comb_diff_mid = rip_flp_mid - current - cc_mid_rear,
+         comb_diff_late = rip_flp_late - current - cc_late_rear)
   write.csv(flowline_temps,  'temp_paper/flowline_temps.csv')
 
 
