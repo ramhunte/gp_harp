@@ -41,6 +41,6 @@ flowline_temps <- asrp_reach_data %>%
   write.csv(flowline_temps,  'temp_paper/flowline_temps.csv')
 
 
-View(flowline_temps %>% filter(cc_only_late <18))
-View(flowline_temps %>% filter(cc_only_late >18 & cc_only_mid < 24))
-View(flowline_temps %>% filter(cc_only_late >24))
+# View(flowline_temps %>% filter(cc_only_late <18))
+# View(flowline_temps %>% filter(cc_only_late >18 & cc_only_mid < 24))
+# View(flowline_temps %>% filter(cc_only_late >24))
