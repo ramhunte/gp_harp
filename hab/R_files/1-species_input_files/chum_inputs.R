@@ -8,7 +8,7 @@ PR_redd_density = 4.2
 F_redd_density = 8.8
 NF_redd_density = 0
 
-prespawn_surv_raw <- .76
+prespawn_surv_raw <- 1
 
 #Rearing
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond","Pool_low_ag", 
