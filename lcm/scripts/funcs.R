@@ -428,7 +428,7 @@ if (pop == 'chum') {
     # eggs <- BH.func(S = NOR.total * .5, p = fecund, c = egg.cap) # B-H
     pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
-    fry <- BH.func(pre.fry, p = fry.colonization.surv, c = fry.colonization.cap)
+    fry <- BH.func(pre.fry, p = fry.colonization.surv, c = fry.colonization.cap * 7)
     
     fry.migrant <- fry * fry.migrant.surv
 
