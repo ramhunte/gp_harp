@@ -16,12 +16,10 @@ if (!fishtype %in% c('steelhead', 'chum')) {
                                Shape_Length * curr_beaver_mult),
          eggs = ifelse(slope < .01,
                        Shape_Length * pass_tot_asrp * PR_redd_density / 1000 * fecundity,
-                       ifelse(lc == "Forest",
-                              Shape_Length * pass_tot_asrp * F_redd_density / 1000 * fecundity,
-                              ifelse(LW == 'y',
-                                     Shape_Length * pass_tot_asrp * (NF_redd_density + (F_redd_density - NF_redd_density) * rest_perc * 
-                                                                       wood_intensity_scalar) / 1000 * fecundity,
-                                     Shape_Length * pass_tot_asrp * NF_redd_density / 1000 * fecundity))))
+                       ifelse(LW == 'y',
+                              Shape_Length * pass_tot_asrp * (NF_redd_density + (F_redd_density - NF_redd_density) * rest_perc * 
+                                                                wood_intensity_scalar) / 1000 * fecundity,
+                              Shape_Length * pass_tot_asrp * NF_redd_density / 1000 * fecundity)))
 } else {
   asrp_spawn_ss <- asrp_ss_spawn %>%
     left_join(., asrp_culvs) %>%
@@ -31,10 +29,10 @@ if (!fishtype %in% c('steelhead', 'chum')) {
     mutate(Shape_Length = ifelse(Beaver == 'y',
                                           Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
                                           Shape_Length * curr_beaver_mult),
-           psp = case_when(slope < .01 ~ ifelse(LW == 'y'| lc == 'Forest',
+           psp = case_when(slope < .01 ~ ifelse(LW == 'y',
                                                 psp_hwls,
                                                 psp_lwls),
-                           slope >= .01 ~ ifelse(LW == 'y' | lc == 'Forest',
+                           slope >= .01 ~ ifelse(LW == 'y' ,
                                                  psp_hwhs,
                                                  psp_lwhs)),
            spawn_area = (Shape_Length / (width_w * psp)) * width_w * (width_w * .5),
@@ -79,7 +77,7 @@ if (!fishtype %in% c('steelhead', 'chum')) {
          mutate(eggs = Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity)
 } else {
   asrp_spawn_fp %<>%
-    mutate(spawn_area = ifelse(LW == 'y' | lc == 'Forest',
+    mutate(spawn_area = ifelse(LW == 'y' ,
                       (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5),
                       (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5)),
            eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)

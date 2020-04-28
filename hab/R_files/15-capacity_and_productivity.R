@@ -37,7 +37,7 @@ if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
 if (fishtype == 'chum') {
   asrp_cap %<>%
     bind_rows(., asrp_cap %<>%
-                mutate(life.stage = ifelse(life.stage == 'summer',
+                mutate(life.stage = ifelse(life.stage == 'winter',
                                            'fry.colonization',
                                            'summer.2')))
 }
