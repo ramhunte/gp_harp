@@ -13,9 +13,9 @@ prespawn_surv_raw <- 1
 #Rearing
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond","Pool_low_ag", 
                   "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"), times = 4))
-life.stage = c(rep("fry.colonization", times = length(Habitat)/4), rep("winter", times = length(Habitat)/4), rep('summer.2', times = length(Habitat) / 4), 
+life.stage = c(rep("summer", times = length(Habitat)/4), rep("fry.colonization", times = length(Habitat)/4), rep('summer.2', times = length(Habitat) / 4), 
                rep('winter.2', times = length(Habitat) / 4))
-Density = c(rep(13300, times = 2), rep(17000, times = 2), 6700, 30000, rep(30000, times = 2), 0, 30000,rep(0, times = 66))
+Density = c(rep(0, times = 19), rep(13300, times = 2), rep(17000, times = 2), 6700, 30000, rep(30000, times = 2), 0, 30000,rep(0, times = 47))
 density <- data.frame(Habitat, life.stage, Density)
 
 winter_pool_scalar_warm = 1
