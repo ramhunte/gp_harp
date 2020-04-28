@@ -22,11 +22,14 @@ if (sensitivity.mode == 'no') {
   
   # Create a plotable dataframe of total run, sum of all DUs, geomean of all years, all runs plotted
   
-  spawners <- model.all[ , ,'spawners', , ] %>%
-    apply(.,c(1,3,4),geo.mean) %>%
-    apply(.,c(1,3),sum) %>%
-    as.data.frame.table(.) %>%
-    rename(run = Var1, scenario = Var2, n = Freq) %>%
+  # spawners <- model.all[ , ,'spawners', , ] %>%
+  #   apply(.,c(1,3,4),geo.mean) %>%
+  #   apply(.,c(1,3),sum) %>%
+  #   as.data.frame.table(.) %>%
+  #   rename(run = Var1, scenario = Var2, n = Freq) %>%
+  #   mutate_if(is.factor,as.character) %>%
+  spawners <- read.csv(file.path(outputs_lcm, paste0(pop, '_abundance_basinwide.csv'))) %>%
+    rename(n = basinwide_spawners) %>%
     mutate_if(is.factor,as.character) %>%
     left_join(plot.params) %>%
     mutate(scenario.label = ifelse(is.na(scenario.label),paste0(scenario,".Naming.ERROR"),as.character(scenario.label)),
