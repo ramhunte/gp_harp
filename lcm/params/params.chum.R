@@ -32,7 +32,7 @@ fry.surv.adj <- 1
 # Capacity is assumed to be unlimited (transient)
 # stochastic survival between min and max
 
-bay.surv <- .14
+bay.surv <- .113
 
 
 bay.range <- c(bay.surv, bay.surv)#c(bay.surv*.8, bay.surv*1.2)
