@@ -21,7 +21,7 @@ pops[pops == 'spring_chinook'] <- 'spring.chinook'
 run_stochastic_eggtofry <- 'no'
 sensitivity.mode <- 'no'
 
-scenarios <- c('Current.csv', 'Floodplain.csv', 'Shade.csv', 'Historical.csv')
+scenarios <- c('Current.csv', 'Historical.csv')#Floodplain.csv', 'Shade.csv', 'Historical.csv')
 
 # Number of years the model will run for
 runs <- 2 # dummy variable for now
@@ -50,12 +50,17 @@ model.all.pf <- array(
 )
 
 
+# coho Nov 15 - May 15 (320-136) 181 days
+# spring Sep 1 - April 15 (245-106) 226 days
+# fall Oct 1 - May 1 (275-122) 216 days
+# sthd feb 15 - Sep 15 (46-259) 152 days
+
 incubation_months <- list(
   c(11,12,1:4), # coho
   #c(9:12, 1:3), # spring chinook
   c(10:12, 1:4),
   c(10:12, 1:4), # fall chinook
-  c(3:9) # steelhead
+  c(2:9) # steelhead
 )
 
 for (pop in pops) {
@@ -221,8 +226,9 @@ print(
   x %>%
     ggplot +
     theme_bw() +
-    geom_line(aes(year, n/1000, color = era, lty = climate)) +
-    facet_grid(species~scenario, scales = 'free_y')
+    geom_line(aes(year, n, color = era, lty = climate)) +
+    facet_grid(species~scenario, scales = 'free_y') +
+    scale_y_continuous(labels = scales::label_comma())
 )
 
 summary_tab <-  x %>%
@@ -246,8 +252,9 @@ print(
     ggplot(aes(era,perc_diff, color = climate)) +
     geom_boxplot(outlier.shape = NA) +
     #geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
-    facet_grid(scenario~species) +
+    facet_grid(species~scenario) +
     theme_bw() +
+    theme(panel.grid = element_blank()) +
     scale_color_manual(values = c('black','orange1','orangered2')) +
     scale_y_continuous(labels = scales::percent) +
     labs(x = NULL, y = 'Spawner Change from Current (%)', color = NULL)

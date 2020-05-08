@@ -97,12 +97,13 @@ mods_pred <- data.frame(ri = 1:max(cig_ave$ri)) %>%
 Then we plot it! 
 
 ```{r fig.height=4, fig.width=7}
-cig_ave %>%
+p5 <- cig_ave %>%
   mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5')) %>%
   group_by(ri, era, climate_model) %>%
   summarize(value = mean(value)) %>%
   ggplot +
   theme_bw() +
+  theme(panel.grid = element_blank()) +
   geom_point(aes(ri, 
                  value#, 
                  #shape = hydro_model
@@ -115,8 +116,10 @@ cig_ave %>%
   labs(x = 'Recurrence interval (years)',
        y = 'Change from current',
        #shape = 'Hydrologic model',
-       color = 'Site',
-       title = cig_ave$site.name[1])
+       color = 'Site')
+       #title = cig_ave$site.name[1])
+
+ggsave('Fig5_peak_flow_change.tiff', p5, height = 3, width = 5, dpi = 300, compression = 'lzw')
 ```
 
 ## Calculate a couple of summary metrics
@@ -305,17 +308,22 @@ sk_pred <- data.frame(ri = 1:100) %>%
 
 
 ```{r}
-ggplot() +
-  theme_bw() +
+p3 <- ggplot() +
+  cowplot::theme_half_open() +
   geom_point(data = dat_z, aes(ri, surv)) +
   #stat_smooth(method = 'nls', formula = 'surv~a*ri^b')
   geom_line(data = sk_pred, aes(ri, surv_pred)) +
   scale_x_log10() +
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1L),
+                     limits = c(0, .25)) +
   #geom_vline(xintercept = 1.5, lty = 2) +
   labs(x = 'Recurrence interval (years)',
        y = 'Egg to migrant survival') +
   annotation_logticks(sides = 'b')
+
+ggsave('Fig3_ri_vs_survival.tiff',p3, height = 3, width = 5, dpi = 300, compression = 'lzw')
+
+p3
   
 ```
 
@@ -368,6 +376,7 @@ ggplot() +
                      aes(ri, surv_pred_rescale)) +
   scale_x_log10(limits=c(1, 100)) +
   geom_vline(xintercept = 1.5, lty = 2)
+
 ```
 
 
@@ -451,6 +460,48 @@ loop_series <- function(ts, start_point = 20, years = 100){
 }
 
 #random_start(1:30, 100)
+```
+
+
+```{r}
+
+# coho Nov 15 - May 15 (320-136) 181 days
+# spring Sep 1 - April 15 (245-106) 226 days
+# fall Oct 1 - May 1 (275-122) 216 days
+# sthd feb 15 - Sep 15 (46-259) 152 days
+
+start_day <- 220# 275 = Oct 1, 213 = August 1
+
+p7 <- daily_ch %>%
+  mutate(day_plot = ifelse(Day >= start_day, Day - start_day, Day + 365 - start_day)) %>%
+  ggplot(aes(day_plot, Q)) +
+  geom_point() +
+  scale_x_continuous(
+    breaks = seq(0,364, length.out = 13)[-13],
+    labels = 
+      function(x) format(as.Date(as.character(ifelse(x <= (365 - start_day), x + start_day, x - (365 - start_day))), "%j"), "%b"),
+    expand = expand_scale(mult = c(0, 0))
+    ) +
+  labs(x = NULL, 
+       y = bquote('Discharge'~(m^3* s^-1))) +
+  cowplot::theme_half_open() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0)) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0)),
+                     limits = c(0,2000)) +
+  geom_rect(xmin = 100, xmax = 281, ymin = 1900, ymax = 2000, fill = "grey55") +
+  annotate(geom = 'text', x = mean(c(100, 281)), y = mean(c(1900, 2000)), label = 'Coho') +
+  geom_rect(xmin = 25, xmax = 250, ymin = 1800, ymax = 1900, fill = "grey65") +
+  annotate(geom = 'text', x = mean(c(25, 250)), y = mean(c(1800, 1900)), label = 'Spring Chinook') +
+  geom_rect(xmin = 55, xmax = 271, ymin = 1700, ymax = 1800, fill = "grey75") +
+  annotate(geom = 'text', x = mean(c(55, 271)), y = mean(c(1700, 1800)), label = 'Fall Chinook') +
+  geom_rect(xmin = 0, xmax = 39, ymin = 1600, ymax = 1700, fill = "grey85") +
+  geom_rect(xmin = 191, xmax = 365, ymin = 1600, ymax = 1700, fill = "grey85") +
+  annotate(geom = 'text', x = 250, y = mean(c(1600, 1700)), label = 'Steelhead')
+
+
+ggsave('Fig7_incubation_timing.tiff', p7, height = 4, width = 6, dpi = 300, compression = 'lzw')
+
+p7
 ```
 
 
