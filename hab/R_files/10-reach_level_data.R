@@ -197,7 +197,9 @@ mutate(asrp_temp_w_growth = case_when(
                                    asrp_temp - cc_mid_rear,
                                    asrp_temp - cc_late_rear),
                             asrp_temp),
-         tempmult.asrp = temp_func(asrp_temp),
+         tempmult.asrp = case_when(
+           species == 'coho' ~ temp_func_high_food(asrp_temp),
+           !species == 'coho' ~ temp_func(asrp_temp)),
          prespawn_temp_asrp = case_when(
            Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - temp_diff_prespawn, # convert 7DADM to MDM
            !Scenario_num %in% c('Shade', 'Historical') ~

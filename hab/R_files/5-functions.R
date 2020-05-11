@@ -66,7 +66,13 @@ temp_func <- function(t = "temperature"){
   }
 }
 
-
+temp_func_high_food <- function(t = 'temperature'){
+  ifelse(t < 20,
+         1,
+         ifelse(t >= 20 & t < 26,
+                -(1/6) * t + 4.33,
+                0))
+}
 
 
 calc_coho_imperv <- function(imperv) {
