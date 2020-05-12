@@ -226,8 +226,8 @@ print(
   x %>%
     ggplot +
     theme_bw() +
-    geom_line(aes(year, n, color = era, lty = climate)) +
-    facet_grid(species~scenario, scales = 'free_y') +
+    geom_line(aes(year, perc_diff, color = era, lty = climate)) +
+    facet_grid(species~scenario) +
     scale_y_continuous(labels = scales::label_comma())
 )
 
@@ -247,15 +247,20 @@ print(
 
 write.csv(summary_tab, 'summary_tab.csv')
 
-print(
-  x %>%
-    ggplot(aes(era,perc_diff, color = climate)) +
-    geom_boxplot(outlier.shape = NA) +
-    #geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
-    facet_grid(species~scenario) +
-    theme_bw() +
-    theme(panel.grid = element_blank()) +
-    scale_color_manual(values = c('black','orange1','orangered2')) +
-    scale_y_continuous(labels = scales::percent) +
-    labs(x = NULL, y = 'Spawner Change from Current (%)', color = NULL)
-)
+p8 <- x %>%
+  ggplot(aes(era,perc_diff, color = climate)) +
+  geom_boxplot(outlier.shape = NA) +
+  #geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
+  facet_grid(species~scenario) +
+  theme_bw() +
+  theme(panel.grid = element_blank(),
+        legend.position = c(.5, .07),
+        legend.direction = 'horizontal',
+        legend.background = element_rect(color = 'black')) +
+  scale_color_manual(values = c('black','orange1','orangered2')) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = NULL, y = 'Spawner Change from Current', color = NULL)
+
+ggsave('docs/future_flows/Fig8_boxplot.tiff', p8, height = 5, width = 6, dpi = 300, compression = 'lzw')
+
+print(p8)

@@ -496,7 +496,8 @@ p7 <- daily_ch %>%
   annotate(geom = 'text', x = mean(c(55, 271)), y = mean(c(1700, 1800)), label = 'Fall Chinook') +
   geom_rect(xmin = 0, xmax = 39, ymin = 1600, ymax = 1700, fill = "grey85") +
   geom_rect(xmin = 191, xmax = 365, ymin = 1600, ymax = 1700, fill = "grey85") +
-  annotate(geom = 'text', x = 250, y = mean(c(1600, 1700)), label = 'Steelhead')
+  annotate(geom = 'text', x = 250, y = mean(c(1600, 1700)), label = 'Steelhead') 
+  #geom_hline(yintercept = 874, lty = 2)
 
 
 ggsave('Fig7_incubation_timing.tiff', p7, height = 4, width = 6, dpi = 300, compression = 'lzw')
