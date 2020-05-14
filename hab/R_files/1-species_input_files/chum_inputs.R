@@ -4,10 +4,6 @@ redd_area = 2.3
 defended_redd_area = 42.3
 adult_per_redd = 1.9
 
-PR_redd_density = 4.2
-F_redd_density = 8.8
-NF_redd_density = 0
-
 prespawn_surv_raw <- .76
 
 #Rearing
