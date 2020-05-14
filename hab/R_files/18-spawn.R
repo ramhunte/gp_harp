@@ -6,38 +6,22 @@ if (run_single_action == 'no') {
     filter(!Scenario_num %in% single_action_scenarios)
 }
 
-if (!fishtype %in% c('steelhead', 'chum')) {
-  asrp_spawn_ss <- asrp_ss_spawn %>%
+asrp_spawn_ss <- asrp_ss_spawn %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   filter(slope < .03) %>%
+  
   mutate(Shape_Length = ifelse(Beaver == 'y',
                                Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
                                Shape_Length * curr_beaver_mult),
-         eggs = ifelse(slope < .01,
-                       Shape_Length * pass_tot_asrp * PR_redd_density / 1000 * fecundity,
-                       ifelse(LW == 'y',
-                              Shape_Length * pass_tot_asrp * (NF_redd_density + (F_redd_density - NF_redd_density) * rest_perc * 
-                                                                wood_intensity_scalar) / 1000 * fecundity,
-                              Shape_Length * pass_tot_asrp * NF_redd_density / 1000 * fecundity)))
-} else {
-  asrp_spawn_ss <- asrp_ss_spawn %>%
-    left_join(., asrp_culvs) %>%
-    left_join(., asrp_reach_data) %>%
-    filter(slope < .03) %>%
-    
-    mutate(Shape_Length = ifelse(Beaver == 'y',
-                                          Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
-                                          Shape_Length * curr_beaver_mult),
-           psp = case_when(slope < .01 ~ ifelse(LW == 'y',
-                                                psp_hwls,
-                                                psp_lwls),
-                           slope >= .01 ~ ifelse(LW == 'y' ,
-                                                 psp_hwhs,
-                                                 psp_lwhs)),
-           spawn_area = (Shape_Length / (width_w * psp)) * width_w * (width_w * .5),
-           eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
-}
+         psp = case_when(slope < .01 ~ ifelse(LW == 'y',
+                                              psp_hwls,
+                                              psp_lwls),
+                         slope >= .01 ~ ifelse(LW == 'y' ,
+                                               psp_hwhs,
+                                               psp_lwhs)),
+         spawn_area = (Shape_Length / (width_w * psp)) * width_w * (width_w * .5),
+         eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
 
 asrp_spawn_fp_raw <- asrp_fp_spawn %>%
   left_join(., asrp_culvs) %>%
@@ -72,16 +56,11 @@ asrp_spawn_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
          Length_sc = ifelse(Floodplain == 'y',
                             Length_sc_curr + ((Length_sc_hist - Length_sc_curr) * rest_perc * fp_intensity_scalar),
                             Length_sc_curr))
-if (!fishtype %in% c('steelhead', 'chum')) {
-  asrp_spawn_fp %<>%
-         mutate(eggs = Length_sc * pass_tot_asrp * PR_redd_density / 1000 * fecundity)
-} else {
-  asrp_spawn_fp %<>%
-    mutate(spawn_area = ifelse(LW == 'y' ,
-                      (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5),
-                      (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5)),
-           eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
-}
+asrp_spawn_fp %<>%
+  mutate(spawn_area = ifelse(LW == 'y' ,
+                             (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5),
+                             (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5)),
+         eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
 
 if (fishtype == "spring_chinook") {
   asrp_spawn_fp %<>%
