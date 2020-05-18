@@ -1,3 +1,7 @@
+source('srt_figures/spawners_edr.R')
+source('srt_figures/spawners_subbasin.R')
+source('srt_figures/spawners_diagnostic_scenarios.R')
+
 read_filename <- function(fname) {
   read_csv(fname, col_names = TRUE) %>%
     mutate(filename = fname)
