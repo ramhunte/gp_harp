@@ -1,0 +1,237 @@
+---
+title: "Figs"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(sf)
+library(scales)
+library(gridExtra)
+```
+
+# Read in data
+
+First step is to read in the data. **This analysis needs to use V13.1** 
+
+This branch should be a child of V13.1 without any other merges from dev. 
+
+```{r}
+
+
+# Habitat scenario and LCM results
+results <- '../outputs'
+
+
+
+# Spatial data
+
+# Access files on the network
+# gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/Inputs.gdb'
+# gdb_out <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/Outputs.gdb'
+
+# Files on Colin's local machine
+gdb_in <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/Inputs.gdb'
+gdb_out <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/Outputs.gdb'
+
+
+# Subbasin names and EDRs
+Subbasin_names <- read.csv('../lcm/data/Subbasin_names.csv') %>%
+  mutate(EcoRegion = ifelse(str_detect(Subbasin, 'Estuary'),'Estuary', as.character(EcoRegion)))
+
+# Plot colors and labels
+plot.params <- read.csv('../lcm/data/scenarios.csv') %>% 
+  select(scenario, scenario.label, color) %>%
+  mutate_if(is.factor, as.character) %>%
+  rowid_to_column()
+
+# Read in the flowline
+fl <- st_read(gdb_out, 'flowline')
+
+
+```
+
+
+# Figures
+
+
+## Spawner results by Subbasin
+Four panel figures for abundance change using one-subbasin at a time. Use units of spawners/km to normalize by basin size. One figure for each diagnostic scenario except the large river scenario.
+
+https://trello.com/c/YZ5zt993
+
+
+
+First gather up the data
+```{r}
+# Calculate length of river in each subbasin for each species
+fl_len <- fl %>%
+  st_drop_geometry() %>%
+  select(noaa_sub,cohospawn:steelspawn, Shape_Length) %>%
+  pivot_longer(cohospawn:steelspawn, names_to = 'species', values_to = 'presence') %>%
+  filter(presence == 'Yes') %>%
+  group_by(species, noaa_sub) %>%
+  summarize(length = sum(Shape_Length)) %>%
+  ungroup %>%
+  rename(natal.basin = noaa_sub) %>%
+  mutate(species = case_when(
+    species == 'cohospawn'  ~ 'coho',
+    species == 'fallspawn'  ~ 'fall_chinook',
+    species == 'sprspawn'   ~ 'spring_chinook',
+    species == 'steelspawn' ~ 'steelhead',
+    species == 'chumspawn'  ~ 'chum'
+  ))
+
+
+# List all results by subbasin files
+sub_paths <- list.files(results,
+                        recursive = TRUE,
+                        pattern = 'abundance_by_subbasin.csv',
+                        full.names = TRUE)
+
+# Create list of species to attach to each file
+spp <- sub_paths %>%
+  dirname %>%
+  dirname %>%
+  basename()
+
+
+
+
+sub_df <- sub_paths %>%
+  map_dfr(.id = 'species', read.csv) %>%
+  select(-X) %>%
+  mutate(species = spp[as.numeric(species)]) %>%
+  select(species:spawners, Pn, Cn) %>%
+  full_join(fl_len) %>%
+  group_by(species, natal.basin) %>%
+  mutate(current = spawners[scenario == 'Current'],
+         diff = spawners - current,
+         diff_perc = diff/current,
+         diff_per_m = ifelse(is.na(length), 
+                              NA,
+                              ifelse(diff == 0, 
+                                     0,
+                                     diff/length)),
+         species2 = case_when(
+           species == 'coho'  ~ 'Coho',
+           species == 'fall_chinook'  ~ 'Fall Chinook',
+           species == 'spring_chinook'   ~ 'Spring Chinook',
+           species == 'steelhead' ~ 'Steelhead',
+           species == 'chum'  ~ 'Chum')
+  ) %>%
+  rename(Subbasin = natal.basin)
+
+```
+
+
+
+```{r}
+# Union subbasins into EDRs
+sub_shp <- st_read(dsn = gdb_in, layer = 'NOAA_subbasins_w_fp') %>%
+  rename(Subbasin_num = noaa_sub_num) %>%
+  left_join(Subbasin_names)
+
+```
+
+Join the spawner data to the new EDR layer. Also join the `plot.param` data
+
+```{r}
+sub_plot <- sub_shp %>%
+  full_join(sub_df) %>%
+  filter(str_detect(EcoRegion, 'Estuary|Upper Sk', negate = TRUE),
+         str_detect(scenario, 'Current|LR', negate = TRUE),
+         species != 'chum') %>%
+  left_join(plot.params)
+```
+
+
+Plot of spawners per km
+```{r}
+
+plot_spawners_per_km <- function(s) {
+  shp_plt <- sub_plot %>% filter(scenario == s)
+  
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt, 
+            aes(fill = diff_per_m * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_wrap(~species2) +
+    scale_fill_viridis_c(#label = percent, 
+      na.value = 'gray50') +
+    theme(panel.spacing = unit(-0.2, 'cm'),
+          strip.text.y = element_text(angle = -90)) +
+    labs(fill = 'Change in\nspawners\nper Km',
+         title = s)
+  
+  folder_name <- 'spawners_per_km'
+  
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+  
+  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+  
+}
+
+plt_scenarios <- sub_plot$scenario %>% unique
+
+
+lapply(plt_scenarios, plot_spawners_per_km)
+```
+
+
+```{r}
+plt_spp <- sub_plot$species2 %>% unique
+
+plot_spawners_per_km <- function(s) {
+  shp_plt <- sub_plot %>% 
+    filter(species2 == s,
+           str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE))
+  
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt, 
+            aes(fill = diff_per_m * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_wrap(~scenario) +
+    scale_fill_viridis_c(na.value = 'gray50') +
+    theme(strip.text.y = element_text(angle = -90)) +
+    labs(fill = 'Change in\nspawners\nper Km',
+         title = s)
+  
+  folder_name <- 'spawners_per_km'
+  
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+  
+  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+  
+}
+
+plt_scenarios <- sub_plot$scenario %>% unique
+
+
+lapply(plt_spp, plot_spawners_per_km)
+
+```
+
