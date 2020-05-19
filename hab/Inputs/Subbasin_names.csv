@@ -1,64 +1,64 @@
-Subbasin_num,Subbasin,EcoRegion
-1,Upper Chehalis: Above Proposed Dam,Willapa Hills
-2,Upper Chehalis: Proposed Dam to Elk Creek,Willapa Hills
-3,Elk Creek,Willapa Hills
-4,Unnamed: Willapa Hills 3,Willapa Hills
-5,South Fork Chehalis,Willapa Hills
-6,Unnamed: Willapa Hills 2,Willapa Hills
-7,Unnamed: Willapa Hills 1,Willapa Hills
-8,Unnamed: Willapa Hills 4,Central Lowlands
-9,Stearns Creek,Willapa Hills
-10,Bunker Creek,Central Lowlands
-11,Unnamed: Central Lowlands 9,Central Lowlands
-12,Newaukum River,Cascade Mountains
-13,Unnamed: Cascade Mountains 2,Cascade Mountains
-14,Unnamed: Central Lowlands 8,Central Lowlands
-15,Salzer Creek,Cascade Mountains
-16,Unnamed: Cascade Mountains 1,Cascade Mountains
-17,Unnamed: Central Lowlands 7,Central Lowlands
-18,Skookumchuck River,Cascade Mountains
-19,Lincoln Creek,Central Lowlands
-20,Unnamed: Central Lowlands 6,Central Lowlands
-21,Unnamed: Black River 1,Black River
-22,Scatter Creek,Black River
-23,Black River,Black River
-24,Unnamed: Central Lowlands 5,Central Lowlands
-25,Garrard Creek,Central Lowlands
-26,Unnamed: Black Hills 5,Black Hills
-27,Unnamed: Central Lowlands 4,Central Lowlands
-28,Rock Creek (Lower Chehalis),Central Lowlands
-29,Cedar Creek,Black Hills
-30,Unnamed: Black Hills 4,Black Hills
-31,Unnamed: Central Lowlands 3,Central Lowlands
-32,Porter Creek,Black Hills
-33,Unnamed: Black Hills 3,Black Hills
-34,Mox Chehalis Creek,Black Hills
-35,Unnamed: Black Hills 2,Black Hills
-36,Unnamed: Central Lowlands 2,Central Lowlands
-37,Cloquallum Creek,Black Hills
-38,Unnamed: Black Hills 1,Black Hills
-39,Unnamed: Central Lowlands 1,Central Lowlands
-40,Satsop River,Olympic Mountains
-41,Unnamed: Olympic Mountains 1,Olympic Mountains
-42,Wynoochee River,Olympic Mountains
-43,Wishkah River,Grays Harbor Tributaries
-44,Hoquiam River,Grays Harbor Tributaries
-45,Humptulips River,Grays Harbor Tributaries
-46,Johns River,Grays Harbor Tributaries
-47,Elk River,Grays Harbor Tributaries
-48,Andrews,Grays Harbor Tributaries
-49,Upper Chehalis Estuary,Grays Harbor Tributaries
-50,Lower Chehalis Estuary,Lower Chehalis Estuary
-51,Upper Skookumchuck,Upper Skookumchuck
-52,Mainstem: Upper Chehalis 1,Mainstem: Upper Chehalis
-53,Mainstem: Upper Chehalis 2,Mainstem: Upper Chehalis
-54,Mainstem: Middle Chehalis 1,Mainstem: Middle Chehalis
-55,Mainstem: Middle Chehalis 2,Mainstem: Middle Chehalis
-56,Mainstem: Middle Chehalis 3,Mainstem: Middle Chehalis
-57,Mainstem: Lower Chehalis 1,Mainstem: Lower Chehalis
-58,Mainstem: Lower Chehalis 2,Mainstem: Lower Chehalis
-59,Mainstem: Lower Chehalis 3,Mainstem: Lower Chehalis
-60,Mainstem: Lower Chehalis 4,Mainstem: Lower Chehalis
-61,Mainstem: Lower Chehalis 5,Mainstem: Lower Chehalis
-62,Mainstem: Lower Chehalis 6,Mainstem: Lower Chehalis
-63,Mainstem: Lower Chehalis 7,Mainstem: Lower Chehalis
+Subbasin_num,Subbasin,EcoRegion,Area_km2
+1,Upper Chehalis: Above Proposed Dam,Willapa Hills,164.8799278
+2,Upper Chehalis: Proposed Dam to Elk Creek,Willapa Hills,126.1564699
+3,Elk Creek,Willapa Hills,151.2730813
+4,Unnamed: Willapa Hills 3,Willapa Hills,34.7047098
+5,South Fork Chehalis,Willapa Hills,324.5681325
+6,Unnamed: Willapa Hills 2,Willapa Hills,54.9831506
+7,Unnamed: Willapa Hills 1,Willapa Hills,1.661189452
+8,Unnamed: Willapa Hills 4,Central Lowlands,18.81852032
+9,Stearns Creek,Willapa Hills,95.61616394
+10,Bunker Creek,Central Lowlands,93.77110414
+11,Unnamed: Central Lowlands 9,Central Lowlands,29.8556202
+12,Newaukum River,Cascade Mountains,406.2263397
+13,Dillenbaugh Creek,Cascade Mountains,42.18080424
+14,Unnamed: Central Lowlands 8,Central Lowlands,13.03625254
+15,Salzer Creek,Cascade Mountains,62.24468694
+16,Unnamed: Cascade Mountains 1,Cascade Mountains,11.58750946
+17,Unnamed: Central Lowlands 7,Central Lowlands,15.40124863
+18,Skookumchuck River,Cascade Mountains,318.8980892
+19,Lincoln Creek,Central Lowlands,112.4738671
+20,Unnamed: Central Lowlands 6,Central Lowlands,77.06774031
+21,Unnamed: Black River 1,Black River,34.58150054
+22,Scatter Creek,Black River,103.6235133
+23,Black River,Black River,364.3842574
+24,Unnamed: Central Lowlands 5,Central Lowlands,5.551625906
+25,Garrard Creek,Central Lowlands,72.10687575
+26,Unnamed: Black Hills 5,Black Hills,14.30361088
+27,Unnamed: Central Lowlands 4,Central Lowlands,17.1448422
+28,Rock Creek (Lower Chehalis),Central Lowlands,68.59032737
+29,Cedar Creek,Black Hills,102.5240816
+30,Unnamed: Black Hills 4,Black Hills,24.6126828
+31,Unnamed: Central Lowlands 3,Central Lowlands,12.23568024
+32,Porter Creek,Black Hills,102.9017666
+33,Unnamed: Black Hills 3,Black Hills,1.828364153
+34,Mox Chehalis Creek,Black Hills,70.73022735
+35,Unnamed: Black Hills 2,Black Hills,3.094903244
+36,Unnamed: Central Lowlands 2,Central Lowlands,85.34322307
+37,Cloquallum Creek,Black Hills,175.3469735
+38,Unnamed: Black Hills 1,Black Hills,40.54706794
+39,Unnamed: Central Lowlands 1,Central Lowlands,21.17964356
+40,Satsop River,Olympic Mountains,776.523555
+41,Unnamed: Olympic Mountains 1,Olympic Mountains,19.44717273
+42,Wynoochee River,Olympic Mountains,507.2210069
+43,Wishkah River,Grays Harbor Tributaries,266.3256667
+44,Hoquiam River,Grays Harbor Tributaries,234.7045368
+45,Humptulips River,Grays Harbor Tributaries,638.2160951
+46,Johns River,Grays Harbor Tributaries,82.14348706
+47,Elk River,Grays Harbor Tributaries,47.29130337
+48,Andrews,Grays Harbor Tributaries,26.98069909
+49,Upper Chehalis Estuary,Grays Harbor Tributaries,87.03827825
+50,Lower Chehalis Estuary,Lower Chehalis Estuary,263.5759219
+51,Upper Skookumchuck,Upper Skookumchuck,159.1214731
+52,Mainstem: Upper Chehalis 1,Mainstem: Upper Chehalis,5.228343456
+53,Mainstem: Upper Chehalis 2,Mainstem: Upper Chehalis,3.788415706
+54,Mainstem: Middle Chehalis 1,Mainstem: Middle Chehalis,8.781882017
+55,Mainstem: Middle Chehalis 2,Mainstem: Middle Chehalis,20.38209944
+56,Mainstem: Middle Chehalis 3,Mainstem: Middle Chehalis,17.30623443
+57,Mainstem: Lower Chehalis 1,Mainstem: Lower Chehalis,13.46957614
+58,Mainstem: Lower Chehalis 2,Mainstem: Lower Chehalis,15.95280895
+59,Mainstem: Lower Chehalis 3,Mainstem: Lower Chehalis,11.51695269
+60,Mainstem: Lower Chehalis 4,Mainstem: Lower Chehalis,15.18706674
+61,Mainstem: Lower Chehalis 5,Mainstem: Lower Chehalis,11.56510781
+62,Mainstem: Lower Chehalis 6,Mainstem: Lower Chehalis,39.69789379
+63,Mainstem: Lower Chehalis 7,Mainstem: Lower Chehalis,24.79758334
