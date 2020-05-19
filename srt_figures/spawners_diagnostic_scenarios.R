@@ -36,13 +36,13 @@ spawners_diagnostics <- lcm_results <- lapply(diagnostic_species, function(l) {
   mutate(rank_species = rank(rank_diff, ties.method = 'min'),
          rank_wt_km_species = rank(rank_wt_per_km, ties.method = 'min')) %>%
   left_join(., read.csv('lcm/data/Subbasin_names.csv')) %>%
-  select(species, Subbasin, Subbasin_num, EcoRegion, scenario, Current_spawners, spawners, restoration_potential, rank_diff, rank_species, spawners_per_km, rank_wt_per_km,
+  select(species, Subbasin, Subbasin_num, EcoRegion, length_km, scenario, Current_spawners, spawners, restoration_potential, rank_diff, rank_species, spawners_per_km, rank_wt_per_km,
          rank_wt_km_species) 
   
 
 # spawners_diagnostics <- spawners_diagnostics[c('species', 'Subbasin', 'Subbasin_num', 'EcoRegion', 'scenario','Current_spawners', 'spawners', 'restoration_potential', 'rank', 'spawners_per_km', 'rank_wt_per_km')]
 
-colnames(spawners_diagnostics) <- c('Species', 'Subbasin', 'Subbasin number', 'EcoRegion', 'Scenario', 'Current spawners', 'Diagnostic scenario spawners',
+colnames(spawners_diagnostics) <- c('Species', 'Subbasin', 'Subbasin number', 'EcoRegion', 'Total Km', 'Scenario', 'Current spawners', 'Diagnostic scenario spawners',
                                     'Restoration potential (spawners)', 'Rank (spawners)', 'Rank (spawners by species', 'Spawners per km', 
                                     'Rank (spawners/km)', 'Rank (spawners/km by species)')
 

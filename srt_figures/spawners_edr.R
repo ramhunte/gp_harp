@@ -34,10 +34,10 @@ spawners_edr <- lapply(edr_species, function(s) {
   group_by(species) %>%
   mutate(rank_species = rank(rank_diff, ties.method = 'min'),
          rank_wt_km_species = rank(rank_wt_per_km, ties.method = 'min')) %>%
-select(species, EcoRegion, Current, Historical, restoration_potential,rank_diff, rank_species, spawners_per_km,rank_wt_per_km, rank_wt_km_species)
+select(species, EcoRegion, lenght_km, Current, Historical, restoration_potential,rank_diff, rank_species, spawners_per_km,rank_wt_per_km, rank_wt_km_species)
   
 
-colnames(spawners_edr) <- c('Species', 'EcoRegion', 'Current spawners', 'Historical spawners', 'Restoration potential (spawners)', 'Rank (spawners)',
+colnames(spawners_edr) <- c('Species', 'EcoRegion', 'Total Km', 'Current spawners', 'Historical spawners', 'Restoration potential (spawners)', 'Rank (spawners)',
                             'Rank (spawners by species)', 'Spawners per km', 'Rank (spawners/km)', 'Rank (spawners/km by species)')
 
 
