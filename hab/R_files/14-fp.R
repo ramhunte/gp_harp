@@ -34,7 +34,7 @@ asrp_fp_scenario <- lapply(scenario.nums, function(y) {
 }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios[!diag_scenarios == 'Historical']) &
              year %in% c(2040, 2080))) %>%
   left_join(., LgRiver_raw %>%
               rename(noaaid_lr = noaaid) %>%

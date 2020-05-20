@@ -1,6 +1,9 @@
 asrp_results_inputs <- bind_rows(asrp_prod, asrp_spawn_tot,prespawn_asrp, ef.surv.asrp) %>%
   mutate(hab.scenario = case_when(
-    Scenario_num %in% diag_scenarios ~ Scenario_num,
+    Scenario_num %in% diag_scenarios[!diag_scenarios == 'Historical'] ~ Scenario_num,
+    Scenario_num == 'Historical' ~ ifelse(year == 2019,
+                                          Scenario_num,
+                                          paste(Scenario_num, year, sep = '_')),
     !Scenario_num %in% diag_scenarios ~ paste0(Scenario_num, '_', year)))
 
 data <- asrp_results_inputs %>% 
@@ -40,7 +43,10 @@ asrp_results <- asrp_results_inputs %>%
   select(-life.stage, -stage_nums, -hab.scenario) %>%
   mutate(
     hab.scenario = case_when(
-      Scenario_num %in% diag_scenarios ~ Scenario_num,
+      Scenario_num %in% diag_scenarios[!diag_scenarios == 'Historical'] ~ Scenario_num,
+      Scenario_num == 'Historical' ~ ifelse(year == 2019,
+                                            Scenario_num,
+                                            paste(Scenario_num, year, sep = '_')),
       !Scenario_num %in% diag_scenarios ~
         paste('ASRP', Scenario_num, year, sep = '_'))) %>%
   ungroup() %>%

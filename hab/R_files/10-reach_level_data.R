@@ -18,7 +18,7 @@ asrp_reach_data <- lapply(scenario.years, function(k) {
 }) %>%
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios, 'dev_and_climate')),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
+         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios[!diag_scenarios == 'Historical']) & 
              year %in% c(2040, 2080))) %>%
   left_join(., asrp_scenarios %>%
               select(GSU, Scenario_num, managed_forest)) %>%
@@ -29,8 +29,12 @@ mutate(asrp_temp_w_growth = case_when(
          year == 2019 ~ ifelse(Scenario_num %in% c('Shade', 'Historical'),
                                hist_temp,
                                curr_temp),
-         year == 2040 ~ tm_2040,
-         year == 2080 ~ tm_2080),
+         year == 2040 ~ ifelse(Scenario_num == 'Historical',
+                               hist_temp + cc_mid_rear,
+                               tm_2040),
+         year == 2080 ~ ifelse(Scenario_num == 'Historical',
+                               hist_temp + cc_late_rear,
+                               tm_2080)),
        asrp_temp_cc_only = case_when(
          year == 2019 ~ ifelse(Scenario_num %in% c('Shade', 'Historical'),
                                hist_temp,
@@ -186,7 +190,11 @@ mutate(asrp_temp_w_growth = case_when(
                             asrp_temp),
          tempmult.asrp = temp_func(asrp_temp),
          prespawn_temp_asrp = case_when(
-           Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - temp_diff_prespawn, # convert 7DADM to MDM
+           Scenario_num %in% c('Shade', 'Historical') ~ 
+             case_when(
+               year == 2019 ~ prespawn_temp - temp_diff_prespawn, # convert 7DADM to MDM
+               year == 2040 ~ prespawn_temp - temp_diff_prespawn + cc_mid_prespawn,
+               year == 2080 ~ prespawn_temp - temp_diff_prespawn + cc_late_prespawn),
            !Scenario_num %in% c('Shade', 'Historical') ~
              case_when(
                year == 2019 ~ prespawn_temp,

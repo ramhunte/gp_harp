@@ -50,7 +50,8 @@ if (sensitivity.mode == 'no') {
   spawners.diag <- spawners %>%  
     filter(!scenario.label %in% c("ASRP 1 - 2040", "ASRP 2 - 2040", "ASRP 3 - 2040", "ASRP 1 - 2080", 
                                   "ASRP 2 - 2080", "ASRP 3 - 2080", 'ASRP No action, with future development 2040', 
-                                  'ASRP No action, with future development 2080')) %>%
+                                  'ASRP No action, with future development 2080', 'Historical conditions with mid century climate change',
+                                  'Historical conditions with late century climate change')) %>%
     droplevels()
   
   # Create spawners data frame from asrp scenarios only  
