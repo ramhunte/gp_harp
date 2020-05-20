@@ -8,7 +8,6 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(sf)
 library(scales)
-library(gridExtra)
 ```
 
 # Read in data
@@ -33,12 +32,13 @@ results <- '../outputs'
 
 # Files on Colin's local machine
 gdb_in <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/Inputs.gdb'
-gdb_out <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/Outputs.gdb'
 
 
 # Subbasin names and EDRs
 Subbasin_names <- read.csv('../lcm/data/Subbasin_names.csv') %>%
-  mutate(EcoRegion = ifelse(str_detect(Subbasin, 'Estuary'),'Estuary', as.character(EcoRegion)))
+  mutate(EcoRegion = ifelse(str_detect(Subbasin, 'Estuary'),
+                            'Estuary', 
+                            as.character(EcoRegion)))
 
 # Plot colors and labels
 plot.params <- read.csv('../lcm/data/scenarios.csv') %>% 
@@ -46,17 +46,21 @@ plot.params <- read.csv('../lcm/data/scenarios.csv') %>%
   mutate_if(is.factor, as.character) %>%
   rowid_to_column()
 
-# Read in the flowline
-fl <- st_read(gdb_out, 'flowline')
+
+# Read in subbasin layer
+sub_shp <- st_read(dsn = gdb_in, layer = 'NOAA_subbasins_w_fp') %>%
+  rename(Subbasin_num = noaa_sub_num) %>%
+  left_join(Subbasin_names)
 
 
 ```
 
 
-# Figures
+# Section 1 figures
 
 
 ## Spawner results by Subbasin
+
 Four panel figures for abundance change using one-subbasin at a time. Use units of spawners/km to normalize by basin size. One figure for each diagnostic scenario except the large river scenario.
 
 https://trello.com/c/YZ5zt993
@@ -66,23 +70,39 @@ https://trello.com/c/YZ5zt993
 First gather up the data
 ```{r}
 # Calculate length of river in each subbasin for each species
-fl_len <- fl %>%
-  st_drop_geometry() %>%
-  select(noaa_sub,cohospawn:steelspawn, Shape_Length) %>%
-  pivot_longer(cohospawn:steelspawn, names_to = 'species', values_to = 'presence') %>%
+fl_len <- '../hab/Inputs/spatial_model_outputs/flowline_20200512.csv' %>%
+  read.csv %>%
+  select(noaaid, noaa_sub_num,cohospawn:steelspawn, Shape_Length) %>%
+  pivot_longer(cohospawn:steelspawn, 
+               names_to = 'species', 
+               values_to = 'presence') %>%
   filter(presence == 'Yes') %>%
-  group_by(species, noaa_sub) %>%
-  summarize(length = sum(Shape_Length)) %>%
+  distinct(noaaid, noaa_sub_num, Shape_Length) %>%
+  group_by(noaa_sub_num) %>%
+  summarize(length_km = sum(Shape_Length) / 1e3) %>%
   ungroup %>%
-  rename(natal.basin = noaa_sub) %>%
-  mutate(species = case_when(
+  rename(Subbasin_num = noaa_sub_num) %>%
+  left_join(Subbasin_names) %>%
+  filter(!is.na(length_km))
+
+fl_presence <- '../hab/Inputs/spatial_model_outputs/flowline_20200512.csv' %>%
+  read.csv %>%
+  select(noaaid, noaa_sub_num,cohospawn:steelspawn, Shape_Length) %>%
+  pivot_longer(cohospawn:steelspawn, 
+               names_to = 'species', 
+               values_to = 'presence') %>%
+  filter(presence == 'Yes') %>%
+  distinct(species, noaa_sub_num) %>%
+   mutate(species = case_when(
     species == 'cohospawn'  ~ 'coho',
     species == 'fallspawn'  ~ 'fall_chinook',
     species == 'sprspawn'   ~ 'spring_chinook',
     species == 'steelspawn' ~ 'steelhead',
     species == 'chumspawn'  ~ 'chum'
-  ))
-
+  )) %>%
+  rename(Subbasin_num = noaa_sub_num) %>%
+  filter(!(species == 'steelhead' & Subbasin_num == 63),
+         !(species == 'fall_chinook' & Subbasin_num == 63))
 
 # List all results by subbasin files
 sub_paths <- list.files(results,
@@ -104,38 +124,41 @@ sub_df <- sub_paths %>%
   select(-X) %>%
   mutate(species = spp[as.numeric(species)]) %>%
   select(species:spawners, Pn, Cn) %>%
-  full_join(fl_len) %>%
-  group_by(species, natal.basin) %>%
+  rename(Subbasin = natal.basin) %>%
+  left_join(fl_len) %>%
+  right_join(fl_presence) %>%
+  group_by(species) %>%
+  mutate(current_basinwide = sum(spawners[scenario == 'Current'])) %>%
+  group_by(species, Subbasin) %>%
   mutate(current = spawners[scenario == 'Current'],
          diff = spawners - current,
-         diff_perc = diff/current,
-         diff_per_m = ifelse(is.na(length), 
+         diff_prcnt = (diff/current_basinwide),
+         #diff_prcnt = ifelse(diff_prcnt > 0.25, 0.25, diff_prcnt),
+         diff_prcnt_km = ifelse(is.na(length_km), 
                               NA,
-                              ifelse(diff == 0, 
+                              ifelse(diff == 0,
                                      0,
-                                     diff/length)),
-         species2 = case_when(
-           species == 'coho'  ~ 'Coho',
-           species == 'fall_chinook'  ~ 'Fall Chinook',
-           species == 'spring_chinook'   ~ 'Spring Chinook',
-           species == 'steelhead' ~ 'Steelhead',
-           species == 'chum'  ~ 'Chum')
-  ) %>%
-  rename(Subbasin = natal.basin)
+                                     (diff_prcnt/length_km))),
+         diff_prcnt_km2 = ifelse(diff_prcnt_km > 0.001,
+                               0.001,
+                               ifelse(diff_prcnt_km <= 0,
+                                      0,
+                                      diff_prcnt_km)),
+         diff_per_km = ifelse(is.na(length_km),
+                              NA,
+                              ifelse(diff == 0,
+                                     0,
+                                     diff/length_km)),
+         diff_per_km2 = ifelse(diff_per_km > 10,
+                               10,
+                               ifelse(diff_per_km <= 0,
+                                      0,
+                                      diff_per_km)))
 
 ```
 
 
-
-```{r}
-# Union subbasins into EDRs
-sub_shp <- st_read(dsn = gdb_in, layer = 'NOAA_subbasins_w_fp') %>%
-  rename(Subbasin_num = noaa_sub_num) %>%
-  left_join(Subbasin_names)
-
-```
-
-Join the spawner data to the new EDR layer. Also join the `plot.param` data
+Join the spawner data to the subbasin layer. Also join the `plot.param` data so we can get colors for each diagnostic scenario. 
 
 ```{r}
 sub_plot <- sub_shp %>%
@@ -143,11 +166,69 @@ sub_plot <- sub_shp %>%
   filter(str_detect(EcoRegion, 'Estuary|Upper Sk', negate = TRUE),
          str_detect(scenario, 'Current|LR', negate = TRUE),
          species != 'chum') %>%
-  left_join(plot.params)
+  left_join(plot.params) %>%
+  mutate(species2 = case_when(
+    species == 'coho'  ~ 'Coho',
+    species == 'fall_chinook'  ~ 'Fall Chinook',
+    species == 'spring_chinook'   ~ 'Spring Chinook',
+    species == 'steelhead' ~ 'Steelhead',
+    species == 'chum'  ~ 'Chum'))
+```
+
+### Percent diff
+```{r}
+
+plot_prcnt_change <- function(s) {
+  shp_plt <- sub_plot %>% filter(scenario == s)
+
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt,
+            aes(fill = diff_prcnt), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_wrap(~species2) +
+    scale_fill_gradient2(low = 'white',
+                         high = muted(shp_plt$color %>% unique),
+                         mid = shp_plt$color %>% unique,
+                         midpoint = .125,
+                         limits = c(0, 0.25),
+                         labels = label_percent(accuracy = 1L)) +
+    theme(panel.spacing = unit(-0.2, 'cm'),
+          strip.text.x = element_text(margin = margin(0,0,0.05,0, "cm"))) +
+    labs(fill = 'Change in\nbasinwide\nspawners',
+         title = str_replace(s, '\\.', ' '))
+
+  folder_name <- 'Figs_Section1_prcnt_diff'
+
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+
+  ggsave(file.path(folder_name,paste0('2_',s,'.tiff')),
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+
+}
+
+
+plt_scenarios <- sub_plot %>%
+  filter(str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE)) %>%
+  pull(scenario) %>%
+  unique
+
+
+
+lapply(plt_scenarios, plot_prcnt_change)
 ```
 
 
-Plot of spawners per km
+### Spawners per km
 ```{r}
 
 plot_spawners_per_km <- function(s) {
@@ -160,22 +241,30 @@ plot_spawners_per_km <- function(s) {
             color = 'black',
             lwd = 0.01) +
     geom_sf(data = shp_plt, 
-            aes(fill = diff_per_m * 1e3),
+            aes(fill = diff_per_km2), # * 1e3),
             color = 'black',
             lwd = 0.01) +
     facet_wrap(~species2) +
-    scale_fill_viridis_c(#label = percent, 
-      na.value = 'gray50') +
+    scale_fill_gradient2(low = 'white', 
+                         high = muted(shp_plt$color %>% unique),
+                         mid = shp_plt$color %>% unique,
+                         midpoint = 5,
+                         breaks = c(0, 2.5 ,5, 7.5, 10),
+                         labels = c('0', '2.5', '5', '7.5', '>10')
+                         ) +
+    # scale_fill_viridis_c(#label = percent, 
+      #drop = FALSE
+      # na.value = 'gray50') +
     theme(panel.spacing = unit(-0.2, 'cm'),
           strip.text.y = element_text(angle = -90)) +
     labs(fill = 'Change in\nspawners\nper Km',
-         title = s)
+         title = str_replace(s, '\\.', ' '))
   
-  folder_name <- 'spawners_per_km'
+  folder_name <- 'Figs_Section1_spawners_per_km'
   
   if (dir.exists(folder_name) == F) {dir.create(folder_name)}
   
-  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+  ggsave(file.path(folder_name,paste0('1_',s,'.tiff')), 
          p,
          height = 4,
          width = 6.5,
@@ -184,18 +273,189 @@ plot_spawners_per_km <- function(s) {
   
 }
 
-plt_scenarios <- sub_plot$scenario %>% unique
+
+plt_scenarios <- sub_plot %>% 
+  filter(str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE)) %>%
+  pull(scenario) %>%
+  unique
+  
 
 
 lapply(plt_scenarios, plot_spawners_per_km)
 ```
 
+### Stacked plots by species
 
 ```{r}
-plt_spp <- sub_plot$species2 %>% unique
+#s <- 'Barriers'
+
+plot_stacked <- function(s) {
+  shp_plt <- sub_plot %>% filter(scenario == s)
+
+  p1 <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt, 
+            aes(fill = diff_per_km2), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_wrap(~species2, nrow = 1) +
+    scale_fill_gradient2(low = 'white', 
+                         high = muted(shp_plt$color %>% unique),
+                         mid = shp_plt$color %>% unique,
+                         midpoint = 5,
+                         breaks = c(0, 2.5 ,5, 7.5, 10),
+                         labels = c('0', '2.5', '5', '7.5', '>10')
+                         ) +
+    # scale_fill_viridis_c(#label = percent, 
+      #drop = FALSE
+      # na.value = 'gray50') +
+    theme(panel.spacing = unit(-0.2, 'cm'),
+          strip.text.y = element_text(angle = -90),
+          legend.title = element_text(size = 10)) +
+    labs(fill = 'Change in\nspawners\nper Km',
+         title = str_replace(s, '\\.', ' '))
+  
+  
+  p2 <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt,
+            aes(fill = diff_prcnt), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_wrap(~species2, nrow = 1) +
+    scale_fill_gradient2(low = 'white',
+                         high = muted(shp_plt$color %>% unique),
+                         mid = shp_plt$color %>% unique,
+                         midpoint = .125,
+                         limits = c(0, 0.25),
+                         labels = label_percent(accuracy = 1L)) +
+    theme(panel.spacing = unit(-0.2, 'cm'),
+          plot.margin = unit(c(-3.25,0,0,0), "cm"),
+          strip.background = element_blank(),
+          strip.text.x = element_blank(),
+          legend.title = element_text(size = 10)) +
+    labs(fill = 'Basinwide\nspawners')
+         #title = str_replace(s, '\\.', ' '))
+
+  plist <- list(p1, p2)
+  
+  p_grid <- cowplot::plot_grid(plotlist = plist,
+                               ncol = 1,
+                               align = 'v',
+                               rel_heights = c(1.3, 1, 1, 1))
+  
+  
+  folder_name <- 'Figs_Section1_stacked'
+  
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+  
+  cowplot::save_plot(file.path(folder_name,paste0('3_',s,'.tiff')),
+                     p_grid,
+                     base_height = 5,
+                     base_width = 7.5,
+                     dpi = 500,
+                     compression = "lzw")
+  
+  
+}
+
+plt_scenarios <- sub_plot %>%
+  filter(str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE)) %>%
+  pull(scenario) %>%
+  unique
+
+
+
+lapply(plt_scenarios[1], plot_stacked)
+
+```
+
+
+### Percent diff per km
+
+```{r}
+
+plot_prcnt_per_km_change <- function(s) {
+  shp_plt <- sub_plot %>% filter(scenario == s)
+
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt,
+            aes(fill = diff_prcnt_km2), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_wrap(~species2) +
+    scale_fill_gradient2(low = 'white',
+                         high = muted(shp_plt$color %>% unique),
+                         mid = shp_plt$color %>% unique,
+                         midpoint = .0005,
+                         limits = c(0, 0.001),
+                         labels = label_percent()) +
+    theme(panel.spacing = unit(-0.2, 'cm'),
+          strip.text.x = element_text(margin = margin(0,0,0.05,0, "cm"))) +
+    labs(fill = 'Percent change\nin basinwide\nspawners\nper 100 km',
+         title = str_replace(s, '\\.', ' '))
+
+  folder_name <- 'Figs_Section1_prcnt_diff_per_km'
+
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+
+  ggsave(file.path(folder_name,paste0('4_',s,'.tiff')),
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+
+}
+
+
+plt_scenarios <- sub_plot %>%
+  filter(str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE)) %>%
+  pull(scenario) %>%
+  unique
+
+
+
+lapply(plt_scenarios, plot_prcnt_per_km_change)
+```
+
+
+# Section 2
+
+
+
+## 6 panel plots
+
+```{r}
+
+
+
+sub_plot_binned <- sub_plot %>%
+  ungroup %>%
+  mutate(diff_per_km_bin = cut(diff_per_km, c(-Inf, 0:5, 10, 20, Inf)))
+  # mutate(diff_per_km_bin = case_when(
+  #   species == 'coho'           ~ cut(diff_per_km, c(-Inf, 0, 5, 10, 20, 50, Inf)),
+  #   species == 'spring_chinook' ~ cut(diff_per_km, c(-Inf, 0, 1, 2,  5,  10, Inf)),
+  #   species == 'fall_chinook'   ~ cut(diff_per_km, c(-Inf, 0, 3, 10, 20, 50, Inf)),
+  #   species == 'steelhead'      ~ cut(diff_per_km, c(-Inf, 0, 2, 10, 20, 50, Inf))
+  # ))
+  #filter(diff_per_km > 0)
 
 plot_spawners_per_km <- function(s) {
-  shp_plt <- sub_plot %>% 
+  shp_plt <- sub_plot_binned %>% 
     filter(species2 == s,
            str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE))
   
@@ -206,11 +466,13 @@ plot_spawners_per_km <- function(s) {
             color = 'black',
             lwd = 0.01) +
     geom_sf(data = shp_plt, 
-            aes(fill = diff_per_m * 1e3),
+            aes(fill = diff_per_km_bin), # * 1e3),
             color = 'black',
             lwd = 0.01) +
     facet_wrap(~scenario) +
-    scale_fill_viridis_c(na.value = 'gray50') +
+    scale_fill_viridis_d(na.value = 'gray50', 
+                         drop = FALSE,
+                         na.translate = FALSE) +
     theme(strip.text.y = element_text(angle = -90)) +
     labs(fill = 'Change in\nspawners\nper Km',
          title = s)
@@ -219,19 +481,51 @@ plot_spawners_per_km <- function(s) {
   
   if (dir.exists(folder_name) == F) {dir.create(folder_name)}
   
-  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+  ggsave(file.path(folder_name,paste0(s,'_bin.tiff')), 
          p,
          height = 4,
          width = 6.5,
          dpi = 500,
          compression = "lzw")
   
+  print(p)
 }
 
-plt_scenarios <- sub_plot$scenario %>% unique
+plt_spp <- sub_plot$species2 %>% unique
 
 
 lapply(plt_spp, plot_spawners_per_km)
 
 ```
+
+
+
+# Delete below here -- testing
+
+```{r}
+sub_df %>%
+  group_by(species) %>%
+  summarize(max = max(diff_per_km, na.rm = T),
+            mean = mean(diff_per_km, na.rm = T),
+            median = median(diff_per_km, na.rm = T))
+```
+
+```{r}
+sub_plot %>%
+  st_drop_geometry() %>%
+  #filter(Subbasin %in% c('Mainstem: Lower Chehalis 7', 'Satsop River')) %>% 
+ #filter(species == 'steelhead') %>%
+  View
+```
+
+```{r}
+'../hab/Inputs/spatial_model_outputs/flowline_20200512.csv' %>%
+  read.csv %>%
+  filter(str_detect(noaa_sub, 'Unnamed')) %>%
+  select(Reach, noaa_sub) %>%
+  distinct %>%
+  arrange(noaa_sub) %>%
+  write.csv('EDT_reach_names.csv')
+```
+
 
