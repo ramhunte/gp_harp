@@ -38,7 +38,7 @@ writeData(wb, sheet = 2, spawners_edr_diagnostics)
 writeData(wb, sheet = 3, spawners_edr_asrp)
 writeData(wb, sheet = 4, spawners_sub)
 writeData(wb, sheet = 5, spawners_sub_diagnostics)
-writeData(wb, sheet = 6, spawners_edr_asrp)
+writeData(wb, sheet = 6, spawners_sub_asrp)
 
 
 

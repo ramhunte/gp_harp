@@ -92,7 +92,7 @@ create_sub_ranks_df <- function(filter_scenarios) {
 
 run_scenarios_diag <- diag_scenarios[-grep('Historical|Current', diag_scenarios)] %>% str_replace('_', '.')
 
-spawners_sub_diagnostics2 <- create_sub_ranks_df(run_scenarios_diag)
+spawners_sub_diagnostics <- create_sub_ranks_df(run_scenarios_diag)
 
 
 ### Rank with ASRP scenarios ----
