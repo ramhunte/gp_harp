@@ -21,7 +21,8 @@ if (fishtype == 'anadromous_network') {
     distinct() %>%
     mutate(species = 'anadromous_network')
 } else{
-  filter(species == fishtype)
+  flowline_noculv %<>%
+    filter(species == fishtype)
 }
   
 flowline_noculv %<>%
