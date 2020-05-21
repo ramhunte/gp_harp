@@ -20,7 +20,7 @@ This branch should be a child of V13.1 without any other merges from dev.
 
 
 # Habitat scenario and LCM results
-results <- '../outputs'
+results <- 'outputs_v13.1_w_Hist_future/'
 
 
 
@@ -153,7 +153,8 @@ sub_df <- sub_paths %>%
                                10,
                                ifelse(diff_per_km <= 0,
                                       0,
-                                      diff_per_km)))
+                                      diff_per_km)),
+         diff_pn = Pn - Pn[scenario == 'Current'])
 
 ```
 
@@ -435,17 +436,17 @@ lapply(plt_scenarios, plot_prcnt_per_km_change)
 
 # Section 2
 
+6 panel figures
 
-
-## 6 panel plots
+## Spawner change by species
 
 ```{r}
 
 
 
-sub_plot_binned <- sub_plot %>%
-  ungroup %>%
-  mutate(diff_per_km_bin = cut(diff_per_km, c(-Inf, 0:5, 10, 20, Inf)))
+# sub_plot_binned <- sub_plot %>%
+#   ungroup %>%
+#   mutate(diff_per_km_bin = cut(diff_per_km, c(-Inf, 0:5, 10, 20, Inf)))
   # mutate(diff_per_km_bin = case_when(
   #   species == 'coho'           ~ cut(diff_per_km, c(-Inf, 0, 5, 10, 20, 50, Inf)),
   #   species == 'spring_chinook' ~ cut(diff_per_km, c(-Inf, 0, 1, 2,  5,  10, Inf)),
@@ -455,9 +456,25 @@ sub_plot_binned <- sub_plot %>%
   #filter(diff_per_km > 0)
 
 plot_spawners_per_km <- function(s) {
-  shp_plt <- sub_plot_binned %>% 
+
+  if (s == 'Coho') {upper_lim <- 15}
+  if (s == 'Fall Chinook') {upper_lim <- 5 }
+  if (s == 'Spring Chinook') {upper_lim <- 1 }
+  if (s == 'Steelhead') {upper_lim <- 3 }
+
+  
+  
+  shp_plt <- sub_plot %>% 
     filter(species2 == s,
-           str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE))
+           str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE)) %>%
+    mutate(#diff_per_km_bin = cut(diff_per_km, c(-Inf, cutpoints, Inf)),
+           scenario = str_replace(scenario, '\\.', ' '),
+           diff_per_km2 = ifelse(diff_per_km > upper_lim,
+                               upper_lim,
+                               ifelse(diff_per_km <= 0,
+                                      0,
+                                      diff_per_km)))
+    
   
   p <- ggplot() +
     theme_void() +
@@ -466,18 +483,22 @@ plot_spawners_per_km <- function(s) {
             color = 'black',
             lwd = 0.01) +
     geom_sf(data = shp_plt, 
-            aes(fill = diff_per_km_bin), # * 1e3),
+            aes(fill = diff_per_km2), # * 1e3),
             color = 'black',
             lwd = 0.01) +
     facet_wrap(~scenario) +
-    scale_fill_viridis_d(na.value = 'gray50', 
-                         drop = FALSE,
-                         na.translate = FALSE) +
+    scale_fill_viridis_c(na.value = 'gray50',
+                         breaks = seq(0, upper_lim, length.out = 3),
+                         labels = c(seq(0, upper_lim, length.out = 3)[-3], 
+                                    paste0('>', upper_lim) )
+                         #drop = FALSE,
+                         #na.translate = FALSE
+                         ) +
     theme(strip.text.y = element_text(angle = -90)) +
     labs(fill = 'Change in\nspawners\nper Km',
          title = s)
   
-  folder_name <- 'spawners_per_km'
+  folder_name <- 'Figs_Section2_spawner_change'
   
   if (dir.exists(folder_name) == F) {dir.create(folder_name)}
   
@@ -487,8 +508,6 @@ plot_spawners_per_km <- function(s) {
          width = 6.5,
          dpi = 500,
          compression = "lzw")
-  
-  print(p)
 }
 
 plt_spp <- sub_plot$species2 %>% unique
@@ -497,6 +516,64 @@ plt_spp <- sub_plot$species2 %>% unique
 lapply(plt_spp, plot_spawners_per_km)
 
 ```
+
+## Pn change by species
+
+```{r}
+
+
+plot_pn <- function(s) {
+
+  shp_plt <- sub_plot %>% 
+    filter(species2 == s,
+           str_detect(scenario, 'ASRP|Historical|FP', negate = TRUE)) %>%
+    mutate(diff_pn2 = ifelse(diff_pn > 3,
+                             3,
+                             diff_pn),
+           scenario = str_replace(scenario, '\\.', ' '))
+  
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt, 
+            aes(fill = diff_pn2), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_wrap(~scenario) +
+    scale_fill_viridis_c(na.value = 'gray50',
+                         breaks = 0:3,
+                         labels = c(0:2, '>3'),
+                         #drop = FALSE,
+                         #na.translate = FALSE
+                         ) +
+    theme(strip.text.y = element_text(angle = -90)) +
+    labs(fill = expression(P[n]~ change),
+         title = s)
+  
+  folder_name <- 'Figs_Section2_Pn_change'
+  
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+  
+  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+}
+
+plt_spp <- sub_plot$species2 %>% unique
+
+
+lapply(plt_spp, plot_pn)
+```
+
+
+
+
 
 
 

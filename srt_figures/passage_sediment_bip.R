@@ -17,6 +17,12 @@ gdb_out <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/Outputs.g
 
 shp_gsu <- sf::st_read(gdb_in, 'chehalis_gsu_20180919_NAD83')
 
+shp_sub <- sf::st_read(gdb_in, 'NOAA_subbasins_w_fp')
+
+gsu_list <- shp_gsu %>%
+  sf::st_drop_geometry %>%
+  select(GSU)
+
 # Barriers ---- 
 
 source('hab/R_files/2-read_in_data.R')
@@ -38,18 +44,22 @@ fl <- flowline %>%
 
 gsu_pass <- fl %>% 
   group_by(GSU) %>%
-  summarize(pass_tot = mean(pass_tot),
-            pass_tot_nat = mean(pass_tot_natural)) %>%
-  mutate(pass_diff = pass_tot_nat - pass_tot)
+  summarize(pass_tot = mean(pass_tot, na.rm = TRUE),
+            pass_tot_nat = mean(pass_tot_natural, na.rm = TRUE)) %>%
+  mutate(pass_diff = pass_tot - pass_tot_nat) %>%
+  right_join(gsu_list) %>%
+  mutate(pass_diff = ifelse(is.na(pass_diff), 0, pass_diff),
+         pass_diff = ifelse(GSU == "Upper Skookumchuck", NA, pass_diff))
 
 
 
 # Finesediment
+flowline %>% filter(GSU == 'Cloquallum Cr')
 
 gsu_sed <- flowline %>%
   group_by(GSU) %>%
-  summarize(sed_current = mean(sed_current),
-            sed_hist = mean(sed_hist)) %>%
+  summarize(sed_current = mean(sed_current, na.rm = TRUE),
+            sed_hist = mean(sed_hist, na.rm = TRUE)) %>%
   mutate(sed_diff = abs(sed_hist - sed_current))
 
 
@@ -77,7 +87,7 @@ gsu_bip <- flowline %>%
          score = score_slope + score_width) %>%
   #select(GSU, noaaid, slope, BF_width, score_slope, score_width, score)
   group_by(GSU) %>%
-  summarize(BIP = mean(score))
+  summarize(BIP = mean(score, na.rm = TRUE))
 
 
 # Quick plots
@@ -97,20 +107,71 @@ shp_gsu_plt <- shp_gsu %>%
 # Barriers
 
 ggplot() +
-  geom_sf(data = shp_gsu_plt, aes(fill = pass_diff)) +
-  scale_fill_viridis_c()
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu_plt, aes(fill = pass_diff), lwd = 0.1, color = 'black') +
+  #scale_fill_viridis_c(label = label_percent()) +
+  scale_fill_gradient2(high = 'white', 
+                       low = muted('orange'),
+                       mid = 'orange',
+                       midpoint = -.5,
+                       label = label_percent(),
+                       limits = c(-1, 0)) +
+  labs(fill = 'Change in\npassage') +
+  theme(legend.position = c(.8, .8))
 
+ggsave('gsu_passage.tiff',
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = "lzw")
 
 # sediment
+
+plot.params <- read.csv('lcm/data/scenarios.csv') %>% 
+  select(scenario, scenario.label, color) %>%
+  mutate_if(is.factor, as.character) %>%
+  rowid_to_column()
+
+
 ggplot() +
   theme_void() +
-  geom_sf(data = shp_gsu_plt, aes(fill =  sed_diff)) +
-  scale_fill_viridis_c()
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu_plt, aes(fill =  sed_diff/100), lwd = 0.1, color = 'black') +
+  #scale_fill_viridis_c(label = label_percent()) +
+  scale_fill_gradient2(low = 'white', 
+                       high = muted('pink'),
+                       mid = 'pink',
+                       midpoint = .05,
+                       label = label_percent()) +
+  labs(fill = 'Change in\nfines') +
+  theme(legend.position = c(.8, .8))
+
+ggsave('gsu_fine_sed.tiff',
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = "lzw")
+
 
 
 
 # BIP
 ggplot() +
   theme_void() +
-  geom_sf(data = shp_gsu_plt, aes(fill = BIP)) +
-  scale_fill_viridis_c()
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu_plt, aes(fill = BIP), lwd = 0.1, color = 'black') +
+  #scale_fill_viridis_c(label = label_percent()) +
+  scale_fill_gradient2(low = 'white', 
+                       high = muted('green4'),
+                       mid = 'green4',
+                       midpoint = 7, 
+                       limits = c(0, 10)) +
+  labs(fill = 'BIP score') +
+  theme(legend.position = c(.8, .8))
+
+ggsave('gsu_BIP.tiff',
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = "lzw")
