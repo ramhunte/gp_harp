@@ -212,7 +212,7 @@ mutate(asrp_temp_w_growth = case_when(
                                             prespawn_temp_asrp - cc_mid_prespawn,
                                             prespawn_temp_asrp - cc_late_prespawn),
                                      prespawn_temp_asrp)) %>%
-  select(-Habitat, -asrp_temp_w_growth, -asrp_temp, -asrp_temp_cc_only, -tm_2040, -tm_2080, -tm_2040_cc_only, -tm_2080_cc_only) %>%
+  select(-Habitat, -asrp_temp_w_growth, -asrp_temp_cc_only, -tm_2040, -tm_2080, -tm_2040_cc_only, -tm_2080_cc_only) %>%
   
   # add in future impervious area by GSU, scenario and year ----
 

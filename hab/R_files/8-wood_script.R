@@ -29,6 +29,13 @@ LgRiver_wood <- LgRiver_raw_wood %>%
 assign('asrp_lr_raw', LgRiver_wood, envir = .GlobalEnv)
 
 # Calculate wood data
+if (fishtype == 'anadromous_network') {
+  lr_wd_s_bank = 1
+  lr_wd_w_bank = 1
+  lr_wd_s_bar = 1
+  lr_wd_w_bar = 1
+}
+
 wood_data <- LgRiver_wood %>%
   select(Subbasin_num, Habitat, Length_m, noaaid) %>%
   filter(!Habitat %in% c("Bank_center", "HM_Bank_center", "Bar_boulder_center", "Bar_gravel_center","Bar_sand_center")) %>%
