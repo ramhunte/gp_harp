@@ -61,7 +61,7 @@ create_edr_ranks_df <- function(filter_scenarios) {
     left_join(., flowline_edr) %>%
     mutate(length_km = round(length_km, digits = 2),
            perc_of_pop = round(restoration_potential / spawners_basinwide * 100, digits = 2),
-           spawners_per_km = round(Current_spawners / length_km, digits = 1)) %>%
+           spawners_per_km = round(restoration_potential / length_km, digits = 1)) %>%
     group_by(species) %>%
     mutate(rank_rest_potential = rank(-restoration_potential, ties.method = 'min'),
            rank_spawner_per_km = rank(-spawners_per_km, ties.method = 'min'),
