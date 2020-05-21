@@ -46,7 +46,7 @@ if (clear_env == 'yes') {
 }
 
 # Which species to run?
-spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum')
+spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum', 'anadromous_network')
 fishtype <- spp[menu(spp,title = "Choose a species", graphics = TRUE)]
 
 
