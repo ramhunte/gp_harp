@@ -46,7 +46,8 @@ spawners_sub <- spawners_subbasin_df %>%
   select(species, Subbasin, Subbasin_num, EcoRegion, length_km, Current, Historical, 
          restoration_potential, rank_rest_potential, spawners_per_km,
          rank_spawner_per_km, perc_of_pop, rank_percent,
-         restoration_potential_pn, rank_rest_potential_pn)
+         restoration_potential_pn, rank_rest_potential_pn) %>%
+  mutate(Subbasin = str_remove(Subbasin, 'Unnamed: '))
 
 colnames(spawners_sub) <- c('Species', 'Subbasin', 'Subbasin number', 'EcoRegion', 'Total Km', 'Current spawners', 
                                  'Historical spawners','Restoration potential (spawners)', 'Rank (spawners)', 
@@ -76,7 +77,8 @@ create_sub_ranks_df <- function(filter_scenarios) {
     select(species, Subbasin, Subbasin_num, EcoRegion, length_km, scenario, 
            Current_spawners, spawners, restoration_potential, rank_rest_potential, 
            spawners_per_km, rank_spawner_per_km, perc_of_pop, rank_percent,
-           restoration_potential_pn, rank_rest_potential_pn) 
+           restoration_potential_pn, rank_rest_potential_pn) %>%
+    mutate(Subbasin = str_remove(Subbasin, 'Unnamed: '))
   
   colnames(spawners_sub_scenarios) <- c('Species', 'Subbasin', 'Subbasin number', 'EcoRegion', 'Total Km', 'Scenario', 
                                       'Current spawners', 
@@ -90,8 +92,6 @@ create_sub_ranks_df <- function(filter_scenarios) {
 
 ### Rank with diagnostic scenarios ----
 
-run_scenarios_diag <- diag_scenarios[-grep('Historical|Current', diag_scenarios)] %>% str_replace('_', '.')
-
 spawners_sub_diagnostics <- create_sub_ranks_df(run_scenarios_diag)
 
 
@@ -102,4 +102,10 @@ run_scenarios_asrp <- spawners_subbasin_df %>%
   pull(scenario) %>%
   unique
 
-spawners_sub_asrp <- create_sub_ranks_df(run_scenarios_asrp)
+spawners_sub_asrp <- create_sub_ranks_df(run_scenarios_asrp) %>%
+  mutate(Climate = sub('.*\\.', '', Scenario) %>% as.integer(),
+         Scenario = str_extract(Scenario,'.*\\.') %>%
+           str_replace_all('\\.', ' ') %>%
+           trimws(),
+         Scenario = ifelse(Scenario == 'ASRP dev and climate', 'No action', Scenario)) %>%
+  select(Species:Scenario, Climate, `Current spawners`:`Rank (Pn change)`)

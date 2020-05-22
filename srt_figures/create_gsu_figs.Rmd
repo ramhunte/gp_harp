@@ -1,0 +1,193 @@
+---
+title: "Plot GSU level data"
+output: html_notebook
+---
+
+See the difference between mathmatical Neq and looping Neq
+
+Test Grays Harbor coho because they have no movement.
+
+
+# Read in and set up data
+
+First run the script to generate the data for each GSU. This creates a dataframe called `df_gsu`. Plots are currently created from this dataframe. 
+
+```{r}
+source('srt_figures/passage_sediment_bip.R')
+```
+
+Read in spatial data. This may need to be altered if you don't want to read from the shared drive
+```{r}
+
+
+# Spatial data
+
+# Location of spatial data
+local_colin <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/'
+
+shared_drive <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/'
+
+
+# Set directories
+if (dir.exists(local_colin)) {
+  
+  gdb_in <- file.path(local_colin, 'Inputs.gdb')
+  gdb_out <- file.path(local_colin, 'Outputs.gdb')
+  
+
+} else if (dir.exists(shared_drive)) {
+  
+  warning('This script is going to use GIS files on the shared drive\n
+           If using VPN files will need to download which is slow')
+  
+  gdb_in <- file.path(shared_drive, 'Inputs.gdb')
+  gdb_out <- file.path(shared_drive, 'Outputs.gdb')
+  
+  
+} else {
+  
+  stop("This script requires spatial data and can't find it")
+  
+}
+
+
+# Read GSU layer
+shp_gsu <- sf::st_read(gdb_in, 'chehalis_gsu_20180919_NAD83')
+
+# Read subbasin layer
+shp_sub <- sf::st_read(gdb_in, 'NOAA_subbasins_w_fp')
+```
+
+# Create maps
+
+Set up a directory to save data to
+```{r}
+folder_name <- 'Figs_Section1_GSU'
+
+if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+
+# Plot color
+plot.params <- read.csv('../lcm/data/scenarios.csv') %>% 
+  select(scenario, scenario.label, color) %>%
+  mutate_if(is.factor, as.character) %>%
+  rowid_to_column()
+```
+
+
+```{r}
+# Join data to GSU shapefile
+shp_gsu_plt <- shp_gsu %>%
+  left_join(gsu_pass) %>%
+  left_join(gsu_sed) %>%
+  left_join(gsu_bip)
+```
+
+
+## Barriers
+
+```{r}
+# Barriers
+
+p_pass <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu_plt, aes(fill = pass_diff), lwd = 0.1, color = 'black') +
+  #scale_fill_viridis_c(label = label_percent()) +
+  scale_fill_gradient2(high = 'white', 
+                       low = muted('orange'),
+                       mid = 'orange',
+                       midpoint = -.5,
+                       label = label_percent(),
+                       limits = c(-1, 0)) +
+  labs(fill = 'Change in\npassage') +
+  theme(legend.position = c(.8, .8))
+
+ggsave(file.path(folder_name,'gsu_passage.tiff'),
+       p_pass,
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = "lzw")
+```
+
+
+## Fine sediment
+
+```{r}
+p_sed <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu_plt, aes(fill =  sed_diff/100), lwd = 0.1, color = 'black') +
+  #scale_fill_viridis_c(label = label_percent()) +
+  scale_fill_gradient2(low = 'white', 
+                       high = muted('pink'),
+                       mid = 'pink',
+                       midpoint = .02,
+                       label = label_percent(accuracy = 1L)) +
+  labs(fill = 'Change in\nfines') +
+  theme(legend.position = c(.8, .8))
+
+ggsave(file.path(folder_name, 'gsu_fine_sed.tiff'),
+       p_sed,
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = "lzw")
+```
+
+## Beaver
+
+```{r}
+
+shp_plt2 <- shp_gsu_plt %>%
+  mutate(BIP_bin = case_when(
+    BIP < 4 ~ 'No BIP',
+    between(BIP, 4, 6) ~ 'Low',
+    between(BIP, 6, 7) ~ 'Medium',
+    BIP > 7 ~ 'High'
+  ),
+  BIP_bin = factor(BIP_bin, levels = c('No BIP', 'Low', 'Medium', 'High')))
+
+p_bip <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_plt2, aes(fill = BIP_bin), lwd = 0.1, color = 'black') +
+  scale_fill_manual(values = c('white', 'green2', 'green4', muted('green4'))) +
+  #scale_fill_viridis_c(label = label_percent()) +
+  # scale_fill_gradient2(low = 'white', 
+  #                      high = muted('green4'),
+  #                      mid = 'green4',
+  #                      midpoint = 7, 
+  #                      limits = c(0, 10)) +
+  labs(fill = 'BIP score') +
+  theme(legend.position = c(.8, .8))
+
+ggsave(file.path(folder_name, 'gsu_BIP.tiff'),
+       p_bip,
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = "lzw")
+
+```
+
+
+# Grid all of the plots together
+
+5/21 with only three the legend is overlapping a bit. Figured it would be best to wait until we had all 6 to make tweaks. 
+
+```{r}
+p_grid <- cowplot::plot_grid(p1 = p_bip,
+                   p2 = p_pass, 
+                   p3 = p_sed, 
+                   nrow = 1)
+  
+  
+cowplot::save_plot(file.path(folder_name, 'gsu_grid.tiff'),
+                   p_grid,
+                   base_height = 5,
+                   base_width = 7.5,
+                   dpi = 500,
+                   compression = "lzw")
+```
+
