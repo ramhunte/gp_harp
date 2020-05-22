@@ -78,7 +78,10 @@ gsu_bip <- flowline %>%
 df_gsu <- gsu_list %>%
   left_join(gsu_pass) %>%
   left_join(gsu_sed) %>%
-  left_join(gsu_bip)
+  left_join(gsu_bip) %>%
+  left_join(spawn_area_gsu) %>%
+  left_join(avg_temp_gsu) %>%
+  left_join(fp_areas_gsu)
 
 
 

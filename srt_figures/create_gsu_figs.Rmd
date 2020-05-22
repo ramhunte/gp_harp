@@ -24,15 +24,19 @@ Read in spatial data. This may need to be altered if you don't want to read from
 
 # Location of spatial data
 local_colin <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/'
+# local_caleb <- 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/'
 
 shared_drive <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/'
 
 
 # Set directories
-if (dir.exists(local_colin)) {
+# if (dir.exists(local_colin)) {
+if (dir.exists(local_caleb)) {
   
   gdb_in <- file.path(local_colin, 'Inputs.gdb')
+  # gdb_in <- file.path(local_caleb, 'Inputs.gdb')
   gdb_out <- file.path(local_colin, 'Outputs.gdb')
+  # gdb_out <- file.path(local_caleb, 'Outputs.gdb')
   
 
 } else if (dir.exists(shared_drive)) {
@@ -79,7 +83,10 @@ plot.params <- read.csv('../lcm/data/scenarios.csv') %>%
 shp_gsu_plt <- shp_gsu %>%
   left_join(gsu_pass) %>%
   left_join(gsu_sed) %>%
-  left_join(gsu_bip)
+  left_join(gsu_bip) %>%
+  left_join(spawn_area_gsu) %>%
+  left_join(avg_temp_gsu) %>%
+  left_join(fp_areas_gsu)
 ```
 
 
@@ -171,6 +178,80 @@ ggsave(file.path(folder_name, 'gsu_BIP.tiff'),
 
 ```
 
+## Wood
+
+```{r}
+p_wood <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu_plt, aes(fill = spawn_diff), lwd = 0.1, color = 'black') +
+    scale_fill_gradient2(low = 'white', 
+                       high = muted('chocolate4'),
+                       mid = 'chocolate4',
+                       midpoint = 40000) +
+  labs(fill = 'Change in\nspawning area \n(m^2)') +
+  theme(legend.position = c(.8, .8))
+
+ggsave(file.path(folder_name, 'gsu_wood.tiff'),
+       p_wood,
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = 'lzw')
+```
+
+# Shade (temperature)
+
+```{r}
+p_tmp <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu_plt, aes(fill = temp_diff), lwd = 0.1, color = 'black') +
+  scale_fill_gradient2(low = 'white',
+                       high = muted('orangered3'),
+                       mid = 'orangered3',
+                       midpoint = 2) +
+  labs(fill = 'Change in\naverage temperature') +
+  theme(legend.position = c(.8, .8))
+
+ggsave(file.path( folder_name, 'gsu_temp.tiff'),
+       p_tmp,
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = 'lzw')
+```
+
+## Floodplain area
+
+```{r}
+fp_gsu_plt <- shp_gsu_plt %>%
+  mutate(fp_area_diff_2 = ifelse(fp_area_diff > 200,
+                                 200, 
+                                 fp_area_diff))
+
+p_fp <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = fp_gsu_plt, aes(fill = fp_area_diff_2), lwd = 0.1, color = 'black') +
+    scale_fill_gradient2(low = 'white',
+                       high = muted('orchid'),
+                       mid = 'orchid',
+                       midpoint = 100,
+                       breaks = c(0, 50, 100, 150, 200),
+                       labels = c('0', '50', '100', '150', '>200')) +
+  labs(fill = 'Change in\nfloodplain area (ha)') +
+  theme(legend.position = c(.8, .8))
+
+ggsave(file.path(folder_name, 'gsu_fp.tiff'),
+       p+fp,
+       height = 4,
+       width = 6.5,
+       dpi = 500,
+       compression = 'lzw')
+```
+
+
 
 # Grid all of the plots together
 
@@ -180,7 +261,10 @@ ggsave(file.path(folder_name, 'gsu_BIP.tiff'),
 p_grid <- cowplot::plot_grid(p1 = p_bip,
                    p2 = p_pass, 
                    p3 = p_sed, 
-                   nrow = 1)
+                   p4 = p_wood,
+                   p5 = p_tmp,
+                   p6 = p_fp,
+                   nrow = 2)
   
   
 cowplot::save_plot(file.path(folder_name, 'gsu_grid.tiff'),
