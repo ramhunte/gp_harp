@@ -1,4 +1,19 @@
-#### Length per GSU ----
+library(openxlsx)
+#### Length per GSU, Subbasin and EDR ----
+flowline_edr <- flowline %>%
+  left_join(., anadromous_network, by = 'noaaid') %>%
+  filter(anadromous_network == 'Yes') %>%
+  left_join(., subbasin_names, by = 'Subbasin_num') %>%
+  group_by(EcoRegion) %>%
+  summarise(length_km = sum(Shape_Length / 1000, na.rm = T))
+
+flowline_subbasin <- flowline %>%
+  left_join(., anadromous_network, by = 'noaaid') %>%
+  filter(anadromous_network == 'Yes') %>%
+  left_join(., read.csv('lcm/data/Subbasin_names.csv'), by = 'Subbasin_num') %>%
+  group_by(Subbasin, Subbasin_num) %>%
+  summarise(length_km = sum(Shape_Length/1000, na.rm = T))
+
 flowline_gsu <- flowline %>%
   left_join(., anadromous_network, by = 'noaaid') %>%
   filter(anadromous_network == 'Yes') %>%
@@ -8,12 +23,6 @@ flowline_gsu <- flowline %>%
 #### Wood spawning area ----
 # Before running this script, first run the habitat model up through '14-fp.R'.  Skip '15-capacity_and_productivity.R' and '16-movement.R', and then 
 # run '17-lr_spawn_cap.R', and lines 42-74 of the '18-spawn.R' script, which creates 'asrp_spawn_fp', but does stops before area and eggs are calculated
-
-# Calculate large river spawning area
-# lr_spawn <- lgr_sp_area_asrp %>%
-#   left_join(., asrp_culvs %>%
-#               filter(Scenario_num == 'Wood')) %>%
-#   left_join(., asrp_reach_data %>% filter(Scenario_num == 'Wood'))
 
 spawn_area_ss <- flowline %>%
   filter(slope < .03,
@@ -30,9 +39,9 @@ spawn_area_ss <- flowline %>%
                                                psp_hwhs,
                                                psp_lwhs)),
          spawn_area = (Shape_Length / (width_w * psp)) * width_w * (width_w * .5)) %>%
-  left_join(., subbasin_names) %>%
-  group_by(GSU, Subbasin_num,scenario) %>%
-  summarize(spawn_area = sum(spawn_area, na.rm = T)) %>%
+  select(noaaid, GSU, scenario, spawn_area, Subbasin_num) %>%
+  # group_by(GSU ,scenario) %>%
+  # summarize(spawn_area = sum(spawn_area, na.rm = T)) %>%
   spread(scenario, spawn_area) 
 
 spawn_area_lr <- lgr_sp_area_asrp %>%
@@ -47,8 +56,9 @@ spawn_area_lr <- lgr_sp_area_asrp %>%
               left_join(., asrp_culvs %>%
                           filter(Scenario_num == 'Current')) %>%
               mutate(spawn_area = spawn_area * pass_tot_asrp)) %>%
-  group_by(GSU, Subbasin_num, Scenario_num) %>%
-  summarize(spawn_area = sum(spawn_area, na.rm = T)) %>%
+  select(noaaid, GSU, Scenario_num, spawn_area, Subbasin_num) %>%
+  # group_by(GSU, Scenario_num) %>%
+  # summarize(spawn_area = sum(spawn_area, na.rm = T)) %>%
   spread(Scenario_num, spawn_area) %>%
   rename(high_wood = Wood,
          low_wood = Current) 
@@ -59,91 +69,181 @@ spawn_area_fp <- asrp_spawn_fp %>%
   mutate(spawn_area = ifelse(Scenario_num == 'Current',
                              (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5),
                              (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5))) %>%
-  group_by(GSU, Subbasin_num, Scenario_num) %>%
-  summarize(spawn_area = sum(spawn_area, na.rm = T)) %>%
+  select(noaaid, GSU, Scenario_num, spawn_area, Subbasin_num) %>%
+  # group_by(GSU, Scenario_num) %>%
+  # summarize(spawn_area = sum(spawn_area, na.rm = T)) %>%
   spread(Scenario_num, spawn_area) %>%
   rename(high_wood = Wood,
          low_wood = Current)
 
 spawn_area_wood <- spawn_area_ss %>%
   bind_rows(spawn_area_lr) %>%
-  bind_rows(spawn_area_fp) %>%
-  group_by(GSU, Subbasin_num) %>%
+  bind_rows(spawn_area_fp)
+
+spawn_area_gsu <- spawn_area_wood %>%
+  group_by(GSU) %>%
   summarize(high_wood = round(sum(high_wood, na.rm = T), digits = 2),
             low_wood = round(sum(low_wood, na.rm = T), digits = 2)) %>%
   ungroup() %>%
-  mutate(spawn_diff = high_wood - low_wood,
-         # perc = diff / high_wood * 100,
-         # perc = ifelse(is.na(perc), 
-         #               0,
-         #               as.numeric(perc))
-         ) %>%
-  left_join(., subbasin_names %>%
-              select(-Area_km2), by = 'Subbasin_num') %>%
+  mutate(spawn_diff = high_wood - low_wood) %>%
   left_join(., flowline_gsu) 
+
+spawn_area_subbasin <- spawn_area_wood %>%
+  left_join(., subbasin_names) %>%
+  group_by(Subbasin_num, Subbasin, EcoRegion) %>%
+  summarize(high_wood = round(sum(high_wood, na.rm = T), digits = 2),
+            low_wood = round(sum(low_wood, na.rm = T), digits = 2)) %>%
+  ungroup() %>%
+  mutate(spawn_diff = high_wood - low_wood) %>%
+  left_join(., flowline_subbasin)
+
+spawn_area_edr <- spawn_area_wood %>%
+  left_join(., subbasin_names) %>%
+  group_by(EcoRegion) %>%
+  summarize(high_wood = round(sum(high_wood, na.rm = T), digits = 2),
+            low_wood = round(sum(low_wood, na.rm = T), digits = 2)) %>%
+  ungroup() %>%
+  mutate(spawn_diff = high_wood - low_wood) %>%
+  left_join(., flowline_edr)
 
 #### Shade (average temperature) ----
 # Run the habitat model through 10-reach_level_data before this script.
 
-avg_temp <- asrp_reach_data %>%
+avg_temp_gsu <- asrp_reach_data %>%
   filter(Scenario_num %in% c('Current', 'Shade')) %>%
-  select(noaaid, GSU, Scenario_num, asrp_temp, Subbasin_num) %>%
+  select(noaaid, GSU, Scenario_num, asrp_temp) %>%
   spread(Scenario_num, asrp_temp) %>%
-  group_by(GSU, Subbasin_num) %>%
+  group_by(GSU) %>%
   summarize(Current_temp = round(mean(Current, na.rm = T), digits = 2),
             Shade_temp = round(mean(Shade, na.rm = T), digits = 2)) %>%
   mutate(temp_diff = Current_temp - Shade_temp) %>%
-  left_join(., subbasin_names %>%
-              select(-Area_km2)) %>%
   left_join(., flowline_gsu) 
 
+avg_temp_subbasin <- asrp_reach_data %>%
+  filter(Scenario_num %in% c('Current', 'Shade')) %>%
+  select(noaaid, Subbasin_num, Scenario_num, asrp_temp) %>%
+  spread(Scenario_num, asrp_temp) %>%
+  group_by(Subbasin_num) %>%
+  summarize(Current_temp = round(mean(Current, na.rm = T), digits = 2),
+            Shade_temp = round(mean(Shade, na.rm = T), digits = 2)) %>%
+  mutate(temp_diff = Current_temp - Shade_temp) %>%
+  left_join(., flowline_subbasin) %>%
+  left_join(., subbasin_names %>%
+              select(-Area_km2)) 
+
+avg_temp_edr <- asrp_reach_data %>%
+  filter(Scenario_num %in% c('Current', 'Shade')) %>%
+  left_join(., subbasin_names %>%
+              select(Subbasin_num, EcoRegion)) %>%
+  select(noaaid, EcoRegion, Scenario_num, asrp_temp) %>%
+  spread(Scenario_num, asrp_temp) %>%
+  group_by(EcoRegion) %>%
+  summarize(Current_temp = round(mean(Current, na.rm = T), digits = 2),
+            Shade_temp = round(mean(Shade, na.rm = T), digits = 2)) %>%
+  mutate(temp_diff = Current_temp - Shade_temp) %>%
+  left_join(., flowline_edr) 
+
 #### Floodplain ----
-raw_floodplain <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "Floodplain", full.names = T) %>% 
-  read.csv(.) %>%
-  select(Area_ha, Period, noaaid)
+# raw_floodplain <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "Floodplain", full.names = T) %>% 
+#   read.csv(.) %>%
+#   select(Area_ha, Period, noaaid)
+#   
+# fp_areas <- raw_floodplain %>%
+#   filter(Period %in% c('Hist', 'Both')) %>%
+#   mutate(Period = case_when(
+#     Period == 'Both' ~ 'Hist',
+#     Period == 'Hist' ~ 'Hist')) %>%
+#   bind_rows(., raw_floodplain %>%
+#               filter(Period %in% c('Curr', 'Both')) %>%
+#               mutate(Period = case_when(
+#                 Period == 'Both' ~ 'Curr',
+#                 Period == 'Curr' ~ 'Curr'))) %>% 
+#   group_by(Period, noaaid) %>%
+#   summarize(Area_ha = sum(Area_ha, na.rm = T)) %>%
+#   ungroup() %>%
+#   spread(Period, Area_ha) %>%
+#   left_join(., flowline %>%
+#               select(noaaid, GSU, Subbasin_num)) %>%
+#   left_join(., anadromous_network) %>%
+#   filter(anadromous_network == 'Yes') 
+
+fp_areas <- asrp_fp %>%
+  filter(Scenario_num %in% c('Current', 'Floodplain')) %>%
+  select(Scenario_num, Subbasin_num, GSU, Area) %>%
+  distinct() 
+  # spread(Scenario_num, Area)
+  # group_by(Scenario_num, Subbasin_num) %>%
+  # summarize(Area = sum(Area, na.rm = T)) %>%
+  # distinct() %>%
+  # spread(Scenario_num, Area) %>%
   
 
-fp_areas <- raw_floodplain %>%
-  filter(Period %in% c('Hist', 'Both')) %>%
-  mutate(Period = case_when(
-    Period == 'Both' ~ 'Hist',
-    Period == 'Hist' ~ 'Hist')) %>%
-  bind_rows(., raw_floodplain %>%
-              filter(Period %in% c('Curr', 'Both')) %>%
-              mutate(Period = case_when(
-                Period == 'Both' ~ 'Curr',
-                Period == 'Curr' ~ 'Curr'))) %>% 
-  group_by(Period, noaaid) %>%
-  summarize(Area_ha = sum(Area_ha, na.rm = T)) %>%
-  ungroup() %>%
-  spread(Period, Area_ha) %>%
-  left_join(., flowline %>%
-              select(noaaid, Subbasin_num, GSU)) %>%
-  left_join(., anadromous_network) %>%
-  filter(anadromous_network == 'Yes') %>%
-  left_join(., subbasin_names) %>%
-  group_by(Subbasin_num, GSU, Subbasin, EcoRegion) %>%
-  summarize(curr_area_fp = sum(Curr, na.rm = T),
-            hist_area_fp = sum(Hist, na.rm = T)) %>%
+fp_areas_gsu <- fp_areas %>%
+  group_by(GSU, Scenario_num) %>%
+  summarize(Area = sum(Area, na.rm = T)) %>%
+  spread(Scenario_num, Area) %>%
+  summarize(curr_area_fp = sum(Current, na.rm = T),
+            hist_area_fp = sum(Floodplain, na.rm = T)) %>%
   mutate(fp_area_diff = hist_area_fp - curr_area_fp)
-  
+
+fp_areas_subbasin <- fp_areas %>%
+  group_by(Subbasin_num, Scenario_num) %>%
+  summarize(Area = sum(Area, na.rm = T)) %>%
+  spread(Scenario_num, Area) %>%
+  summarize(curr_area_fp = sum(Current, na.rm = T),
+            hist_area_fp = sum(Floodplain, na.rm = T)) %>%
+  mutate(fp_area_diff = hist_area_fp - curr_area_fp) %>%
+  left_join(., subbasin_names %>%
+              select(Subbasin_num, Subbasin, EcoRegion))
+
+fp_areas_edr <- fp_areas %>%
+  left_join(., subbasin_names %>%
+              select(Subbasin_num, EcoRegion)) %>%
+  group_by(EcoRegion, Scenario_num) %>%
+  summarize(Area = sum(Area, na.rm = T)) %>%
+  spread(Scenario_num, Area) %>%
+  summarize(curr_area_fp = sum(Current, na.rm = T),
+            hist_area_fp = sum(Floodplain, na.rm = T)) %>%
+  mutate(fp_area_diff = hist_area_fp - curr_area_fp)
 
 
 
 #### Create excel workbook ----
-hab_attributes = spawn_area_wood %>%
-  left_join(., avg_temp) %>%
-  left_join(., fp_areas) %>%
-  select(GSU, Subbasin, Subbasin_num, EcoRegion, length_km, curr_area_fp, hist_area_fp, fp_area_diff, Current_temp, Shade_temp, temp_diff, low_wood, high_wood, spawn_diff)
+hab_attributes_gsu = spawn_area_gsu %>%
+  left_join(., avg_temp_gsu) %>%
+  left_join(., fp_areas_gsu) %>%
+  select(GSU, length_km, curr_area_fp, hist_area_fp, fp_area_diff, Current_temp, Shade_temp, temp_diff, low_wood, high_wood, spawn_diff)
 
-colnames(hab_attributes) <- c('GSU', 'Subbasin', 'Subbasin_num', 'EcoRegion', 'Total Km', 'Floodplain area (current)', 'Floodplain area (historical)',
+colnames(hab_attributes_gsu) <- c('GSU', 'Total Km', 'Floodplain area (current)', 'Floodplain area (historical)',
+                              'Floodplain restoration potential (area, Ha)', 'Average temperature (Current, °C)','Average temperature (Historical, °C)',
+                              'Shade restoration potential (average temperature, °C)', 'Spawning area (low wood, m^2)','Spawning area (high wood, m^2)',
+                              'Spawning gravel restoration potential ( area, m^2)')
+
+hab_attributes_subbasin = spawn_area_subbasin %>%
+  left_join(., avg_temp_subbasin) %>%
+  left_join(., fp_areas_subbasin) %>%
+  select(Subbasin, Subbasin_num, EcoRegion, length_km, curr_area_fp, hist_area_fp, fp_area_diff, Current_temp, Shade_temp, temp_diff, low_wood, high_wood, spawn_diff)
+
+colnames(hab_attributes_subbasin) <- c('Subbasin', 'Subbasin_num', 'EcoRegion', 'Total Km', 'Floodplain area (current)', 'Floodplain area (historical)',
+                              'Floodplain restoration potential (area, Ha)', 'Average temperature (Current, °C)','Average temperature (Historical, °C)',
+                              'Shade restoration potential (average temperature, °C)', 'Spawning area (low wood, m^2)','Spawning area (high wood, m^2)',
+                              'Spawning gravel restoration potential ( area, m^2)')
+
+hab_attributes_edr = spawn_area_edr %>%
+  left_join(., avg_temp_edr) %>%
+  left_join(., fp_areas_edr) %>%
+  select(EcoRegion, length_km, curr_area_fp, hist_area_fp, fp_area_diff, Current_temp, Shade_temp, temp_diff, low_wood, high_wood, spawn_diff)
+
+colnames(hab_attributes_edr) <- c('EcoRegion', 'Total Km', 'Floodplain area (current)', 'Floodplain area (historical)',
                               'Floodplain restoration potential (area, Ha)', 'Average temperature (Current, °C)','Average temperature (Historical, °C)',
                               'Shade restoration potential (average temperature, °C)', 'Spawning area (low wood, m^2)','Spawning area (high wood, m^2)',
                               'Spawning gravel restoration potential ( area, m^2)')
 
 wb_hab <- loadWorkbook('srt_figures/hab_attributes_template.xlsx')
 
-writeData(wb_hab, sheet = 1, hab_attributes)
+writeData(wb_hab, sheet = 1, hab_attributes_gsu)
+writeData(wb_hab, sheet = 2, hab_attributes_subbasin)
+writeData(wb_hab, sheet = 3, hab_attributes_edr)
 
 saveWorkbook(wb_hab, 'srt_figures/hab_attributes_workbook.xlsx', overwrite = TRUE)
   
