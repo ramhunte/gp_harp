@@ -72,7 +72,7 @@ create_edr_ranks_df <- function(filter_scenarios) {
            rank_rest_potential, spawners_per_km, rank_spawner_per_km, perc_of_pop, rank_percent,
            restoration_potential_pn, rank_rest_potential_pn)
   
-  colnames(spawners_edr_scenarios) <- c('Species', 'EcoRegion', 'Total Km', 'Diagnostic scenario',
+  colnames(spawners_edr_scenarios) <- c('Species', 'EcoRegion', 'Total Km', 'Scenario',
                                           'Current spawners', 'Diagnostic scenario spawners',
                                           'Restoration potential (spawners)',
                                           'Rank (spawners)', 'Spawner change (per km)',
@@ -86,15 +86,22 @@ create_edr_ranks_df <- function(filter_scenarios) {
 
 #### Rank with Diagnostic scenarios ----
 
-run_scenarios_diag <- diag_scenarios[-grep('Historical|Current', diag_scenarios)] %>% str_replace('_', '.')
-       
 spawners_edr_diagnostics <- create_edr_ranks_df(run_scenarios_diag) 
 
 
 
 #### Rank with ASRP scenarios ----
 
-run_scenarios_asrp <- str_subset(scenarios$scenario, 'ASRP')
+run_scenarios_asrp <- spawners_edr_df %>%
+  filter(str_detect(scenario, 'ASRP|Historical.')) %>%
+  pull(scenario) %>%
+  unique
 
-spawners_edr_asrp <- create_edr_ranks_df(run_scenarios_asrp) 
+spawners_edr_asrp <- create_edr_ranks_df(run_scenarios_asrp) %>%
+  mutate(Climate = sub('.*\\.', '', Scenario) %>% as.integer(),
+         Scenario = str_extract(Scenario,'.*\\.') %>%
+           str_replace_all('\\.', ' ') %>%
+           trimws(),
+         Scenario = ifelse(Scenario == 'ASRP dev and climate', 'No action', Scenario)) %>%
+  select(Species:Scenario, Climate, `Current spawners`:`Rank (Pn change)`)
 

@@ -455,7 +455,7 @@ lapply(plt_scenarios, plot_prcnt_per_km_change)
   # ))
   #filter(diff_per_km > 0)
 
-plot_spawners_per_km <- function(s) {
+plot_spawners_per_km_diag <- function(s) {
 
   if (s == 'Coho') {upper_lim <- 15}
   if (s == 'Fall Chinook') {upper_lim <- 5 }
@@ -495,7 +495,7 @@ plot_spawners_per_km <- function(s) {
                          #na.translate = FALSE
                          ) +
     theme(strip.text.y = element_text(angle = -90)) +
-    labs(fill = 'Change in\nspawners\nper Km',
+    labs(fill = 'Change in\nspawners\nper km',
          title = s)
   
   folder_name <- 'Figs_Section2_spawner_change'
@@ -513,7 +513,7 @@ plot_spawners_per_km <- function(s) {
 plt_spp <- sub_plot$species2 %>% unique
 
 
-lapply(plt_spp, plot_spawners_per_km)
+lapply(plt_spp, plot_spawners_per_km_diag)
 
 ```
 
@@ -573,6 +573,77 @@ lapply(plt_spp, plot_pn)
 
 
 
+# Section 3
+
+## 8 panel ASRP scenarios
+
+ASRP 1-3 and Historical 2040 and 2080
+
+```{r}
+
+plot_spawners_per_km_asrp <- function(s) {
+
+  if (s == 'Coho') {upper_lim <- 15}
+  if (s == 'Fall Chinook') {upper_lim <- 5 }
+  if (s == 'Spring Chinook') {upper_lim <- 1 }
+  if (s == 'Steelhead') {upper_lim <- 3 }
+
+  
+  
+  shp_plt <- sub_plot %>% 
+    filter(species2 == s,
+           str_detect(scenario, 'ASRP.s')) %>% #|Historical.2
+    mutate(climate = sub('.*\\.', '', scenario),
+           scenario = str_extract(scenario,'.*\\.') %>%
+             str_replace('\\.', ' '),
+           diff_per_km2 = ifelse(diff_per_km > upper_lim,
+                               upper_lim,
+                               diff_per_km))
+                               # ifelse(diff_per_km <= 0,
+                               #        0,
+                               #        diff_per_km)))
+    
+
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt, 
+            aes(fill = diff), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_grid(climate~scenario, 
+               switch = 'y') +
+    scale_fill_gradient2(low = 'red',
+                         mid = 'white',
+                         high = 'blue',
+                         midpoint = 0,
+                         label = label_comma()) +
+    theme(strip.text = element_text(size = 10),
+          strip.text.y = element_text(angle = -90)) +
+    labs(fill = 'Change in\nspawners', #'Change in\nspawners\nper Km'
+         title = s)
+  
+  folder_name <- 'Figs_Section3_spawner_change'
+  
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+  
+  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+}
+
+plt_spp <- sub_plot$species2 %>% unique
+
+
+lapply(plt_spp, plot_spawners_per_km_asrp)
+
+```
 
 
 
@@ -585,6 +656,16 @@ sub_df %>%
   summarize(max = max(diff_per_km, na.rm = T),
             mean = mean(diff_per_km, na.rm = T),
             median = median(diff_per_km, na.rm = T))
+
+
+x <- sub_plot %>%
+  filter(str_detect(scenario, 'ASRP.s|Historical.2')) %>%
+  mutate(climate = sub('.*\\.', '', scenario))
+
+x$scenario %>%
+  unique %>%
+  str_extract('.*\\.')
+  
 ```
 
 ```{r}
