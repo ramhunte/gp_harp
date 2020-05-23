@@ -4,8 +4,10 @@
 # Final dataframe with necessary columns is called df_gsu
 
 # Barriers ---- 
-Inputs <- 'hab/Inputs'
-source('hab/R_files/2-read_in_data.R')
+flowline <- list.files(path = '../hab/Inputs/spatial_model_outputs/', 
+                                  pattern = "flowline", 
+                                  full.names = T) %>%
+  read.csv
 
 gsu_list <- flowline %>%
   distinct(GSU)
@@ -78,10 +80,7 @@ gsu_bip <- flowline %>%
 df_gsu <- gsu_list %>%
   left_join(gsu_pass) %>%
   left_join(gsu_sed) %>%
-  left_join(gsu_bip) %>%
-  left_join(spawn_area_gsu) %>%
-  left_join(avg_temp_gsu) %>%
-  left_join(fp_areas_gsu)
+  left_join(gsu_bip)
 
 
 

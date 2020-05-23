@@ -13,8 +13,16 @@ Test Grays Harbor coho because they have no movement.
 First run the script to generate the data for each GSU. This creates a dataframe called `df_gsu`. Plots are currently created from this dataframe. 
 
 ```{r}
-source('srt_figures/passage_sediment_bip.R')
+source('passage_sediment_bip.R')
 ```
+
+```{r}
+df_gsu2 <- readxl::read_excel('hab_attributes_workbook3.xlsx') %>%
+  rename(fp_area_diff = `Floodplain restoration potential (area, Ha)`,
+         temp_diff = `Shade restoration potential (average temperature, °C)`,
+         spawn_diff = `Spawning gravel restoration potential ( area, m^2)`)
+```
+
 
 Read in spatial data. This may need to be altered if you don't want to read from the shared drive
 ```{r}
@@ -24,19 +32,21 @@ Read in spatial data. This may need to be altered if you don't want to read from
 
 # Location of spatial data
 local_colin <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/'
-# local_caleb <- 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/'
+local_caleb <- 'D:/Caleb_data/Chehalis/Spatial_model_2/spatial-model/'
 
 shared_drive <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/'
 
 
 # Set directories
-# if (dir.exists(local_colin)) {
-if (dir.exists(local_caleb)) {
+ if (dir.exists(local_colin)) {
   
   gdb_in <- file.path(local_colin, 'Inputs.gdb')
-  # gdb_in <- file.path(local_caleb, 'Inputs.gdb')
   gdb_out <- file.path(local_colin, 'Outputs.gdb')
-  # gdb_out <- file.path(local_caleb, 'Outputs.gdb')
+  
+} else if (dir.exists(local_caleb)) {
+  
+  gdb_in <- file.path(local_colin, 'Inputs.gdb')
+  gdb_out <- file.path(local_colin, 'Outputs.gdb')
   
 
 } else if (dir.exists(shared_drive)) {
@@ -81,12 +91,8 @@ plot.params <- read.csv('../lcm/data/scenarios.csv') %>%
 ```{r}
 # Join data to GSU shapefile
 shp_gsu_plt <- shp_gsu %>%
-  left_join(gsu_pass) %>%
-  left_join(gsu_sed) %>%
-  left_join(gsu_bip) %>%
-  left_join(spawn_area_gsu) %>%
-  left_join(avg_temp_gsu) %>%
-  left_join(fp_areas_gsu)
+  left_join(df_gsu) %>%
+  left_join(df_gsu2)
 ```
 
 
@@ -108,13 +114,13 @@ p_pass <- ggplot() +
                        limits = c(-1, 0)) +
   labs(fill = 'Change in\npassage') +
   theme(legend.position = c(.8, .8))
-
-ggsave(file.path(folder_name,'gsu_passage.tiff'),
-       p_pass,
-       height = 4,
-       width = 6.5,
-       dpi = 500,
-       compression = "lzw")
+# 
+# ggsave(file.path(folder_name,'gsu_passage.tiff'),
+#        p_pass,
+#        height = 4,
+#        width = 6.5,
+#        dpi = 500,
+#        compression = "lzw")
 ```
 
 
@@ -134,12 +140,12 @@ p_sed <- ggplot() +
   labs(fill = 'Change in\nfines') +
   theme(legend.position = c(.8, .8))
 
-ggsave(file.path(folder_name, 'gsu_fine_sed.tiff'),
-       p_sed,
-       height = 4,
-       width = 6.5,
-       dpi = 500,
-       compression = "lzw")
+# ggsave(file.path(folder_name, 'gsu_fine_sed.tiff'),
+#        p_sed,
+#        height = 4,
+#        width = 6.5,
+#        dpi = 500,
+#        compression = "lzw")
 ```
 
 ## Beaver
@@ -160,21 +166,15 @@ p_bip <- ggplot() +
   geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
   geom_sf(data = shp_plt2, aes(fill = BIP_bin), lwd = 0.1, color = 'black') +
   scale_fill_manual(values = c('white', 'green2', 'green4', muted('green4'))) +
-  #scale_fill_viridis_c(label = label_percent()) +
-  # scale_fill_gradient2(low = 'white', 
-  #                      high = muted('green4'),
-  #                      mid = 'green4',
-  #                      midpoint = 7, 
-  #                      limits = c(0, 10)) +
   labs(fill = 'BIP score') +
   theme(legend.position = c(.8, .8))
-
-ggsave(file.path(folder_name, 'gsu_BIP.tiff'),
-       p_bip,
-       height = 4,
-       width = 6.5,
-       dpi = 500,
-       compression = "lzw")
+# 
+# ggsave(file.path(folder_name, 'gsu_BIP.tiff'),
+#        p_bip,
+#        height = 4,
+#        width = 6.5,
+#        dpi = 500,
+#        compression = "lzw")
 
 ```
 
@@ -184,23 +184,23 @@ ggsave(file.path(folder_name, 'gsu_BIP.tiff'),
 p_wood <- ggplot() +
   theme_void() +
   geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
-  geom_sf(data = shp_gsu_plt, aes(fill = spawn_diff), lwd = 0.1, color = 'black') +
+  geom_sf(data = shp_gsu_plt, aes(fill = spawn_diff/1e4), lwd = 0.1, color = 'black') +
     scale_fill_gradient2(low = 'white', 
                        high = muted('chocolate4'),
                        mid = 'chocolate4',
-                       midpoint = 40000) +
-  labs(fill = 'Change in\nspawning area \n(m^2)') +
+                       midpoint = 4) +
+  labs(fill = bquote('Change in\nspawning area (ha)')) +
   theme(legend.position = c(.8, .8))
 
-ggsave(file.path(folder_name, 'gsu_wood.tiff'),
-       p_wood,
-       height = 4,
-       width = 6.5,
-       dpi = 500,
-       compression = 'lzw')
+# ggsave(file.path(folder_name, 'gsu_wood.tiff'),
+#        p_wood,
+#        height = 4,
+#        width = 6.5,
+#        dpi = 500,
+#        compression = 'lzw')
 ```
 
-# Shade (temperature)
+## Shade (temperature)
 
 ```{r}
 p_tmp <- ggplot() +
@@ -211,15 +211,15 @@ p_tmp <- ggplot() +
                        high = muted('orangered3'),
                        mid = 'orangered3',
                        midpoint = 2) +
-  labs(fill = 'Change in\naverage temperature') +
+  labs(fill = 'Change in\n temperature (°C)') +
   theme(legend.position = c(.8, .8))
 
-ggsave(file.path( folder_name, 'gsu_temp.tiff'),
-       p_tmp,
-       height = 4,
-       width = 6.5,
-       dpi = 500,
-       compression = 'lzw')
+# ggsave(file.path( folder_name, 'gsu_temp.tiff'),
+#        p_tmp,
+#        height = 4,
+#        width = 6.5,
+#        dpi = 500,
+#        compression = 'lzw')
 ```
 
 ## Floodplain area
@@ -228,7 +228,9 @@ ggsave(file.path( folder_name, 'gsu_temp.tiff'),
 fp_gsu_plt <- shp_gsu_plt %>%
   mutate(fp_area_diff_2 = ifelse(fp_area_diff > 200,
                                  200, 
-                                 fp_area_diff))
+                                 ifelse(fp_area_diff < 0,
+                                        0,
+                                        fp_area_diff)))
 
 p_fp <- ggplot() +
   theme_void() +
@@ -243,12 +245,12 @@ p_fp <- ggplot() +
   labs(fill = 'Change in\nfloodplain area (ha)') +
   theme(legend.position = c(.8, .8))
 
-ggsave(file.path(folder_name, 'gsu_fp.tiff'),
-       p+fp,
-       height = 4,
-       width = 6.5,
-       dpi = 500,
-       compression = 'lzw')
+# ggsave(file.path(folder_name, 'gsu_fp.tiff'),
+#        p_fp,
+#        height = 4,
+#        width = 6.5,
+#        dpi = 500,
+#        compression = 'lzw')
 ```
 
 
@@ -269,8 +271,8 @@ p_grid <- cowplot::plot_grid(p1 = p_bip,
   
 cowplot::save_plot(file.path(folder_name, 'gsu_grid.tiff'),
                    p_grid,
-                   base_height = 5,
-                   base_width = 7.5,
+                   base_height = 8,
+                   base_width = 10,
                    dpi = 500,
                    compression = "lzw")
 ```
