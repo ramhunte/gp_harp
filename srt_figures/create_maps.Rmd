@@ -27,11 +27,11 @@ results <- 'outputs_v13.1_w_Hist_future/'
 # Spatial data
 
 # Access files on the network
-# gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/Inputs.gdb'
+gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/Inputs.gdb'
 # gdb_out <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20200512/Outputs.gdb'
 
 # Files on Colin's local machine
-gdb_in <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/Inputs.gdb'
+# gdb_in <- 'C:/01_Projects/Chehalis/Spatial_Model/spatial_model_gitlab/Inputs.gdb'
 
 
 # Subbasin names and EDRs
@@ -131,7 +131,13 @@ sub_df <- sub_paths %>%
   mutate(current_basinwide = sum(spawners[scenario == 'Current'])) %>%
   group_by(species, Subbasin) %>%
   mutate(current = spawners[scenario == 'Current'],
+         nat_potential = ifelse(str_detect(scenario, '.2040', negate = FALSE) == T,
+                                spawners[scenario  == 'Historical.2040'],
+                                ifelse(str_detect(scenario, '.2080', negate = F) == T,
+                                       spawners[scenario == 'Historical.2080'],
+                                       spawners[scenario == 'Historical'])),
          diff = spawners - current,
+         diff_asrp = nat_potential - spawners,
          diff_prcnt = (diff/current_basinwide),
          #diff_prcnt = ifelse(diff_prcnt > 0.25, 0.25, diff_prcnt),
          diff_prcnt_km = ifelse(is.na(length_km), 
@@ -149,6 +155,11 @@ sub_df <- sub_paths %>%
                               ifelse(diff == 0,
                                      0,
                                      diff/length_km)),
+         diff_per_km_asrp = ifelse(is.na(length_km),
+                                   NA,
+                                   ifelse(diff == 0,
+                                          0,
+                                          diff_asrp / length_km)),
          diff_per_km2 = ifelse(diff_per_km > 10,
                                10,
                                ifelse(diff_per_km <= 0,
@@ -591,6 +602,7 @@ plot_spawners_per_km_asrp <- function(s) {
   
   
   shp_plt <- sub_plot %>% 
+    select(-Shape) %>%
     filter(species2 == s,
            str_detect(scenario, 'ASRP.s')) %>% #|Historical.2
     mutate(climate = sub('.*\\.', '', scenario),
@@ -646,7 +658,147 @@ lapply(plt_spp, plot_spawners_per_km_asrp)
 ```
 
 
+## natural potential - ASRP scenarios
 
+ASRP 3 and Historical 2040 and 2080
+
+```{r}
+
+plot_spawners_per_km_asrp <- function(s) {
+
+  if (s == 'Coho') {upper_lim <- 15}
+  if (s == 'Fall Chinook') {upper_lim <- 5 }
+  if (s == 'Spring Chinook') {upper_lim <- 1 }
+  if (s == 'Steelhead') {upper_lim <- 3 }
+
+  
+  
+  shp_plt <- sub_plot %>% 
+    filter(species2 == s,
+           str_detect(scenario, 'ASRP.s'),
+           str_detect(scenario, 'scenario.3')) %>% #|Historical.2
+    mutate(climate = sub('.*\\.', '', scenario),
+           scenario = str_extract(scenario,'.*\\.') %>%
+             str_replace('\\.', ' '),
+           diff_per_km2 = ifelse(diff_per_km > upper_lim,
+                               upper_lim,
+                               diff_per_km))
+                               # ifelse(diff_per_km <= 0,
+                               #        0,
+                               #        diff_per_km)))
+    
+
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt, 
+            aes(fill = diff_asrp), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_grid(climate~scenario, 
+               switch = 'y') +
+    scale_fill_gradient2(low = 'red',
+                         mid = 'white',
+                         high = 'blue',
+                         midpoint = 0,
+                         label = label_comma()) +
+    theme(strip.text = element_text(size = 10),
+          strip.text.y = element_text(angle = -90)) +
+    labs(fill = 'Change in\nspawners', #'Change in\nspawners\nper Km'
+         title = s)
+  
+  folder_name <- 'Figs_Section3_spawner_change_from_nat_potential'
+  
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+  
+  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+}
+
+plt_spp <- sub_plot$species2 %>% unique
+
+
+lapply(plt_spp, plot_spawners_per_km_asrp)
+
+```
+
+## natural potential - ASRP scenarios per km
+
+ASRP 3 and Historical 2040 and 2080 per km
+
+```{r}
+
+plot_spawners_per_km_asrp <- function(s) {
+
+  if (s == 'Coho') {upper_lim <- 15}
+  if (s == 'Fall Chinook') {upper_lim <- 5 }
+  if (s == 'Spring Chinook') {upper_lim <- 1 }
+  if (s == 'Steelhead') {upper_lim <- 3 }
+
+  
+  
+  shp_plt <- sub_plot %>% 
+    filter(species2 == s,
+           str_detect(scenario, 'ASRP.s'),
+           str_detect(scenario, 'scenario.3')) %>% #|Historical.2
+    mutate(climate = sub('.*\\.', '', scenario),
+           scenario = str_extract(scenario,'.*\\.') %>%
+             str_replace('\\.', ' '),
+           diff_per_km2 = ifelse(diff_per_km > upper_lim,
+                               upper_lim,
+                               diff_per_km))
+                               # ifelse(diff_per_km <= 0,
+                               #        0,
+                               #        diff_per_km)))
+    
+
+  p <- ggplot() +
+    theme_void() +
+    geom_sf(data = sub_shp,
+            fill = 'gray50',
+            color = 'black',
+            lwd = 0.01) +
+    geom_sf(data = shp_plt, 
+            aes(fill = diff_per_km_asrp), # * 1e3),
+            color = 'black',
+            lwd = 0.01) +
+    facet_grid(climate~scenario, 
+               switch = 'y', ) +
+    scale_fill_gradient2(low = 'red',
+                         mid = 'white',
+                         high = 'blue',
+                         midpoint = 0,
+                         label = label_comma()) +
+    theme(strip.text = element_text(size = 10),
+          strip.text.y = element_text(angle = -90)) +
+    labs(fill = 'Change in\nspawners\nper Km',
+         title = s)
+  
+  folder_name <- 'Figs_Section3_spawner_change_from_nat_potential_per_km'
+  
+  if (dir.exists(folder_name) == F) {dir.create(folder_name)}
+  
+  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
+         p,
+         height = 4,
+         width = 6.5,
+         dpi = 500,
+         compression = "lzw")
+}
+
+plt_spp <- sub_plot$species2 %>% unique
+
+
+lapply(plt_spp, plot_spawners_per_km_asrp)
+
+```
 
 # Delete below here -- testing
 
