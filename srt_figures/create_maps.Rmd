@@ -457,10 +457,15 @@ lapply(plt_scenarios, plot_prcnt_per_km_change)
 
 plot_spawners_per_km_diag <- function(s) {
 
-  if (s == 'Coho') {upper_lim <- 15}
-  if (s == 'Fall Chinook') {upper_lim <- 5 }
-  if (s == 'Spring Chinook') {upper_lim <- 1 }
-  if (s == 'Steelhead') {upper_lim <- 3 }
+  # if (s == 'Coho') {upper_lim <- 15}
+  # if (s == 'Fall Chinook') {upper_lim <- 5 }
+  # if (s == 'Spring Chinook') {upper_lim <- 1 }
+  # if (s == 'Steelhead') {upper_lim <- 3 }
+  
+  if (s == 'Coho') {upper_lim <- 5000}
+  if (s == 'Fall Chinook') {upper_lim <- 2000 }
+  if (s == 'Spring Chinook') {upper_lim <- 200}
+  if (s == 'Steelhead') {upper_lim <- 800 }
 
   
   
@@ -473,7 +478,10 @@ plot_spawners_per_km_diag <- function(s) {
                                upper_lim,
                                ifelse(diff_per_km <= 0,
                                       0,
-                                      diff_per_km)))
+                                      diff_per_km)),
+            diff2 = ifelse(diff > upper_lim,
+                               upper_lim,
+                               diff))
     
   
   p <- ggplot() +
@@ -483,26 +491,27 @@ plot_spawners_per_km_diag <- function(s) {
             color = 'black',
             lwd = 0.01) +
     geom_sf(data = shp_plt, 
-            aes(fill = diff_per_km2), # * 1e3),
+            aes(fill = diff2), # * 1e3),
             color = 'black',
             lwd = 0.01) +
     facet_wrap(~scenario) +
-    scale_fill_viridis_c(na.value = 'gray50',
-                         breaks = seq(0, upper_lim, length.out = 3),
-                         labels = c(seq(0, upper_lim, length.out = 3)[-3], 
-                                    paste0('>', upper_lim) )
-                         #drop = FALSE,
-                         #na.translate = FALSE
-                         ) +
+    scale_fill_viridis_c(
+      na.value = 'gray50',
+      breaks = seq(0, upper_lim, length.out = 3),
+      labels = c(seq(0, upper_lim, length.out = 3)[-3],
+                 paste0('>', upper_lim))
+      #drop = FALSE,
+      #na.translate = FALSE
+    ) +
     theme(strip.text.y = element_text(angle = -90)) +
-    labs(fill = 'Change in\nspawners\nper km',
+    labs(fill = 'Change in\nspawners',
          title = s)
   
   folder_name <- 'Figs_Section2_spawner_change'
   
   if (dir.exists(folder_name) == F) {dir.create(folder_name)}
   
-  ggsave(file.path(folder_name,paste0(s,'_bin.tiff')), 
+  ggsave(file.path(folder_name,paste0(s,'.tiff')), 
          p,
          height = 4,
          width = 6.5,
