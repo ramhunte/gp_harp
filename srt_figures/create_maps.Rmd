@@ -666,10 +666,10 @@ ASRP 3 and Historical 2040 and 2080
 
 plot_spawners_per_km_asrp <- function(s) {
 
-  if (s == 'Coho') {upper_lim <- 15}
-  if (s == 'Fall Chinook') {upper_lim <- 5 }
-  if (s == 'Spring Chinook') {upper_lim <- 1 }
-  if (s == 'Steelhead') {upper_lim <- 3 }
+  if (s == 'Coho') {upper_lim <- 20000}
+  if (s == 'Fall Chinook') {upper_lim <- 5000 }
+  if (s == 'Spring Chinook') {upper_lim <- 400 }
+  if (s == 'Steelhead') {upper_lim <- 1000 }
 
   
   
@@ -680,10 +680,10 @@ plot_spawners_per_km_asrp <- function(s) {
     mutate(climate = sub('.*\\.', '', scenario),
            scenario = str_extract(scenario,'.*\\.') %>%
              str_replace('\\.', ' '),
-           diff_per_km2 = ifelse(diff_per_km > upper_lim,
+           diff_asrp = ifelse(diff_asrp > upper_lim,
                                upper_lim,
-                               diff_per_km))
-                               # ifelse(diff_per_km <= 0,
+                               diff_asrp))
+           #                     # ifelse(diff_per_km <= 0,
                                #        0,
                                #        diff_per_km)))
     
@@ -737,10 +737,10 @@ ASRP 3 and Historical 2040 and 2080 per km
 
 plot_spawners_per_km_asrp <- function(s) {
 
-  if (s == 'Coho') {upper_lim <- 15}
-  if (s == 'Fall Chinook') {upper_lim <- 5 }
-  if (s == 'Spring Chinook') {upper_lim <- 1 }
-  if (s == 'Steelhead') {upper_lim <- 3 }
+  if (s == 'Coho') {upper_lim <-100}
+  if (s == 'Fall Chinook') {upper_lim <- 20 }
+  if (s == 'Spring Chinook') {upper_lim <- 3 }
+  if (s == 'Steelhead') {upper_lim <- 5 }
 
   
   
@@ -751,9 +751,9 @@ plot_spawners_per_km_asrp <- function(s) {
     mutate(climate = sub('.*\\.', '', scenario),
            scenario = str_extract(scenario,'.*\\.') %>%
              str_replace('\\.', ' '),
-           diff_per_km2 = ifelse(diff_per_km > upper_lim,
+           diff_per_km_asrp = ifelse(diff_per_km_asrp > upper_lim,
                                upper_lim,
-                               diff_per_km))
+                               diff_per_km_asrp))
                                # ifelse(diff_per_km <= 0,
                                #        0,
                                #        diff_per_km)))
@@ -771,11 +771,15 @@ plot_spawners_per_km_asrp <- function(s) {
             lwd = 0.01) +
     facet_grid(climate~scenario, 
                switch = 'y', ) +
-    scale_fill_gradient2(low = 'red',
-                         mid = 'white',
-                         high = 'blue',
-                         midpoint = 0,
-                         label = label_comma()) +
+    scale_fill_viridis_c(na.value = 'gray50',
+                         breaks = seq(0, upper_lim, length.out = 5),
+                         labels = c(seq(0, upper_lim, length.out = 5)[-5], 
+                                    paste0('>', upper_lim))) +
+    # scale_fill_gradient2(low = 'red',
+    #                      mid = 'white',
+    #                      high = 'blue',
+    #                      midpoint = 0,
+    #                      label = label_comma()) +
     theme(strip.text = element_text(size = 10),
           strip.text.y = element_text(angle = -90)) +
     labs(fill = 'Change in\nspawners\nper Km',
