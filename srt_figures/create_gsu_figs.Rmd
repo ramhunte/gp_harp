@@ -13,11 +13,11 @@ Test Grays Harbor coho because they have no movement.
 First run the script to generate the data for each GSU. This creates a dataframe called `df_gsu`. Plots are currently created from this dataframe. 
 
 ```{r}
-source('passage_sediment_bip.R')
+# source('passage_sediment_bip.R')
 ```
 
 ```{r}
-df_gsu2 <- readxl::read_excel('hab_attributes_workbook3.xlsx') %>%
+df_gsu2 <- readxl::read_excel('hab_attributes_workbook.xlsx') %>%
   rename(fp_area_diff = `Floodplain restoration potential (area, Ha)`,
          temp_diff = `Shade restoration potential (average temperature, °C)`,
          spawn_diff = `Spawning gravel restoration potential ( area, m^2)`)
@@ -45,8 +45,8 @@ shared_drive <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/Spa
   
 } else if (dir.exists(local_caleb)) {
   
-  gdb_in <- file.path(local_colin, 'Inputs.gdb')
-  gdb_out <- file.path(local_colin, 'Outputs.gdb')
+  gdb_in <- file.path(local_caleb, 'Inputs.gdb')
+  gdb_out <- file.path(local_caleb, 'Outputs.gdb')
   
 
 } else if (dir.exists(shared_drive)) {
@@ -130,7 +130,11 @@ p_pass <- ggplot() +
 p_sed <- ggplot() +
   theme_void() +
   geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
-  geom_sf(data = shp_gsu_plt, aes(fill =  sed_diff/100), lwd = 0.1, color = 'black') +
+  geom_sf(data = shp_gsu_plt %>% 
+            mutate(sed_diff = ifelse(GSU == 'Upper Skookumchuck',
+                                     NA,
+                                     spawn_diff)),
+          aes(fill =  sed_diff/100), lwd = 0.1, color = 'black') +
   #scale_fill_viridis_c(label = label_percent()) +
   scale_fill_gradient2(low = 'white', 
                        high = muted('pink'),
@@ -159,13 +163,19 @@ shp_plt2 <- shp_gsu_plt %>%
     between(BIP, 6, 7) ~ 'Medium',
     BIP > 7 ~ 'High'
   ),
-  BIP_bin = factor(BIP_bin, levels = c('No BIP', 'Low', 'Medium', 'High')))
+  BIP_bin = case_when(
+    GSU == 'Upper Skookumchuck' ~ 'NA',
+    GSU != 'Upper Skookumchuck' ~ BIP_bin
+  ),
+  BIP_bin = factor(BIP_bin, levels = c('NA', 'No BIP', 'Low', 'Medium', 'High')))
 
 p_bip <- ggplot() +
   theme_void() +
   geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
-  geom_sf(data = shp_plt2, aes(fill = BIP_bin), lwd = 0.1, color = 'black') +
-  scale_fill_manual(values = c('white', 'green2', 'green4', muted('green4'))) +
+  geom_sf(data = shp_plt2 ,
+          aes(fill = BIP_bin), lwd = 0.1, color = 'black') +
+  scale_fill_manual(breaks = c('No BIP', 'Low', 'Medium', 'High'),
+                    values = c('gray50', 'white', 'green2', 'green4', muted('green4'))) +
   labs(fill = 'BIP score') +
   theme(legend.position = c(.8, .8))
 # 
