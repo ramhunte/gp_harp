@@ -112,7 +112,8 @@ p_pass <- ggplot() +
                        midpoint = -.5,
                        label = label_percent(),
                        limits = c(-1, 0)) +
-  labs(fill = 'Change in\npassage') +
+  labs(fill = 'Change in\npassage',
+       title = 'Barriers') +
   theme(legend.position = c(.8, .8))
 # 
 # ggsave(file.path(folder_name,'gsu_passage.tiff'),
@@ -133,7 +134,7 @@ p_sed <- ggplot() +
   geom_sf(data = shp_gsu_plt %>% 
             mutate(sed_diff = ifelse(GSU == 'Upper Skookumchuck',
                                      NA,
-                                     spawn_diff)),
+                                     sed_diff)),
           aes(fill =  sed_diff/100), lwd = 0.1, color = 'black') +
   #scale_fill_viridis_c(label = label_percent()) +
   scale_fill_gradient2(low = 'white', 
@@ -141,7 +142,8 @@ p_sed <- ggplot() +
                        mid = 'pink',
                        midpoint = .02,
                        label = label_percent(accuracy = 1L)) +
-  labs(fill = 'Change in\nfines') +
+  labs(fill = 'Change in\nfines',
+       title = 'Fine sediment') +
   theme(legend.position = c(.8, .8))
 
 # ggsave(file.path(folder_name, 'gsu_fine_sed.tiff'),
@@ -176,7 +178,8 @@ p_bip <- ggplot() +
           aes(fill = BIP_bin), lwd = 0.1, color = 'black') +
   scale_fill_manual(breaks = c('No BIP', 'Low', 'Medium', 'High'),
                     values = c('gray50', 'white', 'green2', 'green4', muted('green4'))) +
-  labs(fill = 'BIP score') +
+  labs(fill = 'BIP score',
+       title = 'Beaver') +
   theme(legend.position = c(.8, .8))
 # 
 # ggsave(file.path(folder_name, 'gsu_BIP.tiff'),
@@ -199,7 +202,8 @@ p_wood <- ggplot() +
                        high = muted('chocolate4'),
                        mid = 'chocolate4',
                        midpoint = 4) +
-  labs(fill = bquote('Change in\nspawning area (ha)')) +
+  labs(fill = bquote('Change in\nspawning area (ha)'),
+       title = 'Wood') +
   theme(legend.position = c(.8, .8))
 
 # ggsave(file.path(folder_name, 'gsu_wood.tiff'),
@@ -221,7 +225,8 @@ p_tmp <- ggplot() +
                        high = muted('orangered3'),
                        mid = 'orangered3',
                        midpoint = 2) +
-  labs(fill = 'Change in\n temperature (°C)') +
+  labs(fill = 'Change in\n temperature (°C)',
+       title = 'Shade') +
   theme(legend.position = c(.8, .8))
 
 # ggsave(file.path( folder_name, 'gsu_temp.tiff'),
@@ -252,7 +257,8 @@ p_fp <- ggplot() +
                        midpoint = 100,
                        breaks = c(0, 50, 100, 150, 200),
                        labels = c('0', '50', '100', '150', '>200')) +
-  labs(fill = 'Change in\nfloodplain area (ha)') +
+  labs(fill = 'Change in\nfloodplain area (ha)',
+       title = 'Floodplain') +
   theme(legend.position = c(.8, .8))
 
 # ggsave(file.path(folder_name, 'gsu_fp.tiff'),
