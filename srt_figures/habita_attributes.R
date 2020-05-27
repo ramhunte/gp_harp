@@ -87,7 +87,10 @@ spawn_area_gsu <- spawn_area_wood %>%
             low_wood = round(sum(low_wood, na.rm = T), digits = 2)) %>%
   ungroup() %>%
   mutate(spawn_diff = high_wood - low_wood,
-         rank_spawn_diff = rank(spawn_diff, ties.method = 'first')) %>%
+         rank_spawn_diff = rank(-spawn_diff, ties.method = 'min'),
+         spawn_diff = ifelse(GSU == 'Upper Skookumchuck', 
+                            NA,
+                            spawn_diff)) %>%
   left_join(., flowline_gsu) 
 
 spawn_area_subbasin <- spawn_area_wood %>%
@@ -97,8 +100,11 @@ spawn_area_subbasin <- spawn_area_wood %>%
             low_wood = round(sum(low_wood, na.rm = T), digits = 2)) %>%
   ungroup() %>%
   mutate(spawn_diff = high_wood - low_wood,
-         rank_spawn_diff = rank(spawn_diff, ties.method = 'first')) %>%
-  left_join(., flowline_subbasin)
+         rank_spawn_diff = rank(-spawn_diff, ties.method = 'min')) %>%
+  left_join(., flowline_subbasin) %>%
+  mutate(spawn_diff = ifelse(Subbasin == 'Upper Skookumchuck', 
+                             NA,
+                             spawn_diff))
 
 spawn_area_edr <- spawn_area_wood %>%
   left_join(., subbasin_names) %>%
@@ -107,7 +113,10 @@ spawn_area_edr <- spawn_area_wood %>%
             low_wood = round(sum(low_wood, na.rm = T), digits = 2)) %>%
   ungroup() %>%
   mutate(spawn_diff = high_wood - low_wood,
-         rank_spawn_diff = rank(spawn_diff, ties.method = 'first')) %>%
+         rank_spawn_diff = rank(-spawn_diff, ties.method = 'min'),
+         spawn_diff = ifelse(EcoRegion == 'Upper Skookumchuck', 
+                             NA,
+                             spawn_diff)) %>%
   left_join(., flowline_edr)
 
 #### Shade (average temperature) ----
@@ -121,7 +130,10 @@ avg_temp_gsu <- asrp_reach_data %>%
   summarize(Current_temp = round(mean(Current, na.rm = T), digits = 2),
             Shade_temp = round(mean(Shade, na.rm = T), digits = 2)) %>%
   mutate(temp_diff = Current_temp - Shade_temp,
-         rank_temp = rank(temp_diff, ties.method = 'first')) %>%
+         rank_temp = rank(-temp_diff, ties.method = 'min'),
+         temp_diff = ifelse(GSU == 'Upper Skookumchuck',
+                            NA,
+                            temp_diff)) %>%
   left_join(., flowline_gsu) 
 
 avg_temp_subbasin <- asrp_reach_data %>%
@@ -132,10 +144,13 @@ avg_temp_subbasin <- asrp_reach_data %>%
   summarize(Current_temp = round(mean(Current, na.rm = T), digits = 2),
             Shade_temp = round(mean(Shade, na.rm = T), digits = 2)) %>%
   mutate(temp_diff = Current_temp - Shade_temp,
-         rank_temp = rank(temp_diff, ties.method = 'first')) %>%
+         rank_temp = rank(-temp_diff, ties.method = 'min')) %>%
   left_join(., flowline_subbasin) %>%
   left_join(., subbasin_names %>%
-              select(-Area_km2)) 
+              select(-Area_km2)) %>%
+  mutate(temp_diff = ifelse(Subbasin == 'Upper Skookumchuck',
+                            NA,
+                            temp_diff))
 
 avg_temp_edr <- asrp_reach_data %>%
   filter(Scenario_num %in% c('Current', 'Shade')) %>%
@@ -147,7 +162,10 @@ avg_temp_edr <- asrp_reach_data %>%
   summarize(Current_temp = round(mean(Current, na.rm = T), digits = 2),
             Shade_temp = round(mean(Shade, na.rm = T), digits = 2)) %>%
   mutate(temp_diff = Current_temp - Shade_temp,
-         rank_temp = rank(temp_diff, ties.method = 'first')) %>%
+         rank_temp = rank(-temp_diff, ties.method = 'min'),
+         temp_diff = ifelse(EcoRegion == 'Upper Skookumchuck',
+                            NA,
+                            temp_diff)) %>%
   left_join(., flowline_edr) 
 
 #### Floodplain ----
@@ -164,7 +182,10 @@ fp_areas_gsu <- fp_areas %>%
   summarize(curr_area_fp = sum(Current, na.rm = T),
             hist_area_fp = sum(Floodplain, na.rm = T)) %>%
   mutate(fp_area_diff = hist_area_fp - curr_area_fp,
-         rank_fp = rank(fp_area_diff, ties.method = 'first'))
+         rank_fp = rank(-fp_area_diff, ties.method = 'min'),
+         fp_area_diff = ifelse(GSU == 'Upper Skookumchuck',
+                               NA,
+                               fp_area_diff))
 
 fp_areas_subbasin <- fp_areas %>%
   group_by(Subbasin_num, Scenario_num) %>%
@@ -173,9 +194,12 @@ fp_areas_subbasin <- fp_areas %>%
   summarize(curr_area_fp = sum(Current, na.rm = T),
             hist_area_fp = sum(Floodplain, na.rm = T)) %>%
   mutate(fp_area_diff = hist_area_fp - curr_area_fp,
-         rank_fp = rank(fp_area_diff, ties.method = 'first')) %>%
+         rank_fp = rank(-fp_area_diff, ties.method = 'min')) %>%
   left_join(., subbasin_names %>%
-              select(Subbasin_num, Subbasin, EcoRegion))
+              select(Subbasin_num, Subbasin, EcoRegion)) %>%
+  mutate(fp_area_diff = ifelse(Subbasin == 'Upper Skookumchuck',
+                               NA,
+                               fp_area_diff))
 
 fp_areas_edr <- fp_areas %>%
   left_join(., subbasin_names %>%
@@ -186,7 +210,7 @@ fp_areas_edr <- fp_areas %>%
   summarize(curr_area_fp = sum(Current, na.rm = T),
             hist_area_fp = sum(Floodplain, na.rm = T)) %>%
   mutate(fp_area_diff = hist_area_fp - curr_area_fp,
-         rank_fp = rank(fp_area_diff, ties.method = 'first'))
+         rank_fp = rank(-fp_area_diff, ties.method = 'min'))
 
 # Barriers ----
 
@@ -206,7 +230,7 @@ gsu_pass <- pass %>%
          pass_diff = ifelse(is.na(pass_diff), 0, pass_diff),
          pass_diff = ifelse(GSU == "Upper Skookumchuck", NA, pass_diff)) %>%
   ungroup() %>%
-  mutate(rank_pass = rank(pass_diff, ties.method = 'first'))
+  mutate(rank_pass = rank(-pass_diff, ties.method = 'min'))
 
 subbasin_pass <- pass %>%
   group_by(Subbasin_num, Scenario_num) %>%
@@ -220,7 +244,7 @@ subbasin_pass <- pass %>%
         pass_diff = ifelse(is.na(pass_diff), 0, pass_diff),
         pass_diff = ifelse(Subbasin == "Upper Skookumchuck", NA, pass_diff)) %>%
   ungroup() %>%
-  mutate(rank_pass = rank(pass_diff, ties.method = 'first'))
+  mutate(rank_pass = rank(-pass_diff, ties.method = 'min'))
 
 edr_pass <- pass %>%
   left_join(., subbasin_names %>%
@@ -234,7 +258,7 @@ edr_pass <- pass %>%
          pass_diff = ifelse(is.na(pass_diff), 0, pass_diff),
          pass_diff = ifelse(EcoRegion == "Upper Skookumchuck", NA, pass_diff)) %>%
   ungroup() %>%
-  mutate(rank_pass = rank(pass_diff, ties.method = 'first'))
+  mutate(rank_pass = rank(-pass_diff, ties.method = 'min'))
 
 
 #### BIP ----
@@ -260,19 +284,22 @@ bip <- flowline %>%
 bip_gsu <- bip %>%
   group_by(GSU) %>%
   summarize(BIP = mean(score, na.rm = TRUE)) %>%
-  mutate(rank_bip = rank(BIP, ties.method = 'first'))
+  mutate(rank_bip = rank(-BIP, ties.method = 'min'),
+         BIP = ifelse(GSU == 'Upper Skookumchuck',
+                      NA, 
+                      BIP))
 
 bip_subbasin <- bip %>%
   group_by(Subbasin_num) %>%
   summarize(BIP = mean(score, na.rm = TRUE)) %>%
-  mutate(rank_bip = rank(BIP, ties.method = 'first'))
+  mutate(rank_bip = rank(-BIP, ties.method = 'min'))
 
 bip_edr <- bip %>%
   left_join(., subbasin_names %>%
               select(Subbasin_num, EcoRegion)) %>%
   group_by(EcoRegion) %>%
   summarize(BIP = mean(score, na.rm = TRUE)) %>%
-  mutate(rank_bip = rank(BIP, ties.method = 'first'))
+  mutate(rank_bip = rank(-BIP, ties.method = 'min'))
 
 #### Fine sed ----
 
@@ -284,14 +311,17 @@ gsu_sed <- flowline %>%
   summarize(sed_current = mean(sed_current, na.rm = TRUE),
             sed_hist = mean(sed_hist, na.rm = TRUE)) %>%
   mutate(sed_diff = abs(sed_hist - sed_current),
-         rank_sed = rank(sed_diff, ties.method = 'first')) 
+         rank_sed = rank(-sed_diff, ties.method = 'min'),
+         sed_diff = ifelse(GSU == 'Upper Skookumchuck',
+                           NA, 
+                           sed_diff)) 
 
 subbasin_sed <- flowline %>%
   group_by(Subbasin_num) %>%
   summarize(sed_current = mean(sed_current, na.rm = TRUE),
             sed_hist = mean(sed_hist, na.rm = TRUE)) %>%
   mutate(sed_diff = abs(sed_hist - sed_current),
-         rank_sed = rank(sed_diff, ties.method = 'first')) %>%
+         rank_sed = rank(-sed_diff, ties.method = 'min')) %>%
   left_join(., subbasin_names %>%
               select(Subbasin_num, Subbasin, EcoRegion))
 
@@ -302,39 +332,39 @@ edr_sed <- flowline %>%
   summarize(sed_current = mean(sed_current, na.rm = TRUE),
             sed_hist = mean(sed_hist, na.rm = TRUE)) %>%
   mutate(sed_diff = abs(sed_hist - sed_current),
-         rank_sed = rank(sed_diff, ties.method = 'first')) 
+         rank_sed = rank(-sed_diff, ties.method = 'min')) 
 
 
 
 #### LR bank armoring ----
-bank_raw <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "LgRiver", full.names = T) %>% 
-  read.csv(.) %>%
-  mutate(source_hab = "LgRiver",
-         Habitat = case_when(HabUnit %in% c("Bank", "Bank-TM") ~ "Bank",
-                             HabUnit %in% c("Bank HM", "Bank HM-TM") ~ "HM_Bank",
-                             HabUnit %in% c("Bar-boulder", "Bar-boulder-TM") ~ "Bar_boulder",
-                             HabUnit %in% c("Bar-gravel", "Bar-gravel-TM") ~ "Bar_gravel",
-                             HabUnit %in% c("Bar-sand", "Bar-sand-TM") ~ "Bar_sand"),
-         Period = ifelse(Period == " Hist", 
-                         "Hist", 
-                         as.character(Period))) %>%
-  select(Length_m, Period, noaaid, Habitat) %>%
-  filter(Habitat %in% c('Bank', 'HM_Bank'))
-
-bank <- bank_raw %>%
-  filter(Period != 'Curr') %>%
-  mutate(Period = ifelse(Period == 'Both',
-                         'Hist',
-                         Period)) %>%
-  bind_rows(bank_raw %>%
-              filter(Period != 'Hist') %>%
-              mutate(Period = ifelse(Period == 'Both',
-                                     'Curr',
-                                     Period))) %>%
-  group_by(Period, noaaid, Habitat) %>%
-  summarize(Length_m = sum(Length_m, na.rm = T)) %>%
-  spread(Period, Length_m)
-  
+# bank_raw <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "LgRiver", full.names = T) %>% 
+#   read.csv(.) %>%
+#   mutate(source_hab = "LgRiver",
+#          Habitat = case_when(HabUnit %in% c("Bank", "Bank-TM") ~ "Bank",
+#                              HabUnit %in% c("Bank HM", "Bank HM-TM") ~ "HM_Bank",
+#                              HabUnit %in% c("Bar-boulder", "Bar-boulder-TM") ~ "Bar_boulder",
+#                              HabUnit %in% c("Bar-gravel", "Bar-gravel-TM") ~ "Bar_gravel",
+#                              HabUnit %in% c("Bar-sand", "Bar-sand-TM") ~ "Bar_sand"),
+#          Period = ifelse(Period == " Hist", 
+#                          "Hist", 
+#                          as.character(Period))) %>%
+#   select(Length_m, Period, noaaid, Habitat) %>%
+#   filter(Habitat %in% c('Bank', 'HM_Bank'))
+# 
+# bank <- bank_raw %>%
+#   filter(Period != 'Curr') %>%
+#   mutate(Period = ifelse(Period == 'Both',
+#                          'Hist',
+#                          Period)) %>%
+#   bind_rows(bank_raw %>%
+#               filter(Period != 'Hist') %>%
+#               mutate(Period = ifelse(Period == 'Both',
+#                                      'Curr',
+#                                      Period))) %>%
+#   group_by(Period, noaaid, Habitat) %>%
+#   summarize(Length_m = sum(Length_m, na.rm = T)) %>%
+#   spread(Period, Length_m)
+#   
   
   
 
