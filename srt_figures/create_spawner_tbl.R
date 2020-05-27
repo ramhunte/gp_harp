@@ -119,8 +119,7 @@ create_ranks_df <- function(filter_scenarios, file_path_list) {
     spatial_scale <- as.name('Subbasin')
     f <- flowline_subbasin
     df <- df %>%
-      rename(Subbasin = natal.basin) %>%
-      mutate(Subbasin = str_remove(Subbasin, 'Unnamed: '))
+      rename(Subbasin = natal.basin)
     
     select_cols <- c(spatial_scale, 'Subbasin_num', 'EcoRegion')
   }
@@ -151,7 +150,14 @@ create_ranks_df <- function(filter_scenarios, file_path_list) {
     select(species, !!spatial_scale, contains('Subbasin_num'), contains('EcoRegion'), length_km, scenario, Current_spawners, spawners, restoration_potential,
            rank_rest_potential, spawners_per_km, rank_spawner_per_km, perc_of_pop, rank_percent,
            restoration_potential_pn, rank_rest_potential_pn) %>%
-    arrange(species, rank_rest_potential)
+    arrange(species, rank_rest_potential) %>%
+    mutate(scenario = case_when(
+      scenario == 'Fine.sediment' ~ 'Fine sediment',
+      scenario == 'LR.bank' ~ 'Large river bank',
+      scenario == 'LR.length' ~ 'Large river length',
+      TRUE ~ as.character(scenario)
+    )) %>%
+    filter(!is.na(length_km))
   
   
   namekey <- c(species = 'Species', EcoRegion = 'EcoRegion', Subbasin = 'Subbasin', Subbasin_num = 'Subbasin number', 
@@ -226,14 +232,20 @@ paths_to_subs <- list.files('srt_figures/outputs_v13.1_w_Hist_future/',
 
 # tab - Rank Current and Historical EDR 
 spawners_edr_hist <- create_ranks_df('Historical', paths_to_edrs) %>% 
-  cleanup_hist_tab()
+  cleanup_hist_tab() %>%
+  select(-`Subbasin number`) %>%
+  distinct
 
 # tab - Rank diagnostic
-spawners_edr_diag <- create_ranks_df(run_scenarios_diag, paths_to_edrs)
+spawners_edr_diag <- create_ranks_df(run_scenarios_diag, paths_to_edrs)  %>%
+  select(-`Subbasin number`) %>%
+  distinct
 
 # tab - Rank ASRP
 spawners_edr_asrp <- create_ranks_df(run_scenarios_asrp, paths_to_edrs) %>%
-  cleanup_asrp_tab
+  cleanup_asrp_tab  %>%
+  select(-`Subbasin number`) %>%
+  distinct
 
 
 
@@ -245,14 +257,17 @@ spawners_edr_asrp <- create_ranks_df(run_scenarios_asrp, paths_to_edrs) %>%
 
 # tab - Rank Current and Historical EDR 
 spawners_sub_hist <- create_ranks_df('Historical', paths_to_subs) %>% 
-  cleanup_hist_tab()
+  cleanup_hist_tab() %>%
+  mutate(Subbasin = str_remove(Subbasin, 'Unnamed: '))
 
 # tab - Rank diagnostic
-spawners_sub_diag <- create_ranks_df(run_scenarios_diag, paths_to_subs)
+spawners_sub_diag <- create_ranks_df(run_scenarios_diag, paths_to_subs) %>%
+  mutate(Subbasin = str_remove(Subbasin, 'Unnamed: '))
 
 # tab - Rank ASRP
 spawners_sub_asrp <- create_ranks_df(run_scenarios_asrp, paths_to_subs) %>%
-  cleanup_asrp_tab
+  cleanup_asrp_tab %>%
+  mutate(Subbasin = str_remove(Subbasin, 'Unnamed: '))
 
 
 
