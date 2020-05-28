@@ -780,15 +780,20 @@ plot_spawners_per_km_asrp <- function(s) {
             lwd = 0.01) +
     facet_grid(climate~scenario, 
                switch = 'y', ) +
-    scale_fill_viridis_c(na.value = 'gray50',
+    # scale_fill_viridis_c(na.value = 'gray50',
+    #                      breaks = seq(0, upper_lim, length.out = 5),
+    #                      labels = c(seq(0, upper_lim, length.out = 5)[-5], 
+    #                                 paste0('>', upper_lim))) +
+    scale_fill_gradient2(low = 'red',
+                         mid = 'white',
+                         high = 'blue',
+                         midpoint = 0,
                          breaks = seq(0, upper_lim, length.out = 5),
                          labels = c(seq(0, upper_lim, length.out = 5)[-5], 
-                                    paste0('>', upper_lim))) +
-    # scale_fill_gradient2(low = 'red',
-    #                      mid = 'white',
-    #                      high = 'blue',
-    #                      midpoint = 0,
-    #                      label = label_comma()) +
+                                    paste0('>', upper_lim))
+                         # ,
+                         # label = label_comma()
+                         ) +
     theme(strip.text = element_text(size = 10),
           strip.text.y = element_text(angle = -90)) +
     labs(fill = 'Change in\nspawners\nper Km',
