@@ -59,8 +59,8 @@ asrp_lr_scenario <- lapply(scenario.nums, function(a) {
 
 asrp_lr <- asrp_lr_scenario %>%
   filter(case_when(
-    Scenario_num %in% c('LR_bank', 'Historical') ~ Period %in% c('Hist', 'Both'),
-    !Scenario_num %in% c('LR_bank', 'Historical') ~ Period %in% c("Curr", "Both"))) %>%
+    Scenario_num %in% c('Historical', 'LR') ~ Period %in% c('Hist', 'Both'),
+    !Scenario_num %in% c('LR', 'Historical') ~ Period %in% c("Curr", "Both"))) %>%
   left_join(., asrp_reach_data) %>%
   rename(width_s_2019 = width_s,
          width_w_2019 = width_w) %>%
@@ -91,11 +91,11 @@ asrp_lr <- asrp_lr_scenario %>%
                      1,
                      lr_mult),
     area_s = case_when(
-      Scenario_num %in% c('LR_length', 'Historical') ~ (Length_m * lr_mult * width_s) / 10000,
-      !Scenario_num %in% c('LR_length', 'Historical') ~ Length_m * width_s / 10000),
+      Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_s) / 10000,
+      !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_s / 10000),
     area_w = case_when(
-      Scenario_num %in% c('LR_length', 'Historical') ~ (Length_m * lr_mult * width_w) / 10000,
-      !Scenario_num %in% c('LR_length', 'Historical') ~ Length_m * width_w / 10000)) %>%
+      Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_w) / 10000,
+      !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_w / 10000)) %>%
   bind_rows(., asrp_bw) %>%
   left_join(., asrp_culvs) %>%
   mutate(
