@@ -15,6 +15,9 @@ if (dir.exists(out.path.compare) == F) {dir.create(out.path.compare, recursive =
 path_to_data <- file.path('outputs', fishtype, 'lcm') %>% 
   list.files( ., pattern = "raw.csv", full.names = T) 
 
+branch_spawners <- path_to_data %>%
+  read.csv(.)
+branch_scenarios <- unique(branch_spawners$scenario)
 
 # Bring file back from dev ----
 
@@ -77,7 +80,9 @@ labs_df <- df %>%
   bind_rows(df %>%
               group_by(scenario,version) %>%
               summarize(n = sum(spawners)) %>%
-              mutate(prcnt_diff = (n[version == branch] - n) / n,
+              mutate(prcnt_diff = ifelse(scenario %in% branch_scenarios,
+                                         (n[version == branch] - n) / n,
+                                         NA),
                      n = ifelse(abs(prcnt_diff) > 0, scales::percent(prcnt_diff), '0%')) %>%
               filter(version == 'dev') %>%
               mutate(version = 'percent diff')

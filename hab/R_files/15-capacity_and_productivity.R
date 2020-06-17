@@ -109,7 +109,7 @@ asrp_prod_step_1 <- asrp_cap %>%
                                   survival,
                                   0),
            survival.curr = sum(survival.curr, na.rm = T),
-           survival = ifelse(life.stage %in% c('summer', 'summer.2') & Scenario_num %in% c('Shade', 'LR_bank', 'LR_length')
+           survival = ifelse(life.stage %in% c('summer', 'summer.2') & Scenario_num %in% c('Shade', 'LR')
                              & Subbasin_num %in% mainstem.subs,
                              survival.curr + surv.adj,
                              survival)) %>%
