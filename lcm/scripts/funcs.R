@@ -20,13 +20,6 @@ geo.mean <- function(x){
   exp(mean(log(x)))
 }
 
-# Spawners to eggs function ----
-eggs.func <- function(NOR.total, egg.total, fecund){
-  num.eggs <- ifelse(NOR.total * fecund * 0.5 <= egg.total, 
-                     NOR.total * fecund * 0.5,
-                     egg.total)
-  num.eggs
-}
 
 
 # Beverton holt function ----
@@ -35,9 +28,9 @@ BH.func <- function(S, p, c){
   # S = parental state
   # p = productivity or survival
   # c = capacity
-  p[which(p == 0)] <- 0.001
+  #p[which(p == 0)] <- 0.001
   c[which(c == 0)] <- 1
-  S[which(S == 0)] <- 1
+  #S[which(S == 0)] <- 1
   recruits <- (S  * p) / (1 + (p / c) * S)
   recruits[recruits < 1] <- 0 # cleans up basins with less than 1 fish
   recruits
@@ -164,8 +157,7 @@ if (pop == "coho") {
     
     NOR.total <- mat['spawners', ]
     
-    eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Hockey stick
-    #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
+    eggs <- BH.func(S = NOR.total/2, p = fecund, c = egg.cap) # B-H
     pre.fry <- eggs * egg.fry.surv * egg.flow.dec()# Eggs --> freshly emerged fry
     
     # Spring distribution
@@ -233,8 +225,7 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
     NOR.total <- mat['spawners',]
     #NOR.total <- N["spawners",] # Run this line to be able to step through func
     
-    eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
-    #eggs <- BH.func(S = NOR.total, p = fecund/2, c = egg.cap) # B-H
+    eggs <- BH.func(S = NOR.total/2, p = fecund, c = egg.cap) # B-H
     pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
     # Natal fry - All basins
@@ -309,7 +300,8 @@ if (pop == "steelhead") {
     
     
     # 1st year
-    eggs <- eggs.func(NOR.total, egg.total = egg.cap.wt, fecund = fecund) # Hockey stick
+    eggs <- BH.func(S = NOR.total/2, p = fecund, c = egg.cap.wt) # B-H
+    
     pre.fry <- eggs*egg.fry.surv # Eggs --> freshly emerged fry
 
     parr <- BH.func(pre.fry, p = parr.surv, c = parr.cap)# summer parr
@@ -424,8 +416,8 @@ if (pop == 'chum') {
     NOR.total <- mat['spawners',]
     #NOR.total <- N["spawners",] # Run this line to be able to step through func
     
-    eggs <- eggs.func(NOR.total, egg.total = egg.cap, fecund = fecund) # Number of eggs in adults
-    # eggs <- BH.func(S = NOR.total * .5, p = fecund, c = egg.cap) # B-H
+    eggs <- BH.func(S = NOR.total/2, p = fecund, c = egg.cap) # B-H
+    
     pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
     fry <- BH.func(pre.fry, p = fry.colonization.surv, c = fry.colonization.cap)
