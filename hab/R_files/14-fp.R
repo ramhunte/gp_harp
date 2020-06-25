@@ -94,6 +94,7 @@ asrp_fp_precalc <- asrp_fp_precalc1 %>%
                      SC_pool = Area_orig * pool.perc.asrp,
                      SC_riffle = Area_orig * (1 - pool.perc.asrp)) %>%
               gather(Habitat, Area_new, SC_pool:SC_riffle) %>%
+              select(-Area_ha) %>%
               rename(Area_ha = Area_new)) %>% 
   filter(!Habitat == "Side_Channel") %>%
   mutate(summer = Area_ha,
