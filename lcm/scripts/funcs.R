@@ -277,22 +277,31 @@ if (pop == "fall.chinook" | pop == "spring.chinook") {
 if (pop == "steelhead") {
   subbasin <- function(mat = N, ...){
     
-    NOR.total <- mat['spawners', ]
+    
+    NOR.first.spawn <- colSums(mat[firstspawn.stages, ], na.rm = TRUE)
+    NOR.kelt <- colSums(mat[kelt.stages, ], na.rm = TRUE)
+    
     # NOR.total <- N.init
     # egg.cap.wt <- egg.cap
     # fecund <- fecund.first
     
     # Weighted fecundity
-    wts.firstspawn <- colSums(mat[firstspawn.stages, ]) / mat['total.run', ]
-    wts.respawn <- colSums(mat[kelt.stages, ]) / mat['total.run', ]
+    wts.firstspawn <- NOR.first.spawn / mat['total.run', ]
+    wts.respawn <-  NOR.kelt / mat['total.run', ]
     
     # Need this becuase of initialization. It says:
-    # If the firstspawn weight is NA, use the firstspawn fecundity, otherwise use weighted fecundity
+    # If the firstspawn weight is NA, use the firstspawn fecundity and assume 
+    # all spanwers are first time spawners
+    # otherwise use weighted fecundity
     if (all(is.na(wts.firstspawn))) {
       fecund <- fecund.first
+      NOR.total <- mat['spawners', ] * 0.5
+      
     } else {
       fecund <- fecund.first * wts.firstspawn + fecund.respawn * wts.respawn
       fecund[is.na(fecund)] <- 0
+      
+      NOR.total <- NOR.first.spawn * 0.5 + NOR.kelt # assume all kelts are female
     }
     
     # Weight egg cap by number of respawners
@@ -300,7 +309,7 @@ if (pop == "steelhead") {
     
     
     # 1st year
-    eggs <- BH.func(S = NOR.total/2, p = fecund, c = egg.cap.wt) # B-H
+    eggs <- BH.func(S = NOR.total, p = fecund, c = egg.cap.wt) # B-H
     
     pre.fry <- eggs*egg.fry.surv # Eggs --> freshly emerged fry
 
