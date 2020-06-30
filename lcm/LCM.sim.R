@@ -287,3 +287,4 @@ if (!branch %in% c('dev','master') & sensitivity.mode == 'no') {
   print('Compare current run to dev branch')
   source('lcm/scripts/compare.model.runs.R')
 }
+

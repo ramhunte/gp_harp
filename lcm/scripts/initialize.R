@@ -29,7 +29,7 @@ if (sensitivity.mode == 'yes') {
 
 
 # Subbasin/reach names ----
-reach.names <- read.csv("lcm/data/subbasin_names.csv") %>%
+reach.names <- read.csv("lcm/data/Subbasin_names.csv") %>%
   select(Subbasin) %>%
   mutate(Subbasin = as.character(Subbasin)) %>%
   unlist(use.names = FALSE)
@@ -235,7 +235,7 @@ ms.reaches <- reach.names[grep("Mainstem", reach.names)]
 trib.reaches <- subset(reach.names,!(reach.names %in% ms.reaches))
 
 if (pop %in% c('spring.chinook', 'fall.chinook')) {
-  gh.trib.reaches <- read.csv("lcm/data/subbasin_names.csv") %>%
+  gh.trib.reaches <- read.csv("lcm/data/Subbasin_names.csv") %>%
     filter(EcoRegion %in% c('Grays Harbor Tributaries', 'Olympic Mountains')) %>%
     select(Subbasin) %>%
     unlist(use.names = F) %>%
