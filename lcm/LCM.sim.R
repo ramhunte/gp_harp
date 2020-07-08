@@ -292,4 +292,6 @@ if (!branch %in% c('dev','master') & sensitivity.mode == 'no') {
   source('lcm/scripts/compare.model.runs.R')
 }
 
+if (!branch == 'temperature_paper') {
 source('temp_paper/compare_versions.R')
+}
