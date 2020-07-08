@@ -73,13 +73,31 @@ temp_func <- function(t = "temperature"){
   }
 }
 
-temp_func_high_food <- function(t = 'temperature'){
-  ifelse(t < 20,
+temp_func_high_food <- function(t) {
+  ifelse(t < 18,
          1,
-         ifelse(t >= 20 & t < 26,
-                -(1/6) * t + 4.33,
+         ifelse(t >= 18 & t < 28,
+                -(1/10) * t + 2.8,
                 0))
 }
+
+temp_func_high_food2 <- function(t) {
+  ifelse(t < 19,
+         1,
+         ifelse(t >= 19 & t < 28,
+                -(1/9) * t + 3.11,
+                0))
+}
+
+temp_func_high_food3 <- function(t) {
+  ifelse(t < 20,
+         1, 
+         ifelse(t >= 20 & t < 28,
+                -(1/8) * t + 3.5,
+                0))
+}
+
+
 
 
 calc_coho_imperv <- function(imperv) {
