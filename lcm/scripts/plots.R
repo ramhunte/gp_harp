@@ -11,7 +11,7 @@ plot.params <- read.csv("lcm/data/scenarios.csv") %>%
   select(scenario,scenario.label,color) %>%
   mutate_if(is.factor,as.character)
 
-subbasins <- read.csv('lcm/data/subbasin_names.csv')
+subbasins <- read.csv('lcm/data/Subbasin_names.csv')
 
 
 
@@ -195,13 +195,13 @@ if (sensitivity.mode == 'no') {
              aes(scenario.label, n, fill = scenario.label),
              color = 'black',
              stat = "summary", 
-             fun.y = "mean") +
+             fun = "mean") +
     geom_bar(data = spawners.diag %>% 
                mutate(base.spawn = mean(n[scenario.label == 'Current'])), 
              aes(scenario.label, base.spawn, fill = scenario.label),
              color = 'black',
              stat = "summary", 
-             fun.y = "mean",
+             fun = "mean",
              fill = 'grey',
              alpha = .6) +
     geom_text(data = label.df.diag, 
@@ -233,22 +233,22 @@ if (sensitivity.mode == 'no') {
              aes(year, n, fill = scenario.label.nm),
              color = 'black',
              stat = "summary", 
-             fun.y = "mean") +
+             fun = "mean") +
     geom_bar(data = spawners.asrp %>% filter(scenario.label.nm %in% c("Current", 'ASRP 2')), 
              aes(year, n, fill = scenario.label.nm),
              color = 'black',
              stat = "summary", 
-             fun.y = "mean") +
+             fun = "mean") +
     geom_bar(data = spawners.asrp %>% filter(scenario.label.nm %in% c("Current", 'ASRP 1')), 
              aes(year, n, fill = scenario.label.nm),
              color = 'black',
              stat = "summary", 
-             fun.y = "mean") +
+             fun = "mean") +
     geom_bar(data = spawners.asrp %>% filter(scenario.label.nm %in% c("Current", 'No action')), 
              aes(year, n, fill = scenario.label.nm),
              color = 'black',
              stat = "summary", 
-             fun.y = "mean") +
+             fun = "mean") +
     scale_x_discrete(drop = T) +
     scale_fill_manual(values = colors.asrp.stack, drop = F, name = "Scenario") +
     scale_y_continuous(labels = comma, 
