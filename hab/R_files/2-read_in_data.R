@@ -77,7 +77,8 @@ asrp_scenarios_raw <- read.csv('hab/Inputs/ASRP_scenarios.csv')
 
 # Scenarios.  Read in list of all scenarios ----
 scenarios <- read.csv('lcm/data/scenarios.csv') 
-  
+scenarios_high_food <- read.csv('hab/Inputs/scenarios_high_food.csv')
+    
 # Future impervious area ----
 fut_imperv <- read.csv('hab/Inputs/future_impervious.csv') %>%
   rename(mid_century_imperv = Mid.century.Added.Impervious.Area,

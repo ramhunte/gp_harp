@@ -107,6 +107,33 @@ if (sensitivity.mode == 'no') {
   
   write.csv(spawners.paper, paste0('temp_paper/spawners_figure/spawners_paper_', fishtype, '.csv'))
   
+  spawners.high.food <- spawners %>%
+    filter(scenario.label %in% c('Current conditions with high food 1', 'Current conditions with high food 2', 'Current conditions with high food 3')) %>%
+    group_by(scenario.label) %>%
+    summarize(n = mean(n, na.rm = T)) %>%
+    mutate(year = ifelse(scenario.label %in% c('Climate change only 2040', 'Riparian growth and climate change 2040', 
+                                               'Floodplain reconnection and climate change 2040', 'Combined scenario 2040'),
+                         'Mid-century',
+                         ifelse(scenario.label %in% c('Climate change only 2080', 'Riparian growth and climate change 2080', 
+                                                      'Floodplain reconnection and climate change 2080', 'Combined scenario 2080'),
+                                'Late-century',
+                                'current')),
+           scenario.label.nm = case_when(
+             scenario.label %in% c('Climate change only 2040', 'Climate change only 2080') ~ 'Climate Change',
+             scenario.label %in% c('Riparian growth and climate change 2040', 'Riparian growth and climate change 2080') ~ 'Riparian',
+             scenario.label %in% c('Floodplain reconnection and climate change 2040', 'Floodplain reconnection and climate change 2080') ~ 'Floodplain',
+             scenario.label %in% c('Combined scenario 2040', 'Combined scenario 2080') ~ 'Combined',
+             scenario.label == 'Current' ~ 'Current'),
+           spawners.change = n - n[scenario.label == 'Current'],
+           prcnt.change = ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']) * 100,
+           spawners.change = round(spawners.change, digits = 0))
+  spawners.paper$scenario.label.nm <- factor(spawners.paper$scenario.label.nm, levels = c('Current', 'Climate Change', 'Floodplain', 'Riparian',
+                                                                                          'Combined'))
+  spawners.paper$year <- factor(spawners.paper$year, levels = c('current', 'Mid-century', 'Late-century'))
+  spawners.paper %<>%
+    droplevels()
+  
+  
   
   colors.diag <- data.frame(scenario.label = levels(spawners.diag$scenario.label)) %>%
     mutate_if(is.factor,as.character) %>%

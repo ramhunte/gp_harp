@@ -134,11 +134,11 @@ asrp_ss_mvmt <- asrp_ss %>%
 
 if (run_single_action == 'no') {
   asrp_ss %<>%
-    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios, 'cc_only', 'rip_and_climate', 'fp_temp', 
+    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios, food_scenarios, 'cc_only', 'rip_and_climate', 'fp_temp', 
                                'rip_and_flp'))
 }
 
-rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year, edt_width)
+rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year)
 
 asrp_ss_spawn %<>%
   filter(slope < .03)

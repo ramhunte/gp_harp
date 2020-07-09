@@ -29,6 +29,9 @@ diag_scenarios <- scenarios %>%
   as.character() %>%
   gsub('\\.', '_', .) # replace . with _
 
+food_scenarios <- c('Current_high_food_1', 'Current_high_food_2', 'Current_high_food_3')
+  
+
 mainstem_reaches <- unique(grep("^Chehalis-", flowline$Reach, value = T))
 
 winter_pool_scalar_warm = .3
