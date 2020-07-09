@@ -1,0 +1,1639 @@
+"","scenario","natal.basin","spawners","fry.migrants","sub.yr","Pn","Cn"
+"1","Current","Upper Chehalis: Above Proposed Dam",333,62652,16114,2.29145850660666,590.848005411312
+"2","Current","Upper Chehalis: Proposed Dam to Elk Creek",15,6266,689,1.97672961703691,30.3573719260252
+"3","Current","Elk Creek",0,0,0,0,NA
+"4","Current","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"5","Current","South Fork Chehalis",1166,312258,54407,2.84913875780922,1796.56382063044
+"6","Current","Unnamed: Willapa Hills 2",10,5601,399,1.6905148447168,24.4819478922301
+"7","Current","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"8","Current","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"9","Current","Stearns Creek",0,0,0,0,NA
+"10","Current","Bunker Creek",0,0,0,0,NA
+"11","Current","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"12","Current","Newaukum River",1231,421116,56224,3.01778026053601,1841.07634184755
+"13","Current","Dillenbaugh Creek",2,275,109,0.75446682960795,NA
+"14","Current","Unnamed: Central Lowlands 8",1,44,32,0.478354034844284,NA
+"15","Current","Salzer Creek",0,0,0,0,NA
+"16","Current","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"17","Current","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"18","Current","Skookumchuck River",761,277170,34565,3.5855429586324,1055.3288942306
+"19","Current","Lincoln Creek",5,2078,226,1.17393973881507,33.7455876044285
+"20","Current","Unnamed: Central Lowlands 6",0,27,16,0.286029148567321,NA
+"21","Current","Unnamed: Black River 1",0,0,0,0,NA
+"22","Current","Scatter Creek",0,0,0,0,NA
+"23","Current","Black River",931,134540,45319,3.4183290816748,1315.97655552951
+"24","Current","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"25","Current","Garrard Creek",12,3040,540,1.70315591982747,29.0659161952934
+"26","Current","Unnamed: Black Hills 5",0,0,0,0,NA
+"27","Current","Unnamed: Central Lowlands 4",10,665,497,1.57407336736172,27.4193762827864
+"28","Current","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"29","Current","Cedar Creek",58,30319,2477,3.20785085545992,84.2698904034068
+"30","Current","Unnamed: Black Hills 4",0,0,0,0,NA
+"31","Current","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"32","Current","Porter Creek",21,9552,918,2.3088966723578,37.0440472066991
+"33","Current","Unnamed: Black Hills 3",0,0,0,0,NA
+"34","Current","Mox Chehalis Creek",154,57940,6897,4.18627375549365,202.332319134374
+"35","Current","Unnamed: Black Hills 2",0,0,0,0,NA
+"36","Current","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"37","Current","Cloquallum Creek",223,66777,10313,2.85371652489004,343.298868249679
+"38","Current","Unnamed: Black Hills 1",0,0,0,0,NA
+"39","Current","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"40","Current","Satsop River",7966,2992872,360484,3.74322595555403,10869.8803689764
+"41","Current","Unnamed: Olympic Mountains 1",0,0,0,0.488422335042612,NA
+"42","Current","Wynoochee River",5730,2744465,259099,4.45747723669226,7387.27772237825
+"43","Current","Wishkah River",244,9952,12494,1.31471225920869,1019.31139274177
+"44","Current","Hoquiam River",390,88284,18918,2.7378356078659,614.417084236712
+"45","Current","Humptulips River",4983,1904950,223213,3.97503345865085,6657.93914581376
+"46","Current","Johns River",26,4601,1234,1.79083339055948,58.8767099497482
+"47","Current","Elk River",8,1906,375,1.28163847707494,36.405209696796
+"48","Current","Andrews",6,1461,260,1.06460149054811,98.8771139658423
+"49","Current","Upper Chehalis Estuary",0,0,0,0,NA
+"50","Current","Lower Chehalis Estuary",0,0,0,0,NA
+"51","Current","Upper Skookumchuck",0,0,0,0,NA
+"52","Current","Mainstem: Upper Chehalis 1",194,10993,9706,1.4626686600444,613.306550786009
+"53","Current","Mainstem: Upper Chehalis 2",164,32867,7826,2.39870857012697,281.251015331315
+"54","Current","Mainstem: Middle Chehalis 1",371,62257,17930,2.23975894636616,670.251722350893
+"55","Current","Mainstem: Middle Chehalis 2",138,3001,6979,1.18389529609502,888.427025217099
+"56","Current","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"57","Current","Mainstem: Lower Chehalis 1",625,135013,29692,2.49862012001287,1042.05031959309
+"58","Current","Mainstem: Lower Chehalis 2",1204,465715,53852,3.29628928466558,1728.32418164393
+"59","Current","Mainstem: Lower Chehalis 3",1361,694320,58130,4.10409440528202,1799.45315969904
+"60","Current","Mainstem: Lower Chehalis 4",680,136190,32465,2.3087887548069,1199.56436629097
+"61","Current","Mainstem: Lower Chehalis 5",998,393386,44484,5.75849298506153,1207.73026610169
+"62","Current","Mainstem: Lower Chehalis 6",863,126106,41982,2.02498593948066,1704.9627692037
+"63","Current","Mainstem: Lower Chehalis 7",556,27069,27942,2.99862366225596,834.191442691322
+"64","Barriers","Upper Chehalis: Above Proposed Dam",333,62636,16111,2.2914383423138,590.852031405062
+"65","Barriers","Upper Chehalis: Proposed Dam to Elk Creek",15,6265,688,1.97671302088728,30.3576328760044
+"66","Barriers","Elk Creek",0,0,0,0,NA
+"67","Barriers","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"68","Barriers","South Fork Chehalis",1166,312174,54396,2.84910554786641,1796.5751455591
+"69","Barriers","Unnamed: Willapa Hills 2",10,5600,399,1.69049892847808,24.4822817061293
+"70","Barriers","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"71","Barriers","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"72","Barriers","Stearns Creek",0,0,0,0,NA
+"73","Barriers","Bunker Creek",0,0,0,0,NA
+"74","Barriers","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"75","Barriers","Newaukum River",1238,421545,56304,3.01366094017887,1852.80062273544
+"76","Barriers","Dillenbaugh Creek",4,972,170,0.979010011801014,NA
+"77","Barriers","Unnamed: Central Lowlands 8",1,44,32,0.478348660617068,NA
+"78","Barriers","Salzer Creek",0,0,0,0,NA
+"79","Barriers","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"80","Barriers","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"81","Barriers","Skookumchuck River",757,267749,34241,3.51245047542626,1058.29947133448
+"82","Barriers","Lincoln Creek",5,2078,226,1.17392348063987,33.748274710263
+"83","Barriers","Unnamed: Central Lowlands 6",0,27,16,0.286024853915828,NA
+"84","Barriers","Unnamed: Black River 1",0,0,0,0,NA
+"85","Barriers","Scatter Creek",0,0,0,0,NA
+"86","Barriers","Black River",930,134490,45300,3.41824738415865,1314.57603886691
+"87","Barriers","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"88","Barriers","Garrard Creek",12,3038,539,1.70311668431364,29.066868512321
+"89","Barriers","Unnamed: Black Hills 5",0,0,0,0,NA
+"90","Barriers","Unnamed: Central Lowlands 4",25,3332,1224,1.87801597543499,53.4732860214923
+"91","Barriers","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"92","Barriers","Cedar Creek",58,30305,2476,3.2077891847751,84.2706242063181
+"93","Barriers","Unnamed: Black Hills 4",0,0,0,0,NA
+"94","Barriers","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"95","Barriers","Porter Creek",21,9547,917,2.30886546327064,37.0444297670782
+"96","Barriers","Unnamed: Black Hills 3",0,0,0,0,NA
+"97","Barriers","Mox Chehalis Creek",154,57922,6894,4.18621986190117,202.333136655582
+"98","Barriers","Unnamed: Black Hills 2",0,0,0,0,NA
+"99","Barriers","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"100","Barriers","Cloquallum Creek",223,66865,10313,2.85560251709875,343.17659921515
+"101","Barriers","Unnamed: Black Hills 1",0,0,0,0,NA
+"102","Barriers","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"103","Barriers","Satsop River",8058,3036738,361657,3.76303683138032,10974.356346931
+"104","Barriers","Unnamed: Olympic Mountains 1",0,0,0,0.488418650932098,NA
+"105","Barriers","Wynoochee River",6274,3257027,266949,4.85519876172461,7901.41284892749
+"106","Barriers","Wishkah River",346,21856,17293,1.48584723329922,1058.15801240739
+"107","Barriers","Hoquiam River",412,97573,19430,2.85000614568381,634.701962888731
+"108","Barriers","Humptulips River",4983,1904950,223213,3.97503345865085,6657.93914581376
+"109","Barriers","Johns River",26,4601,1234,1.79083339055948,58.8767099497482
+"110","Barriers","Elk River",8,1906,375,1.28163847707494,36.405209696796
+"111","Barriers","Andrews",6,1461,260,1.06460149054811,98.8771139658423
+"112","Barriers","Upper Chehalis Estuary",0,0,0,0,NA
+"113","Barriers","Lower Chehalis Estuary",0,0,0,0,NA
+"114","Barriers","Upper Skookumchuck",0,0,0,0,NA
+"115","Barriers","Mainstem: Upper Chehalis 1",194,10993,9706,1.4626686600444,613.306550786009
+"116","Barriers","Mainstem: Upper Chehalis 2",164,32867,7826,2.39870857012697,281.251015331315
+"117","Barriers","Mainstem: Middle Chehalis 1",371,62257,17930,2.23975894636616,670.251722350893
+"118","Barriers","Mainstem: Middle Chehalis 2",138,3000,6979,1.18389529609502,888.427025217099
+"119","Barriers","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"120","Barriers","Mainstem: Lower Chehalis 1",625,135032,29695,2.49863248320552,1042.04687907415
+"121","Barriers","Mainstem: Lower Chehalis 2",1204,465762,53856,3.29630339745351,1728.32095921435
+"122","Barriers","Mainstem: Lower Chehalis 3",1362,694380,58135,4.10411277182576,1800.77271868538
+"123","Barriers","Mainstem: Lower Chehalis 4",679,136080,32447,2.30869456667025,1197.83763965461
+"124","Barriers","Mainstem: Lower Chehalis 5",997,393300,44469,5.75827432551636,1206.52974372528
+"125","Barriers","Mainstem: Lower Chehalis 6",862,126021,41963,2.02492955589015,1703.03341058533
+"126","Barriers","Mainstem: Lower Chehalis 7",555,27032,27903,2.99857700935909,832.697580529049
+"127","Fine.sediment","Upper Chehalis: Above Proposed Dam",629,416581,25498,5.28677037113788,775.730509344506
+"128","Fine.sediment","Upper Chehalis: Proposed Dam to Elk Creek",24,23890,837,2.9063571221262,36.5894564672291
+"129","Fine.sediment","Elk Creek",0,0,0,0,NA
+"130","Fine.sediment","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"131","Fine.sediment","South Fork Chehalis",1827,1237697,72973,5.57474338884392,2226.36666271935
+"132","Fine.sediment","Unnamed: Willapa Hills 2",12,10609,424,1.98413190898812,24.1934873672965
+"133","Fine.sediment","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"134","Fine.sediment","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"135","Fine.sediment","Stearns Creek",0,0,0,0,NA
+"136","Fine.sediment","Bunker Creek",0,0,0,0,NA
+"137","Fine.sediment","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"138","Fine.sediment","Newaukum River",1726,1212566,68617,5.02840305365857,2154.45762378034
+"139","Fine.sediment","Dillenbaugh Creek",2,507,132,0.82091499645247,NA
+"140","Fine.sediment","Unnamed: Central Lowlands 8",1,310,65,0.57415338977192,NA
+"141","Fine.sediment","Salzer Creek",0,0,0,0,NA
+"142","Fine.sediment","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"143","Fine.sediment","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"144","Fine.sediment","Skookumchuck River",809,364637,35556,4.17766406699093,1063.58952958677
+"145","Fine.sediment","Lincoln Creek",6,4317,252,1.36946760142583,22.2395835977097
+"146","Fine.sediment","Unnamed: Central Lowlands 6",1,87,24,0.319130720498077,NA
+"147","Fine.sediment","Unnamed: Black River 1",0,0,0,0,NA
+"148","Fine.sediment","Scatter Creek",0,0,0,0,NA
+"149","Fine.sediment","Black River",1266,331514,59181,5.24733743510984,1564.0690890097
+"150","Fine.sediment","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"151","Fine.sediment","Garrard Creek",16,8505,674,2.27429653934543,28.5559471488628
+"152","Fine.sediment","Unnamed: Black Hills 5",0,0,0,0,NA
+"153","Fine.sediment","Unnamed: Central Lowlands 4",12,1194,608,1.87431034576187,25.7251035152092
+"154","Fine.sediment","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"155","Fine.sediment","Cedar Creek",81,81868,2789,4.78661177442497,102.391155160685
+"156","Fine.sediment","Unnamed: Black Hills 4",0,0,0,0,NA
+"157","Fine.sediment","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"158","Fine.sediment","Porter Creek",28,24357,1041,3.09556459193155,41.3615542597957
+"159","Fine.sediment","Unnamed: Black Hills 3",0,0,0,0,NA
+"160","Fine.sediment","Mox Chehalis Creek",190,121392,7713,6.210709233463,226.463366403143
+"161","Fine.sediment","Unnamed: Black Hills 2",0,0,0,0,NA
+"162","Fine.sediment","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"163","Fine.sediment","Cloquallum Creek",322,216541,12909,4.9544927419605,403.426372738862
+"164","Fine.sediment","Unnamed: Black Hills 1",0,0,0,0,NA
+"165","Fine.sediment","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"166","Fine.sediment","Satsop River",10522,7473952,418441,6.14233074056348,12568.1538805742
+"167","Fine.sediment","Unnamed: Olympic Mountains 1",0,0,0,0.487934670543033,NA
+"168","Fine.sediment","Wynoochee River",6900,4984452,284453,6.21286925194648,8223.64724041823
+"169","Fine.sediment","Wishkah River",523,66486,26049,1.93433737829661,1082.75497946307
+"170","Fine.sediment","Hoquiam River",540,254562,24041,4.49319738142247,694.586168783885
+"171","Fine.sediment","Humptulips River",5810,3159973,244871,5.21079852744631,7189.78579647779
+"172","Fine.sediment","Johns River",36,14006,1627,2.55538360161926,59.1454156791428
+"173","Fine.sediment","Elk River",10,4091,444,1.51643095467496,29.3636727416815
+"174","Fine.sediment","Andrews",8,4472,322,1.33011302799652,32.2341238349564
+"175","Fine.sediment","Upper Chehalis Estuary",0,0,0,0,NA
+"176","Fine.sediment","Lower Chehalis Estuary",0,0,0,0,NA
+"177","Fine.sediment","Upper Skookumchuck",0,0,0,0,NA
+"178","Fine.sediment","Mainstem: Upper Chehalis 1",436,95828,20692,2.66629016131331,697.659109633318
+"179","Fine.sediment","Mainstem: Upper Chehalis 2",252,132953,10692,4.42523931874736,325.571501594276
+"180","Fine.sediment","Mainstem: Middle Chehalis 1",591,259878,25892,4.11202133508298,780.908723740881
+"181","Fine.sediment","Mainstem: Middle Chehalis 2",494,57910,24283,1.87097648020841,1061.17949476867
+"182","Fine.sediment","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"183","Fine.sediment","Mainstem: Lower Chehalis 1",864,357587,38273,3.77873684943677,1174.93264559223
+"184","Fine.sediment","Mainstem: Lower Chehalis 2",1575,1087094,62598,5.00502752266672,1968.25572448284
+"185","Fine.sediment","Mainstem: Lower Chehalis 3",1750,1495508,64821,6.15130092506506,2089.72000965521
+"186","Fine.sediment","Mainstem: Lower Chehalis 4",889,320312,40126,3.23269691039585,1287.17316710596
+"187","Fine.sediment","Mainstem: Lower Chehalis 5",1204,740198,49346,8.4220931659824,1366.2183894859
+"188","Fine.sediment","Mainstem: Lower Chehalis 6",1183,324876,55078,2.81544333784168,1834.63146397421
+"189","Fine.sediment","Mainstem: Lower Chehalis 7",966,109080,47512,5.10529462574329,1201.30588863037
+"190","Wood","Upper Chehalis: Above Proposed Dam",418,88667,20218,2.52988361735257,691.223397687818
+"191","Wood","Upper Chehalis: Proposed Dam to Elk Creek",21,10795,881,2.41879355690441,35.8013077010434
+"192","Wood","Elk Creek",0,0,0,0,NA
+"193","Wood","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"194","Wood","South Fork Chehalis",1491,436671,68957,3.16292611274742,2180.34393607467
+"195","Wood","Unnamed: Willapa Hills 2",15,11175,558,2.20366563320363,27.4619326050512
+"196","Wood","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"197","Wood","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"198","Wood","Stearns Creek",0,0,0,0,NA
+"199","Wood","Bunker Creek",0,0,0,0,NA
+"200","Wood","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"201","Wood","Newaukum River",1697,718241,75395,3.61557614103021,2345.80542889934
+"202","Wood","Dillenbaugh Creek",4,1130,210,1.0117821568201,343.496414881756
+"203","Wood","Unnamed: Central Lowlands 8",2,688,103,0.724454104469768,NA
+"204","Wood","Salzer Creek",0,0,0,0,NA
+"205","Wood","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"206","Wood","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"207","Wood","Skookumchuck River",976,378687,44167,3.96523099374546,1305.14805020542
+"208","Wood","Lincoln Creek",7,3978,300,1.46415359808345,22.0812145567844
+"209","Wood","Unnamed: Central Lowlands 6",1,378,47,0.441354246447699,NA
+"210","Wood","Unnamed: Black River 1",0,0,0,0,NA
+"211","Wood","Scatter Creek",0,0,0,0,NA
+"212","Wood","Black River",1553,351030,73544,4.27920057246351,2026.59103710857
+"213","Wood","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"214","Wood","Garrard Creek",18,7535,804,2.27460678804902,32.1220023059439
+"215","Wood","Unnamed: Black Hills 5",0,0,0,0,NA
+"216","Wood","Unnamed: Central Lowlands 4",25,6997,1183,2.85693990316468,38.4630097384379
+"217","Wood","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"218","Wood","Cedar Creek",94,64569,3756,4.46192923839661,121.152490281268
+"219","Wood","Unnamed: Black Hills 4",0,0,0,0,NA
+"220","Wood","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"221","Wood","Porter Creek",36,22545,1476,3.34755127395882,51.335128309803
+"222","Wood","Unnamed: Black Hills 3",0,0,0,0,NA
+"223","Wood","Mox Chehalis Creek",193,84993,8460,4.63636372092872,246.07499876572
+"224","Wood","Unnamed: Black Hills 2",0,0,0,0,NA
+"225","Wood","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"226","Wood","Cloquallum Creek",330,128104,14748,3.60096738824323,456.875869913498
+"227","Wood","Unnamed: Black Hills 1",0,0,0,0,NA
+"228","Wood","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"229","Wood","Satsop River",9932,4150913,445305,4.19617357464695,13039.4657768226
+"230","Wood","Unnamed: Olympic Mountains 1",0,0,0,0.6892204826873,NA
+"231","Wood","Wynoochee River",7049,3573429,315482,4.89392181503524,8859.25719951088
+"232","Wood","Wishkah River",671,71023,33858,1.91298514112871,1405.95172021141
+"233","Wood","Hoquiam River",627,209928,29528,3.74689391471041,855.257813904729
+"234","Wood","Humptulips River",6328,2835629,276626,4.59736724185267,8087.06421962664
+"235","Wood","Johns River",51,14100,2391,2.79219047073136,79.4567967707069
+"236","Wood","Elk River",17,6595,742,2.15028171635916,31.7789882758529
+"237","Wood","Andrews",12,5487,510,1.7840777953602,27.3046037918817
+"238","Wood","Upper Chehalis Estuary",0,0,0,0,NA
+"239","Wood","Lower Chehalis Estuary",0,0,0,0,NA
+"240","Wood","Upper Skookumchuck",0,0,0,0,NA
+"241","Wood","Mainstem: Upper Chehalis 1",273,18775,13625,1.59719937432086,730.133767613966
+"242","Wood","Mainstem: Upper Chehalis 2",207,45069,9819,2.64184279554851,333.07784409155
+"243","Wood","Mainstem: Middle Chehalis 1",486,90155,23354,2.481136301854,814.12645223242
+"244","Wood","Mainstem: Middle Chehalis 2",249,8326,12568,1.2944493781251,1094.64620779811
+"245","Wood","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"246","Wood","Mainstem: Lower Chehalis 1",826,195944,38946,2.79306948715277,1286.66257103712
+"247","Wood","Mainstem: Lower Chehalis 2",1461,596865,64806,3.59542083856212,2023.91449089598
+"248","Wood","Mainstem: Lower Chehalis 3",1631,873282,68953,4.47356024023634,2100.54706042151
+"249","Wood","Mainstem: Lower Chehalis 4",802,171359,38123,2.49140597559645,1339.74761072635
+"250","Wood","Mainstem: Lower Chehalis 5",1201,519532,52817,6.28105959068421,1428.41648326002
+"251","Wood","Mainstem: Lower Chehalis 6",1110,179982,53736,2.23807412213347,2006.55375244192
+"252","Wood","Mainstem: Lower Chehalis 7",755,42528,37863,3.3213772304407,1080.23796223187
+"253","Shade","Upper Chehalis: Above Proposed Dam",359,69020,17308,2.40483213360619,614.546546389461
+"254","Shade","Upper Chehalis: Proposed Dam to Elk Creek",16,6718,727,2.06978349180646,30.9562973466548
+"255","Shade","Elk Creek",0,0,0,0,NA
+"256","Shade","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"257","Shade","South Fork Chehalis",1255,341035,58486,3.01532928014526,1877.72702151658
+"258","Shade","Unnamed: Willapa Hills 2",10,5919,420,1.7730169289218,22.9363272987409
+"259","Shade","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"260","Shade","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"261","Shade","Stearns Creek",0,0,0,0,NA
+"262","Shade","Bunker Creek",0,0,0,0,NA
+"263","Shade","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"264","Shade","Newaukum River",1326,461847,60426,3.19774085232402,1929.34684073321
+"265","Shade","Dillenbaugh Creek",2,342,125,0.798107392779292,NA
+"266","Shade","Unnamed: Central Lowlands 8",1,62,39,0.504462407627038,NA
+"267","Shade","Salzer Creek",0,0,0,0,NA
+"268","Shade","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"269","Shade","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"270","Shade","Skookumchuck River",800,292269,36294,3.75890806681968,1089.96979262241
+"271","Shade","Lincoln Creek",5,2196,236,1.21763506008985,27.9742395271042
+"272","Shade","Unnamed: Central Lowlands 6",0,32,18,0.295005293370007,NA
+"273","Shade","Unnamed: Black River 1",0,0,0,0,NA
+"274","Shade","Scatter Creek",0,0,0,0,NA
+"275","Shade","Black River",971,139607,47306,3.55864480465908,1350.49777094182
+"276","Shade","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"277","Shade","Garrard Creek",12,3249,567,1.77106169406665,27.5629570141279
+"278","Shade","Unnamed: Black Hills 5",0,0,0,0,NA
+"279","Shade","Unnamed: Central Lowlands 4",10,693,516,1.62401883716699,26.0251572619176
+"280","Shade","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"281","Shade","Cedar Creek",60,31558,2558,3.32138103549304,85.846683109159
+"282","Shade","Unnamed: Black Hills 4",0,0,0,0,NA
+"283","Shade","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"284","Shade","Porter Creek",22,9902,944,2.37887864983459,37.9549935758589
+"285","Shade","Unnamed: Black Hills 3",0,0,0,0,NA
+"286","Shade","Mox Chehalis Creek",157,59219,7065,4.30712253760097,204.473293842293
+"287","Shade","Unnamed: Black Hills 2",0,0,0,0,NA
+"288","Shade","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"289","Shade","Cloquallum Creek",231,69607,10648,2.94275542030104,349.903284266326
+"290","Shade","Unnamed: Black Hills 1",0,0,0,0,NA
+"291","Shade","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"292","Shade","Satsop River",8129,3061341,367782,3.82961824325991,11001.8256963154
+"293","Shade","Unnamed: Olympic Mountains 1",0,0,0,0.498742574952976,NA
+"294","Shade","Wynoochee River",5730,2744465,259099,4.45747723669226,7387.27772237825
+"295","Shade","Wishkah River",244,9952,12494,1.31471225920869,1019.31139274177
+"296","Shade","Hoquiam River",390,88284,18918,2.7378356078659,614.417084236712
+"297","Shade","Humptulips River",4983,1904950,223213,3.97503345865085,6657.93914581376
+"298","Shade","Johns River",26,4601,1234,1.79083339055948,58.8767099497482
+"299","Shade","Elk River",8,1906,375,1.28163847707494,36.405209696796
+"300","Shade","Andrews",6,1461,260,1.06460149054811,98.8771139658423
+"301","Shade","Upper Chehalis Estuary",0,0,0,0,NA
+"302","Shade","Lower Chehalis Estuary",0,0,0,0,NA
+"303","Shade","Upper Skookumchuck",0,0,0,0,NA
+"304","Shade","Mainstem: Upper Chehalis 1",206,12161,10321,1.49533263780034,621.882145208113
+"305","Shade","Mainstem: Upper Chehalis 2",168,33971,8022,2.44323567696599,284.405104641796
+"306","Shade","Mainstem: Middle Chehalis 1",394,67331,19016,2.32865735380775,690.539961089931
+"307","Shade","Mainstem: Middle Chehalis 2",193,5534,9778,1.25693992405814,944.148349978998
+"308","Shade","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"309","Shade","Mainstem: Lower Chehalis 1",710,157775,33683,2.74324555988233,1117.28628045261
+"310","Shade","Mainstem: Lower Chehalis 2",1282,502162,57247,3.4824363172478,1798.42815209105
+"311","Shade","Mainstem: Lower Chehalis 3",1422,728753,60681,4.28479799707071,1854.90333264575
+"312","Shade","Mainstem: Lower Chehalis 4",721,148057,34386,2.40572670243235,1233.90197358593
+"313","Shade","Mainstem: Lower Chehalis 5",1042,405583,46554,6.05680862052927,1248.05881657648
+"314","Shade","Mainstem: Lower Chehalis 6",942,143361,45731,2.13305359541208,1773.38167851398
+"315","Shade","Mainstem: Lower Chehalis 7",585,28402,29400,3.12931167677582,859.736670249139
+"316","LR","Upper Chehalis: Above Proposed Dam",338,63458,16329,2.29351547319223,599.303406882222
+"317","LR","Upper Chehalis: Proposed Dam to Elk Creek",16,6442,710,1.9977843958716,32.0355283828862
+"318","LR","Elk Creek",0,0,0,0,NA
+"319","LR","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"320","LR","South Fork Chehalis",1197,318732,55876,2.85150206005634,1843.50211621346
+"321","LR","Unnamed: Willapa Hills 2",10,5624,400,1.69179808322759,24.4550848613874
+"322","LR","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"323","LR","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"324","LR","Stearns Creek",0,0,0,0,NA
+"325","LR","Bunker Creek",0,0,0,0,NA
+"326","LR","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"327","LR","Newaukum River",1248,426704,56975,3.02009271347379,1865.79342684421
+"328","LR","Dillenbaugh Creek",2,279,110,0.754989743308871,NA
+"329","LR","Unnamed: Central Lowlands 8",1,45,32,0.478670004838047,NA
+"330","LR","Salzer Creek",0,0,0,0,NA
+"331","LR","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"332","LR","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"333","LR","Skookumchuck River",980,323523,45043,3.59977896708688,1356.95512288036
+"334","LR","Lincoln Creek",5,2086,226,1.17483562162094,33.5982910899038
+"335","LR","Unnamed: Central Lowlands 6",0,27,16,0.286154925519145,NA
+"336","LR","Unnamed: Black River 1",0,0,0,0,NA
+"337","LR","Scatter Creek",0,0,0,0,NA
+"338","LR","Black River",937,134459,45638,3.42003789553513,1324.18401960925
+"339","LR","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"340","LR","Garrard Creek",12,3177,570,1.73641494662555,28.2951608396695
+"341","LR","Unnamed: Black Hills 5",0,0,0,0,NA
+"342","LR","Unnamed: Central Lowlands 4",10,666,497,1.57470084529897,27.4003572150616
+"343","LR","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"344","LR","Cedar Creek",58,30358,2480,3.20930715430092,84.2525742005089
+"345","LR","Unnamed: Black Hills 4",0,0,0,0,NA
+"346","LR","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"347","LR","Porter Creek",21,9575,920,2.31011572206315,37.029118379657
+"348","LR","Unnamed: Black Hills 3",0,0,0,0,NA
+"349","LR","Mox Chehalis Creek",156,58380,7013,4.18797647522331,204.933861718372
+"350","LR","Unnamed: Black Hills 2",0,0,0,0,NA
+"351","LR","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"352","LR","Cloquallum Creek",225,67243,10387,2.85572075091501,346.246690747548
+"353","LR","Unnamed: Black Hills 1",0,0,0,0,NA
+"354","LR","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"355","LR","Satsop River",8207,3059739,371779,3.74340503975595,11198.5378447836
+"356","LR","Unnamed: Olympic Mountains 1",0,0,0,0.488544619956922,NA
+"357","LR","Wynoochee River",6186,2900980,280727,4.45805057449562,7974.86915235537
+"358","LR","Wishkah River",267,10659,13670,1.31485324322541,1115.01413275852
+"359","LR","Hoquiam River",390,88353,18940,2.73787320462501,614.412229247848
+"360","LR","Humptulips River",5223,1968745,234428,3.97528745455847,6978.46063355922
+"361","LR","Johns River",26,4601,1234,1.79083339055948,58.8767099497482
+"362","LR","Elk River",8,1906,375,1.28163847707494,36.405209696796
+"363","LR","Andrews",6,1461,260,1.06460149054811,98.8771139658423
+"364","LR","Upper Chehalis Estuary",0,0,0,0,NA
+"365","LR","Lower Chehalis Estuary",0,0,0,0,NA
+"366","LR","Upper Skookumchuck",0,0,0,0,NA
+"367","LR","Mainstem: Upper Chehalis 1",197,11117,9862,1.4630394462859,622.449714014997
+"368","LR","Mainstem: Upper Chehalis 2",173,34256,8267,2.40481326531387,296.148039865176
+"369","LR","Mainstem: Middle Chehalis 1",404,65968,19528,2.24708893585272,727.954441728534
+"370","LR","Mainstem: Middle Chehalis 2",153,3263,7750,1.18482787930191,980.797194762382
+"371","LR","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"372","LR","Mainstem: Lower Chehalis 1",714,145955,34052,2.49997249771426,1190.00872755202
+"373","LR","Mainstem: Lower Chehalis 2",1580,581342,71143,3.31387016472212,2262.83865883622
+"374","LR","Mainstem: Lower Chehalis 3",1455,731881,62295,4.11163618947608,1922.59965220902
+"375","LR","Mainstem: Lower Chehalis 4",708,140955,33847,2.31082579304724,1248.11753793319
+"376","LR","Mainstem: Lower Chehalis 5",1015,394325,45340,5.76216826124368,1228.13820602696
+"377","LR","Mainstem: Lower Chehalis 6",916,132711,44604,2.02801407424877,1807.03838453707
+"378","LR","Mainstem: Lower Chehalis 7",564,26575,28379,3.00065825936438,845.907215967601
+"379","Beaver","Upper Chehalis: Above Proposed Dam",340,63811,16439,2.30104078664854,601.329240012401
+"380","Beaver","Upper Chehalis: Proposed Dam to Elk Creek",27,10583,1193,2.45217597761951,45.5927879376299
+"381","Beaver","Elk Creek",0,0,0,0,NA
+"382","Beaver","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"383","Beaver","South Fork Chehalis",1163,310568,54291,2.84672464495154,1792.76362132781
+"384","Beaver","Unnamed: Willapa Hills 2",17,8603,750,2.4024069410765,29.1220164433518
+"385","Beaver","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"386","Beaver","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"387","Beaver","Stearns Creek",0,0,0,0,NA
+"388","Beaver","Bunker Creek",0,0,0,0,NA
+"389","Beaver","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"390","Beaver","Newaukum River",1336,450409,61078,3.04844099102881,1988.20331259286
+"391","Beaver","Dillenbaugh Creek",4,675,254,1.09816768684687,44.7466054103892
+"392","Beaver","Unnamed: Central Lowlands 8",2,159,105,0.830873430595354,NA
+"393","Beaver","Salzer Creek",0,0,0,0,NA
+"394","Beaver","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"395","Beaver","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"396","Beaver","Skookumchuck River",764,277681,34657,3.59119002115928,1058.84522314508
+"397","Beaver","Lincoln Creek",7,2651,292,1.36164699071125,26.3558917391603
+"398","Beaver","Unnamed: Central Lowlands 6",1,64,32,0.392595145775291,NA
+"399","Beaver","Unnamed: Black River 1",0,0,0,0,NA
+"400","Beaver","Scatter Creek",0,0,0,0,NA
+"401","Beaver","Black River",898,122660,43853,3.37384503695611,1276.28922529479
+"402","Beaver","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"403","Beaver","Garrard Creek",15,3904,707,1.9048827229071,31.5767337802736
+"404","Beaver","Unnamed: Black Hills 5",0,0,0,0,NA
+"405","Beaver","Unnamed: Central Lowlands 4",9,546,466,1.53645415358947,25.7768297435671
+"406","Beaver","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"407","Beaver","Cedar Creek",87,45810,3715,3.69534967019714,119.277815736478
+"408","Beaver","Unnamed: Black Hills 4",0,0,0,0,NA
+"409","Beaver","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"410","Beaver","Porter Creek",29,13581,1274,2.70612021714043,45.9976298907037
+"411","Beaver","Unnamed: Black Hills 3",0,0,0,0,NA
+"412","Beaver","Mox Chehalis Creek",155,56789,7006,4.22584661767033,203.049401713941
+"413","Beaver","Unnamed: Black Hills 2",0,0,0,0,NA
+"414","Beaver","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"415","Beaver","Cloquallum Creek",256,74990,11829,2.96557720464267,386.241640671927
+"416","Beaver","Unnamed: Black Hills 1",0,0,0,0,NA
+"417","Beaver","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"418","Beaver","Satsop River",8124,3036481,367542,3.77723638097438,11049.2101317893
+"419","Beaver","Unnamed: Olympic Mountains 1",0,0,0,0.487759404876891,NA
+"420","Beaver","Wynoochee River",5857,2807647,264791,4.52352362465317,7519.25648638201
+"421","Beaver","Wishkah River",257,10047,13191,1.32314893943866,1052.2989121562
+"422","Beaver","Hoquiam River",420,91619,20434,2.84103981738063,648.131948062678
+"423","Beaver","Humptulips River",5084,1924436,228035,4.02587091803424,6764.1774225395
+"424","Beaver","Johns River",40,7780,1915,2.21956132468738,72.79867866444
+"425","Beaver","Elk River",18,4556,825,2.02040736508484,35.6400137983161
+"426","Beaver","Andrews",14,3802,672,1.91152662452946,29.3588492351794
+"427","Beaver","Upper Chehalis Estuary",0,0,0,0,NA
+"428","Beaver","Lower Chehalis Estuary",0,0,0,0,NA
+"429","Beaver","Upper Skookumchuck",0,0,0,0,NA
+"430","Beaver","Mainstem: Upper Chehalis 1",193,10969,9693,1.46258743197418,610.218425447352
+"431","Beaver","Mainstem: Upper Chehalis 2",164,32795,7813,2.39836868170581,281.27951444103
+"432","Beaver","Mainstem: Middle Chehalis 1",371,62176,17913,2.23943629457714,670.329623977628
+"433","Beaver","Mainstem: Middle Chehalis 2",137,2990,6966,1.18380878923437,882.339766235631
+"434","Beaver","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"435","Beaver","Mainstem: Lower Chehalis 1",623,134535,29609,2.49831691203797,1038.79988518758
+"436","Beaver","Mainstem: Lower Chehalis 2",1202,464560,53745,3.29589724218443,1725.54259498842
+"437","Beaver","Mainstem: Lower Chehalis 3",1359,692842,58021,4.10354393129803,1796.8865033277
+"438","Beaver","Mainstem: Lower Chehalis 4",678,135802,32402,2.30837832837205,1196.19873907847
+"439","Beaver","Mainstem: Lower Chehalis 5",996,392878,44399,5.75729496538779,1205.36267505936
+"440","Beaver","Mainstem: Lower Chehalis 6",859,125240,41791,2.02459823630753,1697.37739472955
+"441","Beaver","Mainstem: Lower Chehalis 7",552,26903,27764,2.99828521445222,828.236843473477
+"442","Floodplain","Upper Chehalis: Above Proposed Dam",364,70450,17577,2.43601213078832,617.479752848728
+"443","Floodplain","Upper Chehalis: Proposed Dam to Elk Creek",21,8453,915,2.29221605488961,37.2511523677006
+"444","Floodplain","Elk Creek",0,0,0,0,NA
+"445","Floodplain","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"446","Floodplain","South Fork Chehalis",1275,346970,59400,3.05624757667197,1895.06152102734
+"447","Floodplain","Unnamed: Willapa Hills 2",10,5980,424,1.79427356119828,22.5901206945797
+"448","Floodplain","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"449","Floodplain","Unnamed: Willapa Hills 4",2,374,95,0.551317223423543,NA
+"450","Floodplain","Stearns Creek",0,0,0,0,NA
+"451","Floodplain","Bunker Creek",0,0,0,0,NA
+"452","Floodplain","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"453","Floodplain","Newaukum River",1357,473694,61822,3.24157185253149,1962.37876511408
+"454","Floodplain","Dillenbaugh Creek",2,339,124,0.801526032590928,NA
+"455","Floodplain","Unnamed: Central Lowlands 8",1,61,38,0.50675263071566,NA
+"456","Floodplain","Salzer Creek",0,0,0,0,NA
+"457","Floodplain","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"458","Floodplain","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"459","Floodplain","Skookumchuck River",852,327501,38344,3.85300921640715,1150.63205316699
+"460","Floodplain","Lincoln Creek",5,2207,237,1.22762470261095,26.9659814714661
+"461","Floodplain","Unnamed: Central Lowlands 6",0,32,18,0.297117465068514,NA
+"462","Floodplain","Unnamed: Black River 1",11,1936,524,1.9958571836915,22.0457605569753
+"463","Floodplain","Scatter Creek",0,0,0,0,NA
+"464","Floodplain","Black River",993,140800,48396,3.60536352029095,1374.13683264019
+"465","Floodplain","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"466","Floodplain","Garrard Creek",12,3254,568,1.78365668191035,27.3128280240616
+"467","Floodplain","Unnamed: Black Hills 5",0,0,0,0,NA
+"468","Floodplain","Unnamed: Central Lowlands 4",13,555,674,1.79074370740702,29.4402193507543
+"469","Floodplain","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"470","Floodplain","Cedar Creek",65,33934,2739,3.4169973283724,91.892872092569
+"471","Floodplain","Unnamed: Black Hills 4",0,0,0,0,NA
+"472","Floodplain","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"473","Floodplain","Porter Creek",22,9856,941,2.38870013316964,37.8421530138304
+"474","Floodplain","Unnamed: Black Hills 3",0,0,0,0,NA
+"475","Floodplain","Mox Chehalis Creek",182,64853,8217,4.50076405702747,233.988650773151
+"476","Floodplain","Unnamed: Black Hills 2",0,0,0,0,NA
+"477","Floodplain","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"478","Floodplain","Cloquallum Creek",235,70759,10823,2.97121745543453,354.215665096775
+"479","Floodplain","Unnamed: Black Hills 1",0,0,0,0,NA
+"480","Floodplain","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"481","Floodplain","Satsop River",8823,3240050,400478,3.83729748625922,11932.6492499391
+"482","Floodplain","Unnamed: Olympic Mountains 1",0,0,0,0.499406451960189,NA
+"483","Floodplain","Wynoochee River",7227,3246084,329829,4.45488774274624,9318.81905119018
+"484","Floodplain","Wishkah River",329,12267,16878,1.31005908659685,1390.08807715021
+"485","Floodplain","Hoquiam River",385,87132,18684,2.72239752040174,608.525635307581
+"486","Floodplain","Humptulips River",5850,2120823,263936,3.96065205890287,7825.91607646318
+"487","Floodplain","Johns River",28,5193,1359,1.86973506687763,60.1937117017954
+"488","Floodplain","Elk River",8,1906,375,1.28163847707494,36.405209696796
+"489","Floodplain","Andrews",6,1461,260,1.06460149054811,98.8771139658423
+"490","Floodplain","Upper Chehalis Estuary",0,0,0,0,NA
+"491","Floodplain","Lower Chehalis Estuary",0,0,0,0,NA
+"492","Floodplain","Upper Skookumchuck",0,0,0,0,NA
+"493","Floodplain","Mainstem: Upper Chehalis 1",213,12839,10673,1.51385728613395,627.511977834397
+"494","Floodplain","Mainstem: Upper Chehalis 2",172,34840,8191,2.47252405740773,288.806241048987
+"495","Floodplain","Mainstem: Middle Chehalis 1",402,69135,19397,2.35986535566454,697.617502369233
+"496","Floodplain","Mainstem: Middle Chehalis 2",239,8097,12061,1.30880731350809,1012.94540072554
+"497","Floodplain","Mainstem: Middle Chehalis 3",0,0,0,0.607329082328696,NA
+"498","Floodplain","Mainstem: Lower Chehalis 1",766,169656,36336,2.83090291809721,1184.37281072012
+"499","Floodplain","Mainstem: Lower Chehalis 2",1299,507359,57995,3.52169450542353,1814.12980545668
+"500","Floodplain","Mainstem: Lower Chehalis 3",1454,746101,61991,4.38106085767013,1884.04254025819
+"501","Floodplain","Mainstem: Lower Chehalis 4",748,155623,35666,2.46097282935803,1259.98761877638
+"502","Floodplain","Mainstem: Lower Chehalis 5",1048,407266,46846,6.11079064073939,1253.05633544175
+"503","Floodplain","Mainstem: Lower Chehalis 6",965,147788,46836,2.15667357354048,1799.2889662865
+"504","Floodplain","Mainstem: Lower Chehalis 7",569,27633,28589,3.13812583243206,835.120913638079
+"505","FP.wood.comb","Upper Chehalis: Above Proposed Dam",453,98315,21858,2.68758013946423,721.431696608979
+"506","FP.wood.comb","Upper Chehalis: Proposed Dam to Elk Creek",27,14064,1138,2.77400447475114,42.2198037740506
+"507","FP.wood.comb","Elk Creek",0,0,0,0,NA
+"508","FP.wood.comb","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"509","FP.wood.comb","South Fork Chehalis",1617,479540,74676,3.38893249253584,2293.87136620741
+"510","FP.wood.comb","Unnamed: Willapa Hills 2",15,11835,589,2.33376667180291,26.2463448945863
+"511","FP.wood.comb","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"512","FP.wood.comb","Unnamed: Willapa Hills 4",3,819,139,0.7967514978689,NA
+"513","FP.wood.comb","Stearns Creek",0,0,0,0,NA
+"514","FP.wood.comb","Bunker Creek",0,0,0,0,NA
+"515","FP.wood.comb","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"516","FP.wood.comb","Newaukum River",1847,793429,81877,3.87573556110393,2489.27045941977
+"517","FP.wood.comb","Dillenbaugh Creek",4,1261,227,1.07128078870553,60.1161018647603
+"518","FP.wood.comb","Unnamed: Central Lowlands 8",2,758,110,0.763288123868614,NA
+"519","FP.wood.comb","Salzer Creek",0,0,0,0,NA
+"520","FP.wood.comb","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"521","FP.wood.comb","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"522","FP.wood.comb","Skookumchuck River",1100,459282,49079,4.27909788433949,1435.45811646961
+"523","FP.wood.comb","Lincoln Creek",7,4168,311,1.52856144902841,20.243493283264
+"524","FP.wood.comb","Unnamed: Central Lowlands 6",1,398,49,0.455060227616998,NA
+"525","FP.wood.comb","Unnamed: Black River 1",16,4251,767,2.56569952340909,26.2190744525247
+"526","FP.wood.comb","Scatter Creek",0,0,0,0,NA
+"527","FP.wood.comb","Black River",1640,364130,77763,4.49956129153508,2108.63016914918
+"528","FP.wood.comb","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"529","FP.wood.comb","Garrard Creek",19,7897,834,2.37656730168245,32.8024490170427
+"530","FP.wood.comb","Unnamed: Black Hills 5",0,0,0,0,NA
+"531","FP.wood.comb","Unnamed: Central Lowlands 4",41,7976,1963,3.45433329919722,57.7051475907574
+"532","FP.wood.comb","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"533","FP.wood.comb","Cedar Creek",101,69615,4036,4.67801527707349,128.46046233945
+"534","FP.wood.comb","Unnamed: Black Hills 4",0,0,0,0,NA
+"535","FP.wood.comb","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"536","FP.wood.comb","Porter Creek",37,22988,1500,3.44763592092122,52.1166273070851
+"537","FP.wood.comb","Unnamed: Black Hills 3",0,0,0,0,NA
+"538","FP.wood.comb","Mox Chehalis Creek",225,95212,9920,4.93726592074142,282.146254413426
+"539","FP.wood.comb","Unnamed: Black Hills 2",0,0,0,0,NA
+"540","FP.wood.comb","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"541","FP.wood.comb","Cloquallum Creek",342,133521,15291,3.73222211394152,467.172839446288
+"542","FP.wood.comb","Unnamed: Black Hills 1",0,0,0,0,NA
+"543","FP.wood.comb","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"544","FP.wood.comb","Satsop River",10986,4499638,493989,4.29589677200916,14319.2354621358
+"545","FP.wood.comb","Unnamed: Olympic Mountains 1",0,0,0,0.701829403717884,NA
+"546","FP.wood.comb","Wynoochee River",8936,4280621,403232,4.8884737732105,11234.0738770991
+"547","FP.wood.comb","Wishkah River",902,86548,45601,1.86470766733099,1945.12709841479
+"548","FP.wood.comb","Hoquiam River",622,208241,29285,3.73474226641794,849.443736705294
+"549","FP.wood.comb","Humptulips River",7440,3177637,327814,4.56096882366071,9529.31905007571
+"550","FP.wood.comb","Johns River",54,14845,2512,2.8448277795634,83.2710249694851
+"551","FP.wood.comb","Elk River",17,6595,742,2.15028171635916,31.7789882758529
+"552","FP.wood.comb","Andrews",12,5487,510,1.7840777953602,27.3046037918817
+"553","FP.wood.comb","Upper Chehalis Estuary",0,0,0,0,NA
+"554","FP.wood.comb","Lower Chehalis Estuary",0,0,0,0,NA
+"555","FP.wood.comb","Upper Skookumchuck",0,0,0,0,NA
+"556","FP.wood.comb","Mainstem: Upper Chehalis 1",296,21292,14751,1.65289623579949,749.364537532581
+"557","FP.wood.comb","Mainstem: Upper Chehalis 2",215,47412,10224,2.71945919781271,340.03931484591
+"558","FP.wood.comb","Mainstem: Middle Chehalis 1",523,99000,25101,2.61487533443158,846.864009096461
+"559","FP.wood.comb","Mainstem: Middle Chehalis 2",378,17526,19037,1.43874156083987,1239.55503316441
+"560","FP.wood.comb","Mainstem: Middle Chehalis 3",0,0,0,0.774483692240005,NA
+"561","FP.wood.comb","Mainstem: Lower Chehalis 1",988,237574,46558,3.1316041113375,1451.50070106595
+"562","FP.wood.comb","Mainstem: Lower Chehalis 2",1573,646615,69706,3.84392557663757,2126.10870752806
+"563","FP.wood.comb","Mainstem: Lower Chehalis 3",1736,934460,73293,4.77470916186894,2195.90298207252
+"564","FP.wood.comb","Mainstem: Lower Chehalis 4",875,193046,41487,2.65203347463548,1404.65028459431
+"565","FP.wood.comb","Mainstem: Lower Chehalis 5",1258,536799,55430,6.66463506668557,1480.07961946189
+"566","FP.wood.comb","Mainstem: Lower Chehalis 6",1222,205451,59006,2.37751006488598,2109.10785579715
+"567","FP.wood.comb","Mainstem: Lower Chehalis 7",767,43090,38452,3.4742739662326,1076.98992450616
+"568","Historical","Upper Chehalis: Above Proposed Dam",836,585302,33627,6.37578422998688,991.512193985888
+"569","Historical","Upper Chehalis: Proposed Dam to Elk Creek",64,69158,2139,5.15371014643405,79.4079119013501
+"570","Historical","Elk Creek",0,0,0,0,NA
+"571","Historical","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"572","Historical","South Fork Chehalis",2545,1799150,100470,6.85576030235326,2979.61478417708
+"573","Historical","Unnamed: Willapa Hills 2",34,34863,1143,3.99189454618801,45.3640368920488
+"574","Historical","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"575","Historical","Unnamed: Willapa Hills 4",4,2433,180,1.07500361456796,57.3307630977636
+"576","Historical","Stearns Creek",0,0,0,0,NA
+"577","Historical","Bunker Creek",0,0,0,0,NA
+"578","Historical","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"579","Historical","Newaukum River",2900,2468426,107618,6.96592070789585,3386.0942915587
+"580","Historical","Dillenbaugh Creek",15,7759,626,2.30035445021808,26.5353163881466
+"581","Historical","Unnamed: Central Lowlands 8",9,5715,389,1.82608038107555,19.8948235621842
+"582","Historical","Salzer Creek",0,0,0,0,NA
+"583","Historical","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"584","Historical","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"585","Historical","Skookumchuck River",1559,716939,67828,5.06014341870195,1942.9765838859
+"586","Historical","Lincoln Creek",12,10497,433,2.10406193953177,22.8689554184697
+"587","Historical","Unnamed: Central Lowlands 6",2,1218,90,0.704204296217952,NA
+"588","Historical","Unnamed: Black River 1",21,9107,928,3.43918120425484,29.6094464664487
+"589","Historical","Scatter Creek",0,0,0,0,NA
+"590","Historical","Black River",2056,720912,93149,6.90373922113357,2404.25386471004
+"591","Historical","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"592","Historical","Garrard Creek",33,25292,1280,3.68818402961177,45.2759452613688
+"593","Historical","Unnamed: Black Hills 5",0,0,0,0,NA
+"594","Historical","Unnamed: Central Lowlands 4",89,30643,4042,3.92345424549357,119.443438660684
+"595","Historical","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"596","Historical","Cedar Creek",193,242271,5894,7.81064173800241,221.338005055102
+"597","Historical","Unnamed: Black Hills 4",0,0,0,0,NA
+"598","Historical","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"599","Historical","Porter Creek",62,68391,2024,5.18714537249341,76.8072241310981
+"600","Historical","Unnamed: Black Hills 3",0,0,0,0,NA
+"601","Historical","Mox Chehalis Creek",283,191569,11304,7.52687193072309,326.359208362565
+"602","Historical","Unnamed: Black Hills 2",0,0,0,0,NA
+"603","Historical","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"604","Historical","Cloquallum Creek",535,432377,20208,6.78043497854014,627.553588438619
+"605","Historical","Unnamed: Black Hills 1",0,0,0,0,NA
+"606","Historical","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"607","Historical","Satsop River",15258,11549825,589692,7.26101120700489,17694.9865338892
+"608","Historical","Unnamed: Olympic Mountains 1",0,0,0,0.695920713819196,NA
+"609","Historical","Wynoochee River",14116,10119166,554848,7.43064411915452,16311.1144766282
+"610","Historical","Wishkah River",1618,388459,76240,3.16099689251133,2366.72851766098
+"611","Historical","Hoquiam River",910,604225,36555,6.72701717351997,1068.89597890636
+"612","Historical","Humptulips River",9483,5431646,395173,5.98187881329242,11386.4987311811
+"613","Historical","Johns River",86,44266,3655,4.52309674553128,110.410343005506
+"614","Historical","Elk River",32,19244,1305,3.38739024892049,45.4037575191025
+"615","Historical","Andrews",29,25380,1064,3.38293927891942,41.1698442996628
+"616","Historical","Upper Chehalis Estuary",0,0,0,0,NA
+"617","Historical","Lower Chehalis Estuary",0,0,0,0,NA
+"618","Historical","Upper Skookumchuck",0,0,0,0,NA
+"619","Historical","Mainstem: Upper Chehalis 1",611,143776,28824,3.02694833436582,912.438369020475
+"620","Historical","Mainstem: Upper Chehalis 2",352,190149,14853,5.06887685411173,438.510359644896
+"621","Historical","Mainstem: Middle Chehalis 1",1000,430884,43991,4.96004371846501,1252.5224646731
+"622","Historical","Mainstem: Middle Chehalis 2",1022,146001,49778,2.37393314010913,1765.84987898234
+"623","Historical","Mainstem: Middle Chehalis 3",3,1,152,1.04654711209189,67.4508298189871
+"624","Historical","Mainstem: Lower Chehalis 1",1548,633716,68638,4.98198446036049,1936.75088926386
+"625","Historical","Mainstem: Lower Chehalis 2",2809,1893702,112396,6.06031388106864,3364.10390580886
+"626","Historical","Mainstem: Lower Chehalis 3",2433,2121120,89440,7.38455514860942,2814.07588443807
+"627","Historical","Mainstem: Lower Chehalis 4",1235,472343,55301,3.82505903711229,1672.15900580343
+"628","Historical","Mainstem: Lower Chehalis 5",1604,1013956,65262,10.1227038963035,1779.82506439236
+"629","Historical","Mainstem: Lower Chehalis 6",1892,558320,87461,3.41942580870315,2674.00372716291
+"630","Historical","Mainstem: Lower Chehalis 7",1320,159430,64771,5.99957021890017,1584.0226943928
+"631","ASRP.scenario.1.2040","Upper Chehalis: Above Proposed Dam",354,70031,17058,2.36063573863012,614.172498744157
+"632","ASRP.scenario.1.2040","Upper Chehalis: Proposed Dam to Elk Creek",16,6485,693,2.01825275442643,31.7131909837187
+"633","ASRP.scenario.1.2040","Elk Creek",0,0,0,0,NA
+"634","ASRP.scenario.1.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"635","ASRP.scenario.1.2040","South Fork Chehalis",1204,340648,55888,2.95261709704251,1820.60834672789
+"636","ASRP.scenario.1.2040","Unnamed: Willapa Hills 2",9,5458,384,1.67157412164601,22.4013502157309
+"637","ASRP.scenario.1.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"638","ASRP.scenario.1.2040","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"639","ASRP.scenario.1.2040","Stearns Creek",0,0,0,0,NA
+"640","ASRP.scenario.1.2040","Bunker Creek",0,0,0,0,NA
+"641","ASRP.scenario.1.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"642","ASRP.scenario.1.2040","Newaukum River",1389,531680,62446,3.24443778174362,2007.8632232527
+"643","ASRP.scenario.1.2040","Dillenbaugh Creek",2,276,107,0.75205486162473,NA
+"644","ASRP.scenario.1.2040","Unnamed: Central Lowlands 8",1,45,32,0.476123872252651,NA
+"645","ASRP.scenario.1.2040","Salzer Creek",0,0,0,0,NA
+"646","ASRP.scenario.1.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"647","ASRP.scenario.1.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"648","ASRP.scenario.1.2040","Skookumchuck River",861,344598,38538,3.78604662396155,1170.04005431744
+"649","ASRP.scenario.1.2040","Lincoln Creek",5,2043,220,1.17141033653585,34.1697694610974
+"650","ASRP.scenario.1.2040","Unnamed: Central Lowlands 6",0,27,16,0.282789292030051,NA
+"651","ASRP.scenario.1.2040","Unnamed: Black River 1",3,763,129,0.763449735148628,NA
+"652","ASRP.scenario.1.2040","Scatter Creek",0,0,0,0,NA
+"653","ASRP.scenario.1.2040","Black River",1150,210153,55256,3.81919472250182,1557.91790322999
+"654","ASRP.scenario.1.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"655","ASRP.scenario.1.2040","Garrard Creek",11,3034,535,1.72656135349244,26.1398088366869
+"656","ASRP.scenario.1.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"657","ASRP.scenario.1.2040","Unnamed: Central Lowlands 4",10,675,503,1.60501483053918,26.5285204514544
+"658","ASRP.scenario.1.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"659","ASRP.scenario.1.2040","Cedar Creek",56,29485,2391,3.25365510306693,80.8485227059772
+"660","ASRP.scenario.1.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"661","ASRP.scenario.1.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"662","ASRP.scenario.1.2040","Porter Creek",20,9278,885,2.31998360471827,35.1517033457917
+"663","ASRP.scenario.1.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"664","ASRP.scenario.1.2040","Mox Chehalis Creek",153,58120,6871,4.27348673528716,199.73915380524
+"665","ASRP.scenario.1.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"666","ASRP.scenario.1.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"667","ASRP.scenario.1.2040","Cloquallum Creek",219,66151,10121,2.91489006567177,333.366878770752
+"668","ASRP.scenario.1.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"669","ASRP.scenario.1.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"670","ASRP.scenario.1.2040","Satsop River",8866,3502875,395812,3.93463694233205,11887.1573609356
+"671","ASRP.scenario.1.2040","Unnamed: Olympic Mountains 1",0,0,0,0.530707603226171,NA
+"672","ASRP.scenario.1.2040","Wynoochee River",6495,3127318,291799,4.59165816947615,8303.35694643717
+"673","ASRP.scenario.1.2040","Wishkah River",642,76646,31532,1.92304361420372,1337.52509775373
+"674","ASRP.scenario.1.2040","Hoquiam River",460,128851,21753,3.10483240108796,678.544716321467
+"675","ASRP.scenario.1.2040","Humptulips River",5798,2549632,254239,4.38547432608465,7510.61083131754
+"676","ASRP.scenario.1.2040","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"677","ASRP.scenario.1.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"678","ASRP.scenario.1.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"679","ASRP.scenario.1.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"680","ASRP.scenario.1.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"681","ASRP.scenario.1.2040","Upper Skookumchuck",0,0,0,0,NA
+"682","ASRP.scenario.1.2040","Mainstem: Upper Chehalis 1",235,15227,11731,1.55031975846199,662.024464207443
+"683","ASRP.scenario.1.2040","Mainstem: Upper Chehalis 2",183,39009,8707,2.54910940171554,301.132392584629
+"684","ASRP.scenario.1.2040","Mainstem: Middle Chehalis 1",358,60402,17310,2.22569012242708,650.080350040758
+"685","ASRP.scenario.1.2040","Mainstem: Middle Chehalis 2",131,2795,6628,1.17969651769287,860.006892742925
+"686","ASRP.scenario.1.2040","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"687","ASRP.scenario.1.2040","Mainstem: Lower Chehalis 1",676,151068,32020,2.61886673216055,1093.57606513898
+"688","ASRP.scenario.1.2040","Mainstem: Lower Chehalis 2",1214,477194,54165,3.36232421298139,1727.90067177437
+"689","ASRP.scenario.1.2040","Mainstem: Lower Chehalis 3",1377,713513,58613,4.18081891931134,1809.90738483727
+"690","ASRP.scenario.1.2040","Mainstem: Lower Chehalis 4",685,139577,32680,2.35799812976208,1189.41895683613
+"691","ASRP.scenario.1.2040","Mainstem: Lower Chehalis 5",1029,419141,45675,5.92896131833513,1237.76609361332
+"692","ASRP.scenario.1.2040","Mainstem: Lower Chehalis 6",903,137159,43857,2.09969008387703,1724.1404406016
+"693","ASRP.scenario.1.2040","Mainstem: Lower Chehalis 7",588,30137,29535,3.11107723201222,866.53078564991
+"694","ASRP.scenario.1.2080","Upper Chehalis: Above Proposed Dam",330,63671,15922,2.25594754605502,592.749826644069
+"695","ASRP.scenario.1.2080","Upper Chehalis: Proposed Dam to Elk Creek",15,6057,657,1.93232041570737,31.0888893424255
+"696","ASRP.scenario.1.2080","Elk Creek",0,0,0,0,NA
+"697","ASRP.scenario.1.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"698","ASRP.scenario.1.2080","South Fork Chehalis",1125,313530,52289,2.80459235260483,1748.40949100007
+"699","ASRP.scenario.1.2080","Unnamed: Willapa Hills 2",9,5180,366,1.60105084667662,23.9737747642543
+"700","ASRP.scenario.1.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"701","ASRP.scenario.1.2080","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"702","ASRP.scenario.1.2080","Stearns Creek",0,0,0,0,NA
+"703","ASRP.scenario.1.2080","Bunker Creek",0,0,0,0,NA
+"704","ASRP.scenario.1.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"705","ASRP.scenario.1.2080","Newaukum River",1304,491035,58738,3.08509639402977,1929.39075111047
+"706","ASRP.scenario.1.2080","Dillenbaugh Creek",2,227,95,0.717822441859748,NA
+"707","ASRP.scenario.1.2080","Unnamed: Central Lowlands 8",1,33,27,0.455658545523318,NA
+"708","ASRP.scenario.1.2080","Salzer Creek",0,0,0,0,NA
+"709","ASRP.scenario.1.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"710","ASRP.scenario.1.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"711","ASRP.scenario.1.2080","Skookumchuck River",822,327103,36785,3.62185234315484,1135.51879984626
+"712","ASRP.scenario.1.2080","Lincoln Creek",5,1928,211,1.13098574138523,43.1720937494634
+"713","ASRP.scenario.1.2080","Unnamed: Central Lowlands 6",0,23,14,0.275461641113297,NA
+"714","ASRP.scenario.1.2080","Unnamed: Black River 1",3,735,123,0.734783623086519,NA
+"715","ASRP.scenario.1.2080","Scatter Creek",0,0,0,0,NA
+"716","ASRP.scenario.1.2080","Black River",1112,204232,53422,3.69999017132192,1523.85335110148
+"717","ASRP.scenario.1.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"718","ASRP.scenario.1.2080","Garrard Creek",11,2866,513,1.67354097595748,27.3315973231812
+"719","ASRP.scenario.1.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"720","ASRP.scenario.1.2080","Unnamed: Central Lowlands 4",10,655,489,1.56867894992939,27.5846143087266
+"721","ASRP.scenario.1.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"722","ASRP.scenario.1.2080","Cedar Creek",55,28692,2340,3.17864691869008,80.2450268688186
+"723","ASRP.scenario.1.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"724","ASRP.scenario.1.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"725","ASRP.scenario.1.2080","Porter Creek",20,9043,868,2.27454690560643,35.6918508938547
+"726","ASRP.scenario.1.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"727","ASRP.scenario.1.2080","Mox Chehalis Creek",151,57259,6759,4.19490264854065,198.262785947163
+"728","ASRP.scenario.1.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"729","ASRP.scenario.1.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"730","ASRP.scenario.1.2080","Cloquallum Creek",215,64536,9932,2.86203963177876,330.464781914774
+"731","ASRP.scenario.1.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"732","ASRP.scenario.1.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"733","ASRP.scenario.1.2080","Satsop River",8742,3447896,390337,3.87605682127703,11781.5783335457
+"734","ASRP.scenario.1.2080","Unnamed: Olympic Mountains 1",0,0,0,0.522353498924675,NA
+"735","ASRP.scenario.1.2080","Wynoochee River",6491,3125534,291641,4.589187107794,8299.48749453731
+"736","ASRP.scenario.1.2080","Wishkah River",642,76646,31532,1.92304002558771,1337.52780183203
+"737","ASRP.scenario.1.2080","Hoquiam River",460,128851,21753,3.10483240108796,678.544716321467
+"738","ASRP.scenario.1.2080","Humptulips River",5789,2545503,253854,4.37902306249686,7502.21707278385
+"739","ASRP.scenario.1.2080","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"740","ASRP.scenario.1.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"741","ASRP.scenario.1.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"742","ASRP.scenario.1.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"743","ASRP.scenario.1.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"744","ASRP.scenario.1.2080","Upper Skookumchuck",0,0,0,0,NA
+"745","ASRP.scenario.1.2080","Mainstem: Upper Chehalis 1",219,13606,10947,1.50945733480302,648.869166737339
+"746","ASRP.scenario.1.2080","Mainstem: Upper Chehalis 2",178,37488,8450,2.49147533297792,297.344917119481
+"747","ASRP.scenario.1.2080","Mainstem: Middle Chehalis 1",337,55559,16282,2.1409594639046,632.365445190066
+"748","ASRP.scenario.1.2080","Mainstem: Middle Chehalis 2",80,1116,4053,1.10997236851335,807.455460689579
+"749","ASRP.scenario.1.2080","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"750","ASRP.scenario.1.2080","Mainstem: Lower Chehalis 1",579,124588,27543,2.35440069319442,1006.49535119803
+"751","ASRP.scenario.1.2080","Mainstem: Lower Chehalis 2",1126,435393,50364,3.1551488638126,1648.46970912628
+"752","ASRP.scenario.1.2080","Mainstem: Lower Chehalis 3",1303,670800,55547,3.96573177094263,1742.35193761162
+"753","ASRP.scenario.1.2080","Mainstem: Lower Chehalis 4",643,127627,30755,2.26047142120547,1153.12659960593
+"754","ASRP.scenario.1.2080","Mainstem: Lower Chehalis 5",995,408933,44073,5.69701684003493,1206.83658349256
+"755","ASRP.scenario.1.2080","Mainstem: Lower Chehalis 6",856,126649,41604,2.0331111423638,1684.56525779156
+"756","ASRP.scenario.1.2080","Mainstem: Lower Chehalis 7",573,29376,28760,3.03999400705827,853.883178096333
+"757","ASRP.scenario.2.2040","Upper Chehalis: Above Proposed Dam",355,70391,17097,2.36350482770124,615.358447427357
+"758","ASRP.scenario.2.2040","Upper Chehalis: Proposed Dam to Elk Creek",16,6478,692,2.01836491378946,31.7114603845316
+"759","ASRP.scenario.2.2040","Elk Creek",0,0,0,0,NA
+"760","ASRP.scenario.2.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"761","ASRP.scenario.2.2040","South Fork Chehalis",1215,345772,56364,2.96310391976178,1833.91782078834
+"762","ASRP.scenario.2.2040","Unnamed: Willapa Hills 2",9,5453,384,1.67167892231457,22.3992592308635
+"763","ASRP.scenario.2.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"764","ASRP.scenario.2.2040","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"765","ASRP.scenario.2.2040","Stearns Creek",0,0,0,0,NA
+"766","ASRP.scenario.2.2040","Bunker Creek",0,0,0,0,NA
+"767","ASRP.scenario.2.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"768","ASRP.scenario.2.2040","Newaukum River",1388,530899,62375,3.24471433687858,2006.34148657423
+"769","ASRP.scenario.2.2040","Dillenbaugh Creek",2,275,107,0.75211368218463,NA
+"770","ASRP.scenario.2.2040","Unnamed: Central Lowlands 8",1,45,32,0.476159368592729,NA
+"771","ASRP.scenario.2.2040","Salzer Creek",0,0,0,0,NA
+"772","ASRP.scenario.2.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"773","ASRP.scenario.2.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"774","ASRP.scenario.2.2040","Skookumchuck River",860,344159,38494,3.7864040325412,1168.64152863563
+"775","ASRP.scenario.2.2040","Lincoln Creek",7,3812,298,1.43133266725129,23.2287731291214
+"776","ASRP.scenario.2.2040","Unnamed: Central Lowlands 6",0,27,16,0.282817076436787,NA
+"777","ASRP.scenario.2.2040","Unnamed: Black River 1",3,762,129,0.763525229863537,NA
+"778","ASRP.scenario.2.2040","Scatter Creek",0,0,0,0,NA
+"779","ASRP.scenario.2.2040","Black River",1169,208838,56282,3.8112481164926,1584.82953604909
+"780","ASRP.scenario.2.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"781","ASRP.scenario.2.2040","Garrard Creek",11,3025,534,1.72676426860064,26.1355817494717
+"782","ASRP.scenario.2.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"783","ASRP.scenario.2.2040","Unnamed: Central Lowlands 4",10,674,502,1.60518053667394,26.5239947321502
+"784","ASRP.scenario.2.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"785","ASRP.scenario.2.2040","Cedar Creek",83,54603,3340,3.99868673037586,110.678783235085
+"786","ASRP.scenario.2.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"787","ASRP.scenario.2.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"788","ASRP.scenario.2.2040","Porter Creek",26,15610,1093,2.75590591558874,40.8071714829222
+"789","ASRP.scenario.2.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"790","ASRP.scenario.2.2040","Mox Chehalis Creek",153,58008,6856,4.27321212282336,199.743075076976
+"791","ASRP.scenario.2.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"792","ASRP.scenario.2.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"793","ASRP.scenario.2.2040","Cloquallum Creek",268,89668,12231,3.12369088633365,394.195390169365
+"794","ASRP.scenario.2.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"795","ASRP.scenario.2.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"796","ASRP.scenario.2.2040","Satsop River",9033,3569154,403145,3.94489143475847,12100.3456730472
+"797","ASRP.scenario.2.2040","Unnamed: Olympic Mountains 1",0,0,0,0.530688124351238,NA
+"798","ASRP.scenario.2.2040","Wynoochee River",6698,3235881,300464,4.63678971886067,8539.73419905574
+"799","ASRP.scenario.2.2040","Wishkah River",646,78905,31673,1.93624528193727,1335.99012594574
+"800","ASRP.scenario.2.2040","Hoquiam River",460,128851,21753,3.10483240108796,678.544716321467
+"801","ASRP.scenario.2.2040","Humptulips River",5928,2628805,259571,4.43452873115262,7654.0009928671
+"802","ASRP.scenario.2.2040","Johns River",36,9076,1696,2.25330669412164,64.724014775354
+"803","ASRP.scenario.2.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"804","ASRP.scenario.2.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"805","ASRP.scenario.2.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"806","ASRP.scenario.2.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"807","ASRP.scenario.2.2040","Upper Skookumchuck",0,0,0,0,NA
+"808","ASRP.scenario.2.2040","Mainstem: Upper Chehalis 1",235,15225,11730,1.55031927822367,662.024836852047
+"809","ASRP.scenario.2.2040","Mainstem: Upper Chehalis 2",183,39005,8706,2.54910740260496,301.132545033527
+"810","ASRP.scenario.2.2040","Mainstem: Middle Chehalis 1",358,60399,17310,2.22568950156242,650.080497992067
+"811","ASRP.scenario.2.2040","Mainstem: Middle Chehalis 2",131,2788,6619,1.17969557572305,860.010714219798
+"812","ASRP.scenario.2.2040","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"813","ASRP.scenario.2.2040","Mainstem: Lower Chehalis 1",675,151027,32013,2.61886481082566,1091.95884392949
+"814","ASRP.scenario.2.2040","Mainstem: Lower Chehalis 2",1214,477085,54156,3.36226774382547,1727.91295638404
+"815","ASRP.scenario.2.2040","Mainstem: Lower Chehalis 3",1377,713611,58622,4.18152524666893,1809.81127548547
+"816","ASRP.scenario.2.2040","Mainstem: Lower Chehalis 4",684,139354,32645,2.35795743682728,1187.69767229089
+"817","ASRP.scenario.2.2040","Mainstem: Lower Chehalis 5",1030,419186,45696,5.93460153615345,1238.73012591872
+"818","ASRP.scenario.2.2040","Mainstem: Lower Chehalis 6",899,136336,43682,2.09940598899878,1716.71430117341
+"819","ASRP.scenario.2.2040","Mainstem: Lower Chehalis 7",584,29921,29314,3.11083265625255,860.668071374639
+"820","ASRP.scenario.2.2080","Upper Chehalis: Above Proposed Dam",331,64012,15961,2.25884534100934,593.939369291072
+"821","ASRP.scenario.2.2080","Upper Chehalis: Proposed Dam to Elk Creek",15,6052,657,1.93254081895183,31.0850867813592
+"822","ASRP.scenario.2.2080","Elk Creek",0,0,0,0,NA
+"823","ASRP.scenario.2.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"824","ASRP.scenario.2.2080","South Fork Chehalis",1136,318452,52759,2.81514982481191,1761.84365459623
+"825","ASRP.scenario.2.2080","Unnamed: Willapa Hills 2",9,5176,366,1.60125662005375,23.9686501567258
+"826","ASRP.scenario.2.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"827","ASRP.scenario.2.2080","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"828","ASRP.scenario.2.2080","Stearns Creek",0,0,0,0,NA
+"829","ASRP.scenario.2.2080","Bunker Creek",0,0,0,0,NA
+"830","ASRP.scenario.2.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"831","ASRP.scenario.2.2080","Newaukum River",1303,490355,58676,3.08563900572546,1927.74857653843
+"832","ASRP.scenario.2.2080","Dillenbaugh Creek",2,226,95,0.717937850035963,NA
+"833","ASRP.scenario.2.2080","Unnamed: Central Lowlands 8",1,33,26,0.455728190692927,NA
+"834","ASRP.scenario.2.2080","Salzer Creek",0,0,0,0,NA
+"835","ASRP.scenario.2.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"836","ASRP.scenario.2.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"837","ASRP.scenario.2.2080","Skookumchuck River",821,326715,36747,3.62255310178334,1134.05371831812
+"838","ASRP.scenario.2.2080","Lincoln Creek",7,3623,286,1.38257391686348,25.2971177371139
+"839","ASRP.scenario.2.2080","Unnamed: Central Lowlands 6",0,23,14,0.275515467539503,NA
+"840","ASRP.scenario.2.2080","Unnamed: Black River 1",3,735,123,0.734931567390871,NA
+"841","ASRP.scenario.2.2080","Scatter Creek",0,0,0,0,NA
+"842","ASRP.scenario.2.2080","Black River",1131,203040,54438,3.69367671336313,1550.87221198045
+"843","ASRP.scenario.2.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"844","ASRP.scenario.2.2080","Garrard Creek",11,2859,512,1.67395601945816,27.3215398073657
+"845","ASRP.scenario.2.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"846","ASRP.scenario.2.2080","Unnamed: Central Lowlands 4",10,654,488,1.56901788602372,27.5741400149644
+"847","ASRP.scenario.2.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"848","ASRP.scenario.2.2080","Cedar Creek",81,53365,3278,3.91243409646181,108.811788118537
+"849","ASRP.scenario.2.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"850","ASRP.scenario.2.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"851","ASRP.scenario.2.2080","Porter Creek",26,15270,1074,2.70402545506452,41.2579880322361
+"852","ASRP.scenario.2.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"853","ASRP.scenario.2.2080","Mox Chehalis Creek",150,57151,6746,4.19464339109732,196.953597518275
+"854","ASRP.scenario.2.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"855","ASRP.scenario.2.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"856","ASRP.scenario.2.2080","Cloquallum Creek",264,87735,12027,3.07043884804192,391.509199438406
+"857","ASRP.scenario.2.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"858","ASRP.scenario.2.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"859","ASRP.scenario.2.2080","Satsop River",8907,3513596,397617,3.88639811481666,11992.8529023692
+"860","ASRP.scenario.2.2080","Unnamed: Olympic Mountains 1",0,0,0,0.522334900140564,NA
+"861","ASRP.scenario.2.2080","Wynoochee River",6695,3234101,300306,4.63436564275618,8537.13715902364
+"862","ASRP.scenario.2.2080","Wishkah River",646,78904,31673,1.93624164377193,1335.99280719601
+"863","ASRP.scenario.2.2080","Hoquiam River",460,128851,21753,3.10483240108796,678.544716321467
+"864","ASRP.scenario.2.2080","Humptulips River",5921,2625517,259268,4.42945937915901,7647.51119181706
+"865","ASRP.scenario.2.2080","Johns River",36,9076,1696,2.25330669412164,64.724014775354
+"866","ASRP.scenario.2.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"867","ASRP.scenario.2.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"868","ASRP.scenario.2.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"869","ASRP.scenario.2.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"870","ASRP.scenario.2.2080","Upper Skookumchuck",0,0,0,0,NA
+"871","ASRP.scenario.2.2080","Mainstem: Upper Chehalis 1",219,13605,10946,1.50945687955796,648.869550863697
+"872","ASRP.scenario.2.2080","Mainstem: Upper Chehalis 2",178,37484,8449,2.4914734234145,297.345069919179
+"873","ASRP.scenario.2.2080","Mainstem: Middle Chehalis 1",337,55556,16282,2.14095888944961,632.365593901956
+"874","ASRP.scenario.2.2080","Mainstem: Middle Chehalis 2",80,1111,4044,1.10997153462774,807.46097679555
+"875","ASRP.scenario.2.2080","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"876","ASRP.scenario.2.2080","Mainstem: Lower Chehalis 1",579,124553,27537,2.35439914052598,1006.49584127405
+"877","ASRP.scenario.2.2080","Mainstem: Lower Chehalis 2",1126,435292,50355,3.15509914266364,1648.48176323262
+"878","ASRP.scenario.2.2080","Mainstem: Lower Chehalis 3",1304,670973,55560,3.9667599360404,1743.53674315165
+"879","ASRP.scenario.2.2080","Mainstem: Lower Chehalis 4",643,127420,30721,2.26043402617691,1153.14173423286
+"880","ASRP.scenario.2.2080","Mainstem: Lower Chehalis 5",996,409178,44125,5.70647103259872,1207.62352707609
+"881","ASRP.scenario.2.2080","Mainstem: Lower Chehalis 6",852,125872,41436,2.03284478184777,1676.90613785719
+"882","ASRP.scenario.2.2080","Mainstem: Lower Chehalis 7",568,29164,28546,3.03976048167406,846.464067278054
+"883","ASRP.scenario.3.2040","Upper Chehalis: Above Proposed Dam",387,80913,18562,2.4641502282592,651.31713941002
+"884","ASRP.scenario.3.2040","Upper Chehalis: Proposed Dam to Elk Creek",16,6736,714,2.06783256423335,30.983622466587
+"885","ASRP.scenario.3.2040","Elk Creek",0,0,0,0,NA
+"886","ASRP.scenario.3.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"887","ASRP.scenario.3.2040","South Fork Chehalis",1279,366507,59307,3.04383270153186,1904.78507479667
+"888","ASRP.scenario.3.2040","Unnamed: Willapa Hills 2",10,5644,397,1.71749300294591,23.937418147552
+"889","ASRP.scenario.3.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"890","ASRP.scenario.3.2040","Unnamed: Willapa Hills 4",1,246,39,0.260184449900151,NA
+"891","ASRP.scenario.3.2040","Stearns Creek",0,0,0,0,NA
+"892","ASRP.scenario.3.2040","Bunker Creek",0,0,0,0,NA
+"893","ASRP.scenario.3.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"894","ASRP.scenario.3.2040","Newaukum River",1434,553110,64399,3.32513773342012,2050.73765789809
+"895","ASRP.scenario.3.2040","Dillenbaugh Creek",3,631,151,0.86325812647716,NA
+"896","ASRP.scenario.3.2040","Unnamed: Central Lowlands 8",1,52,34,0.486481853598163,NA
+"897","ASRP.scenario.3.2040","Salzer Creek",0,0,0,0,NA
+"898","ASRP.scenario.3.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"899","ASRP.scenario.3.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"900","ASRP.scenario.3.2040","Skookumchuck River",868,347483,38829,3.82640347258318,1175.10406649999
+"901","ASRP.scenario.3.2040","Lincoln Creek",7,3834,299,1.44051426648487,22.8905182705143
+"902","ASRP.scenario.3.2040","Unnamed: Central Lowlands 6",0,27,16,0.284027173845662,NA
+"903","ASRP.scenario.3.2040","Unnamed: Black River 1",5,1273,217,1.1405497474465,40.5745925612805
+"904","ASRP.scenario.3.2040","Scatter Creek",0,0,0,0,NA
+"905","ASRP.scenario.3.2040","Black River",1366,312934,64620,4.07902676389677,1809.64667953429
+"906","ASRP.scenario.3.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"907","ASRP.scenario.3.2040","Garrard Creek",18,7285,803,2.2095089584294,32.8820724927691
+"908","ASRP.scenario.3.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"909","ASRP.scenario.3.2040","Unnamed: Central Lowlands 4",10,673,501,1.60881170498594,26.4254397839328
+"910","ASRP.scenario.3.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"911","ASRP.scenario.3.2040","Cedar Creek",73,47376,2926,3.82606985556731,98.8309255364623
+"912","ASRP.scenario.3.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"913","ASRP.scenario.3.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"914","ASRP.scenario.3.2040","Porter Creek",26,15469,1085,2.73863298927785,40.954277389387
+"915","ASRP.scenario.3.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"916","ASRP.scenario.3.2040","Mox Chehalis Creek",152,57629,6807,4.24608316056254,198.82566418713
+"917","ASRP.scenario.3.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"918","ASRP.scenario.3.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"919","ASRP.scenario.3.2040","Cloquallum Creek",266,88651,12124,3.10315885313056,392.476418842094
+"920","ASRP.scenario.3.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"921","ASRP.scenario.3.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"922","ASRP.scenario.3.2040","Satsop River",8987,3576991,400641,3.88723452007665,12099.6671344181
+"923","ASRP.scenario.3.2040","Unnamed: Olympic Mountains 1",0,0,0,0.48240647702852,NA
+"924","ASRP.scenario.3.2040","Wynoochee River",7315,3847903,310826,5.05455837349209,9119.14223354732
+"925","ASRP.scenario.3.2040","Wishkah River",642,76646,31532,1.92304361420372,1337.52509775373
+"926","ASRP.scenario.3.2040","Hoquiam River",460,128851,21753,3.10483240108796,678.544716321467
+"927","ASRP.scenario.3.2040","Humptulips River",6175,2702712,270983,4.43914187746311,7970.50603610311
+"928","ASRP.scenario.3.2040","Johns River",40,10478,1893,2.40910497229127,68.3868134642646
+"929","ASRP.scenario.3.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"930","ASRP.scenario.3.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"931","ASRP.scenario.3.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"932","ASRP.scenario.3.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"933","ASRP.scenario.3.2040","Upper Skookumchuck",0,0,0,0,NA
+"934","ASRP.scenario.3.2040","Mainstem: Upper Chehalis 1",234,15186,11711,1.5503122877478,659.213111191221
+"935","ASRP.scenario.3.2040","Mainstem: Upper Chehalis 2",183,38877,8715,2.54830732371927,301.193589345303
+"936","ASRP.scenario.3.2040","Mainstem: Middle Chehalis 1",406,71705,19563,2.35097727148507,706.523190559456
+"937","ASRP.scenario.3.2040","Mainstem: Middle Chehalis 2",207,6392,10474,1.26728317336331,981.459526932614
+"938","ASRP.scenario.3.2040","Mainstem: Middle Chehalis 3",0,0,0,0.544821185049853,NA
+"939","ASRP.scenario.3.2040","Mainstem: Lower Chehalis 1",723,164304,34220,2.70542092351602,1146.94225966773
+"940","ASRP.scenario.3.2040","Mainstem: Lower Chehalis 2",1260,499790,56154,3.43380074852477,1777.70877331012
+"941","ASRP.scenario.3.2040","Mainstem: Lower Chehalis 3",1427,745031,60624,4.27244615459631,1863.06523456336
+"942","ASRP.scenario.3.2040","Mainstem: Lower Chehalis 4",705,145381,33616,2.40197501704904,1207.86202780127
+"943","ASRP.scenario.3.2040","Mainstem: Lower Chehalis 5",1060,436601,46947,6.04896087757297,1269.94418964671
+"944","ASRP.scenario.3.2040","Mainstem: Lower Chehalis 6",942,145543,45703,2.14501643696651,1764.6956134321
+"945","ASRP.scenario.3.2040","Mainstem: Lower Chehalis 7",507,24408,25508,2.87214576788317,777.812245871893
+"946","ASRP.scenario.3.2080","Upper Chehalis: Above Proposed Dam",366,75137,17577,2.37029561190649,633.095652076696
+"947","ASRP.scenario.3.2080","Upper Chehalis: Proposed Dam to Elk Creek",15,6368,683,1.99102931018227,30.1357783729335
+"948","ASRP.scenario.3.2080","Elk Creek",0,0,0,0,NA
+"949","ASRP.scenario.3.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"950","ASRP.scenario.3.2080","South Fork Chehalis",1212,343301,56232,2.91377909873744,1845.3019316595
+"951","ASRP.scenario.3.2080","Unnamed: Willapa Hills 2",9,5413,381,1.65548082526042,22.7303787588665
+"952","ASRP.scenario.3.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"953","ASRP.scenario.3.2080","Unnamed: Willapa Hills 4",1,237,38,0.250227546032893,NA
+"954","ASRP.scenario.3.2080","Stearns Creek",0,0,0,0,NA
+"955","ASRP.scenario.3.2080","Bunker Creek",0,0,0,0,NA
+"956","ASRP.scenario.3.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"957","ASRP.scenario.3.2080","Newaukum River",1362,518607,61254,3.18395891269183,1985.63810604901
+"958","ASRP.scenario.3.2080","Dillenbaugh Creek",3,566,141,0.829730107274664,NA
+"959","ASRP.scenario.3.2080","Unnamed: Central Lowlands 8",1,41,30,0.468347724423661,NA
+"960","ASRP.scenario.3.2080","Salzer Creek",0,0,0,0,NA
+"961","ASRP.scenario.3.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"962","ASRP.scenario.3.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"963","ASRP.scenario.3.2080","Skookumchuck River",831,331139,37188,3.66971269140023,1142.26944958416
+"964","ASRP.scenario.3.2080","Lincoln Creek",7,3650,288,1.39241375088498,24.8383147486894
+"965","ASRP.scenario.3.2080","Unnamed: Central Lowlands 6",0,23,14,0.276714964969911,NA
+"966","ASRP.scenario.3.2080","Unnamed: Black River 1",4,1230,208,1.09825380312881,44.7108923280646
+"967","ASRP.scenario.3.2080","Scatter Creek",0,0,0,0,NA
+"968","ASRP.scenario.3.2080","Black River",1323,304496,62572,3.95152656470605,1771.24261987686
+"969","ASRP.scenario.3.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"970","ASRP.scenario.3.2080","Garrard Creek",17,6965,776,2.14212446377985,31.8845423936886
+"971","ASRP.scenario.3.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"972","ASRP.scenario.3.2080","Unnamed: Central Lowlands 4",10,653,487,1.57181079484662,27.4883022323536
+"973","ASRP.scenario.3.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"974","ASRP.scenario.3.2080","Cedar Creek",71,46218,2868,3.73784774519806,96.9327788130394
+"975","ASRP.scenario.3.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"976","ASRP.scenario.3.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"977","ASRP.scenario.3.2080","Porter Creek",26,15102,1064,2.68160404183676,41.4614281086058
+"978","ASRP.scenario.3.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"979","ASRP.scenario.3.2080","Mox Chehalis Creek",149,56694,6687,4.15942818422723,196.160432620007
+"980","ASRP.scenario.3.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"981","ASRP.scenario.3.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"982","ASRP.scenario.3.2080","Cloquallum Creek",261,86521,11900,3.04378689616264,388.704116554444
+"983","ASRP.scenario.3.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"984","ASRP.scenario.3.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"985","ASRP.scenario.3.2080","Satsop River",8831,3507500,393842,3.81509602540926,11968.0155477081
+"986","ASRP.scenario.3.2080","Unnamed: Olympic Mountains 1",0,0,0,0.472738934168093,NA
+"987","ASRP.scenario.3.2080","Wynoochee River",7312,3845915,310668,5.05193170147239,9116.571384395
+"988","ASRP.scenario.3.2080","Wishkah River",642,76646,31532,1.92304002558771,1337.52780183203
+"989","ASRP.scenario.3.2080","Hoquiam River",460,128851,21753,3.10483240108796,678.544716321467
+"990","ASRP.scenario.3.2080","Humptulips River",6171,2700960,270819,4.436502069326,7966.72131065538
+"991","ASRP.scenario.3.2080","Johns River",40,10478,1893,2.40910497229127,68.3868134642646
+"992","ASRP.scenario.3.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"993","ASRP.scenario.3.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"994","ASRP.scenario.3.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"995","ASRP.scenario.3.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"996","ASRP.scenario.3.2080","Upper Skookumchuck",0,0,0,0,NA
+"997","ASRP.scenario.3.2080","Mainstem: Upper Chehalis 1",218,13564,10926,1.50945025288965,645.912242193391
+"998","ASRP.scenario.3.2080","Mainstem: Upper Chehalis 2",178,37355,8456,2.49090588535019,297.390500600372
+"999","ASRP.scenario.3.2080","Mainstem: Middle Chehalis 1",386,67065,18608,2.2734427745081,689.115308930237
+"1000","ASRP.scenario.3.2080","Mainstem: Middle Chehalis 2",160,4032,8119,1.20753459143289,930.955814620133
+"1001","ASRP.scenario.3.2080","Mainstem: Middle Chehalis 3",0,0,0,0.51901580562414,NA
+"1002","ASRP.scenario.3.2080","Mainstem: Lower Chehalis 1",638,140931,30290,2.47411344896626,1070.8025094998
+"1003","ASRP.scenario.3.2080","Mainstem: Lower Chehalis 2",1178,460689,52618,3.24137656829326,1703.56987373925
+"1004","ASRP.scenario.3.2080","Mainstem: Lower Chehalis 3",1357,704521,57729,4.06976781111391,1799.05297712976
+"1005","ASRP.scenario.3.2080","Mainstem: Lower Chehalis 4",666,133895,31785,2.30857199337169,1174.95174539383
+"1006","ASRP.scenario.3.2080","Mainstem: Lower Chehalis 5",1027,426895,45441,5.82999356193243,1239.62968300709
+"1007","ASRP.scenario.3.2080","Mainstem: Lower Chehalis 6",896,135247,43526,2.08053985126694,1725.21513625752
+"1008","ASRP.scenario.3.2080","Mainstem: Lower Chehalis 7",488,23419,24508,2.78247198090818,761.777094522047
+"1009","ASRP.dev.and.climate.2040","Upper Chehalis: Above Proposed Dam",321,60352,15501,2.2693320083815,573.888919431961
+"1010","ASRP.dev.and.climate.2040","Upper Chehalis: Proposed Dam to Elk Creek",15,6014,660,1.93670630432117,31.0135572172437
+"1011","ASRP.dev.and.climate.2040","Elk Creek",0,0,0,0,NA
+"1012","ASRP.dev.and.climate.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1013","ASRP.dev.and.climate.2040","South Fork Chehalis",1122,302149,52339,2.82321342612539,1737.39696007199
+"1014","ASRP.dev.and.climate.2040","Unnamed: Willapa Hills 2",9,5374,379,1.63701800245721,23.1283291292926
+"1015","ASRP.dev.and.climate.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1016","ASRP.dev.and.climate.2040","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1017","ASRP.dev.and.climate.2040","Stearns Creek",0,0,0,0,NA
+"1018","ASRP.dev.and.climate.2040","Bunker Creek",0,0,0,0,NA
+"1019","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1020","ASRP.dev.and.climate.2040","Newaukum River",1179,404012,53838,2.98918822113546,1771.70409279169
+"1021","ASRP.dev.and.climate.2040","Dillenbaugh Creek",2,258,103,0.732685201351283,NA
+"1022","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 8",1,41,30,0.464434897352903,NA
+"1023","ASRP.dev.and.climate.2040","Salzer Creek",0,0,0,0,NA
+"1024","ASRP.dev.and.climate.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1025","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1026","ASRP.dev.and.climate.2040","Skookumchuck River",728,268192,33010,3.55613919162003,1012.80452175165
+"1027","ASRP.dev.and.climate.2040","Lincoln Creek",5,1993,216,1.14284259635401,40.0035642561998
+"1028","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 6",0,25,15,0.276786513705152,NA
+"1029","ASRP.dev.and.climate.2040","Unnamed: Black River 1",0,0,0,0,NA
+"1030","ASRP.dev.and.climate.2040","Scatter Creek",0,0,0,0,NA
+"1031","ASRP.dev.and.climate.2040","Black River",915,134156,44509,3.40071538204216,1296.13639244551
+"1032","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1033","ASRP.dev.and.climate.2040","Garrard Creek",11,2961,525,1.68235527091017,27.1206346150554
+"1034","ASRP.dev.and.climate.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"1035","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 4",10,664,495,1.56891491100866,27.5773209780536
+"1036","ASRP.dev.and.climate.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1037","ASRP.dev.and.climate.2040","Cedar Creek",56,28985,2359,3.17131811887487,81.790785566243
+"1038","ASRP.dev.and.climate.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"1039","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1040","ASRP.dev.and.climate.2040","Porter Creek",20,9119,873,2.26369755665877,35.8265717098324
+"1041","ASRP.dev.and.climate.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"1042","ASRP.dev.and.climate.2040","Mox Chehalis Creek",152,57516,6793,4.17457957694481,199.880355907249
+"1043","ASRP.dev.and.climate.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"1044","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1045","ASRP.dev.and.climate.2040","Cloquallum Creek",216,64847,9968,2.84201264248136,333.263038818794
+"1046","ASRP.dev.and.climate.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"1047","ASRP.dev.and.climate.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1048","ASRP.dev.and.climate.2040","Satsop River",7740,2923887,350018,3.72142047246967,10584.1029522263
+"1049","ASRP.dev.and.climate.2040","Unnamed: Olympic Mountains 1",0,0,0,0.482174267205564,NA
+"1050","ASRP.dev.and.climate.2040","Wynoochee River",5574,2688920,251690,4.45724344819603,7186.26713811794
+"1051","ASRP.dev.and.climate.2040","Wishkah River",236,9693,12078,1.31465560007238,986.026377873808
+"1052","ASRP.dev.and.climate.2040","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1053","ASRP.dev.and.climate.2040","Humptulips River",4865,1872634,217720,3.97372667484425,6500.99433705682
+"1054","ASRP.dev.and.climate.2040","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1055","ASRP.dev.and.climate.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"1056","ASRP.dev.and.climate.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1057","ASRP.dev.and.climate.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"1058","ASRP.dev.and.climate.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"1059","ASRP.dev.and.climate.2040","Upper Skookumchuck",0,0,0,0,NA
+"1060","ASRP.dev.and.climate.2040","Mainstem: Upper Chehalis 1",185,10471,9290,1.45266538513312,593.690405928867
+"1061","ASRP.dev.and.climate.2040","Mainstem: Upper Chehalis 2",158,31694,7533,2.37357674166892,273.02815620482
+"1062","ASRP.dev.and.climate.2040","Mainstem: Middle Chehalis 1",359,60487,17328,2.22569912810177,651.89406492112
+"1063","ASRP.dev.and.climate.2040","Mainstem: Middle Chehalis 2",132,2845,6691,1.17970348719201,866.543341715795
+"1064","ASRP.dev.and.climate.2040","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1065","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis 1",605,131537,28755,2.47760024922858,1014.44768405112
+"1066","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis 2",1147,444582,51278,3.24957140151289,1656.87490293867
+"1067","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis 3",1306,668104,55725,4.03764598883895,1735.93818397488
+"1068","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis 4",654,130769,31236,2.28836757594459,1161.61910825061
+"1069","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis 5",984,392128,43799,5.74994683722606,1191.1602133077
+"1070","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis 6",835,122422,40606,2.02067968287231,1653.08231711855
+"1071","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis 7",548,27167,27545,2.97586823385887,825.346429589465
+"1072","ASRP.dev.and.climate.2080","Upper Chehalis: Above Proposed Dam",294,53713,14257,2.15210625602238,549.184796075171
+"1073","ASRP.dev.and.climate.2080","Upper Chehalis: Proposed Dam to Elk Creek",14,5546,621,1.8419396805361,30.6282696060669
+"1074","ASRP.dev.and.climate.2080","Elk Creek",0,0,0,0,NA
+"1075","ASRP.dev.and.climate.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1076","ASRP.dev.and.climate.2080","South Fork Chehalis",1034,273308,48334,2.6590817155497,1657.2363302596
+"1077","ASRP.dev.and.climate.2080","Unnamed: Willapa Hills 2",9,5057,358,1.55816257754736,25.1243343105286
+"1078","ASRP.dev.and.climate.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1079","ASRP.dev.and.climate.2080","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1080","ASRP.dev.and.climate.2080","Stearns Creek",0,0,0,0,NA
+"1081","ASRP.dev.and.climate.2080","Bunker Creek",0,0,0,0,NA
+"1082","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1083","ASRP.dev.and.climate.2080","Newaukum River",1089,365073,49847,2.81475733301816,1689.08023121684
+"1084","ASRP.dev.and.climate.2080","Dillenbaugh Creek",2,204,89,0.693782631115774,NA
+"1085","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 8",0,27,24,0.441151283113239,NA
+"1086","ASRP.dev.and.climate.2080","Salzer Creek",0,0,0,0,NA
+"1087","ASRP.dev.and.climate.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1088","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1089","ASRP.dev.and.climate.2080","Skookumchuck River",685,250562,31066,3.36570641019946,974.554104028592
+"1090","ASRP.dev.and.climate.2080","Lincoln Creek",5,1862,205,1.09773970341364,56.1562837349714
+"1091","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 6",0,21,13,0.268575545344675,NA
+"1092","ASRP.dev.and.climate.2080","Unnamed: Black River 1",0,0,0,0,NA
+"1093","ASRP.dev.and.climate.2080","Scatter Creek",0,0,0,0,NA
+"1094","ASRP.dev.and.climate.2080","Black River",878,129270,42687,3.27701272790237,1263.59292587215
+"1095","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1096","ASRP.dev.and.climate.2080","Garrard Creek",11,2771,500,1.62310115184683,28.65363451407
+"1097","ASRP.dev.and.climate.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"1098","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 4",10,640,478,1.52748838326611,28.9577634640633
+"1099","ASRP.dev.and.climate.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1100","ASRP.dev.and.climate.2080","Cedar Creek",54,28037,2297,3.08436435685325,79.9071787628931
+"1101","ASRP.dev.and.climate.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"1102","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1103","ASRP.dev.and.climate.2080","Porter Creek",20,8833,852,2.20929218167266,36.5386002680812
+"1104","ASRP.dev.and.climate.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"1105","ASRP.dev.and.climate.2080","Mox Chehalis Creek",148,56448,6655,4.08023552346764,196.048273864911
+"1106","ASRP.dev.and.climate.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"1107","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1108","ASRP.dev.and.climate.2080","Cloquallum Creek",211,62802,9728,2.77754984620582,329.702719054759
+"1109","ASRP.dev.and.climate.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"1110","ASRP.dev.and.climate.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1111","ASRP.dev.and.climate.2080","Satsop River",7580,2856285,342926,3.64466030459591,10446.1525969242
+"1112","ASRP.dev.and.climate.2080","Unnamed: Olympic Mountains 1",0,0,0,0.472487262064817,NA
+"1113","ASRP.dev.and.climate.2080","Wynoochee River",5570,2686887,251511,4.45414573746433,7182.55500588372
+"1114","ASRP.dev.and.climate.2080","Wishkah River",236,9691,12077,1.31461955667834,986.112302272692
+"1115","ASRP.dev.and.climate.2080","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1116","ASRP.dev.and.climate.2080","Humptulips River",4834,1859847,216356,3.95059169800504,6472.3154616982
+"1117","ASRP.dev.and.climate.2080","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1118","ASRP.dev.and.climate.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"1119","ASRP.dev.and.climate.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1120","ASRP.dev.and.climate.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"1121","ASRP.dev.and.climate.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"1122","ASRP.dev.and.climate.2080","Upper Skookumchuck",0,0,0,0,NA
+"1123","ASRP.dev.and.climate.2080","Mainstem: Upper Chehalis 1",168,8926,8444,1.40744624638393,580.324328647018
+"1124","ASRP.dev.and.climate.2080","Mainstem: Upper Chehalis 2",152,30140,7259,2.31139606309886,267.907012592992
+"1125","ASRP.dev.and.climate.2080","Mainstem: Middle Chehalis 1",337,55645,16300,2.14096779640321,632.363288133425
+"1126","ASRP.dev.and.climate.2080","Mainstem: Middle Chehalis 2",81,1149,4116,1.10997853831055,817.507333560636
+"1127","ASRP.dev.and.climate.2080","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1128","ASRP.dev.and.climate.2080","Mainstem: Lower Chehalis 1",479,97258,22883,2.13289545542249,901.810417066567
+"1129","ASRP.dev.and.climate.2080","Mainstem: Lower Chehalis 2",1047,397207,46928,3.01381877157938,1566.90775673368
+"1130","ASRP.dev.and.climate.2080","Mainstem: Lower Chehalis 3",1224,620890,52306,3.79922642221318,1661.26366337749
+"1131","ASRP.dev.and.climate.2080","Mainstem: Lower Chehalis 4",608,117829,29115,2.18256771141949,1122.13546482695
+"1132","ASRP.dev.and.climate.2080","Mainstem: Lower Chehalis 5",946,381333,42066,5.50090900518449,1156.17976566741
+"1133","ASRP.dev.and.climate.2080","Mainstem: Lower Chehalis 6",779,110520,37978,1.94386923483211,1604.32619059097
+"1134","ASRP.dev.and.climate.2080","Mainstem: Lower Chehalis 7",527,26165,26501,2.88261633323094,806.929580285519
+"1135","ASRP.cc.only.2040","Upper Chehalis: Above Proposed Dam",321,60352,15501,2.2693320083815,573.888919431961
+"1136","ASRP.cc.only.2040","Upper Chehalis: Proposed Dam to Elk Creek",15,6014,660,1.93670630432117,31.0135572172437
+"1137","ASRP.cc.only.2040","Elk Creek",0,0,0,0,NA
+"1138","ASRP.cc.only.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1139","ASRP.cc.only.2040","South Fork Chehalis",1122,302149,52339,2.82321342612539,1737.39696007199
+"1140","ASRP.cc.only.2040","Unnamed: Willapa Hills 2",9,5374,379,1.63701800245721,23.1283291292926
+"1141","ASRP.cc.only.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1142","ASRP.cc.only.2040","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1143","ASRP.cc.only.2040","Stearns Creek",0,0,0,0,NA
+"1144","ASRP.cc.only.2040","Bunker Creek",0,0,0,0,NA
+"1145","ASRP.cc.only.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1146","ASRP.cc.only.2040","Newaukum River",1179,404012,53838,2.98918822113546,1771.70409279169
+"1147","ASRP.cc.only.2040","Dillenbaugh Creek",2,258,103,0.732685201351283,NA
+"1148","ASRP.cc.only.2040","Unnamed: Central Lowlands 8",1,41,30,0.464434897352903,NA
+"1149","ASRP.cc.only.2040","Salzer Creek",0,0,0,0,NA
+"1150","ASRP.cc.only.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1151","ASRP.cc.only.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1152","ASRP.cc.only.2040","Skookumchuck River",728,268192,33010,3.55613919162003,1012.80452175165
+"1153","ASRP.cc.only.2040","Lincoln Creek",5,1993,216,1.14284259635401,40.0035642561998
+"1154","ASRP.cc.only.2040","Unnamed: Central Lowlands 6",0,25,15,0.276786513705152,NA
+"1155","ASRP.cc.only.2040","Unnamed: Black River 1",0,0,0,0,NA
+"1156","ASRP.cc.only.2040","Scatter Creek",0,0,0,0,NA
+"1157","ASRP.cc.only.2040","Black River",915,134156,44509,3.40071538204216,1296.13639244551
+"1158","ASRP.cc.only.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1159","ASRP.cc.only.2040","Garrard Creek",11,2961,525,1.68235527091017,27.1206346150554
+"1160","ASRP.cc.only.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"1161","ASRP.cc.only.2040","Unnamed: Central Lowlands 4",10,664,495,1.56891491100866,27.5773209780536
+"1162","ASRP.cc.only.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1163","ASRP.cc.only.2040","Cedar Creek",56,28985,2359,3.17131811887487,81.790785566243
+"1164","ASRP.cc.only.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"1165","ASRP.cc.only.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1166","ASRP.cc.only.2040","Porter Creek",20,9119,873,2.26369755665877,35.8265717098324
+"1167","ASRP.cc.only.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"1168","ASRP.cc.only.2040","Mox Chehalis Creek",152,57516,6793,4.17457957694481,199.880355907249
+"1169","ASRP.cc.only.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"1170","ASRP.cc.only.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1171","ASRP.cc.only.2040","Cloquallum Creek",216,64847,9968,2.84201264248136,333.263038818794
+"1172","ASRP.cc.only.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"1173","ASRP.cc.only.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1174","ASRP.cc.only.2040","Satsop River",7740,2923887,350018,3.72142047246967,10584.1029522263
+"1175","ASRP.cc.only.2040","Unnamed: Olympic Mountains 1",0,0,0,0.482174267205564,NA
+"1176","ASRP.cc.only.2040","Wynoochee River",5574,2688920,251690,4.45724344819603,7186.26713811794
+"1177","ASRP.cc.only.2040","Wishkah River",236,9693,12078,1.31465560007238,986.026377873808
+"1178","ASRP.cc.only.2040","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1179","ASRP.cc.only.2040","Humptulips River",4865,1872634,217720,3.97372667484425,6500.99433705682
+"1180","ASRP.cc.only.2040","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1181","ASRP.cc.only.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"1182","ASRP.cc.only.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1183","ASRP.cc.only.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"1184","ASRP.cc.only.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"1185","ASRP.cc.only.2040","Upper Skookumchuck",0,0,0,0,NA
+"1186","ASRP.cc.only.2040","Mainstem: Upper Chehalis 1",185,10471,9290,1.45266538513312,593.690405928867
+"1187","ASRP.cc.only.2040","Mainstem: Upper Chehalis 2",158,31694,7533,2.37357674166892,273.02815620482
+"1188","ASRP.cc.only.2040","Mainstem: Middle Chehalis 1",359,60487,17328,2.22569912810177,651.89406492112
+"1189","ASRP.cc.only.2040","Mainstem: Middle Chehalis 2",132,2845,6691,1.17970348719201,866.543341715795
+"1190","ASRP.cc.only.2040","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1191","ASRP.cc.only.2040","Mainstem: Lower Chehalis 1",605,131537,28755,2.47760024922858,1014.44768405112
+"1192","ASRP.cc.only.2040","Mainstem: Lower Chehalis 2",1147,444582,51278,3.24957140151289,1656.87490293867
+"1193","ASRP.cc.only.2040","Mainstem: Lower Chehalis 3",1306,668104,55725,4.03764598883895,1735.93818397488
+"1194","ASRP.cc.only.2040","Mainstem: Lower Chehalis 4",654,130769,31236,2.28836757594459,1161.61910825061
+"1195","ASRP.cc.only.2040","Mainstem: Lower Chehalis 5",984,392128,43799,5.74994683722606,1191.1602133077
+"1196","ASRP.cc.only.2040","Mainstem: Lower Chehalis 6",835,122422,40606,2.02067968287231,1653.08231711855
+"1197","ASRP.cc.only.2040","Mainstem: Lower Chehalis 7",548,27167,27545,2.97586823385887,825.346429589465
+"1198","ASRP.cc.only.2080","Upper Chehalis: Above Proposed Dam",294,53713,14257,2.15210625602238,549.184796075171
+"1199","ASRP.cc.only.2080","Upper Chehalis: Proposed Dam to Elk Creek",14,5546,621,1.8419396805361,30.6282696060669
+"1200","ASRP.cc.only.2080","Elk Creek",0,0,0,0,NA
+"1201","ASRP.cc.only.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1202","ASRP.cc.only.2080","South Fork Chehalis",1034,273308,48334,2.6590817155497,1657.2363302596
+"1203","ASRP.cc.only.2080","Unnamed: Willapa Hills 2",9,5057,358,1.55816257754736,25.1243343105286
+"1204","ASRP.cc.only.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1205","ASRP.cc.only.2080","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1206","ASRP.cc.only.2080","Stearns Creek",0,0,0,0,NA
+"1207","ASRP.cc.only.2080","Bunker Creek",0,0,0,0,NA
+"1208","ASRP.cc.only.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1209","ASRP.cc.only.2080","Newaukum River",1089,365073,49847,2.81475733301816,1689.08023121684
+"1210","ASRP.cc.only.2080","Dillenbaugh Creek",2,204,89,0.693782631115774,NA
+"1211","ASRP.cc.only.2080","Unnamed: Central Lowlands 8",0,27,24,0.441151283113239,NA
+"1212","ASRP.cc.only.2080","Salzer Creek",0,0,0,0,NA
+"1213","ASRP.cc.only.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1214","ASRP.cc.only.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1215","ASRP.cc.only.2080","Skookumchuck River",685,250562,31066,3.36570641019946,974.554104028592
+"1216","ASRP.cc.only.2080","Lincoln Creek",5,1862,205,1.09773970341364,56.1562837349714
+"1217","ASRP.cc.only.2080","Unnamed: Central Lowlands 6",0,21,13,0.268575545344675,NA
+"1218","ASRP.cc.only.2080","Unnamed: Black River 1",0,0,0,0,NA
+"1219","ASRP.cc.only.2080","Scatter Creek",0,0,0,0,NA
+"1220","ASRP.cc.only.2080","Black River",878,129270,42687,3.27701272790237,1263.59292587215
+"1221","ASRP.cc.only.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1222","ASRP.cc.only.2080","Garrard Creek",11,2771,500,1.62310115184683,28.65363451407
+"1223","ASRP.cc.only.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"1224","ASRP.cc.only.2080","Unnamed: Central Lowlands 4",10,640,478,1.52748838326611,28.9577634640633
+"1225","ASRP.cc.only.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1226","ASRP.cc.only.2080","Cedar Creek",54,28037,2297,3.08436435685325,79.9071787628931
+"1227","ASRP.cc.only.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"1228","ASRP.cc.only.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1229","ASRP.cc.only.2080","Porter Creek",20,8833,852,2.20929218167266,36.5386002680812
+"1230","ASRP.cc.only.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"1231","ASRP.cc.only.2080","Mox Chehalis Creek",148,56448,6655,4.08023552346764,196.048273864911
+"1232","ASRP.cc.only.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"1233","ASRP.cc.only.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1234","ASRP.cc.only.2080","Cloquallum Creek",211,62802,9728,2.77754984620582,329.702719054759
+"1235","ASRP.cc.only.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"1236","ASRP.cc.only.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1237","ASRP.cc.only.2080","Satsop River",7580,2856285,342926,3.64466030459591,10446.1525969242
+"1238","ASRP.cc.only.2080","Unnamed: Olympic Mountains 1",0,0,0,0.472487262064817,NA
+"1239","ASRP.cc.only.2080","Wynoochee River",5570,2686887,251511,4.45414573746433,7182.55500588372
+"1240","ASRP.cc.only.2080","Wishkah River",236,9691,12077,1.31461955667834,986.112302272692
+"1241","ASRP.cc.only.2080","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1242","ASRP.cc.only.2080","Humptulips River",4834,1859847,216356,3.95059169800504,6472.3154616982
+"1243","ASRP.cc.only.2080","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1244","ASRP.cc.only.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"1245","ASRP.cc.only.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1246","ASRP.cc.only.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"1247","ASRP.cc.only.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"1248","ASRP.cc.only.2080","Upper Skookumchuck",0,0,0,0,NA
+"1249","ASRP.cc.only.2080","Mainstem: Upper Chehalis 1",168,8926,8444,1.40744624638393,580.324328647018
+"1250","ASRP.cc.only.2080","Mainstem: Upper Chehalis 2",152,30140,7259,2.31139606309886,267.907012592992
+"1251","ASRP.cc.only.2080","Mainstem: Middle Chehalis 1",337,55645,16300,2.14096779640321,632.363288133425
+"1252","ASRP.cc.only.2080","Mainstem: Middle Chehalis 2",81,1149,4116,1.10997853831055,817.507333560636
+"1253","ASRP.cc.only.2080","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1254","ASRP.cc.only.2080","Mainstem: Lower Chehalis 1",479,97258,22883,2.13289545542249,901.810417066567
+"1255","ASRP.cc.only.2080","Mainstem: Lower Chehalis 2",1047,397207,46928,3.01381877157938,1566.90775673368
+"1256","ASRP.cc.only.2080","Mainstem: Lower Chehalis 3",1224,620890,52306,3.79922642221318,1661.26366337749
+"1257","ASRP.cc.only.2080","Mainstem: Lower Chehalis 4",608,117829,29115,2.18256771141949,1122.13546482695
+"1258","ASRP.cc.only.2080","Mainstem: Lower Chehalis 5",946,381333,42066,5.50090900518449,1156.17976566741
+"1259","ASRP.cc.only.2080","Mainstem: Lower Chehalis 6",779,110520,37978,1.94386923483211,1604.32619059097
+"1260","ASRP.cc.only.2080","Mainstem: Lower Chehalis 7",527,26165,26501,2.88261633323094,806.929580285519
+"1261","ASRP.rip.and.climate.2040","Upper Chehalis: Above Proposed Dam",326,61592,15732,2.28867305570809,578.973396592724
+"1262","ASRP.rip.and.climate.2040","Upper Chehalis: Proposed Dam to Elk Creek",15,6102,668,1.95242552578369,30.74926290185
+"1263","ASRP.rip.and.climate.2040","Elk Creek",0,0,0,0,NA
+"1264","ASRP.rip.and.climate.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1265","ASRP.rip.and.climate.2040","South Fork Chehalis",1142,308533,53229,2.85532653421747,1757.52507277737
+"1266","ASRP.rip.and.climate.2040","Unnamed: Willapa Hills 2",9,5442,383,1.65185209398277,22.8068130532659
+"1267","ASRP.rip.and.climate.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1268","ASRP.rip.and.climate.2040","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1269","ASRP.rip.and.climate.2040","Stearns Creek",0,0,0,0,NA
+"1270","ASRP.rip.and.climate.2040","Bunker Creek",0,0,0,0,NA
+"1271","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1272","ASRP.rip.and.climate.2040","Newaukum River",1201,413654,54825,3.02665406521505,1793.60236890629
+"1273","ASRP.rip.and.climate.2040","Dillenbaugh Creek",2,277,107,0.743375693192511,NA
+"1274","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 8",1,44,31,0.469452495630376,NA
+"1275","ASRP.rip.and.climate.2040","Salzer Creek",0,0,0,0,NA
+"1276","ASRP.rip.and.climate.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1277","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1278","ASRP.rip.and.climate.2040","Skookumchuck River",730,268939,33093,3.56676543066269,1014.40464067319
+"1279","ASRP.rip.and.climate.2040","Lincoln Creek",5,2000,217,1.14611595228365,39.2193985109417
+"1280","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 6",0,25,15,0.277607815870547,NA
+"1281","ASRP.rip.and.climate.2040","Unnamed: Black River 1",0,0,0,0,NA
+"1282","ASRP.rip.and.climate.2040","Scatter Creek",0,0,0,0,NA
+"1283","ASRP.rip.and.climate.2040","Black River",919,134651,44696,3.41637566470188,1299.32165835165
+"1284","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1285","ASRP.rip.and.climate.2040","Garrard Creek",11,2980,528,1.68981950614363,26.946200277076
+"1286","ASRP.rip.and.climate.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"1287","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 4",10,667,497,1.57501041360795,27.3909893861819
+"1288","ASRP.rip.and.climate.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1289","ASRP.rip.and.climate.2040","Cedar Creek",56,29150,2369,3.18831684131542,81.5904441910422
+"1290","ASRP.rip.and.climate.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"1291","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1292","ASRP.rip.and.climate.2040","Porter Creek",20,9192,879,2.27940579116768,35.6322568946217
+"1293","ASRP.rip.and.climate.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"1294","ASRP.rip.and.climate.2040","Mox Chehalis Creek",152,57794,6829,4.2021824535264,199.467626284883
+"1295","ASRP.rip.and.climate.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"1296","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1297","ASRP.rip.and.climate.2040","Cloquallum Creek",218,65446,10038,2.86235117562318,335.056333334691
+"1298","ASRP.rip.and.climate.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"1299","ASRP.rip.and.climate.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1300","ASRP.rip.and.climate.2040","Satsop River",7800,2949278,352690,3.75403989240461,10632.2029835195
+"1301","ASRP.rip.and.climate.2040","Unnamed: Olympic Mountains 1",0,0,0,0.486281018073183,NA
+"1302","ASRP.rip.and.climate.2040","Wynoochee River",5574,2688920,251690,4.45724344819603,7186.26713811794
+"1303","ASRP.rip.and.climate.2040","Wishkah River",236,9693,12078,1.31465560007238,986.026377873808
+"1304","ASRP.rip.and.climate.2040","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1305","ASRP.rip.and.climate.2040","Humptulips River",4865,1872634,217720,3.97372667484425,6500.99433705682
+"1306","ASRP.rip.and.climate.2040","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1307","ASRP.rip.and.climate.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"1308","ASRP.rip.and.climate.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1309","ASRP.rip.and.climate.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"1310","ASRP.rip.and.climate.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"1311","ASRP.rip.and.climate.2040","Upper Skookumchuck",0,0,0,0,NA
+"1312","ASRP.rip.and.climate.2040","Mainstem: Upper Chehalis 1",185,10468,9288,1.45266538513312,593.690405928867
+"1313","ASRP.rip.and.climate.2040","Mainstem: Upper Chehalis 2",158,31683,7531,2.37357674166892,273.02815620482
+"1314","ASRP.rip.and.climate.2040","Mainstem: Middle Chehalis 1",359,60479,17327,2.22569912810177,651.89406492112
+"1315","ASRP.rip.and.climate.2040","Mainstem: Middle Chehalis 2",132,2840,6684,1.17970348719201,866.543341715795
+"1316","ASRP.rip.and.climate.2040","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1317","ASRP.rip.and.climate.2040","Mainstem: Lower Chehalis 1",605,131469,28743,2.47760024922858,1014.44768405112
+"1318","ASRP.rip.and.climate.2040","Mainstem: Lower Chehalis 2",1147,444421,51263,3.24957140151289,1656.87490293867
+"1319","ASRP.rip.and.climate.2040","Mainstem: Lower Chehalis 3",1306,667899,55710,4.03764598883895,1735.93818397488
+"1320","ASRP.rip.and.climate.2040","Mainstem: Lower Chehalis 4",654,130881,31254,2.29010008485716,1160.93741336542
+"1321","ASRP.rip.and.climate.2040","Mainstem: Lower Chehalis 5",983,392040,43785,5.74994683722606,1189.94968463564
+"1322","ASRP.rip.and.climate.2040","Mainstem: Lower Chehalis 6",841,123765,40899,2.02958110305588,1657.83705878424
+"1323","ASRP.rip.and.climate.2040","Mainstem: Lower Chehalis 7",560,27731,28142,3.02820292429424,836.106494716186
+"1324","ASRP.rip.and.climate.2080","Upper Chehalis: Above Proposed Dam",302,55520,14597,2.18027080664117,557.87348115424
+"1325","ASRP.rip.and.climate.2080","Upper Chehalis: Proposed Dam to Elk Creek",14,5675,632,1.86483010632811,30.1881505946193
+"1326","ASRP.rip.and.climate.2080","Elk Creek",0,0,0,0,NA
+"1327","ASRP.rip.and.climate.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1328","ASRP.rip.and.climate.2080","South Fork Chehalis",1063,282755,49644,2.70588489417479,1686.13700275435
+"1329","ASRP.rip.and.climate.2080","Unnamed: Willapa Hills 2",9,5158,365,1.57976407174779,24.5235559403813
+"1330","ASRP.rip.and.climate.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1331","ASRP.rip.and.climate.2080","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1332","ASRP.rip.and.climate.2080","Stearns Creek",0,0,0,0,NA
+"1333","ASRP.rip.and.climate.2080","Bunker Creek",0,0,0,0,NA
+"1334","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1335","ASRP.rip.and.climate.2080","Newaukum River",1122,379217,51298,2.86932969773986,1722.21514736355
+"1336","ASRP.rip.and.climate.2080","Dillenbaugh Creek",2,230,96,0.709230661514813,NA
+"1337","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 8",1,32,26,0.448457940208091,NA
+"1338","ASRP.rip.and.climate.2080","Salzer Creek",0,0,0,0,NA
+"1339","ASRP.rip.and.climate.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1340","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1341","ASRP.rip.and.climate.2080","Skookumchuck River",688,251813,31203,3.38253607929383,976.767925060728
+"1342","ASRP.rip.and.climate.2080","Lincoln Creek",5,1874,206,1.10292182188325,53.5805624940422
+"1343","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 6",0,21,14,0.26987576603925,NA
+"1344","ASRP.rip.and.climate.2080","Unnamed: Black River 1",0,0,0,0,NA
+"1345","ASRP.rip.and.climate.2080","Scatter Creek",0,0,0,0,NA
+"1346","ASRP.rip.and.climate.2080","Black River",884,130100,42993,3.30180485004083,1268.04645814536
+"1347","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1348","ASRP.rip.and.climate.2080","Garrard Creek",11,2802,505,1.63491793929564,28.3250735554945
+"1349","ASRP.rip.and.climate.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"1350","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 4",10,645,482,1.53713830135639,28.6171791785241
+"1351","ASRP.rip.and.climate.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1352","ASRP.rip.and.climate.2080","Cedar Creek",54,28306,2315,3.11125803278195,79.5771673388712
+"1353","ASRP.rip.and.climate.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"1354","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1355","ASRP.rip.and.climate.2080","Porter Creek",20,8951,861,2.23414417686067,36.2055620202128
+"1356","ASRP.rip.and.climate.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"1357","ASRP.rip.and.climate.2080","Mox Chehalis Creek",150,56906,6714,4.12390602988843,198.016809265341
+"1358","ASRP.rip.and.climate.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"1359","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1360","ASRP.rip.and.climate.2080","Cloquallum Creek",213,63811,9846,2.81037566872624,330.655138477344
+"1361","ASRP.rip.and.climate.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"1362","ASRP.rip.and.climate.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1363","ASRP.rip.and.climate.2080","Satsop River",7673,2895406,347026,3.69361936593472,10521.5836183975
+"1364","ASRP.rip.and.climate.2080","Unnamed: Olympic Mountains 1",0,0,0,0.47859324569651,NA
+"1365","ASRP.rip.and.climate.2080","Wynoochee River",5570,2686985,251519,4.45429461182125,7182.48550744294
+"1366","ASRP.rip.and.climate.2080","Wishkah River",236,9691,12077,1.31461955667834,986.112302272692
+"1367","ASRP.rip.and.climate.2080","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1368","ASRP.rip.and.climate.2080","Humptulips River",4837,1861103,216490,3.95285956945642,6475.0731579763
+"1369","ASRP.rip.and.climate.2080","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1370","ASRP.rip.and.climate.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"1371","ASRP.rip.and.climate.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1372","ASRP.rip.and.climate.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"1373","ASRP.rip.and.climate.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"1374","ASRP.rip.and.climate.2080","Upper Skookumchuck",0,0,0,0,NA
+"1375","ASRP.rip.and.climate.2080","Mainstem: Upper Chehalis 1",168,8921,8441,1.40744624638393,580.324328647018
+"1376","ASRP.rip.and.climate.2080","Mainstem: Upper Chehalis 2",152,30124,7256,2.31139606309886,267.907012592992
+"1377","ASRP.rip.and.climate.2080","Mainstem: Middle Chehalis 1",337,55633,16298,2.14096779640321,632.363288133425
+"1378","ASRP.rip.and.climate.2080","Mainstem: Middle Chehalis 2",81,1144,4106,1.10997853831055,817.507333560636
+"1379","ASRP.rip.and.climate.2080","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1380","ASRP.rip.and.climate.2080","Mainstem: Lower Chehalis 1",479,97170,22868,2.13289545542249,901.810417066567
+"1381","ASRP.rip.and.climate.2080","Mainstem: Lower Chehalis 2",1046,396974,46907,3.01381877157938,1565.41118772056
+"1382","ASRP.rip.and.climate.2080","Mainstem: Lower Chehalis 3",1223,620583,52284,3.79922642221318,1659.90642182244
+"1383","ASRP.rip.and.climate.2080","Mainstem: Lower Chehalis 4",609,118026,29148,2.18536402683,1122.76622389043
+"1384","ASRP.rip.and.climate.2080","Mainstem: Lower Chehalis 5",946,381193,42044,5.50090900518449,1156.17976566741
+"1385","ASRP.rip.and.climate.2080","Mainstem: Lower Chehalis 6",792,113222,38579,1.96146393710965,1615.74384460108
+"1386","ASRP.rip.and.climate.2080","Mainstem: Lower Chehalis 7",545,27034,27406,2.96042839767527,823.000461861436
+"1387","ASRP.fp.temp.2040","Upper Chehalis: Above Proposed Dam",351,68150,16950,2.41171191094766,599.634298030665
+"1388","ASRP.fp.temp.2040","Upper Chehalis: Proposed Dam to Elk Creek",16,6563,707,2.05222598713469,31.2058590033207
+"1389","ASRP.fp.temp.2040","Elk Creek",0,0,0,0,NA
+"1390","ASRP.fp.temp.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1391","ASRP.fp.temp.2040","South Fork Chehalis",1224,335305,56979,3.0216988157877,1829.43142749139
+"1392","ASRP.fp.temp.2040","Unnamed: Willapa Hills 2",10,5748,403,1.73487133628597,23.6078242628701
+"1393","ASRP.fp.temp.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1394","ASRP.fp.temp.2040","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1395","ASRP.fp.temp.2040","Stearns Creek",0,0,0,0,NA
+"1396","ASRP.fp.temp.2040","Bunker Creek",0,0,0,0,NA
+"1397","ASRP.fp.temp.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1398","ASRP.fp.temp.2040","Newaukum River",1285,449786,58523,3.20184741617028,1868.60083926026
+"1399","ASRP.fp.temp.2040","Dillenbaugh Creek",2,322,118,0.777854197502321,NA
+"1400","ASRP.fp.temp.2040","Unnamed: Central Lowlands 8",1,57,36,0.491659562936525,NA
+"1401","ASRP.fp.temp.2040","Salzer Creek",0,0,0,0,NA
+"1402","ASRP.fp.temp.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1403","ASRP.fp.temp.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1404","ASRP.fp.temp.2040","Skookumchuck River",778,287893,35221,3.78399677209194,1057.45434700177
+"1405","ASRP.fp.temp.2040","Lincoln Creek",5,2132,228,1.19598089019661,30.5126915434654
+"1406","ASRP.fp.temp.2040","Unnamed: Central Lowlands 6",0,30,17,0.287224755408237,NA
+"1407","ASRP.fp.temp.2040","Unnamed: Black River 1",0,0,0,0,NA
+"1408","ASRP.fp.temp.2040","Scatter Creek",0,0,0,0,NA
+"1409","ASRP.fp.temp.2040","Black River",964,140445,46931,3.57099680090919,1338.95184733761
+"1410","ASRP.fp.temp.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1411","ASRP.fp.temp.2040","Garrard Creek",12,3196,556,1.76012832922349,27.7868080147186
+"1412","ASRP.fp.temp.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"1413","ASRP.fp.temp.2040","Unnamed: Central Lowlands 4",10,696,517,1.62784943709746,25.9273854671747
+"1414","ASRP.fp.temp.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1415","ASRP.fp.temp.2040","Cedar Creek",58,30288,2444,3.2947706662168,83.2748568098179
+"1416","ASRP.fp.temp.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"1417","ASRP.fp.temp.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1418","ASRP.fp.temp.2040","Porter Creek",21,9471,899,2.33582965425306,36.7205673142077
+"1419","ASRP.fp.temp.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"1420","ASRP.fp.temp.2040","Mox Chehalis Creek",155,58849,6966,4.30133178365122,201.950749018195
+"1421","ASRP.fp.temp.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"1422","ASRP.fp.temp.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1423","ASRP.fp.temp.2040","Cloquallum Creek",224,67738,10308,2.93540703741977,339.737927820408
+"1424","ASRP.fp.temp.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"1425","ASRP.fp.temp.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1426","ASRP.fp.temp.2040","Satsop River",7935,3006047,358680,3.82117665368247,10747.6561977757
+"1427","ASRP.fp.temp.2040","Unnamed: Olympic Mountains 1",0,0,0,0.49286109256353,NA
+"1428","ASRP.fp.temp.2040","Wynoochee River",5574,2688920,251690,4.45724344819603,7186.26713811794
+"1429","ASRP.fp.temp.2040","Wishkah River",236,9693,12078,1.31465560007238,986.026377873808
+"1430","ASRP.fp.temp.2040","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1431","ASRP.fp.temp.2040","Humptulips River",4867,1873252,217786,3.97484760999532,6503.05019082226
+"1432","ASRP.fp.temp.2040","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1433","ASRP.fp.temp.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"1434","ASRP.fp.temp.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1435","ASRP.fp.temp.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"1436","ASRP.fp.temp.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"1437","ASRP.fp.temp.2040","Upper Skookumchuck",0,0,0,0,NA
+"1438","ASRP.fp.temp.2040","Mainstem: Upper Chehalis 1",204,12284,10235,1.50400184181131,608.760425610455
+"1439","ASRP.fp.temp.2040","Mainstem: Upper Chehalis 2",165,33609,7870,2.45092033941784,278.720922863487
+"1440","ASRP.fp.temp.2040","Mainstem: Middle Chehalis 1",390,67367,18784,2.34790358269677,679.338202677466
+"1441","ASRP.fp.temp.2040","Mainstem: Middle Chehalis 2",199,5975,10073,1.26987606254754,936.375512750215
+"1442","ASRP.fp.temp.2040","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1443","ASRP.fp.temp.2040","Mainstem: Lower Chehalis 1",710,159753,33646,2.78407561254521,1107.96519553737
+"1444","ASRP.fp.temp.2040","Mainstem: Lower Chehalis 2",1263,499115,56307,3.53341542546664,1761.53647660938
+"1445","ASRP.fp.temp.2040","Mainstem: Lower Chehalis 3",1406,724786,59883,4.33716196281384,1827.31608104945
+"1446","ASRP.fp.temp.2040","Mainstem: Lower Chehalis 4",714,148064,34020,2.43128037717106,1212.85404103089
+"1447","ASRP.fp.temp.2040","Mainstem: Lower Chehalis 5",1036,406607,46224,6.10534220682707,1238.92469300385
+"1448","ASRP.fp.temp.2040","Mainstem: Lower Chehalis 6",915,140173,44436,2.13488844347416,1721.24664499972
+"1449","ASRP.fp.temp.2040","Mainstem: Lower Chehalis 7",578,28574,29049,3.11205660146982,851.666908167972
+"1450","ASRP.fp.temp.2080","Upper Chehalis: Above Proposed Dam",337,64504,16274,2.3444294468653,587.66395323738
+"1451","ASRP.fp.temp.2080","Upper Chehalis: Proposed Dam to Elk Creek",15,6298,685,1.99643666965176,30.0536410961694
+"1452","ASRP.fp.temp.2080","Elk Creek",0,0,0,0,NA
+"1453","ASRP.fp.temp.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1454","ASRP.fp.temp.2080","South Fork Chehalis",1176,319653,54783,2.92707959355128,1786.24983292612
+"1455","ASRP.fp.temp.2080","Unnamed: Willapa Hills 2",9,5572,392,1.68830585729528,22.0755824676049
+"1456","ASRP.fp.temp.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1457","ASRP.fp.temp.2080","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1458","ASRP.fp.temp.2080","Stearns Creek",0,0,0,0,NA
+"1459","ASRP.fp.temp.2080","Bunker Creek",0,0,0,0,NA
+"1460","ASRP.fp.temp.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1461","ASRP.fp.temp.2080","Newaukum River",1234,427890,56282,3.09974147270224,1821.69139727088
+"1462","ASRP.fp.temp.2080","Dillenbaugh Creek",2,287,110,0.754567509028264,NA
+"1463","ASRP.fp.temp.2080","Unnamed: Central Lowlands 8",1,48,33,0.477795381668028,NA
+"1464","ASRP.fp.temp.2080","Salzer Creek",0,0,0,0,NA
+"1465","ASRP.fp.temp.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1466","ASRP.fp.temp.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1467","ASRP.fp.temp.2080","Skookumchuck River",754,278702,34185,3.67606216239842,1035.75728149911
+"1468","ASRP.fp.temp.2080","Lincoln Creek",5,2042,220,1.16503895162816,35.2958783406798
+"1469","ASRP.fp.temp.2080","Unnamed: Central Lowlands 6",0,27,16,0.281514103581079,NA
+"1470","ASRP.fp.temp.2080","Unnamed: Black River 1",0,0,0,0,NA
+"1471","ASRP.fp.temp.2080","Scatter Creek",0,0,0,0,NA
+"1472","ASRP.fp.temp.2080","Black River",940,137392,45744,3.48770855472555,1317.85776722696
+"1473","ASRP.fp.temp.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1474","ASRP.fp.temp.2080","Garrard Creek",12,3058,538,1.71755435825611,28.7234716951116
+"1475","ASRP.fp.temp.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"1476","ASRP.fp.temp.2080","Unnamed: Central Lowlands 4",10,680,506,1.59940658340505,26.6831667800394
+"1477","ASRP.fp.temp.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1478","ASRP.fp.temp.2080","Cedar Creek",57,29630,2401,3.23321961202427,82.5236877256031
+"1479","ASRP.fp.temp.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"1480","ASRP.fp.temp.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1481","ASRP.fp.temp.2080","Porter Creek",20,9256,883,2.29533425975989,35.4400301306841
+"1482","ASRP.fp.temp.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"1483","ASRP.fp.temp.2080","Mox Chehalis Creek",153,58203,6882,4.23936703134968,200.23144939098
+"1484","ASRP.fp.temp.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"1485","ASRP.fp.temp.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1486","ASRP.fp.temp.2080","Cloquallum Creek",220,66341,10144,2.8899631587962,336.40438543793
+"1487","ASRP.fp.temp.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"1488","ASRP.fp.temp.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1489","ASRP.fp.temp.2080","Satsop River",7842,2966936,354551,3.77291799981533,10670.0677612978
+"1490","ASRP.fp.temp.2080","Unnamed: Olympic Mountains 1",0,0,0,0.485216213679953,NA
+"1491","ASRP.fp.temp.2080","Wynoochee River",5573,2688873,251686,4.4571726041436,7185.01092283344
+"1492","ASRP.fp.temp.2080","Wishkah River",236,9693,12078,1.31465560007238,986.026377873808
+"1493","ASRP.fp.temp.2080","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1494","ASRP.fp.temp.2080","Humptulips River",4867,1873187,217779,3.97472832456436,6503.11579578876
+"1495","ASRP.fp.temp.2080","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1496","ASRP.fp.temp.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"1497","ASRP.fp.temp.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1498","ASRP.fp.temp.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"1499","ASRP.fp.temp.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"1500","ASRP.fp.temp.2080","Upper Skookumchuck",0,0,0,0,NA
+"1501","ASRP.fp.temp.2080","Mainstem: Upper Chehalis 1",194,11311,9733,1.47667491091358,600.98596791718
+"1502","ASRP.fp.temp.2080","Mainstem: Upper Chehalis 2",162,32771,7723,2.416894045261,276.334590184659
+"1503","ASRP.fp.temp.2080","Mainstem: Middle Chehalis 1",374,63994,18071,2.28769605720284,664.44120924965
+"1504","ASRP.fp.temp.2080","Mainstem: Middle Chehalis 2",167,4378,8472,1.22699622519389,902.695053331184
+"1505","ASRP.fp.temp.2080","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1506","ASRP.fp.temp.2080","Mainstem: Lower Chehalis 1",665,147595,31527,2.6489816838214,1068.27919134851
+"1507","ASRP.fp.temp.2080","Mainstem: Lower Chehalis 2",1210,474007,53987,3.40090032066739,1713.97760772661
+"1508","ASRP.fp.temp.2080","Mainstem: Lower Chehalis 3",1357,697055,57841,4.18879755044886,1782.55225865906
+"1509","ASRP.fp.temp.2080","Mainstem: Lower Chehalis 4",685,139783,32693,2.36250124242434,1187.75183513313
+"1510","ASRP.fp.temp.2080","Mainstem: Lower Chehalis 5",1011,399911,45088,5.93733465705901,1215.76635071811
+"1511","ASRP.fp.temp.2080","Mainstem: Lower Chehalis 6",877,131704,42620,2.08027010326992,1688.834000909
+"1512","ASRP.fp.temp.2080","Mainstem: Lower Chehalis 7",563,27889,28311,3.04482869132584,838.328687624662
+"1513","ASRP.rip.and.flp.2040","Upper Chehalis: Above Proposed Dam",354,68877,17085,2.42318712944571,602.737493949846
+"1514","ASRP.rip.and.flp.2040","Upper Chehalis: Proposed Dam to Elk Creek",16,6615,712,2.06155234355458,31.0722666641425
+"1515","ASRP.rip.and.flp.2040","Elk Creek",0,0,0,0,NA
+"1516","ASRP.rip.and.flp.2040","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1517","ASRP.rip.and.flp.2040","South Fork Chehalis",1235,338979,57496,3.0407014595215,1840.18406268479
+"1518","ASRP.rip.and.flp.2040","Unnamed: Willapa Hills 2",10,5787,406,1.74367253710005,23.4467786574384
+"1519","ASRP.rip.and.flp.2040","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1520","ASRP.rip.and.flp.2040","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1521","ASRP.rip.and.flp.2040","Stearns Creek",0,0,0,0,NA
+"1522","ASRP.rip.and.flp.2040","Bunker Creek",0,0,0,0,NA
+"1523","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1524","ASRP.rip.and.flp.2040","Newaukum River",1298,455406,59098,3.2240799321819,1881.61211808004
+"1525","ASRP.rip.and.flp.2040","Dillenbaugh Creek",2,336,121,0.785155746617931,NA
+"1526","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 8",1,60,37,0.494636549425272,NA
+"1527","ASRP.rip.and.flp.2040","Salzer Creek",0,0,0,0,NA
+"1528","ASRP.rip.and.flp.2040","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1529","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1530","ASRP.rip.and.flp.2040","Skookumchuck River",779,288318,35269,3.79025043184193,1058.18640961763
+"1531","ASRP.rip.and.flp.2040","Lincoln Creek",5,2136,228,1.1979027045008,30.2649402271298
+"1532","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 6",0,31,17,0.28770694869349,NA
+"1533","ASRP.rip.and.flp.2040","Unnamed: Black River 1",0,0,0,0,NA
+"1534","ASRP.rip.and.flp.2040","Scatter Creek",0,0,0,0,NA
+"1535","ASRP.rip.and.flp.2040","Black River",966,140721,47039,3.58019108221252,1340.39087618722
+"1536","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1537","ASRP.rip.and.flp.2040","Garrard Creek",12,3207,557,1.76451064338357,27.6963151577464
+"1538","ASRP.rip.and.flp.2040","Unnamed: Black Hills 5",0,0,0,0,NA
+"1539","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 4",10,698,519,1.63142815702231,25.8371144662887
+"1540","ASRP.rip.and.flp.2040","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1541","ASRP.rip.and.flp.2040","Cedar Creek",58,30383,2450,3.30467811543199,83.1662041703939
+"1542","ASRP.rip.and.flp.2040","Unnamed: Black Hills 4",0,0,0,0,NA
+"1543","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1544","ASRP.rip.and.flp.2040","Porter Creek",21,9512,903,2.34498496202408,36.613557469369
+"1545","ASRP.rip.and.flp.2040","Unnamed: Black Hills 3",0,0,0,0,NA
+"1546","ASRP.rip.and.flp.2040","Mox Chehalis Creek",156,59006,6987,4.31741970431007,203.024499130249
+"1547","ASRP.rip.and.flp.2040","Unnamed: Black Hills 2",0,0,0,0,NA
+"1548","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1549","ASRP.rip.and.flp.2040","Cloquallum Creek",224,68082,10348,2.9472610449735,339.033369859791
+"1550","ASRP.rip.and.flp.2040","Unnamed: Black Hills 1",0,0,0,0,NA
+"1551","ASRP.rip.and.flp.2040","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1552","ASRP.rip.and.flp.2040","Satsop River",7965,3018961,360046,3.83852935365405,10771.0305206098
+"1553","ASRP.rip.and.flp.2040","Unnamed: Olympic Mountains 1",0,0,0,0.495094977007754,NA
+"1554","ASRP.rip.and.flp.2040","Wynoochee River",5574,2688920,251690,4.45724344819603,7186.26713811794
+"1555","ASRP.rip.and.flp.2040","Wishkah River",236,9693,12078,1.31465560007238,986.026377873808
+"1556","ASRP.rip.and.flp.2040","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1557","ASRP.rip.and.flp.2040","Humptulips River",4867,1873252,217786,3.97484760999532,6503.05019082226
+"1558","ASRP.rip.and.flp.2040","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1559","ASRP.rip.and.flp.2040","Elk River",8,1839,360,1.25623560119253,39.2212665327055
+"1560","ASRP.rip.and.flp.2040","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1561","ASRP.rip.and.flp.2040","Upper Chehalis Estuary",0,0,0,0,NA
+"1562","ASRP.rip.and.flp.2040","Lower Chehalis Estuary",0,0,0,0,NA
+"1563","ASRP.rip.and.flp.2040","Upper Skookumchuck",0,0,0,0,NA
+"1564","ASRP.rip.and.flp.2040","Mainstem: Upper Chehalis 1",204,12282,10234,1.50400184181131,608.760425610455
+"1565","ASRP.rip.and.flp.2040","Mainstem: Upper Chehalis 2",165,33603,7869,2.45092033941784,278.720922863487
+"1566","ASRP.rip.and.flp.2040","Mainstem: Middle Chehalis 1",390,67362,18783,2.34790358269677,679.338202677466
+"1567","ASRP.rip.and.flp.2040","Mainstem: Middle Chehalis 2",199,5971,10069,1.26987606254754,936.375512750215
+"1568","ASRP.rip.and.flp.2040","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1569","ASRP.rip.and.flp.2040","Mainstem: Lower Chehalis 1",710,159711,33639,2.78407561254521,1107.96519553737
+"1570","ASRP.rip.and.flp.2040","Mainstem: Lower Chehalis 2",1263,499021,56299,3.53341542546664,1761.53647660938
+"1571","ASRP.rip.and.flp.2040","Mainstem: Lower Chehalis 3",1405,724669,59875,4.33716196281384,1826.01642523078
+"1572","ASRP.rip.and.flp.2040","Mainstem: Lower Chehalis 4",714,148156,34034,2.43252161936926,1212.42179716239
+"1573","ASRP.rip.and.flp.2040","Mainstem: Lower Chehalis 5",1036,406558,46216,6.10534220682707,1238.92469300385
+"1574","ASRP.rip.and.flp.2040","Mainstem: Lower Chehalis 6",920,141178,44650,2.14150948670517,1725.95037598458
+"1575","ASRP.rip.and.flp.2040","Mainstem: Lower Chehalis 7",584,28864,29365,3.14052427692066,856.830355766923
+"1576","ASRP.rip.and.flp.2080","Upper Chehalis: Above Proposed Dam",341,65601,16477,2.36200352933454,591.36645842365
+"1577","ASRP.rip.and.flp.2080","Upper Chehalis: Proposed Dam to Elk Creek",16,6376,691,2.01071981004586,31.8303021677927
+"1578","ASRP.rip.and.flp.2080","Elk Creek",0,0,0,0,NA
+"1579","ASRP.rip.and.flp.2080","Unnamed: Willapa Hills 3",0,0,0,0,NA
+"1580","ASRP.rip.and.flp.2080","South Fork Chehalis",1193,325262,55569,2.9562795323512,1802.83104933177
+"1581","ASRP.rip.and.flp.2080","Unnamed: Willapa Hills 2",10,5632,396,1.70178473170288,24.2493838185037
+"1582","ASRP.rip.and.flp.2080","Unnamed: Willapa Hills 1",0,0,0,0,NA
+"1583","ASRP.rip.and.flp.2080","Unnamed: Willapa Hills 4",0,0,0,0,NA
+"1584","ASRP.rip.and.flp.2080","Stearns Creek",0,0,0,0,NA
+"1585","ASRP.rip.and.flp.2080","Bunker Creek",0,0,0,0,NA
+"1586","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 9",0,0,0,0,NA
+"1587","ASRP.rip.and.flp.2080","Newaukum River",1254,436399,57152,3.13380092895939,1841.68368828649
+"1588","ASRP.rip.and.flp.2080","Dillenbaugh Creek",2,307,114,0.765450998006881,NA
+"1589","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 8",1,52,34,0.482354580786714,NA
+"1590","ASRP.rip.and.flp.2080","Salzer Creek",0,0,0,0,NA
+"1591","ASRP.rip.and.flp.2080","Unnamed: Cascade Mountains 1",0,0,0,0,NA
+"1592","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 7",0,0,0,0,NA
+"1593","ASRP.rip.and.flp.2080","Skookumchuck River",756,279534,34278,3.68787644332552,1037.26292853873
+"1594","ASRP.rip.and.flp.2080","Lincoln Creek",5,2050,221,1.1686723317036,34.643273140886
+"1595","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 6",0,28,16,0.282425737692311,NA
+"1596","ASRP.rip.and.flp.2080","Unnamed: Black River 1",0,0,0,0,NA
+"1597","ASRP.rip.and.flp.2080","Scatter Creek",0,0,0,0,NA
+"1598","ASRP.rip.and.flp.2080","Black River",944,137932,45952,3.50509125315941,1320.83257997465
+"1599","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 5",0,0,0,0,NA
+"1600","ASRP.rip.and.flp.2080","Garrard Creek",12,3080,541,1.725839556737,28.5325792575231
+"1601","ASRP.rip.and.flp.2080","Unnamed: Black Hills 5",0,0,0,0,NA
+"1602","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 4",10,684,509,1.60617250748118,26.4969540462218
+"1603","ASRP.rip.and.flp.2080","Rock Creek (Lower Chehalis)",0,0,0,0,NA
+"1604","ASRP.rip.and.flp.2080","Cedar Creek",57,29813,2413,3.25213051110365,82.3093680490422
+"1605","ASRP.rip.and.flp.2080","Unnamed: Black Hills 4",0,0,0,0,NA
+"1606","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 3",0,0,0,0,NA
+"1607","ASRP.rip.and.flp.2080","Porter Creek",20,9337,889,2.3128095046527,35.2345027432529
+"1608","ASRP.rip.and.flp.2080","Unnamed: Black Hills 3",0,0,0,0,NA
+"1609","ASRP.rip.and.flp.2080","Mox Chehalis Creek",154,58509,6922,4.27007493985051,201.093721958262
+"1610","ASRP.rip.and.flp.2080","Unnamed: Black Hills 2",0,0,0,0,NA
+"1611","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 2",0,0,0,0,NA
+"1612","ASRP.rip.and.flp.2080","Cloquallum Creek",222,67007,10222,2.91258956198697,338.07299569771
+"1613","ASRP.rip.and.flp.2080","Unnamed: Black Hills 1",0,0,0,0,NA
+"1614","ASRP.rip.and.flp.2080","Unnamed: Central Lowlands 1",0,0,0,0,NA
+"1615","ASRP.rip.and.flp.2080","Satsop River",7903,2992651,357265,3.80675102321163,10718.7110960832
+"1616","ASRP.rip.and.flp.2080","Unnamed: Olympic Mountains 1",0,0,0,0.489530105731212,NA
+"1617","ASRP.rip.and.flp.2080","Wynoochee River",5573,2688873,251686,4.4571726041436,7185.01092283344
+"1618","ASRP.rip.and.flp.2080","Wishkah River",236,9693,12078,1.31465560007238,986.026377873808
+"1619","ASRP.rip.and.flp.2080","Hoquiam River",378,86410,18327,2.73678897791192,595.643021004461
+"1620","ASRP.rip.and.flp.2080","Humptulips River",4867,1873204,217781,3.97476027895451,6503.09822089951
+"1621","ASRP.rip.and.flp.2080","Johns River",25,4452,1188,1.77822047266623,57.1245725062314
+"1622","ASRP.rip.and.flp.2080","Elk River",8,1839,360,1.25609835946287,39.2379978410599
+"1623","ASRP.rip.and.flp.2080","Andrews",5,1415,250,1.040992741748,126.972812424617
+"1624","ASRP.rip.and.flp.2080","Upper Chehalis Estuary",0,0,0,0,NA
+"1625","ASRP.rip.and.flp.2080","Lower Chehalis Estuary",0,0,0,0,NA
+"1626","ASRP.rip.and.flp.2080","Upper Skookumchuck",0,0,0,0,NA
+"1627","ASRP.rip.and.flp.2080","Mainstem: Upper Chehalis 1",194,11307,9732,1.47667491091358,600.98596791718
+"1628","ASRP.rip.and.flp.2080","Mainstem: Upper Chehalis 2",162,32762,7721,2.416894045261,276.334590184659
+"1629","ASRP.rip.and.flp.2080","Mainstem: Middle Chehalis 1",374,63987,18070,2.28769605720284,664.44120924965
+"1630","ASRP.rip.and.flp.2080","Mainstem: Middle Chehalis 2",167,4372,8465,1.22699622519389,902.695053331184
+"1631","ASRP.rip.and.flp.2080","Mainstem: Middle Chehalis 3",0,0,0,0,NA
+"1632","ASRP.rip.and.flp.2080","Mainstem: Lower Chehalis 1",665,147532,31516,2.6489816838214,1068.27919134851
+"1633","ASRP.rip.and.flp.2080","Mainstem: Lower Chehalis 2",1209,473863,53974,3.40090032066739,1712.561097307
+"1634","ASRP.rip.and.flp.2080","Mainstem: Lower Chehalis 3",1356,696874,57828,4.18879755044886,1781.23866082659
+"1635","ASRP.rip.and.flp.2080","Mainstem: Lower Chehalis 4",686,139909,32714,2.36429304923128,1188.82452174519
+"1636","ASRP.rip.and.flp.2080","Mainstem: Lower Chehalis 5",1011,399833,45075,5.93733465705901,1215.76635071811
+"1637","ASRP.rip.and.flp.2080","Mainstem: Lower Chehalis 6",886,133575,43023,2.09245975806773,1697.01385516213
+"1638","ASRP.rip.and.flp.2080","Mainstem: Lower Chehalis 7",576,28464,28930,3.09980310110909,850.311434103399
