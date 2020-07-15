@@ -19,16 +19,14 @@ This section holds the code used to calculate the changes in peak flow under fut
 The first step is to load all of the data, and convert it into a usable format. We load the data from all bias corrected sites and put variable names into separate columns. 
 
 ```{r}
-cig_dat <- list.files('../../../misc/AGU_poster/CIG_model_results/streamflow_summaries/summaries_BCsites/',
+cig_dat <- list.files('cig',
            pattern = 'ALL_BCsites.*Flood',
            full.names = TRUE) %>%
   map_dfr(., function(x) {
     
     y <- x %>% 
-      read.csv %>%
+      read.csv(na.strings = '--') %>%
       mutate(file = basename(x))
-    
-    y[y == "--"] <- NA
     
     return(y)
   }) %>%
@@ -41,6 +39,7 @@ cig_dat <- list.files('../../../misc/AGU_poster/CIG_model_results/streamflow_sum
          ri = factor(ri, levels = c('2', '10', '50', '100', '500')))
 
 head(as_tibble(cig_dat))
+
 ```
 Next we subset to only the 'average' data points for the Grand Mound site at flows less than 500 year RI. For example data from the column `MACA_RCP_4.5-VIC-avg (%)` would be included here, but *not* data from the column `MACA_RCP_4.5-VIC-min (%)`.
 
@@ -102,8 +101,9 @@ p5 <- cig_ave %>%
   group_by(ri, era, climate_model) %>%
   summarize(value = mean(value)) %>%
   ggplot +
-  theme_bw() +
-  theme(panel.grid = element_blank()) +
+  cowplot::theme_half_open() +
+  theme(strip.background = element_blank(),
+        panel.border = element_rect(colour = "black")) +
   geom_point(aes(ri, 
                  value#, 
                  #shape = hydro_model
@@ -120,6 +120,8 @@ p5 <- cig_ave %>%
        #title = cig_ave$site.name[1])
 
 ggsave('Fig5_peak_flow_change.tiff', p5, height = 3, width = 5, dpi = 300, compression = 'lzw')
+
+p5
 ```
 
 ## Calculate a couple of summary metrics
@@ -154,15 +156,8 @@ NOTE: Should we choose skew from here? http://www.dimensionengine.com/excel/hydr
 
 The package `moments` is needed for the `skewness()` function. 
 ```{r, eval= FALSE}
-rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
-write('\noptions(repos=c(getOption(\'repos\'),
-  CRAN=\'https://cloud.r-project.org\',
-  USGS=\'https://owi.usgs.gov/R\'))\n',
-    rprofile_path, 
-    append =  TRUE)
 
-cat('Your Rprofile has been updated to include GRAN.
-  Please restart R for changes to take effect.')
+remotes::install_github("USGS-R/smwrBase")
 ```
 
 
@@ -506,6 +501,60 @@ p7
 ```
 
 
+
+# Figure of log pearson III
+```{r}
+# Hints taken from here: http://eaheisman.blogspot.com/2013/06/flood-frequency-curves-in-ggplot2.html
+
+ch_obs <- read.delim2('PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.emp',
+            skip = 7) %>%
+  mutate_all(as.numeric) %>%
+  rename(EXC_Prob = B17BEst) %>%
+  mutate(EXC_trans = qnorm(EXC_Prob),
+         RI = 1/EXC_Prob)
+
+ch_logp <- read.delim2('PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.exp', 
+                       sep = "\t",
+                       skip = 20,
+                       strip.white = TRUE,
+                       header = FALSE) %>%
+  pivot_longer(V2:V26) %>%
+  #select(-name) %>%
+  pivot_wider(names_from = V1, values_from = value) %>%
+  select(-name) %>%
+  mutate_all(as.numeric) %>%
+  mutate(EXC_trans = qnorm(EXC_Prob),
+         RI = 1/EXC_Prob)
+
+xbreaks = c(.01, .02, .05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.98, 0.99)
+xaxis <- qnorm(xbreaks)
+  
+p2 <- ggplot() +
+  cowplot::theme_half_open() +
+  geom_point(data = ch_obs, aes(EXC_trans, RankedQ * 0.0283168)) +
+  geom_line(data = ch_logp, aes(EXC_trans, Conf_Low * 0.0283168), lty = 2) +
+  geom_line(data = ch_logp, aes(EXC_trans, Conf_Up * 0.0283168), lty = 2) +
+  geom_line(data = ch_logp, aes(EXC_trans, Estimate * 0.0283168)) +
+  scale_y_log10(expand = c(0, 0),
+                limits = c(100,5000))  +
+  annotation_logticks(sides = "l") +
+  scale_x_reverse(breaks = xaxis,
+                  labels = xbreaks * 100,
+                  limits= qnorm(c(.995, 0.01)),
+                  expand = c(0, 0)) +
+  labs(x = 'Annual exceedence probability (%)',
+       y = bquote('Annual peak discharge ' ~(m^3*s^-1)))
+
+ggsave('Fig2_logpIII.tiff', p2, height = 4, width = 6, dpi = 300, compression = 'lzw')
+
+
+p2
+
+
+```
+
+
+
 ``` {r}
 # peak_ch_peakfq <- 'PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.EXP' %>%
 #   read.delim(skip = 7,
@@ -604,4 +653,5 @@ p7
 
 
 ```
+
 
