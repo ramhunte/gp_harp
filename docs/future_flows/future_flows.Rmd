@@ -90,14 +90,19 @@ mods_pred <- data.frame(ri = 1:max(cig_ave$ri)) %>%
   gather(model, value, diff_perc_rcp4.5_2050:diff_perc_rcp8.5_2080) %>%
   mutate(climate_model = str_extract(model, "4.5|8.5"),
          era = str_extract(model, "2050|2080")) %>%
-  mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5'))
+  mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5'),
+         era = ifelse(era == 2050, 'Mid-century', 'Late-century'),
+         era = factor(era, levels = c('Mid-century', 'Late-century')))
 ```
 
 Then we plot it! 
 
 ```{r fig.height=4, fig.width=7}
 p5 <- cig_ave %>%
-  mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5')) %>%
+  ungroup %>%
+  mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5'),
+         era = ifelse(era == 2050, 'Mid-century', 'Late-century'),
+         era = factor(era, levels = c('Mid-century', 'Late-century'))) %>%
   group_by(ri, era, climate_model) %>%
   summarize(value = mean(value)) %>%
   ggplot +
@@ -457,6 +462,7 @@ loop_series <- function(ts, start_point = 20, years = 100){
 #random_start(1:30, 100)
 ```
 
+# Incubation timing
 
 ```{r}
 
@@ -467,7 +473,7 @@ loop_series <- function(ts, start_point = 20, years = 100){
 
 start_day <- 220# 275 = Oct 1, 213 = August 1
 
-p7 <- daily_ch %>%
+p4 <- daily_ch %>%
   mutate(day_plot = ifelse(Day >= start_day, Day - start_day, Day + 365 - start_day)) %>%
   ggplot(aes(day_plot, Q)) +
   geom_point() +
@@ -495,9 +501,9 @@ p7 <- daily_ch %>%
   #geom_hline(yintercept = 874, lty = 2)
 
 
-ggsave('Fig7_incubation_timing.tiff', p7, height = 4, width = 6, dpi = 300, compression = 'lzw')
+ggsave('Fig4_incubation_timing.tiff', p4, height = 4, width = 6, dpi = 300, compression = 'lzw')
 
-p7
+p4
 ```
 
 
@@ -543,9 +549,9 @@ p2 <- ggplot() +
                   limits= qnorm(c(.995, 0.01)),
                   expand = c(0, 0)) +
   labs(x = 'Annual exceedence probability (%)',
-       y = bquote('Annual peak discharge ' ~(m^3*s^-1)))
+       y = bquote('Discharge ' ~(m^3*s^-1)))
 
-ggsave('Fig2_logpIII.tiff', p2, height = 4, width = 6, dpi = 300, compression = 'lzw')
+ggsave('Fig2_logpIII.tiff', p2, height = 3, width = 5, dpi = 300, compression = 'lzw')
 
 
 p2
