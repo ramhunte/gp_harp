@@ -78,20 +78,22 @@ if (sensitivity.mode == 'no') {
     droplevels()
   
   spawners.paper <- spawners %>%
-    filter(scenario.label %in% c('Climate change only 2040', 'Climate change only 2080', 'Riparian growth and climate change 2040',
+    filter(scenario.label %in% c('Climate change only 2040', 'Climate change only 2080','Climate change with tree growth 2040', 
+                                 'Climate change with tree growth 2080', 'Riparian growth and climate change 2040',
                                  'Riparian growth and climate change 2080', 'Floodplain reconnection and climate change 2040', 
                                  'Floodplain reconnection and climate change 2080', 'Combined scenario 2040', 'Combined scenario 2080', 'Current')) %>%
     group_by(scenario.label) %>%
     summarize(n = mean(n, na.rm = T)) %>%
-    mutate(year = ifelse(scenario.label %in% c('Climate change only 2040', 'Riparian growth and climate change 2040', 
+    mutate(year = ifelse(scenario.label %in% c('Climate change only 2040', 'Climate change with tree growth 2040', 'Riparian growth and climate change 2040', 
                                                'Floodplain reconnection and climate change 2040', 'Combined scenario 2040'),
                          'Mid-century',
-                         ifelse(scenario.label %in% c('Climate change only 2080', 'Riparian growth and climate change 2080', 
+                         ifelse(scenario.label %in% c('Climate change only 2080', 'Climate change with tree growth 2080', 'Riparian growth and climate change 2080', 
                                                       'Floodplain reconnection and climate change 2080', 'Combined scenario 2080'),
                                 'Late-century',
                                 'current')),
            scenario.label.nm = case_when(
              scenario.label %in% c('Climate change only 2040', 'Climate change only 2080') ~ 'Climate Change',
+             scenario.label %in% c('Climate change with tree growth 2040', 'Climate change with tree growth 2080') ~ 'Climate Change and Growth',
              scenario.label %in% c('Riparian growth and climate change 2040', 'Riparian growth and climate change 2080') ~ 'Riparian',
              scenario.label %in% c('Floodplain reconnection and climate change 2040', 'Floodplain reconnection and climate change 2080') ~ 'Floodplain',
              scenario.label %in% c('Combined scenario 2040', 'Combined scenario 2080') ~ 'Combined',
@@ -99,7 +101,7 @@ if (sensitivity.mode == 'no') {
            spawners.change = n - n[scenario.label == 'Current'],
            prcnt.change = ((n - n[scenario.label == 'Current']) / n[scenario.label == 'Current']) * 100,
            spawners.change = round(spawners.change, digits = 0))
-  spawners.paper$scenario.label.nm <- factor(spawners.paper$scenario.label.nm, levels = c('Current', 'Climate Change', 'Floodplain', 'Riparian',
+  spawners.paper$scenario.label.nm <- factor(spawners.paper$scenario.label.nm, levels = c('Current', 'Climate Change', 'Climate Change and Growth', 'Floodplain', 'Riparian',
                                                                                           'Combined'))
   spawners.paper$year <- factor(spawners.paper$year, levels = c('current', 'Mid-century', 'Late-century'))
   spawners.paper %<>%
