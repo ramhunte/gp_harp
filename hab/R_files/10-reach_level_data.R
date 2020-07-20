@@ -183,11 +183,14 @@ mutate(asrp_temp_w_growth = case_when(
                                         ifelse(can_ang > 170,
                                                asrp_temp_cc_only,
                                                asrp_temp_w_growth))),
-         asrp_temp = ifelse(Floodplain == 'y',
-                            ifelse(species %in% c('spring_chinook', 'fall_chinook'),
-                                   asrp_temp - (mwmt_to_mdm_func(fp_temp_reduction) * rest_perc),
-                                   asrp_temp - (fp_temp_reduction * rest_perc)),
-                    asrp_temp),
+         asrp_temp = case_when(
+           Floodplain == 'y' & species %in% c('spring_chinook', 'fall_chinook') ~ asrp_temp - mwmt_to_mdm_func(fp_temp_reduction) * rest_perc,
+           Floodplain == 'y' & !species %in% c('spring_chinook', 'fall_chinook') ~ asrp_temp - (fp_temp_reduction * rest_perc),
+           Floodplain != 'y' & Scenario_num %in% c('fp_temp', 'rip_and_flp') & species %in% c('spring_chinook', 'fall_chinook') ~
+             asrp_temp - mwmt_to_mdm_func(fp_temp_reduction) * rest_perc,
+           Floodplain != 'y' & Scenario_num %in% c('fp_temp', 'rip_and_flp') & !species %in% c('spring_chinook', 'fall_chinook') ~
+             asrp_temp - (fp_temp_reduction * rest_perc),
+           TRUE ~ asrp_temp),
          asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
                             ifelse(year == 2040,
                                    asrp_temp - cc_mid_rear,
