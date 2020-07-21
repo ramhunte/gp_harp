@@ -1,6 +1,8 @@
 ---
 title: "Future flow changes"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -386,6 +388,7 @@ dat_z %>%
          ri = ri %>% round(1)) %>%
   rename(Year = year, RI = ri, p = surv,  p_rescale = surv_rescale) %>%
   select(Year, RI, p, p_rescale) %>%
+  mutate(p = round(p, 3)) %>%
   flextable::flextable()
 ```
 

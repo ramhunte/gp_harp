@@ -32,14 +32,16 @@ fl_plot <- fl %>%
 
 p1 <- ggplot() +
   theme_void() +
-  
   geom_sf(data = fl_plot,
           aes(size = width_bin), 
-              color = 'gray60') + #'dodgerblue4'
+          color = 'gray60') + #'dodgerblue4'
   geom_sf(data = sub, 
           #size = 1, 
           color = 'gray20',
           fill = NA) +
+  geom_sf(data = sub %>% filter(noaa_sub_num %in% c(49:51)),
+          color = 'gray20',
+          fill = 'gray70') +
   geom_sf(data = porter_sf, 
           shape = 24, #24, 
           fill = 'black', 
