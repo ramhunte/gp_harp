@@ -276,7 +276,9 @@ print(
 
 
 write.csv(summary_tab, 'summary_tab.csv')
-
+# summary_tab %>% 
+#   filter(scenario == 'Current', era != 'Current') %>% 
+#   select(-scenario) %>% write.csv('summary_tab2.csv')
 
 p6 <- x %>%
   filter(scenario == 'Current') %>%
