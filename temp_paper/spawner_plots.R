@@ -25,10 +25,13 @@ label_df_steelhead <- read.csv('temp_paper/spawners_figure/label_df_paper_steelh
   mutate(species = 'Steelhead')
 
 label.df.all <- bind_rows(label_df_spring_chinook, label_df_fall_chinook, label_df_coho, label_df_steelhead)
+label.df.all$year <- factor(label.df.all$year, levels = year_order)
 label.df.all$species <- factor(label.df.all$species, levels = species_order)
 
-colors.paper.all <- read.csv('temp_paper/spawners_figure/colors_paper_coho.csv', header = TRUE) %>%
-  select(-1)
+colors.paper.all <- c('midnightblue', 'midnightblue', 'royalblue', 'royalblue', 'mediumblue', 'mediumblue', 'lightblue', 'lightblue')
+
+# colors.paper.all <- data.frame(read.csv('temp_paper/spawners_figure/colors_paper_coho.csv', header = TRUE) )%>%
+#   filter(x != 'grey60')
 
 
 
@@ -50,7 +53,7 @@ ggplot() +
   # scale_fill_grey() +
 
   scale_x_discrete(drop = T) + 
-  scale_fill_manual(values = colors.paper, drop = F, name = 'Scenario') +
+  scale_fill_manual(values = colors.paper.all, drop = F, name = 'Scenario') +
 
   # scale_y_continuous(labels = comma, 
   #                    expand = c(0, 0,.05,0)) +
@@ -60,4 +63,4 @@ ggplot() +
   theme(axis.text.x = element_text(angle = 45,hjust = 1),
         text = element_text( size = 16)) +
   theme(legend.position = 'none')
-ggsave(file.path(paste0('temp_paper/spawners_figure/spawners_basinwide_all', '_temp_paper','.jpg')), width = 10, height = 15, dpi = 300)
+ggsave(file.path(paste0('temp_paper/spawners_figure/spawners_basinwide_all', '_temp_paper','.jpg')), width = 8, height = 10, dpi = 300)
