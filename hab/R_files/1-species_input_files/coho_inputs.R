@@ -3,9 +3,6 @@ fecundity = 2500
 redd_area = 6
 adult_per_redd = 1.6
 
-PR_redd_density = 85
-F_redd_density = 274
-NF_redd_density = 12
 
 Habitat = c(rep(c("Bank", "HM_Bank", "Bar_boulder", "Bar_gravel", "Bar_sand", "Backwater", "Pool", "Riffle", "Beaver.Pond", "FP_Channel", "Lake", "Marsh", "FP_Pond_lg", "FP_Pond_sm", 
             "SC_pool", "SC_riffle", "Slough_lg", "Slough_sm"), times = 2))

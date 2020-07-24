@@ -37,7 +37,7 @@ if (fishtype %in% c("spring_chinook", 'fall_chinook')) {
 if (fishtype == 'chum') {
   asrp_cap %<>%
     bind_rows(., asrp_cap %<>%
-                mutate(life.stage = ifelse(life.stage == 'summer',
+                mutate(life.stage = ifelse(life.stage == 'winter',
                                            'fry.colonization',
                                            'summer.2')))
 }
@@ -109,7 +109,7 @@ asrp_prod_step_1 <- asrp_cap %>%
                                   survival,
                                   0),
            survival.curr = sum(survival.curr, na.rm = T),
-           survival = ifelse(life.stage %in% c('summer', 'summer.2') & Scenario_num %in% c('Shade', 'LR_bank', 'LR_length')
+           survival = ifelse(life.stage %in% c('summer', 'summer.2') & Scenario_num %in% c('Shade', 'LR')
                              & Subbasin_num %in% mainstem.subs,
                              survival.curr + surv.adj,
                              survival)) %>%

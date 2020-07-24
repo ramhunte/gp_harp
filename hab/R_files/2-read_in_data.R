@@ -10,9 +10,25 @@ subbasin_names <- read.csv("hab/Inputs/Subbasin_names.csv")
 # EDT summer and winter wetted widths.  Joined to flowline using "Reach".  Contains current, historical, 2040 and 2080 widths ----
 edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T) %>%
   read.csv(.) %>%
-  mutate(Reach_low = tolower(Reach)) %>%
-  rename(width_w = X1,
-         width_s = X8) %>%
+  mutate(Reach_low = tolower(Reach))
+
+
+if (fishtype == 'chum') {
+  edt_width %<>%
+    rename(width_w = X1,
+           width_s = X3)
+} else if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
+  edt_width %<>%
+    rename(width_w = X1,
+           width_s = X5)
+} else {
+  edt_width %<>%
+    rename(width_w = X1,
+         width_s = X8)
+}
+
+
+edt_width %<>%
   select(Reach_low, width_w, width_s, year) %>%
   group_by(Reach_low) %>%
   mutate(width_s_curr = ifelse(year == 2019,
@@ -66,7 +82,7 @@ Floodplain_raw <- list.files(path = file.path(Inputs, "spatial_model_outputs"), 
 asrp_scenarios_raw <- read.csv('hab/Inputs/ASRP_scenarios.csv')
 
 # Scenarios.  Read in list of all scenarios ----
-scenarios <- read.csv('hab/Inputs/scenarios.csv') 
+scenarios <- read.csv('lcm/data/scenarios.csv') 
   
 # Future impervious area ----
 fut_imperv <- read.csv('hab/Inputs/future_impervious.csv') %>%
@@ -84,5 +100,17 @@ fut_imperv <- read.csv('hab/Inputs/future_impervious.csv') %>%
   group_by(year, GSU) %>%
   summarize(future_imperv = sum(future_imperv, na.rm = T))
 
+# FP temperature reduction
+ss_fp_reconnect <- Floodplain_raw %>%
+  # read.delim('hab/inputs/floodplain_5m.txt', header = TRUE, sep = ",") %>%
+  filter(HabUnit == 'Marsh', 
+         NEAR_DIST < 5) %>%
+  group_by(noaaid, Period) %>%
+  summarize(Area = sum(Area_ha, na.rm = T)) %>%
+  spread(Period, Area) %>%
+  filter(Hist > 0,
+         # Curr != Hist)
+         is.na(Curr) | (Hist - Curr)/Hist > .50) %>%
+  pull(noaaid)
     
 

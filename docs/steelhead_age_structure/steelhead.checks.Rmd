@@ -50,8 +50,11 @@ A crosswalk between definition of age terms is needed before proceeding. The QIN
 The winter steelhead NOAA LCM must be run first (or load a saved workspace that includes outputs from a run of the winter steelhead LCM) before this do
 
 ```{r run-steelheadLCM}
-mypath <- "~/jorgensen/data/R/chehalis.LCM/chehalis.asrp/outputs/steelhead/lcm/"
-load(paste0(mypath,"steelhead.age.test.11.01.2019.RData"))
+
+# Run the model for steelhead to generate a model.all object
+
+# mypath <- "~/jorgensen/data/R/chehalis.LCM/chehalis.asrp/outputs/steelhead/lcm/"
+# load(paste0(mypath,"steelhead.age.test.11.01.2019.RData"))
 
 ```
 
@@ -201,6 +204,24 @@ legend("topleft",
 
 
 There are some ages for which each data source does not have representations. For example, QIN observations include age 3.4, corresponding to a 7 year old first-time spawner, and there is no NOAA LCM equivalent. The NOAA LCM does include 7 and 8 year olds that are re-spawners. And, the NOAA LCM includes some ages that the QIN data do not include: 1.5, 2.1, and 3.1 first-time spawners.
+
+# Respawners
+We are targeting 12% respawners, and assume that all of those are females. 
+
+```{r}
+model.all[1,100, , , "Current"] %>%
+  rowSums() %>%
+  as.data.frame %>%
+  rownames_to_column('lifestage') %>%
+  rename(Freq = 2) %>%
+  filter(str_detect(lifestage, 'firstspawn|kelt')) %>%
+  separate(lifestage, into = c('lifestage', 'spawn_status')) %>%
+  group_by(spawn_status) %>%
+  summarize(Freq = sum(Freq)) %>%
+  ungroup() %>%
+  mutate(prcnt = Freq/sum(Freq))
+```
+
 
 # SAR
 

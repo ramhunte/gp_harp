@@ -34,7 +34,7 @@ percent.spring.migrants <- read.csv('lcm/data/Subbasin_names.csv') %>%
   mutate(prcnt_movers = case_when(
     Area_km2 > 450              ~ 0.0,
     between(Area_km2, 150, 450) ~ 0.2,
-    Area_km2 < 250              ~ 0.5
+    Area_km2 < 150              ~ 0.5
   )) %>%
   pull(prcnt_movers)
 
@@ -85,22 +85,13 @@ b5 <- 0.76#0.6 # propensity to return as 5 year olds
 
 
 # Respawn rate --
-# spawners that outmigrate back to ocean as kelts, from Clakamas River estimates and other Willamette populations;
-# Howell et al. (1985)
-respawn.rate <- 0.80 * 0.50 # rate * sex ratio
-
-# reconditioning of kelts in ocean
-kelt.recond <- 0.60
-
-# kelts from ocean to returning respawners
-respawn.return <- 0.50
 
 # product of all above correspond to a rate of 0.12;
 # Clemens (2015) suggests that coastal populations generally have a higher iteroparity rate than non-coastal, this
 # is in the range for coastal populations
 
-# Condensed kelt rate for simplicity
-kelt.rate <- respawn.rate * kelt.recond * respawn.return
+# For a given year, what percent of the spawners are repeat spawners
+kelt.rate <- 0.12
 
 
 # Harvest rate -------------------------------------------------------------------------------------------------------------
