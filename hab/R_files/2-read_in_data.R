@@ -12,17 +12,23 @@ edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T
   read.csv(.) %>%
   mutate(Reach_low = tolower(Reach))
 
-if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
+
+if (fishtype == 'chum') {
   edt_width %<>%
     rename(width_w = X1,
-         width_s = X5)
+           width_s = X3)
+} else if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
+  edt_width %<>%
+    rename(width_w = X1,
+           width_s = X5)
 } else {
   edt_width %<>%
     rename(width_w = X1,
-           width_s = X8)
+         width_s = X8)
 }
 
-  edt_width %<>%
+
+edt_width %<>%
   select(Reach_low, width_w, width_s, year) %>%
   group_by(Reach_low) %>%
   mutate(width_s_curr = ifelse(year == 2019,
@@ -94,5 +100,17 @@ fut_imperv <- read.csv('hab/Inputs/future_impervious.csv') %>%
   group_by(year, GSU) %>%
   summarize(future_imperv = sum(future_imperv, na.rm = T))
 
+# FP temperature reduction
+ss_fp_reconnect <- Floodplain_raw %>%
+  # read.delim('hab/inputs/floodplain_5m.txt', header = TRUE, sep = ",") %>%
+  filter(HabUnit == 'Marsh', 
+         NEAR_DIST < 5) %>%
+  group_by(noaaid, Period) %>%
+  summarize(Area = sum(Area_ha, na.rm = T)) %>%
+  spread(Period, Area) %>%
+  filter(Hist > 0,
+         # Curr != Hist)
+         is.na(Curr) | (Hist - Curr)/Hist > .50) %>%
+  pull(noaaid)
     
 

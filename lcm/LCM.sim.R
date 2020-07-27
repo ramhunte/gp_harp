@@ -61,8 +61,9 @@ if (sensitivity.mode == "no") {
   cat("runs", "\t")
   cat("years", "\t")
   cat("spawners", "\t")
-  if (pop == "coho" | pop == "steelhead")
+  if (pop == "coho" | pop == "steelhead" | pop == 'chum') {
     cat("SAR", "\t")
+  }
   if (pop == "fall.chinook" | pop == "spring.chinook") {
     cat("Fry:Parr", "\t")
     cat("SAR", "\t")
@@ -214,7 +215,7 @@ for (n in 1:length(scenario.file)) {
   }
   
   if (pop == 'chum') {
-    SAR.weighted <- SAR.fry
+    SAR <- SAR.fry %>% round(3)
   }
   
   if (pop == "steelhead") {
@@ -228,7 +229,7 @@ for (n in 1:length(scenario.file)) {
     cat(round(spawn.hr, 0), "\t", "\t")
     if (pop == "coho")
       cat(round(mean(c(bay.min, bay.max)) * (mean(c( so.min, so.max)) ^ 2), 4), "\t")
-    if (pop == "steelhead")
+    if (pop == "steelhead" | pop == 'chum')
       cat(SAR, "\t")
     if (pop == "fall.chinook" | pop == "spring.chinook") {
       cat(round(ratio, 3), "\t", "\t")

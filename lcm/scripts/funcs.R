@@ -28,9 +28,9 @@ BH.func <- function(S, p, c){
   # S = parental state
   # p = productivity or survival
   # c = capacity
-  #p[which(p == 0)] <- 0.001
+  # p[which(p == 0)] <- 0.001
   c[which(c == 0)] <- 1
-  #S[which(S == 0)] <- 1
+  # S[which(S == 0)] <- 1
   recruits <- (S  * p) / (1 + (p / c) * S)
   recruits[recruits < 1] <- 0 # cleans up basins with less than 1 fish
   recruits
@@ -425,11 +425,11 @@ if (pop == 'chum') {
     NOR.total <- mat['spawners',]
     #NOR.total <- N["spawners",] # Run this line to be able to step through func
     
-    eggs <- BH.func(S = NOR.total/2, p = fecund, c = egg.cap) # B-H
-    
+    eggs <- BH.func(S = NOR.total * .5, p = fecund, c = egg.cap) # B-H
+
     pre.fry <- eggs * egg.fry.surv * egg.flow.dec()
     
-    fry <- BH.func(pre.fry, p = fry.colonization.surv, c = fry.colonization.cap)
+    fry <- BH.func(pre.fry, p = fry.colonization.surv, c = fry.colonization.cap * 1.1)
     
     fry.migrant <- fry * fry.migrant.surv
 
@@ -451,7 +451,6 @@ if (pop == 'chum') {
     mat.new['pre.fry', ] <- pre.fry 
     mat.new['fry', ] <- fry
     mat.new['fry.migrant', ] <- fry.migrant
-    # mat.new['estuary.resident', ] <- estuary.resident # 10 week survival in estuary
     mat.new['fry.migrant.bay', ] <- fry.migrant.bay
 
     N <- mat.new
