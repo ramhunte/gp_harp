@@ -1,35 +1,6 @@
-
-# Thermalscape_temps ----
-thermalscape_temps <- read.csv('hab/Inputs/temperature_inputs/thermalscape_temps.csv', header = TRUE, sep = ',')
-
-if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
-  thermalscape_temps <- thermalscape_temps %>%
-    mutate(
-      rearing_temp_thermal = mdm_rear_thermal,
-      prespawn_temp_thermal = mwmt_thermal)
-} else {
-  thermalscape_temps <- thermalscape_temps %>%
-    mutate(
-      rearing_temp_thermal = mwmt_thermal,
-      prespawn_temp_thermal = mwmt_thermal)
-}
-
-
-# Create temperature data frame and fill data gaps ----
-
-# Create single temperature dataframe by combining thermalscape_temps and psu_temps dataframes.  Where psu temperature data exist, we use the psu temperatures.
-# Elsewhere we use thermalscape temperatures.  
-
-
-all_temps <- flowline %>%
-  select(noaaid, Reach, Seg, Habitat) %>%
-  left_join(., thermalscape_temps, by = 'Reach') %>%
-  mutate(
-    rear_temp = rearing_temp_thermal,
-    prespawn_temp = prespawn_temp_thermal
-    ) %>%
-  gather(type, temp, c(rear_temp, prespawn_temp)) %>%
-  spread(type, temp) %>%
+all_temps <- read.csv(list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T)) %>%
+  left_join(.,read.csv('hab/Inputs/temperature_inputs/thermalscape_temps.csv', header = TRUE, sep = ',') %>%
+              mutate(rear_temp = case_when(fishtype %in% c('spring_chinook', 'fall_chinook') ~ mdm_rear_thermal,
+                                           TRUE ~ mwmt_thermal),
+                     prespawn_temp = mwmt_thermal), by = 'Reach') %>%
   select(noaaid, prespawn_temp, rear_temp)
-  
-rm(thermalscape_temps)
