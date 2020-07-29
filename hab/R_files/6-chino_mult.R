@@ -2,15 +2,13 @@
 
 # Calculate escapement by subbasin for spring and fall chinook
 chinook_mult <- read.csv('lcm/data/wdfw_observed_by_trib/WDFW_escapement_by_trib.csv') %>%
-  gather(year, spawners, X1991:X2013) %>%
   left_join(read.csv('lcm/data/wdfw_observed_by_trib/WDFW_reach_name_conversion.csv')) %>%
-  rename(natal.basin = NOAA_Reach) %>%
-  mutate(source = 'wdfw',
-         year = sub('X','',year),
-         natal.basin = ifelse(natal.basin %in% c("", NA),
+  gather(year, spawners, X1991:X2013) %>%
+  rename(Subbasin = NOAA_Reach) %>%
+  mutate(Subbasin = ifelse(Subbasin %in% c("", NA),
                               as.character(WDFW_Reach),
-                              as.character(natal.basin))) %>%
-  group_by(natal.basin, species) %>%
+                              as.character(Subbasin))) %>%
+  group_by(Subbasin, species) %>%
   summarize(spawners = median(spawners, na.rm = T)) %>%
   spread(species, spawners) 
 
@@ -30,31 +28,17 @@ wdfw_mean <- chinook_mult %>%
 
 # For mainstem subbasins use the original .81/.19 split
 chinook_mult %<>%
+  full_join(., subbasin_names) %>%
   mutate(
     perc_spr = case_when(
       perc_spr > 0 & perc_spr < 1 ~ perc_spr,
-      perc_spr == 0 | perc_spr == 1 ~ wdfw_mean$mean_spr,
-      is.na(perc_spr) ~ wdfw_mean$mean_spr),
+      Subbasin_num %in% mainstem.subs ~ .19,
+      TRUE ~ wdfw_mean$mean_spr),
     perc_fall = case_when(
       perc_fall > 0 & perc_fall < 1 ~ perc_fall,
-      perc_fall == 0 | perc_fall == 1 ~ wdfw_mean$mean_fall,
-      is.na(perc_fall) ~ wdfw_mean$mean_fall),
-    Subbasin = natal.basin) %>%
-  full_join(., subbasin_names) %>%
+      Subbasin_num %in% mainstem.subs ~ .81,
+      TRUE ~ wdfw_mean$mean_fall)) %>%
   filter(!is.na(Subbasin_num)) %>%
-  mutate(
-    perc_spr = case_when(
-      is.na(perc_spr) ~
-        ifelse(Subbasin_num %in% mainstem.subs,
-               .19,
-               wdfw_mean$mean_spr),
-      !is.na(perc_spr) ~ perc_spr),
-    perc_fall = case_when(
-      is.na(perc_fall) ~
-        ifelse(Subbasin_num %in% mainstem.subs,
-               .81,
-               wdfw_mean$mean_fall),
-      !is.na(perc_fall) ~ perc_fall)) %>%
   ungroup() %>%
   select(perc_spr, perc_fall, Subbasin_num)
     
