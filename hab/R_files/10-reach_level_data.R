@@ -5,7 +5,7 @@
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp,
-           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat, BF_width) %>%
+           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat, BF_width, left_ht, right_ht) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -174,7 +174,8 @@ mutate(asrp_temp_w_growth = case_when(
            Habitat == 'SmStream' & BF_width >= 10 & noaaid %in% ss_fp_reconnect ~ .72,
            Habitat == 'SmStream' & BF_width < 10 & noaaid %in% ss_fp_reconnect ~.29,
            TRUE ~ 0),
-         asrp_temp = case_when(Scenario_num %in% c('fp_temp', 'cc_only') ~ asrp_temp_cc_only,
+         asrp_temp = case_when(Scenario_num %in% c('fp_temp', 'cc_only') & (left_ht <= 15 | right_ht <= 15) ~ asrp_temp_cc_only,
+                               Scenario_num %in% c('fp_temp', 'cc_only') & (left_ht > 15 & right_ht > 15) ~ asrp_temp_w_growth,
                                !Scenario_num %in% c('fp_temp', 'cc_only') ~
                                  ifelse(Riparian == 'y',
                                         ifelse(can_ang > 170,
@@ -202,11 +203,13 @@ mutate(asrp_temp_w_growth = case_when(
            !Scenario_num %in% c('Shade', 'Historical') ~
              case_when(
                year == 2019 ~ prespawn_temp,
-               year == 2040 & Scenario_num %in% c('cc_only', 'fp_temp') ~ prespawn_temp + cc_mid_prespawn,
+               year == 2040 & Scenario_num %in% c('cc_only', 'fp_temp') & (left_ht <= 15 | right_ht <= 15) ~ prespawn_temp + cc_mid_prespawn,
+               year == 2040 & Scenario_num %in% c('cc_only', 'fp_temp') & (left_ht > 15 & right_ht > 15) ~ prespawn_temp + temp_diff_2040_prespawn,
                year == 2040 & !Scenario_num %in% c('cc_only', 'fp_temp') ~ ifelse(!Riparian == 'y' & can_ang > 170,
                                                                  prespawn_temp + cc_mid_prespawn,
                                                                  prespawn_temp + temp_diff_2040_prespawn), 
-               year == 2080 & Scenario_num %in% c('cc_only', 'fp_temp') ~ prespawn_temp + cc_late_prespawn,
+               year == 2080 & Scenario_num %in% c('cc_only', 'fp_temp') & (left_ht <= 15 | right_ht <= 15) ~ prespawn_temp + cc_late_prespawn,
+               year == 2080 & Scenario_num %in% c('cc_only', 'fp_temp') & (left_ht > 15 & right_ht > 15) ~ prespawn_temp + temp_diff_2080_prespawn,
                year == 2080 & !Scenario_num %in% c('cc_only', 'fp_temp') ~ ifelse(!Riparian == 'y' & can_ang > 170,
                                                                  prespawn_temp + cc_late_prespawn,
                                                                  prespawn_temp + temp_diff_2080_prespawn))),
