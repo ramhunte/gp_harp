@@ -248,13 +248,14 @@ p7 <-  x %>%
   theme(strip.background = element_blank(),
         panel.border = element_rect(colour = "black"),
         legend.position = "none") +
-  geom_line(aes(year, perc_diff, color = era)) +
-  facet_wrap(~species, ncol = 1) +
-  scale_y_continuous(labels = scales::label_percent(),
-                     breaks = c(-1, -.5, 0, 0.5),
-                     limits = c(-1, 0.5)) +
+  geom_line(aes(year, n, color = era)) +
+  facet_wrap(~species, ncol = 1, scales = 'free_y') +
+  scale_y_continuous(labels = scales::label_comma()) +
+  #                    breaks = c(-1, -.5, 0, 0.5),
+  #                    limits = c(-1, 0.5)
+  expand_limits(y = 0) +
   scale_color_manual(values = c('black', 'grey40')) +
-  labs(y = 'Change in spawners (%)', x = 'Model Year', color = NULL)
+  labs(y = 'Spawner abundance', x = 'Model Year', color = NULL)
 
 ggsave('docs/future_flows/Fig7_timeseries.tiff', p7, height = 5, width = 6, dpi = 300, compression = 'lzw')
 
@@ -264,7 +265,8 @@ summary_tab <-  x %>%
   # filter(scenario == 'Current') %>%
   group_by(scenario, species, era, climate) %>%
   summarize(min = min(perc_diff) %>% scales::percent(),
-            mean = mean(perc_diff) %>% scales::percent(),
+            #mean = mean(perc_diff) %>% scales::percent(),
+            median = median(perc_diff) %>% scales::percent(),
             max = max(perc_diff) %>% scales::percent(),
             sd = sd(perc_diff) %>% scales::percent()) %>%
   arrange(species) %>%
@@ -275,24 +277,26 @@ print(
 )
 
 
-write.csv(summary_tab, 'summary_tab.csv')
-# summary_tab %>% 
-#   filter(scenario == 'Current', era != 'Current') %>% 
-#   select(-scenario) %>% write.csv('summary_tab2.csv')
+#write.csv(summary_tab, 'summary_tab.csv')
+summary_tab %>% 
+  filter(scenario == 'Current', era != 'Current') %>%
+  select(-scenario) %>% write.csv('summary_tab2.csv')
 
 p6 <- x %>%
   filter(scenario == 'Current') %>%
   ggplot(aes(era,perc_diff, fill = climate)) +
   geom_boxplot(outlier.shape = NA) +
-  #geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
+  #geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.1) +
   facet_wrap(~species) +
   cowplot::theme_half_open() +
-  theme(legend.position = c(0.25, .07),
+  #theme_bw() +
+  theme(legend.position = c(0.2, .07),
         legend.direction = 'horizontal',
         legend.background = element_rect(color = 'black', fill = 'white'),
         strip.background = element_blank(),
         panel.border = element_rect(colour = "black"),
-        axis.text.x = element_text(angle = 45, hjust = 1)) +
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.grid.major.y = element_line(color = "grey80")) +
   scale_fill_manual(values = c('white','grey80','grey50')) +
   #scale_fill_grey() +
   scale_y_continuous(labels = scales::percent) +
@@ -305,18 +309,54 @@ print(p6)
 
 ######################### Extra figures showing current vs other scenarios
 
+
+
 x %>%
-  ggplot(aes(era,perc_diff, color = climate)) +
+  ggplot(aes(scenario,perc_diff, color = climate)) +
   geom_boxplot(outlier.shape = NA) +
   #geom_point(position = position_jitterdodge(jitter.width = 0.1), alpha = 0.3) +
-  facet_grid(species~scenario) +
+  facet_grid(species~era) +
   theme_bw() +
-  theme(panel.grid = element_blank(),
-        legend.position = c(.5, .07),
-        legend.direction = 'horizontal',
-        legend.background = element_rect(color = 'black')) +
-  scale_color_manual(values = c('black','orange1','orangered2')) +
   scale_y_continuous(labels = scales::percent) +
   labs(x = NULL, y = 'Spawner Change from Current', color = NULL)
 
+ggsave('docs/future_flows/FigExtra_boxplot.tiff', height = 5, width = 6, dpi = 300, compression = 'lzw')
 
+
+x %>%
+  filter(#scenario == 'Current',
+         climate != 'RCP 4.5',
+         era != 'Mid-century') %>%
+  ggplot +
+  cowplot::theme_half_open() +
+  theme(strip.background = element_blank(),
+        panel.border = element_rect(colour = "black"),
+        legend.position = "none") +
+  geom_line(aes(year, perc_diff, color = era)) +
+  facet_grid(species~scenario) +
+  scale_y_continuous(labels = scales::label_percent(),
+                     breaks = c(-1, -.5, 0, 0.5),
+                     limits = c(-1, 0.5)) +
+  scale_color_manual(values = c('black', 'grey40')) +
+  labs(y = 'Change in spawners (%)', x = 'Model Year', color = NULL)
+
+ggsave('docs/future_flows/FigExtra_timeseries.tiff', height = 5, width = 6, dpi = 300, compression = 'lzw')
+
+
+x %>%
+  filter(scenario == 'Current',
+         climate != 'RCP 4.5',
+         era != 'Mid-century') %>%
+  ggplot +
+  cowplot::theme_half_open() +
+  theme(strip.background = element_blank(),
+        panel.border = element_rect(colour = "black"),
+        legend.position = "none") +
+  geom_line(aes(year, n, color = era)) +
+  facet_wrap(~species, ncol = 1, scales = 'free_y') +
+  scale_y_continuous(labels = scales::label_comma()) +
+  #                    breaks = c(-1, -.5, 0, 0.5),
+  #                    limits = c(-1, 0.5)
+  expand_limits(y = 0) +
+  scale_color_manual(values = c('black', 'grey40')) +
+  labs(y = 'Spawner abundance', x = 'Model Year', color = NULL)
