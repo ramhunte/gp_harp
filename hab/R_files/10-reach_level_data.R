@@ -233,3 +233,6 @@ left_join(., fut_imperv, by = c('GSU', 'year')) %>%
                                 future_imperv))
 
 rm(asrp_reach_data_scenarios, asrp_scenarios)
+write.csv(asrp_reach_data %>% 
+            filter(Scenario_num %in% c('Current', 'Historical', 'cc_only', 'rip_and_climate', 'rip_and_flp', 'fp_temp')), 
+          'temp_paper/asrp_reach_data.csv')
