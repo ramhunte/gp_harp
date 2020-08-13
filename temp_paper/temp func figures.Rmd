@@ -38,20 +38,23 @@ sthd <- function(t) {
            (97.8846 / (1 + exp(-((t - 24.3522) / -.5033)))) / 100 )
 }
 ggplot(data.frame(x = c(12, 32)), aes(x = x)) +
-  stat_function(fun = coho,aes(color = 'coho juvenile\n summer rearing', linetype = 'coho juvenile summer rearing'), size = .6)+
-  stat_function(fun = chinook,  aes(color = 'chinook juvenile\n outmigration', linetype ='chinook juvenile outmigration'), size = .6)+
-  stat_function(fun = sthd,  aes(color = 'steelhead juvenile\n summer rearing', linetype = 'steelhead juvenile summer rearing'), size = .6)+
-  stat_function(fun = bowerman, aes(color = 'spring-run Chinook\n prespawning', linetype = 'spring-run Chinook prespawning'), size = .6)+
+  stat_function(fun = coho,aes(color = 'Coho juvenile\n summer rearing', linetype = 'coho juvenile summer rearing'), size = 1)+
+  stat_function(fun = chinook,  aes(color = 'Chinook salmon juvenile\n outmigration', linetype ='chinook juvenile outmigration'), size = 1)+
+  stat_function(fun = sthd,  aes(color = 'Steelhead juvenile\n summer rearing', linetype = 'steelhead juvenile summer rearing'), size = 1)+
+  stat_function(fun = bowerman, aes(color = 'Spring-run Chinook salmon\n prespawning', linetype = 'spring-run Chinook prespawning'), size = 1)+
   theme_bw()+
   xlab('Temperature (7-DADM, in °C)')+
-  ylab('Productivity Multiplier')+
+  ylab('Capacity/Productivity Multiplier')+
   scale_linetype_manual(values = c('solid', 'dashed', 'dotdash', 'dotted'), 
                         guide = FALSE) +
   scale_color_manual(
                      values = c('firebrick1', 'maroon', 'darkorange4', 'navy'),
                      guide = guide_legend(override.aes = list(
                        linetype = c('solid', 'dashed', 'dotdash', 'dotted'))))+
-  theme(legend.position = 'bottom')+#c(.88, .92)) +
+  theme(legend.position = c(.2, .25),
+        legend.key.size = unit(1.25, 'cm'),
+        legend.text = element_text(size = 14)
+        )+#c(.88, .92)) +
   # theme(legend.background = element_rect(fill = 'white',
                                          # size = .25, linetype = 'solid', colour = 'black'))+
   theme(legend.title = element_blank())+
@@ -59,7 +62,9 @@ ggplot(data.frame(x = c(12, 32)), aes(x = x)) +
   theme(axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 12))
+        axis.text.y = element_text(size = 12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
   
-ggsave('temp_prod_funcs.jpg', width = 10, height = 8, dpi = 300)
+ggsave('temp_prod_funcs.tiff', width = 8, height = 6, dpi = 300, compression = 'lzw')
 ```
