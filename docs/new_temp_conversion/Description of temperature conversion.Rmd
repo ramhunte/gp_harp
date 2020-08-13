@@ -333,19 +333,24 @@ mwmt_comp <- mwmt %>%
 
 mwmt_comp_plot <- ggplot(mwmt_comp, aes(x = meanT, y = mwmt)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = FALSE) +
+  geom_smooth(method = 'lm', se = TRUE, level = .95) +
   ylim(12, 28)+
-  annotate("text", x = 21, y = 15, label = 'y = 1.02x + 3.81', size = 8)+
-  annotate("text", x = 21, y = 14, label = 'R^2 = .76', size = 8) +
-  annotate("text", x = 21, y = 13, label = "p ~ 0.0", size = 8)+
+  xlim(12, 28) +
+  annotate("text", x = 25, y = 15, label = 'y = 1.02x + 3.81')+
+  annotate("text", x = 25, y = 14, label = expression(paste(R^2, '= 0.76'))) +
+  annotate("text", x = 25, y = 13, label = "p ~ 0.0")+
   xlab('August ADA') +
   ylab('7-DADM')+
   theme_bw() +
-  theme(axis.text.x = element_text(size = 24),
-        axis.title.x = element_text(size = 26),
-        axis.text.y = element_text(size = 24),
-        axis.title.y = element_text(size = 26),panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+  theme(
+    axis.text.x = element_text(size = 10),
+    axis.title.x = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 12),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    aspect.ratio = 1,
+    legend.position = 'none')
 print(mwmt_comp_plot + labs(y = '7-DADM', x = 'August ADA'))
 
 lm_mwmt <- lm(mwmt ~ meanT, data = mwmt_comp)
@@ -367,28 +372,32 @@ mdm_rear_comp <- mdm_rear %>%
 
 mdm_rear_comp_plot <- ggplot(mdm_rear_comp, aes(x = meanT, y = mdm_rear)) +
   geom_point() +
-  geom_smooth(method = 'lm', se = FALSE) +
+  geom_smooth(method = 'lm', se = TRUE, level = .95) +
   ylim(12, 28)+
-  annotate('text', x = 21, y = 15, label = 'y = .96x + .61', size = 8) + 
-  annotate('text', x = 21, y = 14, label = 'R^2 = .69', size = 8) +
-  annotate ('text', x = 21, y = 13, label = 'p ~ 0.0', size = 8) +
+  xlim(12, 28) +
+  annotate('text', x = 25, y = 15, label = 'y = .96x + .61') + 
+  annotate('text', x = 25, y = 14, label = expression(paste(R^2, ' = 0.69'))) +
+  annotate ('text', x = 25, y = 13, label = 'p ~ 0.0') +
   xlab('August ADA') +
   ylab('June 1-21 ADM')+
   theme_bw() +
-  theme(axis.text.x = element_text(size = 24),
-        axis.title.x = element_text(size = 26),
-        axis.text.y = element_text(size = 24),
-        axis.title.y = element_text(size = 26),
+  theme(
+    axis.text.x = element_text(size = 10),
+        axis.title.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10),
+        axis.title.y = element_text(size = 12),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        aspect.ratio = 1,
+        legend.position = 'none') 
 print(mdm_rear_comp_plot + labs(y = 'June 1-21 ADM', x = 'August ADA'))
 
 lm_mdm_rear <- lm(mdm_rear ~ meanT, data = mdm_rear_comp)
 summary(lm_mdm_rear)
 
 conversion_plot <-plot_grid(mwmt_comp_plot, NULL, mdm_rear_comp_plot, ncol = 3, rel_widths = c(1, .15, 1)) 
-conversion_plot
 
-save_plot('temp_paper/conversion_plots.jpg', conversion_plot, ncol = 2, base_asp = 1.1)
+# ggsave('../../temp_paper/conversion_plots.jpg', dpi = 300, width = 6, height = 8)
+save_plot('../../temp_paper/conversion_plots.tiff', conversion_plot, ncol = 2, base_asp = 1.1, compression = 'lzw')
 ```
 
