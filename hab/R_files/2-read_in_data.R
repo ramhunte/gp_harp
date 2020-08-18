@@ -39,7 +39,18 @@ edt_width %<>%
                           width_s_curr * .95,
                           # width_s,
                           width_s)) %>%
-  select(-width_s_curr)
+  select(-width_s_curr) %>%
+  gather(stage, width, width_w:width_s) %>%
+  mutate(stage = case_when(year == 2019 & stage == "width_s" ~ "width_s",
+                           year == 2019 & stage == "width_w" ~ "width_w",
+                           year == 1900 & stage == "width_s" ~ "width_s_hist",
+                           year == 1900 & stage == "width_w" ~ "width_w_hist",
+                           year == 2040 & stage == "width_s" ~ "width_s_2040",
+                           year == 2040 & stage == "width_w" ~ "width_w_2040",
+                           year == 2080 & stage == "width_s" ~ "width_s_2080",
+                           year == 2080 & stage == "width_w" ~ "width_w_2080")) %>%
+  select(-year) %>%
+  spread(stage, width)
 
 # Culverts.  This file reads in the most recent Chehalis obstructions layer from the spatial model outputs. ----
 culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "culvs_gsu_", full.names = T) %>%
