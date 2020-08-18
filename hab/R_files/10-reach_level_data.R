@@ -5,7 +5,7 @@
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp,
-           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat, BF_width) %>%
+           prespawn_temp_hist, prespawn_temp_2040, prespawn_temp_2080, prespawn_temp_2040_cc_only, prespawn_temp_2080_cc_only, hist_temp, Habitat, BF_width) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -192,19 +192,19 @@ mutate(asrp_temp_w_growth = case_when(
                             asrp_temp),
          tempmult.asrp = temp_func(asrp_temp),
          prespawn_temp_asrp = case_when(
-           Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - temp_diff_prespawn, # convert 7DADM to MDM
+           Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp_hist,
            !Scenario_num %in% c('Shade', 'Historical') ~
              case_when(
                year == 2019 ~ prespawn_temp,
                year == 2040 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                     prespawn_temp + cc_mid_prespawn,
-                                     prespawn_temp + temp_diff_2040_prespawn), 
+                                     prespawn_temp_2040_cc_only,
+                                     prespawn_temp_2040), 
                year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                     prespawn_temp + cc_late_prespawn,
-                                     prespawn_temp + temp_diff_2080_prespawn))),
+                                     prespawn_temp_2080_cc_only,
+                                     prespawn_temp_2080))),
          prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
-                                                           prespawn_temp_asrp - (1 * rest_perc),
-                                                           prespawn_temp_asrp),
+                                     prespawn_temp_asrp - (1 * rest_perc),
+                                     prespawn_temp_asrp),
          prespawn_temp_asrp = ifelse(Scenario_num %in% growth_scenarios,
                                      ifelse(year == 2040,
                                             prespawn_temp_asrp - cc_mid_prespawn,
