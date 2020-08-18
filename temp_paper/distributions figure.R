@@ -35,10 +35,16 @@ distributions <- ggplot() +
   geom_sf(data = streamlines, aes(color = distribution, size = width_bin), show.legend = 'line')+
   facet_wrap(~species) +
   scale_color_manual(breaks = c('Spawning and rearing', 'Rearing and outmigration'),
-                     values = c('gray70', '#CC79A7', '#0072B2')) +
+                     values = c('gray70', '#CC79A7', '#0072B2'),
+                     guide = guide_legend(
+                       label.position = 'right',
+                       direction = 'horizontal',
+                       keywidth = unit(1.5, 'cm'),
+                       label.theme = element_text(size = 10),
+                       override.aes = list(size = 2))) +
   scale_size_manual(values = seq(0.1, 1, length.out = 6), guide = FALSE) +
   theme(legend.position = 'bottom',
         strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
         legend.text = element_text( size = 12)) +  
   labs(color = NULL)
-ggsave('distributions.tiff', dpi = 300, height = 7, width = 6, compression = 'lzw')
+ggsave('temp_paper/distributions.tiff', dpi = 300, height = 7, width = 6, compression = 'lzw')
