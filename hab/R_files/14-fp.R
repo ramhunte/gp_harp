@@ -22,20 +22,7 @@ asrp_fp_raw <- Floodplain_raw %>%
   bind_rows(., hist_sc) %>%
   select(HabUnit, Area_ha, Period, Hist_salm, noaaid, NEAR_FID, NEAR_DIST, ET_ID, Length_sc, wse_intersect)
 
-asrp_fp_year <- lapply(scenario.years, function(x) {
-  asrp_fp_raw %>%
-    mutate(year = x)
-}) %>%
-  do.call('rbind',.)
-
-asrp_fp_scenario <- lapply(scenario.nums, function(y) {
-  asrp_fp_year %>%
-    mutate(Scenario_num = y)
-}) %>%
-  do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
-             year %in% c(2040, 2080))) %>%
+asrp_fp_scenario <- create_scenarios(asrp_fp_raw) %>%
   left_join(., LgRiver_raw %>%
               rename(noaaid_lr = noaaid) %>%
               select(noaaid_lr, ET_ID), by = "ET_ID") %>%
@@ -159,7 +146,7 @@ asrp_fp <- asrp_fp_curr %>%
                               curr_area * tempmult.asrp * woodmult_s_asrp,
                               curr_area * woodmult_w_asrp))) 
 
-rm(asrp_fp_curr, asrp_fp_hist, asrp_fp_precalc, asrp_fp_precalc1, asrp_fp_raw, asrp_fp_scenario, asrp_fp_year, Floodplain_raw, LgRiver_raw)
+rm(asrp_fp_curr, asrp_fp_hist, asrp_fp_precalc, asrp_fp_precalc1, asrp_fp_raw, Floodplain_raw, LgRiver_raw)
 
 
 asrp_fp_mvmt <- asrp_fp %>%

@@ -67,20 +67,7 @@ if (fishtype == "spring_chinook") {
     filter(Subbasin_num %in% schino_subs)
 }
 
-asrp_spawn_lr_year <- lapply(scenario.years, function(r) {
-  lgr_sp_area_asrp %>% 
-    mutate(year = r)
-}) %>%
-  do.call('rbind',.)
-
-asrp_spawn_lr <- lapply(scenario.nums, function(n){
-  asrp_spawn_lr_year %>%
-    mutate(Scenario_num = as.character(n))
-}) %>%
-  do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
-             year %in% c(2040, 2080))) %>%
+asrp_spawn_lr <- create_scenarios(lgr_sp_area_asrp) %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   mutate(
@@ -114,5 +101,5 @@ egg_cap_weight_asrp <- bind_rows(asrp_spawn_ss, asrp_spawn_fp, asrp_spawn_lr) %>
          eggs_weight = eggs / eggs_by_sub) %>% # egg cap weights
   select(-eggs, -eggs_by_sub)
 
-rm(asrp_spawn_fp, asrp_spawn_fp_curr, asrp_spawn_fp_hist, asrp_spawn_fp_raw, asrp_spawn_lr, asrp_spawn_lr_year, asrp_spawn_ss, asrp_fp_spawn, asrp_ss_spawn)
+rm(asrp_spawn_fp, asrp_spawn_fp_curr, asrp_spawn_fp_hist, asrp_spawn_fp_raw, asrp_spawn_lr, asrp_spawn_ss, asrp_fp_spawn, asrp_ss_spawn)
 

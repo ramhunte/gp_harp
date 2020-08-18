@@ -17,21 +17,7 @@ asrp_bw_raw <- Backwater_raw %>%
   filter(spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs) %>%
   select(Subbasin_num, noaaid, species, spawn_dist, both_chk, Reach, Period, sc_mult, Shape_Length, bw_mult, 
          Habitat, Reach_low, Area_ha, chino_mult)
-
-asrp_bw_year <- lapply(scenario.years, function(x) {
-  asrp_bw_raw %>% 
-    mutate(year = x)
-}) %>%
-  do.call('rbind',.)
-
-asrp_bw <- lapply(scenario.nums, function(y) {
-  asrp_bw_year %>%
-    mutate(Scenario_num = y)
-}) %>%
-  do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
-             year %in% c(2040, 2080))) %>%
+asrp_bw <- create_scenarios(asrp_bw_raw) %>%
   left_join(., asrp_reach_data) %>%
   mutate(Area_ha = ifelse(Period == "Hist",
                           ifelse(Floodplain == "y",
@@ -42,22 +28,7 @@ asrp_bw <- lapply(scenario.nums, function(y) {
          area_w = Area_ha)
 # LgRiver ----
 # Note: asrp_lr_raw created in wood_script.R
-asrp_lr_year <- lapply(scenario.years, function(z) {
-  asrp_lr_raw %>%
-    mutate(year = z)
-}) %>%
-  do.call('rbind',.)
-
-asrp_lr_scenario <- lapply(scenario.nums, function(a) {
-  asrp_lr_year %>%
-    mutate(Scenario_num = a)
-}) %>%
-  do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
-             year %in% c(2040, 2080)))
-
-asrp_lr <- asrp_lr_scenario %>%
+asrp_lr <- create_scenarios(asrp_lr_raw) %>%
   filter(case_when(
     Scenario_num %in% c('Historical', 'LR') ~ Period %in% c('Hist', 'Both'),
     !Scenario_num %in% c('LR', 'Historical') ~ Period %in% c("Curr", "Both"))) %>%
@@ -130,4 +101,4 @@ asrp_lr %<>%
   filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }
 
-rm(asrp_bw, asrp_bw_raw, asrp_bw_year, asrp_lr_raw, asrp_lr_scenario, asrp_lr_year, Backwater_raw)
+rm(asrp_bw, asrp_bw_raw, asrp_lr_raw, Backwater_raw)

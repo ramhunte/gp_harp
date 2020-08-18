@@ -23,24 +23,11 @@ asrp_ss_raw <- flowline %>%
          Reach_low, slope.class, Habitat, wet_width, can_ang, chino_mult, width_s, width_s_2040, width_s_2080, width_s_hist, width_w, width_w_2040,
          width_w_2080, width_w_hist)
 
-asrp_ss_year <- lapply(scenario.years, function(x) {
-  asrp_ss_raw %>%
-    mutate(year = x)
-}) %>%
-  do.call('rbind',.)
+asrp_ss <- create_scenarios(asrp_ss_raw)
 
-asrp_ss_scenario <- lapply(scenario.nums, function(y) {
-  asrp_ss_year %>%
-    mutate(Scenario_num = y)
-}) %>%
-  do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
-             year %in% c(2040, 2080)))
+assign('asrp_ss_spawn', asrp_ss, envir = .GlobalEnv)
 
-assign('asrp_ss_spawn', asrp_ss_scenario, envir = .GlobalEnv)
-
-asrp_ss <- asrp_ss_scenario %>%
+asrp_ss %<>%
   # left_join(., edt_width) %>%
   left_join(., asrp_reach_data) %>%
   left_join(., ss.dist) %>%
@@ -136,7 +123,7 @@ if (run_single_action == 'no') {
     filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }
 
-rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year, edt_width)
+rm(asrp_ss_raw, edt_width)
 
 asrp_ss_spawn %<>%
   filter(slope < .03)

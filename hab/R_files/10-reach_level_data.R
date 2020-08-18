@@ -1,25 +1,9 @@
 # This script creates a table from which noaaid level characteristics are drawn in the ASRP scenario scripts 
 
-# Replicate flowline 4x, once for each scenario in `scenario.nums` ----
-
-asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
-  flowline %>% 
-    select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp,
-           prespawn_temp_hist, prespawn_temp_2040, prespawn_temp_2080, prespawn_temp_2040_cc_only, prespawn_temp_2080_cc_only, hist_temp, Habitat, BF_width) %>%
-    mutate(Scenario_num = j) 
-}) %>%
-  do.call('rbind',.) 
-
-# replicate the replicated flowline 3 more times, once for each year in `scenario.years` ----
-
-asrp_reach_data <- lapply(scenario.years, function(k) {
-  asrp_reach_data_scenarios %>% 
-    mutate(year = k)
-}) %>%
-  do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", growth_scenarios, 'dev_and_climate')),
-         !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
-             year %in% c(2040, 2080))) %>%
+asrp_reach_data <- create_scenarios(flowline %>%
+                                      select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, 
+                                             can_ang, Subbasin_num, prespawn_temp, prespawn_temp_hist, prespawn_temp_2040, prespawn_temp_2080, 
+                                             prespawn_temp_2040_cc_only, prespawn_temp_2080_cc_only, hist_temp, Habitat, BF_width)) %>%
   left_join(., asrp_scenarios %>%
               select(GSU, Scenario_num, managed_forest)) %>%
   mutate(managed_forest = ifelse(is.na(managed_forest), 
@@ -218,4 +202,4 @@ left_join(., fut_imperv, by = c('GSU', 'year')) %>%
   mutate(future_imperv = ifelse(is.na(future_imperv),
                                 0,
                                 future_imperv))
-rm(asrp_reach_data_scenarios, asrp_scenarios)
+rm(asrp_scenarios)

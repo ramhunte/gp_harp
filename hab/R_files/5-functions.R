@@ -102,6 +102,21 @@ calc_coho_imperv <- function(imperv) {
 #   .82749 * mwmt
 # }
 
-mwmt_to_mdm_func <- function(mwmt) {
-  .97550 * mwmt
+# mwmt_to_mdm_func <- function(mwmt) {
+#   .97550 * mwmt
+# }
+
+create_scenarios <- function(dataset) {
+  hab.scenarios <- lapply(scenario.nums, function(scenario) {
+    dataset %>%
+      mutate(Scenario_num = scenario)
+  }) %>%
+    do.call('rbind',.) 
+  years <- lapply(scenario.years, function(scenario) {
+    hab.scenarios %>%
+      mutate(year = scenario)
+  }) %>%
+    do.call('rbind',.) %>%
+    filter(!(year == 2019 & Scenario_num %in% c('scenario_1', 'scenario_2', 'scenario_3', growth_scenarios, 'dev_and_climate')),
+           !(year %in% c(2040, 2080) & Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios)))
 }
