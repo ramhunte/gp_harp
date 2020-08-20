@@ -44,7 +44,7 @@ if (fishtype == 'chum') {
 
 asrp_cap %<>%
   left_join(., density) %>%
-  mutate(capacity = Area * Density)
+  mutate(capacity = calc_capacity(Area, Density))
 
 source("hab/R_files/16-movement.R", local = TRUE)
 
