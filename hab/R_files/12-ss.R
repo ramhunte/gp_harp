@@ -2,12 +2,8 @@
 lc = c(rep(c("Agriculture", "BareShrubGrass", "Developed", "Forest", "Wetland", "Reference"), times = 3))
 slope.class = c(rep("low", times = 6), rep("med", times = 6), rep("high", times = 6))
 pool.perc = c(c(.92, .83, .74, .75, .89, .81), c(.60, .50, .51, .48, .53, .66), c(.31, .35, .54, .34, NA, .35))
-ss.dist = data.frame(lc, slope.class, pool.perc)
-
-lc.ref = c(rep("Reference", times = 3))
-slope.class = c("low", "med", "high")
-pool.perc.ref = c(.81, .66, .35)
-ss.dist.ref = data.frame(lc.ref, slope.class, pool.perc.ref)
+pool.perc.ref = c(rep(.81, times = 6), rep(.66, times = 6), rep(.35, times = 6))
+ss.dist = data.frame(lc, slope.class, pool.perc, pool.perc.ref)
 
 asrp_ss_raw <- flowline %>%
   filter(Habitat == "SmStream",
@@ -31,7 +27,6 @@ asrp_ss %<>%
   # left_join(., edt_width) %>%
   left_join(., asrp_reach_data) %>%
   left_join(., ss.dist) %>%
-  left_join(., ss.dist.ref) %>%
   left_join(., asrp_culvs) %>%
   rename(width_s_curr = width_s,
          width_w_curr = width_w) %>%
@@ -123,7 +118,7 @@ if (run_single_action == 'no') {
     filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }
 
-rm(asrp_ss_raw, edt_width)
+rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year, edt_width)
 
 asrp_ss_spawn %<>%
   filter(slope < .03)

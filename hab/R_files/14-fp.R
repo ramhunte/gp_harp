@@ -55,7 +55,7 @@ assign('asrp_fp_spawn', asrp_fp_scenario, envir = .GlobalEnv)
 asrp_fp_precalc1 <- asrp_fp_scenario %>%
   select(Habitat, slope.class, noaaid, year, Scenario_num, Area_ha, both_chk, Subbasin_num, Reach, species, pool.perc, Period,Hist_salm, 
          spawn_dist, NEAR_DIST, wse_intersect, chino_mult) %>%
-  left_join(., ss.dist.ref) %>% 
+  # left_join(., ss.dist.ref) %>% 
   left_join(., asrp_reach_data) %>%
   left_join(., asrp_culvs)
 
