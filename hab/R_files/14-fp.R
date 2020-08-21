@@ -3,11 +3,11 @@
 hist_sc <- flowline %>%
   select(Reach, Shape_Length, spawn_dist, species, both_chk, Subbasin_num, noaaid, chino_mult) %>%
   left_join(., lr_length_raw, by = "Reach") %>%
-  mutate(width = sc_width,
+  mutate(
          sc_mult = ifelse(is.na(sc_mult), 
                           0, 
                           sc_mult),
-         Area_ha = calc_area(Shape_Length, sc_mult, width),
+         Area_ha = calc_area(Shape_Length, sc_mult, sc_width),
          Area_ha = convert_m_to_ha(Area_ha),
          # Area_ha = (Shape_Length * sc_mult * 2) / 10000, # Assume average width of side channels of 2 m
          Length_sc = Shape_Length * sc_mult,

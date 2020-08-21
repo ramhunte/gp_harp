@@ -20,7 +20,7 @@ asrp_spawn_ss <- asrp_ss_spawn %>%
                          slope >= .01 ~ ifelse(LW == 'y' ,
                                                psp_hwhs,
                                                psp_lwhs)),
-         spawn_area = (Shape_Length / (width_w * psp)) * width_w * (width_w * .5),
+         spawn_area = calc_area(Shape_Length, 1/(2 * psp), width_w),
          eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
 
 asrp_spawn_fp_raw <- asrp_fp_spawn %>%
@@ -57,9 +57,13 @@ asrp_spawn_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
                             Length_sc_curr + ((Length_sc_hist - Length_sc_curr) * rest_perc * fp_intensity_scalar),
                             Length_sc_curr))
 asrp_spawn_fp %<>%
-  mutate(spawn_area = ifelse(LW == 'y' ,
-                             (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5),
-                             (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5)),
+  mutate(
+    spawn_area = ifelse(LW == 'y',
+                        calc_area(Length_sc, 1 / (2 * psp_hwls), sc_width),
+                        calc_area(Length_sc, 1 / (2 * psp_lwls), sc_width)),
+    # spawn_area = ifelse(LW == 'y' ,
+                             # (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5),
+                             # (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5)),
          eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
 
 if (fishtype == "spring_chinook") {
