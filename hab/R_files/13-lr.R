@@ -45,9 +45,6 @@ asrp_lr <- create_scenarios(asrp_lr_raw) %>%
                width_s_2019),
       year == 2040 ~ width_s_2040,
       year == 2080 ~ width_s_2080),
-    # width_s = ifelse(is.na(width_s),
-    #                  wet_width,
-    #                  width_s),
     width_w = case_when(
       year == 2019 ~ 
         ifelse(Scenario_num == 'Historical',
@@ -55,9 +52,6 @@ asrp_lr <- create_scenarios(asrp_lr_raw) %>%
                width_w_2019),
       year == 2040 ~ width_w_2040,
       year == 2080 ~ width_w_2080),
-    # width_w = ifelse(is.na(width_w),
-    #                  wet_width,
-    #                  width_w),
     lr_mult = ifelse(is.na(lr_mult),
                      1,
                      lr_mult),
