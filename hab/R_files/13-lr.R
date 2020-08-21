@@ -62,11 +62,17 @@ asrp_lr <- create_scenarios(asrp_lr_raw) %>%
                      1,
                      lr_mult),
     area_s = case_when(
-      Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_s) / 10000,
-      !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_s / 10000),
+      Scenario_num %in% c('LR', 'Historical') ~ calc_area(Length_m, lr_mult, width_s),
+      !Scenario_num %in% c('LR', 'Historical') ~ calc_area(Length_m, 1, width_s)),
+      # Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_s) / 10000,
+      # !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_s / 10000),
+    area_s = convert_m_to_ha(area_s),
     area_w = case_when(
-      Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_w) / 10000,
-      !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_w / 10000)) %>%
+      Scenario_num %in% c('LR', 'Historical') ~ calc_area(Length_m, lr_mult, width_w),
+      !Scenario_num %in% c('LR', 'Historical') ~ calc_area(Length_m, 1, width_w)),
+    area_w = convert_m_to_ha(area_w)) %>%
+      # Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_w) / 10000,
+      # !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_w / 10000)) %>%
   bind_rows(., asrp_bw) %>%
   left_join(., asrp_culvs) %>%
   mutate(

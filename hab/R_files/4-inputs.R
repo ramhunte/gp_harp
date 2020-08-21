@@ -42,3 +42,5 @@ psp_hwls = 6.25 # pool spacing for high wood, low slope reaches
 psp_lwhs = 27.5 # pool spacing for low wood, high slope reahces
 psp_hwhs = 5 # pool spacing for high wood, high slope reaches
 
+sc_width = 2 # set width of side channels with unknown width to 2m
+

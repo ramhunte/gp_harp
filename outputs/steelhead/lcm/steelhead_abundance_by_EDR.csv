@@ -3,16 +3,16 @@
 "2","ASRP.dev.and.climate.2040","Black River",551,10.5673944218945,608.591437720919
 "3","ASRP.dev.and.climate.2040","Cascade Mountains",1107,8.87109747431833,1247.64112452068
 "4","ASRP.dev.and.climate.2040","Central Lowlands",107,3.77237832969569,145.595021052464
-"5","ASRP.dev.and.climate.2040","Grays Harbor Tributaries",3894,19.9768308441408,4099.1975923684
+"5","ASRP.dev.and.climate.2040","Grays Harbor Tributaries",3894,19.9768308441407,4099.1975923684
 "6","ASRP.dev.and.climate.2040","Lower Chehalis Estuary",0,NA,NA
 "7","ASRP.dev.and.climate.2040","Mainstem: Lower Chehalis",159,5.28968510243114,196.065657782173
 "8","ASRP.dev.and.climate.2040","Mainstem: Middle Chehalis",0,NA,NA
-"9","ASRP.dev.and.climate.2040","Mainstem: Upper Chehalis",8,2.22263066021803,14.5432679388012
+"9","ASRP.dev.and.climate.2040","Mainstem: Upper Chehalis",8,2.22263066021802,14.5432679388013
 "10","ASRP.dev.and.climate.2040","Olympic Mountains",5971,24.8052843297021,6221.82666173199
 "11","ASRP.dev.and.climate.2040","Upper Skookumchuck",0,NA,NA
-"12","ASRP.dev.and.climate.2040","Willapa Hills",1190,9.8812957804381,1323.98945710389
+"12","ASRP.dev.and.climate.2040","Willapa Hills",1190,9.88129578043813,1323.98945710389
 "13","ASRP.dev.and.climate.2080","Black Hills",569,11.6012244777494,622.673045146271
-"14","ASRP.dev.and.climate.2080","Black River",428,8.34307029159566,486.286245807814
+"14","ASRP.dev.and.climate.2080","Black River",428,8.34307029159565,486.286245807814
 "15","ASRP.dev.and.climate.2080","Cascade Mountains",899,7.68292253425609,1033.52198426539
 "16","ASRP.dev.and.climate.2080","Central Lowlands",60,3.26313671778683,86.5118759854134
 "17","ASRP.dev.and.climate.2080","Grays Harbor Tributaries",3795,18.5385351565545,4011.38067068456
@@ -29,7 +29,7 @@
 "28","ASRP.scenario.1.2040","Central Lowlands",108,3.66464901460155,148.530666293455
 "29","ASRP.scenario.1.2040","Grays Harbor Tributaries",4419,26.7813253382081,4590.4031354878
 "30","ASRP.scenario.1.2040","Lower Chehalis Estuary",0,NA,NA
-"31","ASRP.scenario.1.2040","Mainstem: Lower Chehalis",309,13.1304049434458,334.473180940011
+"31","ASRP.scenario.1.2040","Mainstem: Lower Chehalis",309,13.1304049434457,334.473180940011
 "32","ASRP.scenario.1.2040","Mainstem: Middle Chehalis",0,NA,NA
 "33","ASRP.scenario.1.2040","Mainstem: Upper Chehalis",78,4.44636047834248,100.63257151716
 "34","ASRP.scenario.1.2040","Olympic Mountains",6775,30.3370210895918,7005.93687594626
@@ -43,7 +43,7 @@
 "42","ASRP.scenario.1.2080","Lower Chehalis Estuary",0,NA,NA
 "43","ASRP.scenario.1.2080","Mainstem: Lower Chehalis",153,5.70683375327423,185.505928192932
 "44","ASRP.scenario.1.2080","Mainstem: Middle Chehalis",0,NA,NA
-"45","ASRP.scenario.1.2080","Mainstem: Upper Chehalis",7,2.20273581161263,12.8200644999623
+"45","ASRP.scenario.1.2080","Mainstem: Upper Chehalis",7,2.20273581161262,12.8200644999623
 "46","ASRP.scenario.1.2080","Olympic Mountains",6448,28.2690115653102,6684.45888244085
 "47","ASRP.scenario.1.2080","Upper Skookumchuck",0,NA,NA
 "48","ASRP.scenario.1.2080","Willapa Hills",1208,11.0185145325886,1328.57675776889
@@ -51,9 +51,9 @@
 "50","ASRP.scenario.2.2040","Black River",716,14.1529412796036,770.436493311979
 "51","ASRP.scenario.2.2040","Cascade Mountains",1525,13.1724920825668,1650.28248033811
 "52","ASRP.scenario.2.2040","Central Lowlands",110,3.68694570210766,150.938676175598
-"53","ASRP.scenario.2.2040","Grays Harbor Tributaries",4551,28.9834384448834,4713.63190847557
+"53","ASRP.scenario.2.2040","Grays Harbor Tributaries",4551,28.9834384448833,4713.63190847557
 "54","ASRP.scenario.2.2040","Lower Chehalis Estuary",0,NA,NA
-"55","ASRP.scenario.2.2040","Mainstem: Lower Chehalis",308,13.165097298444,333.31833428405
+"55","ASRP.scenario.2.2040","Mainstem: Lower Chehalis",308,13.1650972984439,333.31833428405
 "56","ASRP.scenario.2.2040","Mainstem: Middle Chehalis",0,NA,NA
 "57","ASRP.scenario.2.2040","Mainstem: Upper Chehalis",75,4.44693567578805,96.7584565116241
 "58","ASRP.scenario.2.2040","Olympic Mountains",6978,32.0011377238598,7203.08851327187
@@ -67,8 +67,8 @@
 "66","ASRP.scenario.2.2080","Lower Chehalis Estuary",0,NA,NA
 "67","ASRP.scenario.2.2080","Mainstem: Lower Chehalis",153,5.70683563397827,185.505915204581
 "68","ASRP.scenario.2.2080","Mainstem: Middle Chehalis",0,NA,NA
-"69","ASRP.scenario.2.2080","Mainstem: Upper Chehalis",7,2.20405923138232,12.8136674820919
-"70","ASRP.scenario.2.2080","Olympic Mountains",6640,29.4896777426611,6873.06686934044
+"69","ASRP.scenario.2.2080","Mainstem: Upper Chehalis",7,2.20405923138233,12.8136674820919
+"70","ASRP.scenario.2.2080","Olympic Mountains",6640,29.489677742661,6873.06686934044
 "71","ASRP.scenario.2.2080","Upper Skookumchuck",0,NA,NA
 "72","ASRP.scenario.2.2080","Willapa Hills",1241,11.6433876879205,1357.5982144396
 "73","ASRP.scenario.3.2040","Black Hills",724,16.2084955199762,771.604971777059

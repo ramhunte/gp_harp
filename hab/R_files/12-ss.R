@@ -24,7 +24,6 @@ asrp_ss <- create_scenarios(asrp_ss_raw)
 assign('asrp_ss_spawn', asrp_ss, envir = .GlobalEnv)
 
 asrp_ss %<>%
-  # left_join(., edt_width) %>%
   left_join(., asrp_reach_data) %>%
   left_join(., ss.dist) %>%
   left_join(., asrp_culvs) %>%
@@ -54,8 +53,12 @@ asrp_ss %<>%
     width_w = ifelse(is.na(width_w),
                      wet_width,
                      width_w),
-    area_s = (Shape_Length * width_s) / 10000,
-    area_w = (Shape_Length * width_w) / 10000,
+    area_s = calc_area(Shape_Length, 1, width_s),
+    area_s = convert_m_to_ha(area_s),
+    area_w = calc_area(Shape_Length, 1, width_w),
+    area_w = convert_m_to_ha(area_w),
+    # area_s = (Shape_Length * width_s) / 10000,
+    # area_w = (Shape_Length * width_w) / 10000,
     pool.perc.asrp = ifelse(LW == "y",
                             ifelse(is.na(pool.perc),
                                    pool.perc.ref * rest_perc * wood_intensity_scalar,
@@ -118,7 +121,7 @@ if (run_single_action == 'no') {
     filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }
 
-rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year, edt_width)
+rm(asrp_ss_raw, edt_width)
 
 asrp_ss_spawn %<>%
   filter(slope < .03)
