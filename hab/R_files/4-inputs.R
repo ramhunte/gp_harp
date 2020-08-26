@@ -29,7 +29,7 @@ diag_scenarios <- scenarios %>%
   as.character() %>%
   gsub('\\.', '_', .) # replace . with _
 
-mainstem_reaches <- unique(grep("^Chehalis-", flowline$Reach, value = T))
+mainstem_reaches <- unique(grep("^Chehalis-", flowline_raw$Reach, value = T))
 
 winter_pool_scalar_warm = .3
 

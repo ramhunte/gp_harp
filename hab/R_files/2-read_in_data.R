@@ -60,7 +60,7 @@ culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern =
   select(noaa_culv, FeatureTyp,FishPass,OBS_UNIQ, GSU)
 
 # Flowline layer created in spatial model ----
-flowline <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T) %>%
+flowline_raw <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T) %>%
   read.csv(.)
 
 # Large river spawning riffles.  Hand digitized ----

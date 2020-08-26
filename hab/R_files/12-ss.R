@@ -19,14 +19,7 @@ asrp_ss_raw <- flowline %>%
          Reach_low, slope.class, Habitat, wet_width, can_ang, chino_mult, width_s, width_s_2040, width_s_2080, width_s_hist, width_w, width_w_2040,
          width_w_2080, width_w_hist)
 
-asrp_ss <- create_scenarios(asrp_ss_raw)
-
-assign('asrp_ss_spawn', asrp_ss, envir = .GlobalEnv)
-
-asrp_ss %<>%
-  left_join(., asrp_reach_data) %>%
-  left_join(., ss.dist) %>%
-  left_join(., asrp_culvs) %>%
+asrp_ss <- create_scenarios(asrp_ss_raw) %>%
   rename(width_s_curr = width_s,
          width_w_curr = width_w) %>%
   mutate(
@@ -43,7 +36,31 @@ asrp_ss %<>%
                width_w_hist,
                width_w_curr),
       year == 2040 ~ width_w_2040,
-      year == 2080 ~ width_w_2080),
+      year == 2080 ~ width_w_2080))
+
+assign('asrp_ss_spawn', asrp_ss, envir = .GlobalEnv)
+
+asrp_ss %<>%
+  left_join(., asrp_reach_data) %>%
+  left_join(., ss.dist) %>%
+  left_join(., asrp_culvs) %>%
+  # rename(width_s_curr = width_s,
+         # width_w_curr = width_w) %>%
+  mutate(
+    # width_s = case_when(
+    #   year == 2019 ~ 
+    #     ifelse(Scenario_num == 'Historical',
+    #            width_s_hist,
+    #            width_s_curr),
+    #   year == 2040 ~ width_s_2040,
+    #   year == 2080 ~ width_s_2080),
+    # width_w = case_when(
+    #   year == 2019 ~
+    #     ifelse(Scenario_num == 'Historical',
+    #            width_w_hist,
+    #            width_w_curr),
+    #   year == 2040 ~ width_w_2040,
+    #   year == 2080 ~ width_w_2080),
     tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook", 'chum'), # Added because of spring chinook w/temp survival 
                            1,
                            tempmult.asrp),

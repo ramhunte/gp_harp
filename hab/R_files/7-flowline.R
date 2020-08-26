@@ -1,4 +1,4 @@
-flowline_noculv <- flowline %>%
+flowline_noculv <- flowline_raw %>%
   select(-curr_temp, -hist_temp) %>%
   rename(coho = cohospawn,
          fall_chinook = fallspawn,
@@ -64,4 +64,4 @@ if (fishtype == 'fall_chinook') {
     mutate(chino_mult = 1)
 }
 
-rm(flowline_noculv, all_temps, culvs)
+rm(flowline_noculv, culvs)
