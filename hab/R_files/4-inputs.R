@@ -1,15 +1,15 @@
 mainstem.subs = c(52:63) # This is a list of all mainstem subbasins
 
 #change in future temperatures due to climate change.  See temp conversion doc for more details
-if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
-  cc_mid_rear = .9585
-  cc_late_rear = 1.917
-} else {
-  cc_mid_rear = 1.024
-  cc_late_rear = 2.049
-}
-cc_mid_prespawn = 1.024
-cc_late_prespawn = 2.049
+# if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
+#   cc_mid_rear = .9585
+#   cc_late_rear = 1.917
+# } else {
+#   cc_mid_rear = 1.024
+#   cc_late_rear = 2.049
+# }
+# cc_mid_prespawn = 1.024
+# cc_late_prespawn = 2.049
 
 bw_scalar = .16 # see Tim's description in Trello card, V4
 
