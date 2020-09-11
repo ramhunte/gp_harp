@@ -97,7 +97,9 @@ asrp_lr <- asrp_lr_scenario %>%
       Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_w) / 10000,
       !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_w / 10000)) %>%
   bind_rows(., asrp_bw) %>%
-  left_join(., asrp_culvs) %>%
+  # left_join(., asrp_culvs) %>%
+  left_join(., read.csv('misc/culvs.csv') %>%
+              select(-X)) %>%
   mutate(
     tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook", 'chum'), # Added because of spring chinook w/temp survival 
                            1,

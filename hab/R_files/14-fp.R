@@ -70,7 +70,9 @@ asrp_fp_precalc1 <- asrp_fp_scenario %>%
          spawn_dist, NEAR_DIST, wse_intersect, chino_mult) %>%
   left_join(., ss.dist.ref) %>% 
   left_join(., asrp_reach_data) %>%
-  left_join(., asrp_culvs)
+  # left_join(., asrp_culvs)
+  left_join(., read.csv('misc/culvs.csv') %>%
+              select(-X)) 
 
 if (fishtype %in% c("spring_chinook", "fall_chinook")) {
   asrp_fp_precalc1 %<>%

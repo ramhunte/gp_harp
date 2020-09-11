@@ -3,7 +3,7 @@
 asrp_cap <- bind_rows(asrp_lr, asrp_ss, asrp_fp) %>%
   # select(-GSU, -pass_tot_asrp, -both_chk, -Barriers, -Floodplain, -Beaver, -Riparian, -chino_mult, -lc, -slope.class, -curr_area, -hist_area, -curr_temp, -Reach, -species, -can_ang, -prespawn_temp, -hist_temp, -managed_forest, -temp_intensity_scalar, 
   #        -fp_intensity_scalar, -beaver_intensity_scalar, -primary_cr_only, -woodmult_s, -woodmult_w, -prespawn_temp_asrp, -future_imperv)
-  select(-GSU, -pass_tot_asrp, -both_chk, -Barriers, -Floodplain, -Beaver, -Riparian, -chino_mult, -lc, -slope.class, -curr_area,
+  select(-GSU, -both_chk, -Barriers, -Floodplain, -Beaver, -Riparian, -chino_mult, -lc, -slope.class, -curr_area,
          -hist_area, -Reach, -species, -can_ang, -managed_forest, 
          -fp_intensity_scalar, -beaver_intensity_scalar, -primary_cr_only, -woodmult_s, -woodmult_w, -prespawn_temp_asrp, 
          -future_imperv)

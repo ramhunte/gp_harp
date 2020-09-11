@@ -45,7 +45,9 @@ asrp_ss <- asrp_ss_scenario %>%
   left_join(., asrp_reach_data) %>%
   left_join(., ss.dist) %>%
   left_join(., ss.dist.ref) %>%
-  left_join(., asrp_culvs) %>%
+  # left_join(., asrp_culvs) %>%
+  left_join(., read.csv('misc/culvs.csv') %>%
+              select(-X)) %>%
   rename(width_s_curr = width_s,
          width_w_curr = width_w) %>%
   mutate(
@@ -136,7 +138,7 @@ if (run_single_action == 'no') {
     filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }
 
-rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year, edt_width)
+rm(asrp_ss_raw, asrp_ss_scenario, asrp_ss_year)
 
 asrp_ss_spawn %<>%
   filter(slope < .03)

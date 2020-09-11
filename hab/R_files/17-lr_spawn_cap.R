@@ -22,7 +22,7 @@ lgr <- flowline %>%
   filter(Habitat == 'LgRiver',
          spawn_dist == 'Yes',
          width_s < 200) %>%
-  select(noaaid, Subbasin_num, Spawn_Survey, pass_tot, pass_tot_natural, Shape_Length, 
+  select(noaaid, Subbasin_num, Spawn_Survey, Shape_Length, 
          spawn_dist, species, both_chk, width_w, width_w_hist, width_s, width_s_hist) %>%
   gather(Period, width, width_w:width_s_hist) %>%
   filter(ifelse(species == 'spring_chinook', 
@@ -72,10 +72,13 @@ lgr_spawning_area <- lgr %>%
                                     w30,
                                     w20)),
          spawn_area = width * riff_length * riff_count) %>% 
-  select(spawn_area, Period, pass_tot, pass_tot_natural, Subbasin_num, noaaid) %>%
+  select(spawn_area, Period, Subbasin_num, noaaid) %>%
   spread(Period, spawn_area) %>%
   rename(spawn_area = Current,
          spawn_area_hist = Historical) %>%
+  left_join(., read.csv('misc/culvs.csv') %>% #Choose only the current scenario since what we are after here is the pass_tot and
+              filter(Scenario_num == 'Current') %>%
+              select(-X)) %>%  #pass_tot natural, not the asrp_pass_tot, so scenario number does not matter
   mutate(spawn_area_passable = spawn_area * pass_tot,
          spawn_area_passable_nat = spawn_area * pass_tot_natural,
          spawn_area_passable_hist = spawn_area_hist * pass_tot_natural)  #Apply culvert passablility correction to the min spawnable area

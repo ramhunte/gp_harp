@@ -68,20 +68,20 @@ flowline_noculv <- flowline %>%
                           can_ang))
 
 flowline <- flowline_noculv %>% 
-  select(noaaid,Reach,culv_list) %>%
-  filter(culv_list != "") %>%
-  mutate(culv_list = str_split(culv_list,',')) %>%
-  unnest(culv_list) %>%
-  filter(culv_list != 'None') %>%
-  mutate(noaa_culv = as.numeric(culv_list)) %>%
-  left_join(., culvs %>%
-              select(-GSU)) %>%
-  group_by(noaaid) %>%
-  summarize(pass_tot = prod(FishPass),
-            pass_tot_natural = prod(ifelse(FeatureTyp == 'Natural',FishPass,1))) %>%
-  right_join(flowline_noculv) %>%
-  replace_na(list(pass_tot = 1, pass_tot_natural = 1)) %>%
-  ungroup() %>%
+  # select(noaaid,Reach,culv_list) %>%
+  # filter(culv_list != "") %>%
+  # mutate(culv_list = str_split(culv_list,',')) %>%
+  # unnest(culv_list) %>%
+  # filter(culv_list != 'None') %>%
+  # mutate(noaa_culv = as.numeric(culv_list)) %>%
+  # left_join(., culvs %>%
+  #             select(-GSU)) %>%
+  # group_by(noaaid) %>%
+  # summarize(pass_tot = prod(FishPass),
+  #           pass_tot_natural = prod(ifelse(FeatureTyp == 'Natural',FishPass,1))) %>%
+  # right_join(flowline_noculv) %>%
+  # replace_na(list(pass_tot = 1, pass_tot_natural = 1)) %>%
+  # ungroup() %>%
   left_join(., chinook_mult)
   
 # Create column with chinook habitat multiplier.  This will be applied to Area in both_chk & mainstem reaches  
@@ -97,4 +97,4 @@ if (fishtype == 'fall_chinook') {
 }
 
 # rm(flowline_noculv, all_temps, culvs)
-rm(flowline_noculv, culvs)
+# rm(flowline_noculv, culvs)

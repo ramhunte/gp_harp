@@ -42,11 +42,11 @@ edt_width %<>%
   select(-width_s_curr)
 
 # Culverts.  This file reads in the most recent Chehalis obstructions layer from the spatial model outputs. ----
-culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "culvs_gsu_", full.names = T) %>%
-  read.csv(.) %>%
-  mutate(noaa_culv = as.numeric(row.names(.)),
-         FishPass = as.numeric(as.character(FishPass))/100) %>%
-  select(noaa_culv, FeatureTyp,FishPass,OBS_UNIQ, GSU)
+# culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "culvs_gsu_", full.names = T) %>%
+#   read.csv(.) %>%
+#   mutate(noaa_culv = as.numeric(row.names(.)),
+#          FishPass = as.numeric(as.character(FishPass))/100) %>%
+#   select(noaa_culv, FeatureTyp,FishPass,OBS_UNIQ, GSU)
 
 # Flowline layer created in spatial model ----
 flowline <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T) %>%

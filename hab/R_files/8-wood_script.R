@@ -4,7 +4,7 @@
 LgRiver_raw_wood <- LgRiver_raw %>%
   left_join(., flowline %>%
               # select(noaaid, curr_temp, hist_temp, temp_diff_rear, temp_diff_prespawn, curr.tempmult, hist.tempmult, species, spawn_dist, both_chk, 
-              select(noaaid, species, spawn_dist, both_chk, Subbasin_num, pass_tot, Area_km2, pass_tot_natural, can_ang, Reach_low, 
+              select(noaaid, species, spawn_dist, both_chk, Subbasin_num, Area_km2, can_ang, Reach_low, 
                      width_s, width_w, width_s_hist, width_w_hist, width_s_2040, width_s_2080, width_w_2040, width_w_2080, chino_mult),
             by = "noaaid") %>% 
   gather(value, width, width_s:width_w_2080) %>%
