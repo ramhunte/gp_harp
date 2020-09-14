@@ -75,13 +75,13 @@ lgr_spawning_area <- lgr %>%
   select(spawn_area, Period, Subbasin_num, noaaid) %>%
   spread(Period, spawn_area) %>%
   rename(spawn_area = Current,
-         spawn_area_hist = Historical) %>%
-  left_join(., read.csv('misc/culvs.csv') %>% #Choose only the current scenario since what we are after here is the pass_tot and
-              filter(Scenario_num == 'Current') %>%
-              select(-X)) %>%  #pass_tot natural, not the asrp_pass_tot, so scenario number does not matter
-  mutate(spawn_area_passable = spawn_area * pass_tot,
-         spawn_area_passable_nat = spawn_area * pass_tot_natural,
-         spawn_area_passable_hist = spawn_area_hist * pass_tot_natural)  #Apply culvert passablility correction to the min spawnable area
+         spawn_area_hist = Historical) #%>%
+  # left_join(., read.csv('misc/culvs.csv') %>% #Choose only the current scenario since what we are after here is the pass_tot and
+  #             filter(Scenario_num == 'Current') %>%
+  #             select(-X)) %>%  #pass_tot natural, not the asrp_pass_tot, so scenario number does not matter
+  # mutate(spawn_area_passable = spawn_area * pass_tot,
+  #        spawn_area_passable_nat = spawn_area * pass_tot_natural,
+  #        spawn_area_passable_hist = spawn_area_hist * pass_tot_natural)  #Apply culvert passablility correction to the min spawnable area
 
 assign("lgr_sp_area_asrp", lgr_spawning_area , envir = .GlobalEnv)
 
