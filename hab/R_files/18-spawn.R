@@ -7,7 +7,6 @@ if (run_single_action == 'no') {
 }
 
 asrp_spawn_ss <- asrp_ss_spawn %>%
-  # left_join(., asrp_culvs) %>%
   left_join(., read.csv('misc/culvs.csv') %>%
               select(-X)) %>%
   left_join(., asrp_reach_data) %>%
@@ -26,7 +25,6 @@ asrp_spawn_ss <- asrp_ss_spawn %>%
          eggs = spawn_area / redd_area * pass_tot_asrp * fecundity)
 
 asrp_spawn_fp_raw <- asrp_fp_spawn %>%
-  # left_join(., asrp_culvs) %>%
   left_join(., read.csv('misc/culvs.csv') %>%
               select(-X)) %>%
   left_join(., asrp_reach_data) %>%
@@ -50,7 +48,6 @@ asrp_spawn_fp_hist <- asrp_spawn_fp_raw %>%
 
 asrp_spawn_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
   left_join(., asrp_reach_data) %>%
-  # left_join(., asrp_culvs) %>%
   left_join(., read.csv('misc/culvs.csv') %>%
               select(-X)) %>%
   mutate(Length_sc_curr = ifelse(is.na(Length_sc_curr),
@@ -87,7 +84,6 @@ asrp_spawn_lr <- lapply(scenario.nums, function(n){
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) & 
              year %in% c(2040, 2080))) %>%
-  # left_join(., asrp_culvs) %>%
   left_join(., read.csv('misc/culvs.csv') %>%
               select(-X)) %>%
   left_join(., asrp_reach_data) %>%

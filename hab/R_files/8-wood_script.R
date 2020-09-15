@@ -3,9 +3,6 @@
 
 LgRiver_raw_wood <- LgRiver_raw %>%
   left_join(., flowline %>%
-              # select(noaaid, curr_temp, hist_temp, temp_diff_rear, temp_diff_prespawn, curr.tempmult, hist.tempmult, species, spawn_dist, both_chk, 
-              # select(noaaid, species, spawn_dist, both_chk, Subbasin_num, Area_km2, can_ang, Reach_low, 
-              #        width_s, width_w, width_s_hist, width_w_hist, width_s_2040, width_s_2080, width_w_2040, width_w_2080, chino_mult),
               select(noaaid, species, spawn_dist, both_chk, Subbasin_num, Area_km2, can_ang, Reach_low, chino_mult),
             by = "noaaid") %>% 
   left_join(., read.csv('misc/width.csv') %>%
@@ -16,12 +13,6 @@ LgRiver_raw_wood <- LgRiver_raw %>%
          width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width_tot + 2.11,
                            Habitat == "Bank" ~ 0.084 * width_tot + 0.33,
                            Habitat == "HM_Bank" ~ 0.089 * width_tot + .33))
-# gather(value, width, width_s:width_w_2080) %>%
-# filter(width < 200) %>% # remove the wynoochee reservoir
-# mutate(width_tot = width,
-#        width = case_when(Habitat %in% c("Bar_boulder", "Bar_gravel", "Bar_sand") ~ 0.087 * width_tot + 2.11,
-#                          Habitat == "Bank" ~ 0.084 * width_tot + 0.33,
-#                          Habitat == "HM_Bank" ~ 0.089 * width_tot + .33))
 LgRiver_wood <- LgRiver_raw_wood %>%
   bind_rows(., LgRiver_raw_wood %>%
               mutate(center = 'center') %>%

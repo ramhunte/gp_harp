@@ -13,7 +13,6 @@ if (fishtype == "spring_chinook") {
                   spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs,
                   spawn_dist == "Yes" & Subbasin_num %in% schino_subs)
            ) %>%
-    # left_join(., asrp_culvs) %>% 
     left_join(., read.csv('misc/culvs.csv') %>%
                 select(-X)) %>%
     left_join(., egg_cap_weight_asrp) %>%
@@ -40,9 +39,6 @@ if (fishtype == "spring_chinook") {
                  1,
                  calc_coho_imperv(mn_imperv)),
         !year == 2019 ~ calc_coho_imperv(future_imperv + mn_imperv)),
-      # pass_tot_asrp = ifelse(Barriers == 'y',
-      #                        pass_tot_natural,
-      #                        pass_tot),
       survival = prespawn_surv_raw * pass_tot_asrp * imperv_mult * eggs_weight) %>%
     group_by(Subbasin_num, year, Scenario_num) %>%
     summarize(survival = sum(survival, na.rm = T)) %>%

@@ -42,12 +42,7 @@ asrp_bw <- lapply(scenario.nums, function(y) {
          area_w = Area_ha)
 # LgRiver ----
 # Note: asrp_lr_raw created in wood_script.R
-# asrp_lr_year <- lapply(scenario.years, function(z) {
-#   asrp_lr_raw %>%
-#     mutate(year = z)
-# }) %>%
-#   do.call('rbind',.)
-# 
+
 asrp_lr_scenario <- lapply(scenario.nums, function(a) {
   asrp_lr_raw %>%
     mutate(Scenario_num = a)
@@ -67,42 +62,18 @@ asrp_lr <- asrp_lr_scenario %>%
     Scenario_num %in% c('Historical', 'LR') ~ Period %in% c('Hist', 'Both'),
     !Scenario_num %in% c('LR', 'Historical') ~ Period %in% c("Curr", "Both"))) %>%
   left_join(., asrp_reach_data) %>%
-  # rename(width_s_2019 = width_s,
-  # width_w_2019 = width_w) %>%
   left_join(., lr_length_raw %>% 
               select(Reach, lr_mult)) %>%
-  mutate(
-    # width_s = case_when(
-    #   year == 2019 ~ 
-    #     ifelse(Scenario_num == 'Historical',
-    #            width_s_hist,
-    #            width_s_2019),
-    #   year == 2040 ~ width_s_2040,
-    #   year == 2080 ~ width_s_2080),
-    # width_s = ifelse(is.na(width_s),
-    #                  wet_width,
-    #                  width_s),
-    # width_w = case_when(
-    #   year == 2019 ~ 
-    #     ifelse(Scenario_num == 'Historical',
-    #            width_w_hist,
-    #            width_w_2019),
-    #   year == 2040 ~ width_w_2040,
-    #   year == 2080 ~ width_w_2080),
-    # width_w = ifelse(is.na(width_w),
-    #                  wet_width,
-    #                  width_w),
-    lr_mult = ifelse(is.na(lr_mult),
-                     1,
-                     lr_mult),
-    area_s = case_when(
-      Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_s) / 10000,
-      !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_s / 10000),
-    area_w = case_when(
-      Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_w) / 10000,
-      !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_w / 10000)) %>%
+  mutate(lr_mult = ifelse(is.na(lr_mult),
+                          1,
+                          lr_mult),
+         area_s = case_when(
+           Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_s) / 10000,
+           !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_s / 10000),
+         area_w = case_when(
+           Scenario_num %in% c('LR', 'Historical') ~ (Length_m * lr_mult * width_w) / 10000,
+           !Scenario_num %in% c('LR', 'Historical') ~ Length_m * width_w / 10000)) %>%
   bind_rows(., asrp_bw) %>%
-  # left_join(., asrp_culvs) %>%
   left_join(., read.csv('misc/culvs.csv') %>%
               select(-X)) %>%
   mutate(
