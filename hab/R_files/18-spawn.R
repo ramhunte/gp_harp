@@ -10,7 +10,23 @@ asrp_spawn_ss <- asrp_ss_spawn %>%
   left_join(., asrp_culvs) %>%
   left_join(., asrp_reach_data) %>%
   filter(slope < .03) %>%
-  
+  mutate(
+    width_s = case_when(
+      year == 2019 & Scenario_num == 'Historical' ~ width_s_hist, 
+      year == 2019 & Scenario_num != 'Historical' ~ width_s,
+      year == 2040 ~ width_s_2040,
+      year == 2080 ~ width_s_2080),
+    width_w = case_when(
+      year == 2019 & Scenario_num == 'Historical' ~ width_w_hist,
+      year == 2019 & Scenario_num != 'Historical' ~ width_w,
+      year == 2040 ~ width_w_2040,
+      year == 2080 ~ width_w_2080),
+      width_s = ifelse(is.na(width_s),
+                       wet_width,
+                       width_s),
+      width_w = ifelse(is.na(width_w),
+                       wet_width,
+                       width_w)) %>%
   mutate(Shape_Length = ifelse(Beaver == 'y',
                                Shape_Length * (curr_beaver_mult - ((curr_beaver_mult - hist_beaver_mult) * rest_perc * beaver_intensity_scalar)),
                                Shape_Length * curr_beaver_mult),
