@@ -19,21 +19,24 @@ riff_count <- riff %>%
 
 # Flowline in the large river segments
 lgr <- flowline %>%
+  left_join(., read.csv('misc/width.csv') %>%
+              select(-X)) %>%
   filter(Habitat == 'LgRiver',
          spawn_dist == 'Yes',
-         width_s < 200) %>%
+         width_s < 200,
+         year %in% c(2019, 1900)) %>%
   select(noaaid, Subbasin_num, Spawn_Survey, Shape_Length, 
-         spawn_dist, species, both_chk, width_w, width_w_hist, width_s, width_s_hist) %>%
-  gather(Period, width, width_w:width_s_hist) %>%
+         spawn_dist, species, both_chk, width_w, width_s, year) %>%
+  gather(Period, width, width_w:width_s) %>%
   filter(ifelse(species == 'spring_chinook', 
-                Period %in% c('width_s', 'width_s_hist'),
-                Period %in% c('width_w', 'width_w_hist'))
-                ) %>%
+                Period == 'width_s',
+                Period == 'width_w')) %>%
   mutate(area_bf_m2 = Shape_Length * width,
-         Period = ifelse(Period %in% c('width_s', 'width_w'),
-                         'Current',
-                         'Historical')) 
- 
+         Period = ifelse(year == 1900,
+                         'Historical',
+                         'Current'))  %>%
+  select(-year)
+
 # If it is a reach with overlapping spring and fall chinook spawning, 
 # reduce width by chino_mult. This reduction is later transferred to spawning area
 
@@ -48,7 +51,7 @@ if (fishtype %in% c("spring_chinook", "fall_chinook")) {
 ave_riff_per_reach <- inner_join(riff_count, lgr) %>%
   group_by(Subbasin_num) %>%
   summarize(ave_riff_per_reach  = mean(riff_count)) 
-  
+
 # Calculate the spawning capacity ----
 
 #To calculate minimum spawning area we use the BF width and a length to represent the riffle crest
@@ -67,21 +70,21 @@ lgr_spawning_area <- lgr %>%
                              ave_riff_per_reach,
                              riff_count)) %>%
   mutate(riff_length = ifelse(width > 40,
-                             w40,   
-                             ifelse(width < 40 & width > 20,
-                                    w30,
-                                    w20)),
+                              w40,   
+                              ifelse(width < 40 & width > 20,
+                                     w30,
+                                     w20)),
          spawn_area = width * riff_length * riff_count) %>% 
   select(spawn_area, Period, Subbasin_num, noaaid) %>%
   spread(Period, spawn_area) %>%
   rename(spawn_area = Current,
          spawn_area_hist = Historical) #%>%
-  # left_join(., read.csv('misc/culvs.csv') %>% #Choose only the current scenario since what we are after here is the pass_tot and
-  #             filter(Scenario_num == 'Current') %>%
-  #             select(-X)) %>%  #pass_tot natural, not the asrp_pass_tot, so scenario number does not matter
-  # mutate(spawn_area_passable = spawn_area * pass_tot,
-  #        spawn_area_passable_nat = spawn_area * pass_tot_natural,
-  #        spawn_area_passable_hist = spawn_area_hist * pass_tot_natural)  #Apply culvert passablility correction to the min spawnable area
+# left_join(., read.csv('misc/culvs.csv') %>% #Choose only the current scenario since what we are after here is the pass_tot and
+#             filter(Scenario_num == 'Current') %>%
+#             select(-X)) %>%  #pass_tot natural, not the asrp_pass_tot, so scenario number does not matter
+# mutate(spawn_area_passable = spawn_area * pass_tot,
+#        spawn_area_passable_nat = spawn_area * pass_tot_natural,
+#        spawn_area_passable_hist = spawn_area_hist * pass_tot_natural)  #Apply culvert passablility correction to the min spawnable area
 
 assign("lgr_sp_area_asrp", lgr_spawning_area , envir = .GlobalEnv)
 
@@ -93,5 +96,5 @@ if (fishtype == "spring_chinook") {
     filter(Subbasin_num %in% schino_subs)
 }
 
-    
+
 

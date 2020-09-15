@@ -20,8 +20,7 @@ asrp_ss_raw <- flowline %>%
                      'Reference',
                      as.character(lc))) %>%
   select(noaaid, Subbasin_num, Reach, Shape_Length, slope, lc, spawn_dist, species, both_chk,
-         Reach_low, slope.class, Habitat, wet_width, can_ang, chino_mult, width_s, width_s_2040, width_s_2080, width_s_hist, width_w, width_w_2040,
-         width_w_2080, width_w_hist)
+         Reach_low, slope.class, Habitat, wet_width, can_ang, chino_mult)
 
 asrp_ss_year <- lapply(scenario.years, function(x) {
   asrp_ss_raw %>%
@@ -36,7 +35,15 @@ asrp_ss_scenario <- lapply(scenario.nums, function(y) {
   do.call('rbind',.) %>%
   filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
-             year %in% c(2040, 2080)))
+             year %in% c(2040, 2080))) %>%
+  mutate(year = ifelse(Scenario_num == 'Historical',
+                       1900,
+                       year)) %>%
+  left_join(., read.csv('misc/width.csv') %>%
+              select(-X)) %>%
+  mutate(year = ifelse(Scenario_num == 'Historical',
+                       2019,
+                       year))
 
 assign('asrp_ss_spawn', asrp_ss_scenario, envir = .GlobalEnv)
 
@@ -48,32 +55,32 @@ asrp_ss <- asrp_ss_scenario %>%
   # left_join(., asrp_culvs) %>%
   left_join(., read.csv('misc/culvs.csv') %>%
               select(-X)) %>%
-  rename(width_s_curr = width_s,
-         width_w_curr = width_w) %>%
+  # rename(width_s_curr = width_s,
+  #        width_w_curr = width_w) %>%
   mutate(
-    width_s = case_when(
-      year == 2019 ~ 
-        ifelse(Scenario_num == 'Historical',
-               width_s_hist,
-               width_s_curr),
-      year == 2040 ~ width_s_2040,
-      year == 2080 ~ width_s_2080),
-    width_w = case_when(
-      year == 2019 ~
-        ifelse(Scenario_num == 'Historical',
-               width_w_hist,
-               width_w_curr),
-      year == 2040 ~ width_w_2040,
-      year == 2080 ~ width_w_2080),
+    # width_s = case_when(
+    #   year == 2019 ~ 
+    #     ifelse(Scenario_num == 'Historical',
+    #            width_s_hist,
+    #            width_s_curr),
+    #   year == 2040 ~ width_s_2040,
+    #   year == 2080 ~ width_s_2080),
+    # width_w = case_when(
+    #   year == 2019 ~
+    #     ifelse(Scenario_num == 'Historical',
+    #            width_w_hist,
+    #            width_w_curr),
+    #   year == 2040 ~ width_w_2040,
+    #   year == 2080 ~ width_w_2080),
     tempmult.asrp = ifelse(species %in% c("spring_chinook", "fall_chinook", 'chum'), # Added because of spring chinook w/temp survival 
                            1,
                            tempmult.asrp),
-    width_s = ifelse(is.na(width_s),
-                     wet_width,
-                     width_s),
-    width_w = ifelse(is.na(width_w),
-                     wet_width,
-                     width_w),
+    # width_s = ifelse(is.na(width_s),
+    #                  wet_width,
+    #                  width_s),
+    # width_w = ifelse(is.na(width_w),
+    #                  wet_width,
+    #                  width_w),
     area_s = (Shape_Length * width_s) / 10000,
     area_w = (Shape_Length * width_w) / 10000,
     pool.perc.asrp = ifelse(LW == "y",

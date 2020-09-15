@@ -15,34 +15,34 @@ flowline_noculv <- flowline %>%
   gather(species, spawn_dist, coho:steelhead) %>%
   filter(species == fishtype) %>%
   # left_join(., all_temps, by = 'noaaid') %>%
-  left_join(., edt_width %>%
-              gather(stage, width, width_w:width_s) %>%
-              mutate(stage = case_when(year == 2019 & stage == "width_s" ~ "width_s",
-                                       year == 2019 & stage == "width_w" ~ "width_w",
-                                       year == 1900 & stage == "width_s" ~ "width_s_hist",
-                                       year == 1900 & stage == "width_w" ~ "width_w_hist",
-                                       year == 2040 & stage == "width_s" ~ "width_s_2040",
-                                       year == 2040 & stage == "width_w" ~ "width_w_2040",
-                                       year == 2080 & stage == "width_s" ~ "width_s_2080",
-                                       year == 2080 & stage == "width_w" ~ "width_w_2080")) %>%
-              select(-year) %>%
-              spread(stage, width),
-            by = "Reach_low") %>%
+  # left_join(., edt_width %>%
+  #             gather(stage, width, width_w:width_s) %>%
+  #             mutate(stage = case_when(year == 2019 & stage == "width_s" ~ "width_s",
+  #                                      year == 2019 & stage == "width_w" ~ "width_w",
+  #                                      year == 1900 & stage == "width_s" ~ "width_s_hist",
+  #                                      year == 1900 & stage == "width_w" ~ "width_w_hist",
+  #                                      year == 2040 & stage == "width_s" ~ "width_s_2040",
+  #                                      year == 2040 & stage == "width_w" ~ "width_w_2040",
+  #                                      year == 2080 & stage == "width_s" ~ "width_s_2080",
+  #                                      year == 2080 & stage == "width_w" ~ "width_w_2080")) %>%
+  #             select(-year) %>%
+  #             spread(stage, width),
+  #           by = "Reach_low") %>%
   mutate(
-         width_s = ifelse(is.na(width_s),
-                          wet_width,
-                          width_s),
-         width_w = ifelse(is.na(width_w),
-                          wet_width,
-                          width_w),
-         width_s_hist = ifelse(is.na(width_s_hist),
-                               wet_width,
-                               width_s_hist),
-         width_w_hist = ifelse(is.na(width_w_hist),
-                               wet_width,
-                               width_w_hist),
-         area_s = (Shape_Length * width_s) / 10000,
-         area_w = (Shape_Length * width_w) / 10000,
+         # width_s = ifelse(is.na(width_s),
+         #                  wet_width,
+         #                  width_s),
+         # width_w = ifelse(is.na(width_w),
+         #                  wet_width,
+         #                  width_w),
+         # width_s_hist = ifelse(is.na(width_s_hist),
+         #                       wet_width,
+         #                       width_s_hist),
+         # width_w_hist = ifelse(is.na(width_w_hist),
+         #                       wet_width,
+         #                       width_w_hist),
+         # area_s = (Shape_Length * width_s) / 10000,
+         # area_w = (Shape_Length * width_w) / 10000,
          # temp_diff_2040_rear = ifelse(species %in% c('spring_chinook', 'fall_chinook'),
          #                              mwmt_to_mdm_func(F2040_temp - curr_temp) + cc_mid_rear,
          #                              F2040_temp - curr_temp + cc_mid_rear),

@@ -42,48 +42,53 @@ asrp_bw <- lapply(scenario.nums, function(y) {
          area_w = Area_ha)
 # LgRiver ----
 # Note: asrp_lr_raw created in wood_script.R
-asrp_lr_year <- lapply(scenario.years, function(z) {
-  asrp_lr_raw %>%
-    mutate(year = z)
-}) %>%
-  do.call('rbind',.)
-
+# asrp_lr_year <- lapply(scenario.years, function(z) {
+#   asrp_lr_raw %>%
+#     mutate(year = z)
+# }) %>%
+#   do.call('rbind',.)
+# 
 asrp_lr_scenario <- lapply(scenario.nums, function(a) {
-  asrp_lr_year %>%
+  asrp_lr_raw %>%
     mutate(Scenario_num = a)
 }) %>%
   do.call('rbind',.) %>%
-  filter(!(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios)),
+  filter(!(year == 1900 & Scenario_num != 'Historical'),
+         !(year == 2019 & Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', growth_scenarios, 
+                                              'Historical')),
          !(Scenario_num %in% c(single_action_scenarios[!single_action_scenarios %in% growth_scenarios], diag_scenarios) &
-             year %in% c(2040, 2080)))
+             year %in% c(2040, 2080))) %>%
+  mutate(year = ifelse(Scenario_num == 'Historical',
+                       2019,
+                       year))
 
 asrp_lr <- asrp_lr_scenario %>%
   filter(case_when(
     Scenario_num %in% c('Historical', 'LR') ~ Period %in% c('Hist', 'Both'),
     !Scenario_num %in% c('LR', 'Historical') ~ Period %in% c("Curr", "Both"))) %>%
   left_join(., asrp_reach_data) %>%
-  rename(width_s_2019 = width_s,
-         width_w_2019 = width_w) %>%
+  # rename(width_s_2019 = width_s,
+  # width_w_2019 = width_w) %>%
   left_join(., lr_length_raw %>% 
               select(Reach, lr_mult)) %>%
   mutate(
-    width_s = case_when(
-      year == 2019 ~ 
-        ifelse(Scenario_num == 'Historical',
-               width_s_hist,
-               width_s_2019),
-      year == 2040 ~ width_s_2040,
-      year == 2080 ~ width_s_2080),
+    # width_s = case_when(
+    #   year == 2019 ~ 
+    #     ifelse(Scenario_num == 'Historical',
+    #            width_s_hist,
+    #            width_s_2019),
+    #   year == 2040 ~ width_s_2040,
+    #   year == 2080 ~ width_s_2080),
     # width_s = ifelse(is.na(width_s),
     #                  wet_width,
     #                  width_s),
-    width_w = case_when(
-      year == 2019 ~ 
-        ifelse(Scenario_num == 'Historical',
-               width_w_hist,
-               width_w_2019),
-      year == 2040 ~ width_w_2040,
-      year == 2080 ~ width_w_2080),
+    # width_w = case_when(
+    #   year == 2019 ~ 
+    #     ifelse(Scenario_num == 'Historical',
+    #            width_w_hist,
+    #            width_w_2019),
+    #   year == 2040 ~ width_w_2040,
+    #   year == 2080 ~ width_w_2080),
     # width_w = ifelse(is.na(width_w),
     #                  wet_width,
     #                  width_w),
@@ -128,8 +133,8 @@ asrp_lr_mvmt <- asrp_lr %>%
   filter(Scenario_num %in% single_action_mvmt_scenarios)
 
 if (run_single_action == 'no') {
-asrp_lr %<>%
-  filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
+  asrp_lr %<>%
+    filter(Scenario_num %in% c("scenario_1", "scenario_2", "scenario_3", 'dev_and_climate', diag_scenarios))
 }
 
-rm(asrp_bw, asrp_bw_raw, asrp_bw_year, asrp_lr_raw, asrp_lr_scenario, asrp_lr_year, Backwater_raw)
+rm(asrp_bw, asrp_bw_raw, asrp_bw_year, asrp_lr_raw, Backwater_raw)
