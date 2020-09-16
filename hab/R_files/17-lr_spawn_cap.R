@@ -23,7 +23,7 @@ lgr <- flowline %>%
          spawn_dist == 'Yes',
          width_s < 200) %>%
   select(noaaid, Subbasin_num, Spawn_Survey, pass_tot, pass_tot_natural, Shape_Length, 
-         spawn_dist, species, both_chk, width_w, width_w_hist, width_s, width_s_hist) %>%
+         spawn_dist, species, both_chk, width_w, width_w_hist, width_s, width_s_hist, chino_mult) %>%
   gather(Period, width, width_w:width_s_hist) %>%
   filter(ifelse(species == 'spring_chinook', 
                 Period %in% c('width_s', 'width_s_hist'),
