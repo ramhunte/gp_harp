@@ -7,8 +7,8 @@ if (run_single_action == 'no') {
 if (fishtype == "spring_chinook") {
   prespawn_asrp <- asrp_reach_data %>%
     left_join(., flowline %>%
-                select(noaaid, Subbasin_num, spawn_dist, mn_imperv, prespawn_temp, Habitat)) %>%
-    filter(curr_temp > 0,
+                select(noaaid, Subbasin_num, spawn_dist, mn_imperv, Habitat)) %>%
+    filter(temperature > 0,
            ifelse(Habitat == "LgRiver",
                   spawn_dist == "Yes" | Subbasin_num %in% mainstem.subs,
                   spawn_dist == "Yes" & Subbasin_num %in% schino_subs)
