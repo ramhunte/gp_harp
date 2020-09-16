@@ -26,6 +26,7 @@ lgr <- flowline %>%
          width_s < 200,
          year %in% c(2019, 1900)) %>%
   select(noaaid, Subbasin_num, Spawn_Survey, Shape_Length, 
+         # spawn_dist, species, both_chk, width_w, width_s, year, chino_mult) %>% ### use this once bugfix is fixed
          spawn_dist, species, both_chk, width_w, width_s, year) %>%
   gather(Period, width, width_w:width_s) %>%
   filter(ifelse(species == 'spring_chinook', 

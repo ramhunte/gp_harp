@@ -33,4 +33,4 @@ lr_wd_s_bar <- 1.03
 lr_wd_w_bank <- -9999
 lr_wd_w_bar <- -9999
 
-chino_mult <- .19
+chino_mult <- .19 ### get rid of this once bugfix is resolved for script 17

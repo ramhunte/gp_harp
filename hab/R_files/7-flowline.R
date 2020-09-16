@@ -19,17 +19,17 @@ flowline_noculv <- flowline %>%
                           can_ang))       # we set canopy opening angle to 0 because the majority of these reaches are far upstream and few of them are clearcut.
 
 flowline <- flowline_noculv %>% 
-  left_join(., chinook_mult)
+  left_join(., read.csv('misc/chinook_mult.csv'))
   
 # Create column with chinook habitat multiplier.  This will be applied to Area in both_chk & mainstem reaches  
-if (fishtype == 'fall_chinook') {
-  flowline %<>% 
-    mutate(chino_mult = perc_fall)
-} else if (fishtype == 'spring_chinook') {
-  flowline %<>% 
-    mutate(chino_mult = perc_spr)
-} else {
-  flowline %<>% 
-    mutate(chino_mult = 1)
-}
+# if (fishtype == 'fall_chinook') {
+#   flowline %<>% 
+#     mutate(chino_mult = perc_fall)
+# } else if (fishtype == 'spring_chinook') {
+#   flowline %<>% 
+#     mutate(chino_mult = perc_spr)
+# } else {
+#   flowline %<>% 
+#     mutate(chino_mult = 1)
+# }
 

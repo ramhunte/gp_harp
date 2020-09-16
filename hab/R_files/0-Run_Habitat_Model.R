@@ -16,7 +16,6 @@ source(file.path("hab", "R_files", '1-species_input_files', paste0(fishtype, "_i
 source("hab/R_files/2-read_in_data.R")
 source("hab/R_files/4-inputs.R")
 source("hab/R_files/5-functions.R")
-source("hab/R_files/6-chino_mult.R")
 source("hab/R_files/7-flowline.R")
 source("hab/R_files/8-wood_script.R")
 source("hab/R_files/9-prep.R")
