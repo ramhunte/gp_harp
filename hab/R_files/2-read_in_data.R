@@ -8,8 +8,12 @@ lr_length_raw <- read.csv("hab/Inputs/LR_Length.csv") %>%
 subbasin_names <- read.csv("hab/Inputs/Subbasin_names.csv")
 
 # Flowline layer created in spatial model ----
-flowline <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T) %>%
-  read.csv(.)
+# flowline <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T) %>%
+#   read.csv(.)
+
+# Flowline layer created in new repo ----
+flowline <- read.csv('misc/flowline_df.csv') %>%
+  left_join(., read.csv('misc/chinook_mult.csv'))
 
 # Large river spawning riffles.  Hand digitized ----
 riff <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "Riffles", full.names = T) %>%
