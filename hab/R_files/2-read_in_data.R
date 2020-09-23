@@ -77,3 +77,6 @@ ss_fp_reconnect <- Floodplain_raw %>%
   pull(noaaid)
     
 
+wood_data <- read.csv('misc/wood_df.csv') %>%
+  select(-X)
+

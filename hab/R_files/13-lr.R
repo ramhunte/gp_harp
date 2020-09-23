@@ -42,6 +42,8 @@ asrp_bw <- lapply(scenario.nums, function(y) {
          area_w = Area_ha)
 # LgRiver ----
 # Note: asrp_lr_raw created in wood_script.R
+asrp_lr_raw <- read.csv('misc/lr_df.csv') %>%
+  select(-X)
 
 asrp_lr_scenario <- lapply(scenario.nums, function(a) {
   asrp_lr_raw %>%
