@@ -1,0 +1,331 @@
+---
+title: "ASRP_vs_pbrat"
+output: 
+  pdf_document
+
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Purpose
+In migrating the ASRP code over to the pbrat package, we need to test to make sure we can reproduce the exact results. This document runs each script (ASRP) or function (pbrat) and compares the resulting dataframes using `all.equal()`.
+
+
+## Setup
+
+In this example I load the `pbrat` package and the packages needed to run the ASRP code. Then I move the working directory to the ASRP repository on my machine so the scripts can be run using `source`. 
+
+```{r setup}
+library(pbrat)
+library(tidyverse)
+library(magrittr)
+
+knitr::opts_knit$set(root.dir = "C:/01_Projects/Chehalis/ASRP/asrp_git")
+```
+
+Set the global parameters.
+```{r global params}
+Inputs = 'hab/Inputs'
+run_single_action <- 'no'
+
+
+pop <- fishtype <- 'spring_chinook'
+
+outputs_hab <- file.path("outputs", fishtype, "hab.scenarios")
+
+source(file.path("hab", "R_files", '1-species_input_files', paste0(fishtype, "_inputs.R")))
+```
+
+
+## 2-read_in_data.R
+
+In the ASRP model this script reads in the outputs from the spatial model. The raw spatial model files were copied over and read into `/data` using `usethis::use_data()`. These are assumed to be identical.
+
+The script `2-read_in_data.R` also does some processing of wetted widths from EDT. 
+
+```{r}
+source("hab/R_files/2-read_in_data.R")
+
+df_ww <- hab_clean_wetted_widths(pop)
+all.equal(edt_width, df_ww)
+```
+
+## 3-temperature.R
+
+This checks to make sure `all_temps` matches the output of `hab_clean_temperature`.
+
+```{r}
+source("hab/R_files/3-temperature.R")
+
+df_t <- hab_clean_temperature(pop)
+all.equal(all_temps, df_t)
+```
+
+## 4-inputs.R
+
+The parameters which are defined here were shifted to `data-raw/hab_inputs/hab_params/inputs.R`
+
+```{r}
+source("hab/R_files/4-inputs.R")
+```
+
+## 5-functions.R
+As these were related to temperature, I lumped them into `hab_temperature.R`
+
+```{r}
+source("hab/R_files/5-functions.R")
+```
+
+## 6-chino_mult.R
+
+For the LCM functions I changed the variable `Subbasin_num` to `subbasin_num` in the dataframe `subbasin_names`. For the hab functions I used the same `subbasin_names` dataframe, so that column is no longer capitalized. Here I create a function which takes the `pbrat` dataframe, capitalizes that column name, then compares to the ASRP output using `all.equal`.
+
+```{r}
+chk_equal <- function(v14, pbrat) {
+  pbrat <- rename(pbrat, Subbasin_num = subbasin_num)
+
+  all.equal(v14, pbrat)
+}
+
+```
+
+Check that `chinook_mult` matches the pbrat data. I moved the creation of `chinook_mult` in pbrat to `/data-raw`
+
+```{r}
+source("hab/R_files/6-chino_mult.R")
+chk_equal(chinook_mult, pbrat::chinook_mult)
+```
+
+
+## 7-flowline.R
+
+`hab_clean_flowline` is almost an exact match of `7-flowline.R`
+
+```{r}
+source("hab/R_files/7-flowline.R")
+
+df_fl <- hab_clean_flowline(pop, df_t, df_ww)
+chk_equal(flowline, df_fl)
+```
+## 8-wood_script.R
+
+
+```{r}
+source("hab/R_files/8-wood_script.R")
+
+df_lr <- hab_calc_lgr_area(pop, df_fl)
+chk_equal(asrp_lr_raw, df_lr)
+
+
+df_w <- hab_apply_lgr_wood_mult(pop, df_lr)
+chk_equal(wood_data, df_w)
+```
+## 9-prep.R
+
+`9-prep` was moved to `data-raw/hab_prep.R`
+
+```{r}
+source("hab/R_files/9-prep.R")
+```
+
+
+## 10-reach_level_data.R
+
+The pbrat function matches the ASRP code here
+
+```{r}
+source("hab/R_files/10-reach_level_data.R")
+
+df_reach <- hab_calc_reach_data(pop, df_fl, df_w)
+chk_equal(asrp_reach_data, df_reach)
+```
+
+
+## 11-culvs.R
+
+The pbrat function matches the ASRP code here
+
+```{r}
+source("hab/R_files/11-culvs.R")
+
+df_culv <- hab_calc_pass_percent(df_reach, df_fl)
+all.equal(asrp_culvs, df_culv)
+```
+## 12-ss.R
+
+In the ASRP code the dataframe `asrp_ss_spawn` is used to create `asrp_ss`, and then it is filtered. In order to convert these to functions, I had to leave `asrp_ss_spawn` unfiltered as the output of `hab_clean_ss`. Note this did not appear to impact the results at all. 
+
+The ASRP script creates two dataframes, one called `asrp_ss` and one called `asrp_ss_mvmt`. The `mvmt` dataframe is filtered to the `single_action_mvmt_scenarios`. In order to avoid outputting two dataframes as a list from `hab_calc_ss_area`, I included the `single_action_mvmt_scenarios` in the output. Thus to compare `asrp_ss` and `df_ss` we need to filter out the `single_action_mvmt_scenarios`. 
+
+```{r}
+source("hab/R_files/12-ss.R")
+
+df_ss_clean <- hab_clean_ss(df_fl)
+chk_equal(asrp_ss_spawn,
+          df_ss_clean %>% filter(slope < .03))
+
+
+df_ss <- hab_calc_ss_area(pop, df_ss_clean, df_reach, df_culv)
+chk_equal(asrp_ss,
+          df_ss %>% filter(!Scenario_num %in% single_action_mvmt_scenarios))
+```
+
+## 13-lr.R
+See the note in 12-ss about why we need to filter out the `single_action_mvmt_scenarios`.
+
+```{r}
+source("hab/R_files/13-lr.R")
+
+df_bw <- hab_clean_backwater(df_fl, df_reach)
+df_lr_clean <- hab_clean_lr(pop, df_lr, df_reach, df_bw, df_culv)
+
+chk_equal(asrp_lr,
+          df_lr_clean %>% filter(!Scenario_num %in% single_action_mvmt_scenarios))
+```
+## 14-fp.R
+
+`asrp_fp_spawn` is created, used in calculation of `asrp_fp` then filtered. Here I left `asrp_fp_spawn` unfiltered, so in order to compare we have to filter to only side channel habitat. 
+
+See the note in 12-ss about why we need to filter out the `single_action_mvmt_scenarios`.
+
+```{r}
+source("hab/R_files/14-fp.R")
+
+df_sch <- hab_create_side_channels(df_fl)
+all.equal(hist_sc, df_sch)
+
+
+df_fp_clean <- hab_clean_floodplain(df_sch, df_fl, df_w)
+chk_equal(asrp_fp_spawn,
+          df_fp_clean %>% filter(Habitat == 'Side_Channel'))
+
+
+df_fp <- hab_calc_fp_area(pop, df_fp_clean, df_reach, df_culv)
+chk_equal(asrp_fp,
+          df_fp %>% filter(!Scenario_num %in% single_action_mvmt_scenarios))
+```
+
+## 15-capacity_and_productivity.R
+
+Note: 16-movement.R is sourced from within 15-capacity_and_productivity
+
+```{r}
+source("hab/R_files/15-capacity_and_productivity.R")
+
+df_cap <- hab_calc_capacity(pop, df_lr_clean, df_ss, df_fp, df_reach)
+
+df_mvmt <- hab_calc_movement(pop, df_ss, df_lr_clean, df_fp, df_cap)
+chk_equal(asrp_mvmt, df_mvmt)
+
+
+df_prod <- hab_calc_productivity(pop, df_cap)
+chk_equal(asrp_prod, df_prod)
+```
+## 17-lr_spawn_cap.R
+
+
+
+```{r}
+source("hab/R_files/17-lr_spawn_cap.R")
+
+df_splr <- hab_calc_capacity_spawn_lr(pop, df_fl)
+chk_equal(lgr_sp_area_asrp, df_splr)
+```
+## 18-spawn.R
+
+Here the ASRP code creates several dataframes then deletes them at the end, so the only way to test if the pbrat code matches is to manually comment out the `rm()` code in the ASRP model. The commented out checks here were performed that way. 
+
+```{r}
+source("hab/R_files/18-spawn.R")
+
+df_spss <- hab_calc_capacity_spawn_ss(pop, df_ss_clean, df_culv, df_reach)
+chk_equal(asrp_spawn_ss, df_spss)
+
+df_spfp <- hab_calc_capacity_spawn_fp(pop, df_fp_clean, df_culv, df_reach)
+chk_equal(asrp_spawn_fp, df_spfp)
+
+
+df_splr_clean <- hab_clean_capacity_spawn_lr(pop, df_splr, df_culv, df_reach)
+chk_equal(asrp_spawn_lr, df_splr_clean)
+
+df_cap_spawn <- hab_calc_capacity_spawn(pop, df_splr_clean, df_spss, df_spfp)
+chk_equal(asrp_spawn_tot, df_cap_spawn)
+
+
+df_cap_egg_weight <- hab_calc_egg_cap_weight(df_splr_clean, df_spss, df_spfp)
+chk_equal(ungroup(egg_cap_weight_asrp), ungroup(df_cap_egg_weight))
+```
+## 19-egg_to_fry.R
+
+```{r}
+source("hab/R_files/19-egg_to_fry.R")
+df_prod_e2f <- hab_calc_productivity_egg2fry(df_fl, df_cap_egg_weight)
+chk_equal(ef.surv.asrp, df_prod_e2f)
+```
+## 20-prespawn.R
+
+```{r}
+source("hab/R_files/20-prespawn.R")
+df_prod_prespawn <- hab_calc_productivity_prespawn(pop, df_fl, df_reach, df_cap_egg_weight, df_culv)
+chk_equal(prespawn_asrp, df_prod_prespawn)
+```
+## 21-data_organization.R
+
+```{r}
+source("hab/R_files/21-data_organization.R")
+setwd("C:/01_Projects/Chehalis/pbrat")
+hab_organize(pop, df_prod, df_cap_spawn, df_prod_prespawn, df_prod_e2f, df_mvmt)
+```
+
+
+```{r}
+# Test csvs to make sure they match the ASRP repo
+path_pbrat <- 'C:/01_Projects/Chehalis/pbrat/data-raw/hab_scenarios_v14/steelhead'
+path_asrp <- 'C:/01_Projects/Chehalis/ASRP/asrp_git/outputs/steelhead/hab.scenarios'
+
+# read all the csvs, store them in two lists (each list is composed of all hab scenario dataframes)
+lst_hab <- lapply(c(path_pbrat, path_asrp), function(x){
+  x %>%
+    list.files(pattern = '.csv', full.names = TRUE) %>% 
+    lapply(read.csv)
+})
+
+# Compare the two lists of data.frames -- should all be TRUE. FALSE means not equal
+mapply(all.equal, lst_hab[[1]], lst_hab[[2]])
+
+
+```
+```{r}
+
+pops <- c('coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum')
+
+# rerun all 5 pops -- output saved to data-raw folder (see hab_organize)
+# takes a few minutes to run
+lapply(pops, hab_run)
+
+# check git window for changes
+
+# verify outputs match files in ASRP folder
+lapply(pops, function(x){
+  path_pbrat <- file.path('C:/01_Projects/Chehalis/pbrat/data-raw/hab_scenarios_v14', x)
+  path_asrp <- file.path('C:/01_Projects/Chehalis/ASRP/asrp_git/outputs', x,'hab.scenarios')
+  
+  # read all the csvs, store them in two lists (each list is composed of all hab scenario dataframes)
+  lst_hab <- lapply(c(path_pbrat, path_asrp), function(x){
+    x %>%
+      list.files(pattern = '.csv', full.names = TRUE) %>% 
+      lapply(read.csv)
+  })
+  
+  # Compare the two lists of data.frames -- should all be TRUE. FALSE means not equal
+  mapply(all.equal, lst_hab[[1]], lst_hab[[2]])
+})
+
+```
+
+
