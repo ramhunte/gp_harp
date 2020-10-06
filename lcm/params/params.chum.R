@@ -32,7 +32,7 @@ fry.surv.adj <- 1
 # Capacity is assumed to be unlimited (transient)
 # stochastic survival between min and max
 
-bay.surv <- .13
+bay.surv <- .033
 
 
 bay.range <- c(bay.surv, bay.surv)#c(bay.surv*.8, bay.surv*1.2)
@@ -52,7 +52,7 @@ bay.surv.adj <- 1
 
 # stochastic survival between min and max
 # min and max for each year in the ocean
-so.1 <- c(.28, 0.28)#c(0.5,0.7)
+so.1 <- c(.6, 0.6)#c(0.5,0.7)
 so.2 <- c(0.7, 0.7)#c(0.6,0.8)
 so.3 <- c(0.8, 0.8)#c(0.7,0.9)
 so.4 <- c(0.9, 0.9)#c(0.8,1)

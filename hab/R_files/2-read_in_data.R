@@ -12,17 +12,23 @@ edt_width <- list.files(path = Inputs, pattern = "edt_width.csv", full.names = T
   read.csv(.) %>%
   mutate(Reach_low = tolower(Reach))
 
-if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
+
+if (fishtype == 'chum') {
   edt_width %<>%
     rename(width_w = X1,
-         width_s = X5)
+           width_s = X3)
+} else if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
+  edt_width %<>%
+    rename(width_w = X1,
+           width_s = X5)
 } else {
   edt_width %<>%
     rename(width_w = X1,
-           width_s = X8)
+         width_s = X8)
 }
 
-  edt_width %<>%
+
+edt_width %<>%
   select(Reach_low, width_w, width_s, year) %>%
   group_by(Reach_low) %>%
   mutate(width_s_curr = ifelse(year == 2019,
