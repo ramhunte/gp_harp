@@ -226,4 +226,32 @@ temp_plot_rest <- ggplot() +
   
 ggsave('Figure_9.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
 ```
+```{r}
+temp_chg_plt_late <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = fig6_data %>% filter(Scenario %in% c('Late century riparian restoration', 'Late century floodplain restoration', 'Late century combined')),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 1) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                      values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 10),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.25, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        legend.position = 'bottom')
+
+ggsave('Figure_diff.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
+```
+
 
