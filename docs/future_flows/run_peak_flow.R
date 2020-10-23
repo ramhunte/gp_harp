@@ -268,9 +268,10 @@ summary_tab <-  x %>%
             #mean = mean(perc_diff) %>% scales::percent(),
             median = median(perc_diff) %>% scales::percent(),
             max = max(perc_diff) %>% scales::percent(),
-            sd = sd(perc_diff) %>% scales::percent()) %>%
-  arrange(species) %>%
-  as.data.frame()
+            sd = sd(perc_diff) %>% scales::percent(),
+            cv = sd(perc_diff)/mean(perc_diff) %>% round(3)) %>%
+  arrange(species)
+
 
 print(
  summary_tab
@@ -279,8 +280,10 @@ print(
 
 #write.csv(summary_tab, 'summary_tab.csv')
 summary_tab %>% 
+  ungroup() %>% 
   filter(scenario == 'Current', era != 'Current') %>%
-  select(-scenario) %>% write.csv('summary_tab2.csv')
+  select(-scenario) %>% 
+  write.csv('summary_tab2.csv')
 
 p6 <- x %>%
   filter(scenario == 'Current') %>%
