@@ -24,6 +24,14 @@ This document describes the process we use to convert the Thermalscape temperatu
 * thermalscape_noaaid.txt:  This file was created through a spatial join in which we joined the Thermalscape `meanT` field to the closest reach in the `flowline` layer.  We then exported the data table as a .txt file.  This allows us to assign a Thermalscape temperature value to each reach even if Thermalscape does not model temperatures for that particular reach.  
 * riverscape_flowline_join.txt:  This file was created through a spatial join in which we joined the flowline `noaaid` and `Seg` fields to the closest riverscape observation point.  We then exported the data table as a .txt file.  This allows us to calculate both daily mean and daily max temperatures in the riverscape dataset and then convert the PSU daily max data into daily means.
 
+#Updates
+In October 2020 we received updated thermalscape data from John Winkowski which included both baseline (2013-2019) and future (2040, 2080) temperatures.  Because of this, we recalculated the equation used to convert between the thermalscape and riverscape datasets.  The follwoing new files were created manually in ArcGIS:
+
+* thermalscape_all: This file combines all of the new thermalscape datasets which included one dataset for each baseline year as well as one for each of the future years.  Additionally, in this dataset we join the old thermalscape dataset from 2019 using a spatial join.
+* thermalscape_geom: This file contains the geometry of thermalscape_all as well as a unique identifier for each of the lines (OBSPRED_ID)
+* riverscape_thermalscape_pts_update.txt: This file was created through a spatial join (closest) of thermalscape_geom to the riverscape data point dataset.
+* thermalscape_noaaid_update: THis file was created through a spatial join in which we joined the thermalscape unique identifier to the flowline using `closest`
+
 # Prespawn survival temperatures:
 
 The Willamette prespawn function uses mean of daily means from July 1 - September 15, therefore in order to use this function we must first expand the range of dates for the Thermalscape dataset.  We can achieve this using the observed temperature data from the riverscape dataset `('watershed/Chehalis/Data/3b-Temperature/Chehalis Temperature Data for NOAA')`.  The first step is to extract the mean of daily means from the Thermalscape dataset for each Riverscape observation point.  This is done through a spatial join using the `CLOSEST` match option.  The output file from this join is exported as a .txt file that can be read into R.  The path to this file is the following:  `asrp.git/docs/new_temp_conversion/riverscape_thermalscape_join.txt`.  This file contains temperature data (mean of daily means) from the Thermalscape model but it does not yet contain temperature data from the Riverscape dataset.  The actual Riverscape temperature data consist of 8 separate spreadsheets and can be found in `watershed/Chehalis/Data/3b-Temperature/Chehalis Temperature Data for NOAA`.  These data can be joined to the Riverscape locations file using the `Site_ID` field.
@@ -195,7 +203,7 @@ thermalscape_temps <- thermalscape_data %>%
   mutate(mdmean_prespawn_thermal = predict(lm_mdmean_prespawn, newdata = .),
          mwmt_thermal = predict(lm_mwmt, newdata = .),
          mdm_rear_thermal = predict(lm_mdm_rear, newdata = .))
-write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps.csv')
+write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps_old.csv')
 ```
 
 # Future temperature increases
