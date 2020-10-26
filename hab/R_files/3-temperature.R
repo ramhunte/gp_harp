@@ -31,7 +31,7 @@ if (fishtype %in% c('spring_chinook', 'fall_chinook')) {
 
 all_temps <- flowline %>%
   select(noaaid, Reach, Seg, Habitat) %>%
-  left_join(., thermalscape_temps, by = 'Reach') %>%
+  left_join(., thermalscape_temps, by = 'noaaid') %>%
   # gather(type, temp, 6:17) %>%
   # spread(type, temp) %>%
   select(noaaid, rear_temp, rear_temp_mid, rear_temp_late, prespawn_temp, prespawn_temp_mid, prespawn_temp_late)
