@@ -5,7 +5,8 @@
 asrp_reach_data_scenarios <- lapply(scenario.nums, function(j) {
   flowline %>% 
     select(noaaid, GSU, forest, curr_temp, tm_2040, tm_2080, tm_2040_cc_only, tm_2080_cc_only, Reach, species, can_ang, Subbasin_num, prespawn_temp,
-           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat, BF_width) %>%
+           temp_diff_prespawn,  temp_diff_2040_prespawn, temp_diff_2080_prespawn, hist_temp, temp_diff_rear, Habitat, BF_width, 
+           prespawn_temp_mid, prespawn_temp_late) %>%
     mutate(Scenario_num = j) 
 }) %>%
   do.call('rbind',.) 
@@ -185,11 +186,11 @@ mutate(asrp_temp_w_growth = case_when(
                                    asrp_temp - (mwmt_to_mdm_func(fp_temp_reduction) * rest_perc),
                            asrp_temp - (fp_temp_reduction * rest_perc)),
                     asrp_temp),
-         asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
-                            ifelse(year == 2040,
-                                   asrp_temp - cc_mid_rear,
-                                   asrp_temp - cc_late_rear),
-                            asrp_temp),
+         # asrp_temp = ifelse(Scenario_num %in% growth_scenarios,
+         #                    ifelse(year == 2040,
+         #                           asrp_temp - cc_mid_rear,
+         #                           asrp_temp - cc_late_rear),
+         #                    asrp_temp),
          tempmult.asrp = temp_func(asrp_temp),
          prespawn_temp_asrp = case_when(
            Scenario_num %in% c('Shade', 'Historical') ~ prespawn_temp - temp_diff_prespawn, # convert 7DADM to MDM
@@ -197,11 +198,11 @@ mutate(asrp_temp_w_growth = case_when(
              case_when(
                year == 2019 ~ prespawn_temp,
                year == 2040 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                     prespawn_temp + cc_mid_prespawn,
-                                     prespawn_temp + temp_diff_2040_prespawn), 
+                                     prespawn_temp_mid,
+                                     prespawn_temp_mid + temp_diff_2040_prespawn), 
                year == 2080 ~ ifelse(!Riparian == 'y' & can_ang > 170,
-                                     prespawn_temp + cc_late_prespawn,
-                                     prespawn_temp + temp_diff_2080_prespawn))),
+                                     prespawn_temp_late,
+                                     prespawn_temp_late + temp_diff_2080_prespawn))),
          prespawn_temp_asrp = ifelse(Floodplain == 'y' & Habitat == 'LgRiver',
                                                            prespawn_temp_asrp - (1 * rest_perc),
                                                            prespawn_temp_asrp),
