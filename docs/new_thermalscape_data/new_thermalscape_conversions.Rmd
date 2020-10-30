@@ -1,0 +1,254 @@
+---
+title: "new thermalscape temps"
+author: "Caleb Fogel"
+date: "10/21/2020"
+output: html_document
+---
+
+---
+title: "New thermalscape_data"
+author: "Caleb Fogel"
+date: "10/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(sf)
+library(ggplot2)
+rmarkdown::paged_table
+```
+
+This document describes the process we use to convert the updated thermalscape temperature data into a meteric that is usable in our model.  
+
+# Input files
+
+We use the following files manually created in ArcGIS to convert between temperature metrics: 
+
+* thermalscape_all: This file combines all of the new thermalscape datasets which included one dataset for each baseline year as well as one for each of the future years.  Additionally, this dataset includes the temperatures from the old thermalscape dataset (`meanT`), which we added using a spatial join
+* thermalscape_geom:  This file contains the geometry of the thermalscape_all shp as well as a unique identifier for each reach (`OBSPRED_ID`).  
+* riverscape_thermalscape_pts_update: This file was created through a spatial join (`closest`) of thermalscape_geom to the riverscape data point dataset.  This allows us to join the thermalscape temperatures to the riverscape points using the `OBSPRED_ID` field.
+* riverscape_flowline_join: THis file was created through a spatial join in which we joined the thermalscape unique identifier to the flowline using `closest`.  THis file contains both `noaaid` and `OBSPRED_ID`.
+
+The following code reads in the riverscape temperature data fromthe shared drive and combines the 8 separate spreadshets into a single files, here named `riverscape_data`:
+## Prep thermalscape data
+We begin by calculating the average temperature within a given EDT reach from the thermalscape dataset.  
+
+```{r}
+# Read in thermalscape dataset.  This dataset is in long form and needs to be converted to wide form, creating a column of temperature for each time period
+thermalscape_raw <-st_read('chehalis_thermalscape/chehalis_thermalscape_project.shp')
+st_geometry(thermalscape_raw) <- NULL
+
+thermalscape_fl <- st_read('chehalis_thermalscape/thermalscape_fl.shp')
+st_geometry(thermalscape_fl) <- NULL
+
+#Convert to wide form and calculate mean baseline temperature from the 7 baseline years
+thermalscape_wide <- thermalscape_raw %>%
+  mutate(year_nm = paste0('temp_', Year_)) %>%
+  select(OBSPRED_ID, Mean, year_nm) %>%
+  pivot_wider(names_from = year_nm, values_from = Mean) %>%
+  mutate(mean_new = rowMeans(select(.,temp_2013:temp_2019))) #,
+         # temp_diff_mid = temp_2040 - temp_baseline_mean,
+         # temp_diff_late = temp_2080 - temp_baseline_mean)
+thermalscape_data <- read.delim('chehalis_thermalscape/thermalscape_noaaid.txt', header = TRUE, sep = ',') %>%
+  left_join(., thermalscape_fl %>%
+              select(noaaid, OBSPRED_ID, Reach)) %>%
+  left_join(., thermalscape_wide) %>% 
+  group_by(noaaid) %>%
+  summarize(mean_new = mean(mean_new, na.rm = T),
+            mean_old = mean(meanT, na.rm = T),
+            mean_2040 = mean(temp_2040, na.rm = T),
+            mean_2080 = mean(temp_2080, na.rm = T)) 
+```
+
+
+
+```{r}
+riverscape_df <- '//nwcfile/FE/watershed/Chehalis/Data/3b-Temperature/Chehalis Temperature Data for NOAA'
+riverscape_files <- list.files(path = riverscape_df, pattern = '\\.txt$')
+riverscape_data <- lapply(riverscape_files, function(x){
+  read.delim(file.path(paste0(riverscape_df, '/', x)), header = TRUE, sep = '\t')
+}) %>%
+  do.call('rbind',.)
+
+riverscape_locs <- st_read('chehalis_thermalscape/riverscape_thermalscape_join.shp')
+st_geometry(riverscape_locs) <- NULL
+
+riverscape_siteid <- unique(riverscape_locs$Site_ID)
+```
+
+# Create conversion functions
+
+
+## MWMT
+We model the effect of temperature on Coho and Steelhead rearing using the mean weekly maximum temperature for August.  We calculate both the mean of daily means and the MWMT from the riverscape data below:
+
+```{r}
+mwmt <- riverscape_data %>%
+  filter(Month == 8) %>% 
+  group_by(Site_ID, Year, Day) %>%
+  mutate(mdmean = mean(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  mutate(mwmt = zoo::rollmean(Temperature, 7, na.pad = TRUE, align = 'right')) %>%
+  summarize(mwmt = max(mwmt, na.rm = T),
+            mdmean = mean(mdmean, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mwmt = max(mwmt, na.rm = T),
+            mdmean = max(mdmean, na.rm = T)) %>%
+  mutate(temp_diff = mwmt - mdmean)
+```
+
+
+Note: The Riverscape dataset contains temperature data from 2014 - 2016.  In this summary we use the year with the highest mean of daily maxima value.
+
+We now compare MWMT with mean of daily mean for each site:
+
+```{r}
+mwmt_comp <- mwmt %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs) %>%
+  left_join(thermalscape_wide)
+
+mwmt_comp_plot <- ggplot(mwmt_comp, aes(x = mean_new, y = mwmt)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)  +
+  annotate("text", x = 21, y = 15, label = 'y = 1.18x + 1.01')+
+  annotate("text", x = 21, y = 14, label = 'R^2 = .90') +
+  annotate("text", x = 21, y = 13, label = "p ~ 0.0")
+print(mwmt_comp_plot)
+
+lm_mwmt <- lm(mwmt ~ mean_new, data = mwmt_comp)
+summary(lm_mwmt)
+```
+
+We model the effect of temperature on Chinook rearing using the mean of daily maxima from June 1 - June 21.  
+
+```{r}
+mdm_rear <- riverscape_data %>%
+  filter(Month == 6,
+         Day %in% 1:21) %>%
+  group_by(Site_ID, Day, Year) %>% 
+  summarize(max_temp = max(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  summarize(mdm_rear = mean(max_temp, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mdm_rear = max(mdm_rear, na.rm = T))
+```
+
+```{r}
+mdm_rear_comp <- mdm_rear %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs) %>%
+  left_join(thermalscape_wide)
+
+mdm_rear_comp_plot <- ggplot(mdm_rear_comp, aes(x = mean_new, y = mdm_rear)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+print(mdm_rear_comp_plot)
+
+lm_mdm_rear <- lm(mdm_rear ~ mean_new, data = mdm_rear_comp)
+summary(lm_mdm_rear)
+
+```
+
+#Calculate mwmt and mdm temps based on input thermalscape data and conversion equations
+
+```{r}
+thermalscape_temps <- thermalscape_data %>%
+  mutate(mwmt_thermal_curr = predict(lm_mwmt, newdata = .),
+         mdm_rear_thermal_curr = predict(lm_mdm_rear, newdata = .)) %>%
+  select(-mean_new) %>%
+  rename(mean_new = mean_2040) %>%
+  mutate(mwmt_thermal_mid = predict(lm_mwmt, newdata = .),
+         mdm_rear_thermal_mid = predict(lm_mdm_rear, newdata = .)) %>%
+  select(-mean_new) %>%
+  rename(mean_new = mean_2080) %>%
+  mutate(mwmt_thermal_late = predict(lm_mwmt, newdata = .),
+         mdm_rear_thermal_late = predict(lm_mdm_rear, newdata = .))
+  
+
+write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps.csv')
+```
+
+
+# Conversion plots for temperature paper:
+```{r}
+library(cowplot)
+
+mwmt_comp <- mwmt %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs) %>%
+  left_join(thermalscape_wide)
+  
+
+mwmt_comp_plot <- ggplot(mwmt_comp, aes(x = mean_new, y = mwmt)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = TRUE, level = .95) +
+  ylim(12, 28)+
+  xlim(12, 28) +
+  annotate("text", x = 25, y = 15, label = 'y = 1.18x +1.01')+
+  annotate("text", x = 25, y = 14, label = expression(paste(R^2, '= 0.90'))) +
+  annotate("text", x = 25, y = 13, label = "p ~ 0.00")+
+  xlab('August ADA') +
+  ylab('7-DADM')+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(size = 10),
+    axis.title.x = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 12),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    aspect.ratio = 1,
+    legend.position = 'none')
+print(mwmt_comp_plot + labs(y = '7-DADM', x = 'August ADA'))
+
+lm_mwmt <- lm(mwmt ~ mean_new, data = mwmt_comp)
+summary(lm_mwmt)
+
+mdm_rear <- riverscape_data %>%
+  filter(Month == 6,
+         Day %in% 1:21) %>%
+  group_by(Site_ID, Day, Year) %>% 
+  summarize(max_temp = max(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  summarize(mdm_rear = mean(max_temp, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mdm_rear = max(mdm_rear, na.rm = T))
+
+mdm_rear_comp <- mdm_rear %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs) %>%
+  left_join(thermalscape_wide)
+
+mdm_rear_comp_plot <- ggplot(mdm_rear_comp, aes(x = mean_new, y = mdm_rear)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = TRUE, level = .95) +
+  ylim(12, 28)+
+  xlim(12, 28) +
+  annotate('text', x = 25, y = 15, label = 'y = 1.12x  - 2.23') + 
+  annotate('text', x = 25, y = 14, label = expression(paste(R^2, ' = 0.84'))) +
+  annotate ('text', x = 25, y = 13, label = 'p ~ 0.00') +
+  xlab('August ADA') +
+  ylab('June 1-21 ADM')+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(size = 10),
+        axis.title.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10),
+        axis.title.y = element_text(size = 12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        aspect.ratio = 1,
+        legend.position = 'none') 
+print(mdm_rear_comp_plot + labs(y = 'June 1-21 ADM', x = 'August ADA'))
+
+lm_mdm_rear <- lm(mdm_rear ~ mean_new, data = mdm_rear_comp)
+summary(lm_mdm_rear)
+
+conversion_plot <-plot_grid(mwmt_comp_plot, NULL, mdm_rear_comp_plot, ncol = 3, rel_widths = c(1, .15, 1)) 
+
+# ggsave('../../temp_paper/conversion_plots.jpg', dpi = 300, width = 6, height = 8)
+save_plot('../../temp_paper/conversion_plots_update.tiff', conversion_plot, ncol = 2, base_asp = 1.1, compression = 'lzw')
+```

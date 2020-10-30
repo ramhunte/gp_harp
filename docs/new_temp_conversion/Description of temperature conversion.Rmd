@@ -191,7 +191,7 @@ thermalscape_temps <- thermalscape_data %>%
   mutate(mdmean_prespawn_thermal = predict(lm_mdmean_prespawn, newdata = .),
          mwmt_thermal = predict(lm_mwmt, newdata = .),
          mdm_rear_thermal = predict(lm_mdm_rear, newdata = .))
-write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps.csv')
+write.csv(thermalscape_temps, '../../hab/Inputs/temperature_inputs/thermalscape_temps_old.csv')
 ```
 
 # Future temperature increases
