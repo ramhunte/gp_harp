@@ -285,6 +285,17 @@ summary_tab %>%
   select(-scenario) %>% 
   write.csv('summary_tab2.csv')
 
+
+x %>% 
+  group_by(species, scenario, climate, era) %>%
+  filter(scenario == 'Current') %>%
+  summarize(sd = sd(n),
+            mean = mean(n),
+            cv = sd/mean) %>%
+  write_csv('cv_spawner_abundance.csv')
+  
+
+
 p6 <- x %>%
   filter(scenario == 'Current') %>%
   ggplot(aes(era,perc_diff, fill = climate)) +
