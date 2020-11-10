@@ -8,6 +8,15 @@
 *.jpg
 *.html
 *.jpeg
+*.tiff
+*.cpg
+*.dbf
+*.prj
+*.sbn
+*.sbx
+*.shp
+*.shp.xml
+*.shx
 
 # Directories to ignore
 lcm/lcm_outputs/
