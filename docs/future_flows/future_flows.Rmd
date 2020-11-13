@@ -2,7 +2,6 @@
 title: "Future flow changes"
 output:
   word_document: default
-  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -341,7 +340,7 @@ p3 <- ggplot() +
                            "*'RI'^",
                            round(coefficients(ri_to_surv)[2], 3)), 
             parse = TRUE, 
-            size = 3) +
+            size = 4) +
   labs(x = 'Recurrence interval (years)',
        y = 'Egg to migrant survival') +
   annotation_logticks(sides = 'b')
@@ -404,7 +403,7 @@ ggplot() +
 
 ```
 
-
+#### Table 1
 ```{r}
 dat_z %>% 
   mutate(surv_rescale = range.rescale(surv) %>% round(2), 

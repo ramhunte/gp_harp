@@ -268,8 +268,8 @@ summary_tab <-  x %>%
             #mean = mean(perc_diff) %>% scales::percent(),
             median = median(perc_diff) %>% scales::percent(),
             max = max(perc_diff) %>% scales::percent(),
-            sd = sd(perc_diff) %>% scales::percent(),
-            cv = sd(perc_diff)/mean(perc_diff) %>% round(3)) %>%
+            sd = sd(perc_diff) %>% scales::percent()) %>%
+            #cv = sd(perc_diff)/mean(perc_diff) %>% round(3)) %>%
   arrange(species)
 
 
@@ -283,7 +283,7 @@ summary_tab %>%
   ungroup() %>% 
   filter(scenario == 'Current', era != 'Current') %>%
   select(-scenario) %>% 
-  write.csv('summary_tab2.csv')
+  write.csv('docs/future_flows/Table3.csv')
 
 
 x %>% 
@@ -292,7 +292,7 @@ x %>%
   summarize(sd = sd(n),
             mean = mean(n),
             cv = sd/mean) %>%
-  write_csv('cv_spawner_abundance.csv')
+  write_csv('docs/future_flows/cv_spawner_abundance.csv')
   
 
 
