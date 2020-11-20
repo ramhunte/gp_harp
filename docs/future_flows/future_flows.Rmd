@@ -370,46 +370,51 @@ data.frame(ri = 1:100) %>%
 #### Rescale the function
 
 ```{r}
-range.rescale <- function(x, 
-                          min = ri.to.surv(100),
-                          max = ri.to.surv(1)) 
-{
-  y <- (x - min) / (max - min)
-  return(y)
+
+RI_sample <- sample(1:100, 10000, replace = TRUE, prob = 1/(1:100))
+
+RI_geomean <- geo.mean(RI_sample)
+
+
+
+ri_to_surv_scalar <- function(x, 
+                        mean_ri = RI_geomean) {
+  
+  surv_geomean <- ri.to.surv(mean_ri)
+  
+  surv_rescaled <- (ri.to.surv(x) - surv_geomean) / surv_geomean
+  
+  return(1 + surv_rescaled)
+  
 }
 
-# range.rescale <- function(c,
-#                           y = ri.to.surv(100),
-#                           z = 1)
-# {
-#   (c - ri.to.surv(100)) * (z - y) / (ri.to.surv(1) - ri.to.surv(100)) + y
-# }
-# 
-range.rescale(ri.to.surv(1:100))
+
+ri_to_surv_scalar(1:100)
+
 ```
 
 
 ```{r}
-ggplot() +
-  theme_classic() +
-  geom_point(data = dat_z %>% 
-               mutate(surv_rescale = range.rescale(surv)), 
-             aes(ri, surv_rescale)) +
-  geom_line(data = sk_pred %>%
-              mutate(surv_pred_rescale = range.rescale(surv_pred)), 
-                     aes(ri, surv_pred_rescale)) +
-  scale_x_log10(limits=c(1, 100)) +
-  geom_vline(xintercept = 1.5, lty = 2)
+# ggplot() +
+#   theme_classic() +
+#   geom_point(data = dat_z %>% 
+#                mutate(surv_rescale = surv.scalar(surv)), 
+#              aes(ri, surv_rescale)) +
+#   geom_line(data = sk_pred %>%
+#               mutate(surv_pred_rescale = surv.scalar(surv_pred)), 
+#                      aes(ri, surv_pred_rescale)) +
+#   scale_x_log10(limits=c(1, 100)) +
+#   geom_vline(xintercept = 1.5, lty = 2)
 
 ```
 
 #### Table 1
 ```{r}
 dat_z %>% 
-  mutate(surv_rescale = range.rescale(surv) %>% round(2), 
+  mutate(surv_scalar = ri_to_surv_scalar(ri) %>% round(2), 
          ri = ri %>% round(1)) %>%
-  rename(Year = year, RI = ri, p = surv,  p_rescale = surv_rescale) %>%
-  select(Year, RI, p, p_rescale) %>%
+  rename(Year = year, RI = ri, p = surv,  p_scalar = surv_scalar) %>%
+  select(Year, RI, p, p_scalar) %>%
   mutate(p = round(p, 3)) %>%
   flextable::flextable()
 ```
@@ -418,19 +423,19 @@ dat_z %>%
 Bring it all together in one function to turn RI into a survival scalar
 
 ```{r}
-ri_to_surv_rescale <- function(ri) {
-  
-  surv_rescale <- ri.to.surv(ri) %>%
-    range.rescale()
-  
-  # If survival is negative, make zero
-  surv_rescale[surv_rescale < 0] <- 0
-  
-  
-  return(surv_rescale)
-}
-
-ri_to_surv_rescale(c(1, 2, 10, 50, 100))
+# ri_to_surv_rescale <- function(ri) {
+#   
+#   surv_rescale <- ri.to.surv(ri) %>%
+#     range.rescale()
+#   
+#   # If survival is negative, make zero
+#   surv_rescale[surv_rescale < 0] <- 0
+#   
+#   
+#   return(surv_rescale)
+# }
+# 
+# ri_to_surv_rescale(c(1, 2, 10, 50, 100))
 ```
 
 
@@ -443,8 +448,8 @@ library(EGRET)
 
 # Load Chehalis data
 daily_ch <- readNWISDaily(12031000,'00060') %>% # Porter gage
- filter(waterYear %in% 1970:1999)
-#        waterYear != 1975)
+ filter(waterYear %in% 1970:1999,
+        waterYear != 1975)
 
 #daily_ch <- readNWISDaily(12027500,'00060') # Grand Mound gage
 
@@ -453,12 +458,21 @@ q_to_ri <- function(q_cfs){
   
   # Values from Chehalis_at_Port_1970_1999.EXP
   lp3_stat <- ppearsonIII(q = log10(q_cfs),
-                          mean =  4.496,
-                          sd =  0.188,
-                          skew = 0.025)
+                          mean =  4.476,
+                          sd =  0.168,
+                          skew = -0.237)
   
   return(1 / (1 - lp3_stat))
 }
+
+q_to_ri(80000)
+
+
+ppearsonIII(q = log10(80000),
+            mean =  4.496,
+            sd =  0.188,
+            skew = 0.025)
+
 
 ```
 
@@ -537,14 +551,14 @@ p4
 ```{r}
 # Hints taken from here: http://eaheisman.blogspot.com/2013/06/flood-frequency-curves-in-ggplot2.html
 
-ch_obs <- read.delim2('PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.emp',
+ch_obs <- read.delim2('PEAKFQ_CHEHALIS_AT_PORTER_1970_1999_DAILY.EMP',
             skip = 7) %>%
   mutate_all(as.numeric) %>%
   rename(EXC_Prob = B17BEst) %>%
   mutate(EXC_trans = qnorm(EXC_Prob),
          RI = 1/EXC_Prob)
 
-ch_logp <- read.delim2('PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.exp', 
+ch_logp <- read.delim2('PEAKFQ_CHEHALIS_AT_PORTER_1970_1999_DAILY.EXP', 
                        sep = "\t",
                        skip = 20,
                        strip.white = TRUE,
@@ -552,7 +566,7 @@ ch_logp <- read.delim2('PEAKFQ_CHEHALIS_AT_PORTER_1970_1999.exp',
   pivot_longer(V2:V26) %>%
   #select(-name) %>%
   pivot_wider(names_from = V1, values_from = value) %>%
-  select(-name) %>%
+  select(-name, -Variance) %>%
   mutate_all(as.numeric) %>%
   mutate(EXC_trans = qnorm(EXC_Prob),
          RI = 1/EXC_Prob)
@@ -571,7 +585,7 @@ p2 <- ggplot() +
   annotation_logticks(sides = "l") +
   scale_x_reverse(breaks = xaxis,
                   labels = xbreaks * 100,
-                  limits= qnorm(c(.995, 0.01)),
+                  limits = qnorm(c(.995, 0.01)),
                   expand = c(0, 0)) +
   labs(x = 'Annual exceedence probability (%)',
        y = bquote('Discharge ' ~(m^3*s^-1)))

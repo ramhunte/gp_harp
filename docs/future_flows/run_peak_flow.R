@@ -88,11 +88,11 @@ for (pop in pops) {
            Q_rcp45_2080 = Q_max + Q_max * diff_perc_rcp45_2080,
            Q_rcp85_2050 = Q_max + Q_max * diff_perc_rcp85_2050,
            Q_rcp85_2080 = Q_max + Q_max * diff_perc_rcp85_2080) %>%
-    mutate(surv_cur = ri_to_surv_rescale(ri),
-           surv_rcp45_2050 = q_to_ri(Q_rcp45_2050) %>% ri_to_surv_rescale(),
-           surv_rcp45_2080 = q_to_ri(Q_rcp45_2080) %>% ri_to_surv_rescale(),
-           surv_rcp85_2050 = q_to_ri(Q_rcp85_2050) %>% ri_to_surv_rescale(),
-           surv_rcp85_2080 = q_to_ri(Q_rcp85_2080) %>% ri_to_surv_rescale())
+    mutate(surv_cur = ri_to_surv_scalar(ri),
+           surv_rcp45_2050 = q_to_ri(Q_rcp45_2050) %>% ri_to_surv_scalar(),
+           surv_rcp45_2080 = q_to_ri(Q_rcp45_2080) %>% ri_to_surv_scalar(),
+           surv_rcp85_2050 = q_to_ri(Q_rcp85_2050) %>% ri_to_surv_scalar(),
+           surv_rcp85_2080 = q_to_ri(Q_rcp85_2080) %>% ri_to_surv_scalar())
   
   
   surv_ch <- list(
