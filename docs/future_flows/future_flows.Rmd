@@ -371,6 +371,12 @@ data.frame(ri = 1:100) %>%
 
 ```{r}
 
+geo.mean <- function(x){
+  x[which(x <= 0)] <- 0.001
+  exp(mean(log(x)))
+}
+
+
 RI_sample <- sample(1:100, 10000, replace = TRUE, prob = 1/(1:100))
 
 RI_geomean <- geo.mean(RI_sample)
