@@ -8,6 +8,9 @@
 *.jpg
 *.html
 *.jpeg
+*.tiff
+*.docx
+*.zip
 
 # Directories to ignore
 lcm/lcm_outputs/

@@ -159,7 +159,7 @@ asrp_fp <- asrp_fp_curr %>%
                               curr_area * tempmult.asrp * woodmult_s_asrp,
                               curr_area * woodmult_w_asrp))) 
 
-rm(asrp_fp_curr, asrp_fp_hist, asrp_fp_precalc, asrp_fp_precalc1, asrp_fp_raw, asrp_fp_scenario, asrp_fp_year, Floodplain_raw, LgRiver_raw)
+rm(asrp_fp_curr, asrp_fp_hist, asrp_fp_precalc, asrp_fp_precalc1, asrp_fp_raw, asrp_fp_year, Floodplain_raw, LgRiver_raw)
 
 
 asrp_fp_mvmt <- asrp_fp %>%

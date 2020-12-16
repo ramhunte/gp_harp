@@ -49,6 +49,12 @@ asrp_ss <- asrp_ss_scenario %>%
   rename(width_s_curr = width_s,
          width_w_curr = width_w) %>%
   mutate(
+    woodmult_s_asrp = ifelse(species == 'anadromous_network',
+                             1,
+                             woodmult_s_asrp),
+    woodmult_w_asrp = ifelse(species == 'anadromous_network',
+                             1,
+                             woodmult_w_asrp),
     width_s = case_when(
       year == 2019 ~ 
         ifelse(Scenario_num == 'Historical',

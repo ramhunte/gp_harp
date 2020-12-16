@@ -1,0 +1,677 @@
+---
+title: "Create Habitat Paper Figures"
+author: "Caleb Fogel"
+date: "11/10/2020"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+library(tidyverse)
+library(sf)
+library(scales)
+# library(gridExtra)
+```
+
+This document creates the datasets and figures needed for the Habitat Paper for submission to PLOS One. 
+
+This document calculates the number of reaches with temperature increases of >2°C from loss of shading.
+
+The following tables contain data created in this document:
+
+Table 3. Summary of habitat changes in the Chehalis basin and Grays Harbor Tributaries
+Table 4. Loss of main channel length and side-channel length, by Ecological Region
+Additionally, the following figures are created in this document:
+
+The following figures are created in this document:
+
+Figure 4. Area of floodplain habitat lost and gained
+Figure 5. Frequency distibutions of natural potential and current canopy opening angles in the Chehalis River basin
+Figure 6. Maps of restoration potential for six habitat attributes under current climate conditions and development
+
+# Run the model
+First step is to run the model and ensure that figures will be created from the correct results. 
+
+To generate all Habitat paper figures: either click Knit or Run > Run All
+
+
+
+```{r run lcm, include=FALSE, eval = TRUE}
+
+# Setup run params
+fishtype <- 'anadromous_network'
+run_stochastic_eggtofry <- 'no'
+run_single_action <- 'no'
+sensitivity.mode <- 'no'
+branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
+
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+os <- get_os()
+
+# Load packages ----
+
+global.pkgs <- c('tidyverse', 'magrittr', 'lubridate', 'zoo')
+lapply(global.pkgs, require, character.only = TRUE)
+
+unlink(file.path('outputs', fishtype), recursive = TRUE)
+  source('hab/R_files/0-Run_Habitat_Model.R')
+```
+
+
+# Source necessary scripts
+
+# Read in spatial data
+```{r}
+#### Define geodatabase with necessary spatial data
+gdb <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20191204'
+
+fp_out <- st_read(dsn = file.path(gdb, 'Outputs.gdb'),
+                  layer = 'Floodplain') %>%
+  st_drop_geometry() %>%
+  mutate(ET_ID = TARGET_FID - 1)
+
+fp_in <- st_read(dsn = file.path(gdb, 'Inputs.gdb'),
+                 layer = 'Floodplain') %>%
+  st_drop_geometry()
+
+fl_raw <- st_read(dsn = file.path(gdb, 'Outputs.gdb'),
+              layer = 'flowline') %>%
+  st_drop_geometry() %>%
+  rename(Subbasin = noaa_sub)
+
+fl <- flowline %>% select(noaaid, Habitat, noaa_sub, can_ang, hist_ang)
+
+shp_gsu <- sf::st_read(file.path(gdb, 'Inputs.gdb'),
+                       'chehalis_gsu_20180919_NAD83')
+
+shp_sub <- sf::st_read(file.path(gdb, 'Inputs.gdb'),
+                       'NOAA_subbasins_w_fp')
+
+gsu_list <- fl_raw %>%
+  distinct(GSU)
+```
+
+# Calculate total length with temperature change from shading >2°C
+
+```{r}
+flowline_temp_length <- flowline_noculv %>%
+  mutate(length_high = ifelse(temp_diff_rear > 2,
+                              Shape_Length,
+                              0)) %>%
+  summarize(length_high = sum(length_high, na.rm = T),
+            length_tot = sum(Shape_Length, na.rm = T)) %>%
+  mutate(diff = length_tot - length_high,
+         perc = length_high / length_tot * 100)
+
+flowline_temp_length
+
+```
+
+# Table 4.  Loss of main channel length and side-channel length by Ecological Region
+
+```{r}
+# Large river length loss ----
+
+table_4_lr <- asrp_reach_data %>%
+  left_join(., flowline %>% 
+              select(noaaid, Habitat)) %>%
+  filter(Scenario_num %in% c("Current", "LR"),
+         Habitat == "LgRiver") %>%
+  left_join(., lr_length_raw %>%
+              select(lr_mult, Reach)) %>%
+  left_join(., flowline %>%
+              select(noaaid, Shape_Length)) %>%
+  left_join(., subbasin_names %>%
+              select(Subbasin_num, EcoRegion)) %>%
+  mutate(lr_mult = ifelse(is.na(lr_mult),
+                          1,
+                          lr_mult),
+         length_new = case_when(
+           Scenario_num == 'Current' ~ Shape_Length,
+           Scenario_num == 'LR' ~ Shape_Length * lr_mult
+         )) %>%
+  spread(Scenario_num, length_new) %>%
+  group_by(EcoRegion) %>%
+  summarize(length_curr = sum(Current, na.rm = T),
+            length_lrmult = sum(LR, na.rm = T)) %>%
+  mutate(diff = (length_lrmult - length_curr)/1000,
+         perc = (diff/((length_lrmult)/1000)) * 100)
+
+table_4_lr_total <- table_4_lr %>%
+  ungroup() %>%
+  summarize(length_lrmult = sum(length_lrmult, na.rm = T)/1000,
+            length_curr = sum(length_curr, na.rm = T)/1000)%>%
+  mutate(diff = length_lrmult - length_curr,
+         perc = (diff / length_lrmult) * 100)
+
+# Floodplain side channel loss ----
+
+fp_curr <- asrp_fp_scenario %>%
+  filter(Scenario_num == 'Current',
+         Period %in% c('Curr', 'Both'))
+fp_hist <- asrp_fp_scenario %>%
+  filter(Scenario_num == 'Floodplain',
+         Period %in% c('Hist', 'Both'))
+
+table_4_fp <- bind_rows(fp_curr, fp_hist) %>%
+  filter(Habitat == 'Side_Channel') %>%
+  spread(Scenario_num, Length_sc) %>%
+  mutate(Current = ifelse(is.na(Current),
+                          0,
+                          Current),
+         Floodplain = ifelse(is.na(Floodplain),
+                             0,
+                             Floodplain)) %>%
+  left_join(., subbasin_names %>%
+              select(Subbasin_num, EcoRegion)) %>%
+  group_by(EcoRegion) %>%
+  summarize(length_curr = sum(Current, na.rm = T)/1000,
+            length_fp = sum(Floodplain, na.rm = T)/1000) %>%
+  mutate(diff = length_fp - length_curr,
+         perc = diff / length_fp * 100)
+
+table_4_fp_total <- table_4_fp %>%
+  ungroup() %>%
+  summarize(length_curr = sum(length_curr, na.rm = T),
+            length_fp = sum(length_fp, na.rm = T)) %>%
+  mutate(diff = length_fp - length_curr,
+         perc = diff / length_fp * 100)
+
+table_4_fp
+table_4_lr
+```
+
+
+# Figure 4. Area of floodplain habitat lost and gained
+
+```{r}
+fp <- left_join(fp_out, fp_in) 
+
+fig_4_data <- fp %>%
+  filter(Period %in% c('Curr', 'Both')) %>%
+  mutate(Period = ifelse(Period == 'Both', 
+                         'Curr', 
+                         as.character(Period))) %>%
+  rbind(fp %>%
+          filter(Period %in% c('Hist', 'Both')) %>%
+          mutate(Period = ifelse(Period == 'Both', 
+                                 'Hist', 
+                                 as.character(Period)))) %>%
+  filter(!HabUnit %in% c('FP Channel', 'FP channel', 'Side channel')) %>%
+  left_join(fl) %>%
+  mutate(
+    condition = case_when(
+      Period == 'Hist' ~ 'Historical',
+      Period == 'Curr' & Hab_cond == 'Nat' ~ 'Current - Natural',
+      Period == 'Curr' & Hab_cond %in% c('Man-made', 'Man made', 'Nat mod') ~ 'Current - Modified'),
+    condition = factor(condition, levels = c('Historical',
+                                             'Current - Modified',
+                                             'Current - Natural'))) %>%
+  group_by(Period, condition, HabUnit) %>%
+  summarize(Area_ha = sum(Area_ha))
+
+ggplot() +
+   theme_bw() +
+  geom_bar(data = fig_4_data %>% filter(Period == 'Hist'),
+           aes(HabUnit, Area_ha, fill = condition),
+           stat = 'identity',
+           position = position_nudge(x = 0.15),
+           width = .3,
+           color = 'black') +
+  geom_bar(data = fig_4_data %>% #Summarize total current habitat area (Current - Modified + Current - Natural) then plot the Current - Natural on top of this so that we can both nudge and stack the bars
+             filter(Period == 'Curr') %>% 
+             group_by(Period, HabUnit) %>% 
+             summarize(Area_ha_curr = sum(Area_ha)) %>% 
+             mutate(condition = 'Current - Modified'),
+           aes(HabUnit, Area_ha_curr, fill = condition),
+           stat = 'identity',
+           position = position_nudge(x = -.15),
+           width = 0.3,
+           color = 'black') +
+  geom_bar(data = fig_4_data %>%
+             filter(condition == 'Current - Natural'),
+           aes(HabUnit, Area_ha, fill = condition),
+           stat = 'identity',
+           position = position_nudge(x = -.15),
+           width = 0.3,
+           color = 'black') +
+  scale_fill_manual(values = c( 'deepskyblue1','blue3','lightgreen')) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1),
+        text = element_text(size = 8),
+        legend.position = c(.75, .8),
+        legend.key.size = unit(0.4, 'cm')) +
+  labs(fill = NULL,
+       y = 'Area (Ha)',
+       x = NULL) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)))
+
+ggsave('docs/companion_papers/hab_fig_4.tiff', width = 5.1, height = 4.08, unit = 'in', dpi = 300, compression = 'lzw')
+```
+
+# Figure 5. Frequency distributions of canopy opening angles
+
+```{r}
+total_reaches = as.numeric(tally(fl))
+
+angle_levels <- c('< 10°', '10° - 25°', '25° - 50°', '50° - 100°', '> 100°')
+
+can_ang_summary <- fl %>%
+  mutate(can_ang_bin_curr = case_when(
+    can_ang < 10 ~ '< 10°',
+      can_ang < 25 & can_ang >= 10 ~ '10° - 25°',
+      can_ang < 50 & can_ang >= 25 ~ '25° - 50°',
+      can_ang < 100 & can_ang >= 50 ~ '50° - 100°',
+      can_ang >= 100 ~ '> 100°')) %>%
+  group_by(can_ang_bin_curr) %>%
+  tally() %>%
+  mutate(prop = n / total_reaches) %>%
+  full_join(., fl %>%
+              mutate(
+                can_ang_bin_hist = case_when(
+                  hist_ang < 10 ~ '< 10°',
+                  hist_ang < 25 & hist_ang >= 10 ~ '10° - 25°',
+                  hist_ang < 50 & hist_ang >= 25 ~ '25° - 50°',
+                  hist_ang < 100 & hist_ang >= 50 ~ '50° - 100°',
+                  hist_ang >= 100 ~ '> 100°' )) %>%
+              group_by(can_ang_bin_hist) %>%
+              tally() %>%
+              filter(!is.na(can_ang_bin_hist)) %>%
+              mutate(prop = n / total_reaches)) %>%
+  gather(period, ang_bin, c(can_ang_bin_curr, can_ang_bin_hist)) %>%
+  filter(!is.na(ang_bin)) %>%
+  mutate(period = ifelse(period == 'can_ang_bin_curr',
+                         'Current',
+                         'Historical'))
+
+can_ang_summary$ang_bin <- factor(can_ang_summary$ang_bin, levels = angle_levels)
+can_ang_summary$period <- factor(can_ang_summary$period, levels = c('Historical', 'Current'))
+
+ggplot() +
+  theme_bw() +
+  geom_bar(data = can_ang_summary,
+           stat = 'identity',
+           aes(ang_bin, prop, fill = period),
+           color = 'black',
+           position = 'dodge') +
+  scale_fill_manual(values = c('lightgreen', 'blue3'), drop = F, name = 'period') +
+  xlab('Canopy Opening Range') +
+  ylab("Proportion of Reaches") +
+  theme( text = element_text(size = 8)) +
+  theme(legend.position = c(.9, .9),  
+        legend.title = element_blank(),
+        legend.key.size = unit(0.4, "cm")
+       ) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)))
+
+ggsave('docs/companion_papers/hab_fig_5.tiff', width = 5.1, height = 4.08, units = 'in', dpi = 300, compression = 'lzw')
+getwd()
+```
+
+# Figure 6. Maps of restoration potential for six habitat attributes
+
+```{r}
+flowline_gsu <- flowline %>%
+  left_join(., anadromous_network, by = 'noaaid') %>%
+  filter(anadromous_network == 'Yes') %>%
+  group_by(GSU) %>%
+  summarize(length_km = sum(Shape_Length / 1000, na.rm = T))
+```
+
+### Beaver
+
+```{r}
+bip <-  fl_raw %>%
+  mutate(score_slope = 
+           case_when(
+             slope < .01 ~ 4,
+             between(slope, .01, .02) ~ 3,
+             between(slope, .02, .04) ~ 2,
+             between(slope, .04, .06) ~ 1,
+             between(slope, .06, .10) ~ 0.5,
+             slope > .10 ~ 0),
+         score_width = case_when(
+           BF_width < 7 ~ 4,
+           between(BF_width, 7, 10) ~ 3,
+           between(BF_width, 10, 18) ~ 2,
+           between(BF_width, 18, 24) ~ 1,
+           BF_width > 24 ~ 0),
+         score = score_slope + score_width) %>%
+  group_by(GSU) %>%
+   summarize(BIP = mean(score, na.rm = TRUE)) %>%
+  mutate(rank_bip = rank(-BIP, ties.method = 'min'),
+         BIP = ifelse(GSU == 'Upper Skookumchuck',
+                      NA, 
+                      BIP)) %>%
+  mutate(BIP_bin = case_when(
+    BIP <= 4 ~ 'No BIP',
+    between(BIP, 4.0000001, 6) ~ 'Low',
+    between(BIP, 6.0000001, 7) ~ 'Medium',
+    BIP > 7.00000001 ~ 'High'
+  ),
+  BIP_bin = case_when(
+    GSU == 'Upper Skookumchuck' ~ 'NA',
+    GSU != 'Upper Skookumchuck' ~ BIP_bin
+  ),
+  BIP_bin = factor(BIP_bin, levels = c('NA', 'No BIP', 'Low', 'Medium', 'High')))
+
+p_bip <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu %>% left_join(., bip) ,
+          aes(fill = BIP_bin), lwd = 0.1, color = 'black') +
+  scale_fill_manual(breaks = c('No BIP', 'Low', 'Medium', 'High'),
+                    values = c('gray50', 'white', 'green2', 'green4', muted('green4'))) +
+  labs(fill = 'BIP score',
+       title = 'Beaver') +
+  theme(legend.position = c(.8, .8),
+        text = element_text(size = 8),
+        legend.key.size = unit(0.4, 'cm'))
+```
+
+### Barriers
+
+```{r}
+pass = fl_raw %>% select(noaaid, GSU, Reach, culv_list) %>%
+  filter(culv_list != '') %>%
+    mutate(culv_list = str_split(culv_list,',')) %>%
+  unnest(culv_list) %>%
+  filter(culv_list != 'None') %>%
+  mutate(noaa_culv = as.numeric(culv_list)) %>%
+  left_join(., culvs %>%
+              select(-GSU)) %>%
+  group_by(GSU, noaaid) %>%
+  summarize(pass_tot = prod(FishPass),
+            pass_tot_natural = prod(ifelse(FeatureTyp == 'Natural',FishPass,1))) %>%
+  replace_na(list(pass_tot = 1, pass_tot_natural = 1)) %>% 
+   group_by(GSU) %>%
+  summarize(pass_tot = mean(pass_tot, na.rm = TRUE),
+            pass_tot_nat = mean(pass_tot_natural, na.rm = TRUE)) %>%
+  mutate(pass_diff = pass_tot_nat - pass_tot) %>%
+  full_join(gsu_list) %>%
+  mutate(pass_diff = ifelse(is.na(pass_diff), 0, pass_diff),
+         pass_diff = ifelse(GSU == "Upper Skookumchuck", NA, pass_diff))
+
+p_pass <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu %>% left_join(., pass), aes(fill = pass_diff), lwd = 0.1, color = 'black') +
+  scale_fill_gradient2(high = muted('orange'), 
+                       low = 'white',
+                       mid = 'orange',
+                       midpoint = .5,
+                       label = label_percent(),
+                       limits = c(0, 1)) +
+  labs(fill = 'Change in\npassage',
+       title = 'Barriers') +
+  theme(legend.position = c(.8, .8),
+        text = element_text(size = 8),
+        legend.key.size = unit(0.4, 'cm'))
+```
+
+### Fine sediment
+
+```{r}
+gsu_sed <- fl_raw %>%
+  group_by(GSU) %>%
+  summarize(sed_current = mean(sed_current, na.rm = TRUE),
+            sed_hist = mean(sed_hist, na.rm = TRUE)) %>%
+  mutate(sed_diff = sed_hist - sed_current)
+
+p_sed <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu %>% 
+            left_join(., gsu_sed) %>% 
+            mutate(sed_diff = ifelse(GSU == 'Upper Skookumchuck',
+                                     NA,
+                                     sed_diff)),
+          aes(fill =  sed_diff/100), lwd = 0.1, color = 'black') +
+  scale_fill_gradient2(low = muted('pink'), 
+                       high = 'white',
+                       mid = 'pink',
+                       midpoint = -.02,
+                       label = label_percent(accuracy = 1L)) +
+  labs(fill = 'Change in\nfines',
+       title = 'Fine sediment') +
+  theme(legend.position = c(.8, .8),
+        text = element_text(size = 8),
+        legend.key.size = unit(0.4, 'cm'))
+```
+
+### Wood
+```{r}
+spawn_area_ss <- flowline %>%
+  filter(slope < .03,
+         Habitat == 'SmStream') %>%
+  mutate(scenario = 'low_wood') %>%
+  bind_rows(., flowline %>%
+              filter(slope < .03,
+                     Habitat == 'SmStream') %>%
+              mutate(scenario = 'high_wood')) %>%
+  mutate(psp = case_when(slope < .01 ~ ifelse(scenario == 'high_wood',
+                                              psp_hwls,
+                                              psp_lwls),
+                         slope >= .01 ~ ifelse(scenario == 'high_wood',
+                                               psp_hwhs,
+                                               psp_lwls)),
+         spawn_area = (Shape_Length / (width_w * psp)) * width_w * (width_w * .5)) %>%
+  select(noaaid, GSU, scenario, spawn_area, Subbasin_num) %>%
+  spread(scenario, spawn_area)
+
+spawn_area_lr <- lgr_sp_area_asrp %>%
+  left_join(., asrp_reach_data %>%
+              filter(Scenario_num == 'Wood')) %>%
+  left_join(., asrp_culvs %>%
+              filter(Scenario_num == 'Wood')) %>%
+  mutate(spawn_area = spawn_area * wood_spawn_mult * pass_tot_asrp) %>%
+  bind_rows(lgr_sp_area_asrp %>%
+              left_join(., asrp_reach_data %>%
+                          filter(Scenario_num == 'Current')) %>%
+              left_join(., asrp_culvs %>%
+                          filter(Scenario_num == 'Current')) %>%
+              mutate(spawn_area = spawn_area * pass_tot_asrp)) %>%
+  select(noaaid, GSU, Scenario_num, spawn_area, Subbasin_num) %>%
+  spread(Scenario_num, spawn_area) %>%
+  rename(high_wood = Wood,
+         low_wood = Current)
+ 
+asrp_spawn_fp_raw <- asrp_fp_spawn %>%
+  left_join(., asrp_culvs) %>%
+  left_join(., asrp_reach_data) %>%
+  filter(Habitat == "Side_Channel",
+         Hist_salm == "Hist salmon")
+
+asrp_spawn_fp_curr <- asrp_spawn_fp_raw %>%
+  filter(Period %in% c('Curr', 'Both'),
+         spawn_dist == 'Yes' & NEAR_DIST < 5) %>%
+  group_by(noaaid, year, Scenario_num) %>%
+  summarize(Length_sc_curr = sum(Length_sc, na.rm = TRUE)) %>%
+  ungroup()
+
+asrp_spawn_fp_hist <- asrp_spawn_fp_raw %>%
+  filter(Period %in% c('Hist', 'Both'),
+         spawn_dist == 'Yes' & NEAR_DIST < 500) %>%
+  group_by(noaaid, year, Scenario_num) %>%
+  summarize(Length_sc_hist = sum(Length_sc, na.rm = TRUE)) %>%
+  ungroup()
+
+
+spawn_area_fp <- full_join(asrp_spawn_fp_curr, asrp_spawn_fp_hist) %>%
+  left_join(., asrp_reach_data) %>%
+  left_join(., asrp_culvs) %>%
+  mutate(Length_sc_curr = ifelse(is.na(Length_sc_curr),
+                                 0,
+                                 Length_sc_curr),
+         Length_sc_hist = ifelse(is.na(Length_sc_hist),
+                                 0,
+                                 Length_sc_hist),
+         Length_sc = ifelse(Floodplain == 'y',
+                            Length_sc_curr + ((Length_sc_hist - Length_sc_curr) * rest_perc * fp_intensity_scalar),
+                            Length_sc_curr)) %>%
+  filter(Scenario_num %in% c('Current', 'Wood')) %>%
+  mutate(spawn_area = ifelse(Scenario_num == 'Current',
+                             (Length_sc / (2 * psp_lwls)) * 2 * (2 * .5),
+                             (Length_sc / (2 * psp_hwls)) * 2 * (2 * .5))) %>%
+  select(noaaid, GSU, Scenario_num, spawn_area, Subbasin_num) %>%
+  spread(Scenario_num, spawn_area) %>%
+  rename(high_wood = Wood,
+         low_wood = Current)
+
+spawn_area_wood <- spawn_area_ss %>%
+  bind_rows(spawn_area_lr) %>%
+  bind_rows(spawn_area_fp) %>% 
+  ungroup() %>%
+  group_by(GSU) %>%
+  summarize(high_wood = round(sum(high_wood, na.rm = T), digits = 2),
+            low_wood = round(sum(low_wood, na.rm = T), digits = 2)) %>%
+  ungroup() %>%
+  mutate(spawn_diff = high_wood - low_wood,
+         rank_spawn_diff = rank(-spawn_diff, ties.method = 'min'),
+         spawn_diff = ifelse(GSU == 'Upper Skookumchuck', 
+                            NA,
+                            spawn_diff)) %>%
+  left_join(., flowline_gsu) 
+
+p_wood <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu %>% left_join(spawn_area_wood ) %>%
+            mutate(spawn_diff = ifelse(GSU == 'Upper Skookumchuck',
+                                       NA,
+                                       spawn_diff)), aes(fill = spawn_diff/1e4), lwd = 0.1, color = 'black') +
+    scale_fill_gradient2(low = 'white', 
+                       high = muted('chocolate4'),
+                       mid = 'chocolate4',
+                       midpoint = 4) +
+  labs(fill = bquote('Change in\nspawning area (ha)'),
+       title = 'Wood') +
+  theme(legend.position = c(.8, .8),
+        text = element_text(size = 8),
+        legend.key.size = unit(0.4, 'cm'))
+```
+
+### Shade
+```{r}
+avg_temp_gsu <- asrp_reach_data %>%
+  filter(Scenario_num %in% c('Current', 'Shade')) %>%
+  select(noaaid, GSU, Scenario_num, asrp_temp) %>%
+  spread(Scenario_num, asrp_temp) %>%
+  group_by(GSU) %>%
+  summarize(Current_temp = round(mean(Current, na.rm = T), digits = 2),
+            Shade_temp = round(mean(Shade, na.rm = T), digits = 2)) %>%
+  mutate(temp_diff = Shade_temp - Current_temp,
+         rank_temp = rank(-temp_diff, ties.method = 'min'),
+         temp_diff = ifelse(GSU == 'Upper Skookumchuck',
+                            NA,
+                            temp_diff)) %>%
+  left_join(., flowline_gsu) 
+
+p_tmp <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu %>%
+            left_join(., avg_temp_gsu) %>%
+            mutate(temp_diff = ifelse(GSU == 'Upper Skookumchuck',
+                                      NA,
+                                      temp_diff)),aes(fill = temp_diff), lwd = 0.1, color = 'black') +
+  scale_fill_gradient2(low = muted('orangered3'),
+                       high = 'white',
+                       mid = 'orangered3',
+                       midpoint = -2) +
+  labs(fill = 'Change in\n temperature (°C)',
+       title = 'Shade') +
+  theme(legend.position = c(.8, .8),
+        text = element_text(size = 8),
+        legend.key.size = unit(0.4, 'cm'))
+```
+
+### Floodplain
+
+```{r}
+fp_areas <- asrp_fp %>%
+  filter(Scenario_num %in% c('Current', 'Floodplain')) %>%
+  select(Scenario_num, GSU, Area) %>%
+  distinct() %>%
+  group_by(GSU, Scenario_num) %>%
+  summarize(Area = sum(Area, na.rm = T)) %>%
+  spread(Scenario_num, Area) %>%
+  summarize(curr_area_fp = sum(Current, na.rm = T),
+            hist_area_fp = sum(Floodplain, na.rm = T)) %>%
+  mutate(fp_area_diff = hist_area_fp - curr_area_fp,
+         rank_fp = rank(-fp_area_diff, ties.method = 'min'),
+         fp_area_diff = ifelse(GSU == 'Upper Skookumchuck',
+                               NA,
+                               fp_area_diff)) %>%
+  mutate(fp_area_diff_2 = ifelse(fp_area_diff > 200,
+                                 200, 
+                                 ifelse(fp_area_diff < 0,
+                                        0,
+                                        fp_area_diff)),
+         fp_area_diff_2 = ifelse(GSU == 'Upper Skookumchuck',
+                                 NA,
+                                 fp_area_diff_2))
+
+p_fp  <- ggplot() +
+  theme_void() +
+  geom_sf(data = shp_sub, color = 'black', lwd = 0.1) +
+  geom_sf(data = shp_gsu %>%
+            left_join(., fp_areas), aes(fill = fp_area_diff_2), lwd = 0.1, color = 'black') +
+    scale_fill_gradient2(low = 'white',
+                       high = muted('orchid'),
+                       mid = 'orchid',
+                       midpoint = 100,
+                       breaks = c(0, 50, 100, 150, 200),
+                       labels = c('0', '50', '100', '150', '>200')) +
+  labs(fill = 'Change in\nfloodplain area (ha)',
+       title = 'Floodplain') +
+  theme(legend.position = c(.8, .8),
+        text = element_text(size = 8),
+        legend.key.size = unit(0.4, 'cm'))
+```
+
+
+### Combine plots into grid
+
+```{r}
+p_grid <- cowplot::plot_grid(p1 = p_bip,
+                   p2 = p_pass, 
+                   p3 = p_sed, 
+                   p4 = p_wood,
+                   p5 = p_tmp,
+                   p6 = p_fp,
+                   nrow = 2)
+  
+  
+cowplot::save_plot('docs/companion_papers/hab_fig_6.tiff',
+                   p_grid,
+                   base_height = 5.84,
+                   base_width = 7.3,
+                   dpi = 500,
+                   compression = "lzw")
+
+print(p_grid)
+```
+
+
+
+
+
+
+

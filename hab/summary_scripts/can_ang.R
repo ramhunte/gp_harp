@@ -1,4 +1,6 @@
 # This script summarizes the proportion of reaches within each canopy opening angle bin.  It is used to create figure 5 in the habitat paper.  To run, first run the model through the flowline script.  This script uses the attributed flowline produced in the flowline script.
+library(extrafont)
+# font_import()
 
 total_reaches = as.numeric(tally(flowline))
 
@@ -55,5 +57,8 @@ ggplot() +
   scale_fill_manual(values = c('blue', 'deepskyblue'), drop = F, name = 'period') +
   xlab('Canopy Opening Range') +
   ylab("Proportion of Reaches") +
-  theme(legend.position = c(.9, .9),  legend.title = element_blank())
-ggsave('hab/summary_scripts/can_angle_bins.jpg', width = 10, height = 8, dpi = 300)
+  theme( text = element_text(family = 'Arial', size = 12))+
+  theme(legend.position = c(.9, .9),  
+        legend.title = element_blank()
+       )
+ggsave('hab/summary_scripts/can_angle_bins.jpg', width = 7.5, height = 6, units = 'in', dpi = 300)
