@@ -85,11 +85,6 @@ edr_paths <- list.files(results,
                         pattern = 'abundance_by_EDR',
                         full.names = TRUE)
 
-sub_paths <- list.files(results,
-                        recursive = TRUE,
-                        pattern = 'abundance_by_subbasin.csv',
-                        full.names = TRUE)
-
 # Create list of species to attach to each file
 spp <- edr_paths %>%
   dirname %>%
@@ -98,7 +93,6 @@ spp <- edr_paths %>%
 
 
 edr_df <- edr_paths %>%
-sub_df <- 
   map_dfr(.id = 'species', read.csv) %>%
   select(-X) %>%
   mutate(species = spp[as.numeric(species)]) %>%
