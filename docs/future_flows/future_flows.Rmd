@@ -112,40 +112,90 @@ df_coeffs <- mods %>%
 Then we plot it! 
 
 ```{r fig.height=4, fig.width=7}
-p5 <- cig_ave %>%
+# p5 <- cig_ave %>%
+#   ungroup %>%
+#   mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5'),
+#          era = ifelse(era == 2050, 'Mid-century', 'Late-century'),
+#          era = factor(era, levels = c('Mid-century', 'Late-century'))) %>%
+#   group_by(ri, era, climate_model) %>%
+#   summarize(value = mean(value)) %>%
+#   ggplot +
+#   cowplot::theme_half_open() +
+#   theme(strip.background = element_blank(),
+#         panel.border = element_rect(colour = "black")) +
+#   geom_point(aes(ri, 
+#                  value#, 
+#                  #shape = hydro_model
+#                  ),
+#              size = 2) +
+#   geom_line(data = mods_pred, 
+#             aes(ri, value)) +
+#   geom_text(data = df_coeffs,
+#             aes(25,
+#                 0.55, 
+#                 label = paste0(`(Intercept)`,"~+~",`log(ri)`,"*log[e]*'(RI)'")),
+#             parse = TRUE,
+#             size = 2.5) +
+#   facet_grid(era~climate_model) +
+#   scale_y_continuous(labels = scales::percent) +
+#   labs(x = 'Recurrence interval (years)',
+#        y = 'Change from current',
+#        color = 'Site')
+# 
+# ggsave('Fig5_peak_flow_change.tiff', p5, height = 3, width = 5, dpi = 300, compression = 'lzw')
+# 
+# p5
+```
+
+```{r}
+cig_plot <- cig_dat %>% 
   ungroup %>%
   mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5'),
          era = ifelse(era == 2050, 'Mid-century', 'Late-century'),
-         era = factor(era, levels = c('Mid-century', 'Late-century'))) %>%
-  group_by(ri, era, climate_model) %>%
-  summarize(value = mean(value)) %>%
-  ggplot +
+         era = factor(era, levels = c('Mid-century', 'Late-century')),
+         value = value/100,
+         ri = as.numeric(as.character(ri)),
+         hydro_model = fct_relevel(hydro_model, 'VIC')) %>%
+  filter(site.name == 'ChehalisR-atPorter',
+         !is.na(value),
+         !is.na(climate_model), 
+         ri < 500) %>%
+  select(site.name, era, ri, hydro_model, climate_model, metric, value) %>%
+  pivot_wider(names_from = metric, values_from = value)
+  
+
+p5 <- ggplot(cig_plot) +
   cowplot::theme_half_open() +
   theme(strip.background = element_blank(),
         panel.border = element_rect(colour = "black")) +
-  geom_point(aes(ri, 
-                 value#, 
-                 #shape = hydro_model
-                 ),
-             size = 2) +
+  geom_pointrange(aes(ri, 
+                      avg, 
+                      color = hydro_model,
+                      ymin = min,
+                      ymax = max),
+                  position = position_dodge(width = 3),
+                  size = 0.25) +
   geom_line(data = mods_pred, 
             aes(ri, value)) +
   geom_text(data = df_coeffs,
-            aes(25,
-                0.55, 
+            aes(22,
+                2, 
                 label = paste0(`(Intercept)`,"~+~",`log(ri)`,"*log[e]*'(RI)'")),
             parse = TRUE,
             size = 2.5) +
   facet_grid(era~climate_model) +
   scale_y_continuous(labels = scales::percent) +
+  scale_color_manual(values = c('black', 'grey60')) +
   labs(x = 'Recurrence interval (years)',
        y = 'Change from current',
-       color = 'Site')
+       color = NULL) +
+  theme(legend.position = c(.78, .92))
 
-ggsave('Fig5_peak_flow_change.tiff', p5, height = 3, width = 5, dpi = 300, compression = 'lzw')
+ggsave('Fig5_peak_flow_change.tiff', p5, height = 4, width = 6.5, dpi = 300, compression = 'lzw')
 
 p5
 ```
+
 
 ## Calculate a couple of summary metrics
 
@@ -371,20 +421,19 @@ data.frame(ri = 1:100) %>%
 
 ```{r}
 
-geo.mean <- function(x){
-  x[which(x <= 0)] <- 0.001
-  exp(mean(log(x)))
-}
+# geo.mean <- function(x){
+#   x[which(x <= 0)] <- 0.001
+#   exp(mean(log(x)))
+# }
+# 
 
 
-RI_sample <- sample(1:100, 10000, replace = TRUE, prob = 1/(1:100))
-
-RI_geomean <- geo.mean(RI_sample)
+#RI_geomean <- ri.to.surv(2)
 
 
 
 ri_to_surv_scalar <- function(x, 
-                        mean_ri = RI_geomean) {
+                              mean_ri = 2) {
   
   surv_geomean <- ri.to.surv(mean_ri)
   
@@ -403,26 +452,33 @@ ri_to_surv_scalar(1:100)
 ```{r}
 # ggplot() +
 #   theme_classic() +
-#   geom_point(data = dat_z %>% 
-#                mutate(surv_rescale = surv.scalar(surv)), 
+#   geom_point(data = dat_z %>%
+#                mutate(surv_rescale = surv.scalar(surv)),
 #              aes(ri, surv_rescale)) +
 #   geom_line(data = sk_pred %>%
-#               mutate(surv_pred_rescale = surv.scalar(surv_pred)), 
+#               mutate(surv_pred_rescale = surv.scalar(surv_pred)),
 #                      aes(ri, surv_pred_rescale)) +
 #   scale_x_log10(limits=c(1, 100)) +
 #   geom_vline(xintercept = 1.5, lty = 2)
+
+
+plot(1:100, ri_to_surv_scalar(1:100), type = 'l')
 
 ```
 
 #### Table 1
 ```{r}
-dat_z %>% 
+table_1 <- dat_z %>% 
   mutate(surv_scalar = ri_to_surv_scalar(ri) %>% round(2), 
          ri = ri %>% round(1)) %>%
   rename(Year = year, RI = ri, p = surv,  p_scalar = surv_scalar) %>%
   select(Year, RI, p, p_scalar) %>%
-  mutate(p = round(p, 3)) %>%
-  flextable::flextable()
+  mutate(p = round(p, 3))
+
+
+write.csv(table_1, 'table_1.csv')
+
+flextable::flextable(table_1)
 ```
 
 

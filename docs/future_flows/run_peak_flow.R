@@ -24,7 +24,9 @@ pops[pops == 'spring_chinook'] <- 'spring.chinook'
 run_stochastic_eggtofry <- 'no'
 sensitivity.mode <- 'no'
 
-scenarios <- c('Current.csv', 'Historical.csv')#Floodplain.csv', 'Shade.csv', 'Historical.csv')
+scenarios <- c('Current.csv') 
+               #'ASRP_scenario_3_2040.csv',
+               #'ASRP_scenario_3_2080.csv')#Floodplain.csv', 'Shade.csv', 'Historical.csv')
 
 # Number of years the model will run for
 runs <- 2 # dummy variable for now
@@ -48,7 +50,7 @@ model.all.pf <- array(
     length(scenarios)
   ),
   dimnames = list(
-    1:length(climates),
+    climates,
     1:years,
     reach.names,
     store_lifestages, 
@@ -79,7 +81,7 @@ for (pop in pops) {
     filter(monthday <= r['start'] | monthday >= r['end']) %>%
     group_by(waterYear) %>%
     summarize(Q_max = max(Q) * 35.31467) %>%
-    mutate(ri = q_to_ri(Q_max)) %>% # chehalis = 0.14 skewness
+    mutate(ri = q_to_ri(Q_max)) %>% 
     mutate(diff_perc_rcp45_2050 = predict(mods$fit[[1]], newdata = .),
            diff_perc_rcp45_2080 = predict(mods$fit[[2]], newdata = .),
            diff_perc_rcp85_2050 = predict(mods$fit[[3]], newdata = .),
@@ -138,7 +140,7 @@ for (pop in pops) {
                                recursive = TRUE,
                                full.names = TRUE) %>%
       read.csv %>%
-      filter(scenario == str_remove(habitat.file[n], '.csv')) %>%
+      filter(scenario == str_replace_all(str_remove(habitat.file[n], '.csv'), '_', '\\.')) %>%
       pull(spawners)
     
     
@@ -150,7 +152,7 @@ for (pop in pops) {
       
       # initialize
       for (y in 1:10) {
-        N.initialize['spawners', ] <- spawner.init# * 0.75
+        N.initialize['spawners', ] <- spawner.init
         N.initialize <- subbasin(mat = N.initialize) 
       }
       
@@ -158,19 +160,19 @@ for (pop in pops) {
       
       # burn in
       for (y in 1:50) {
-        egg.fry.surv <- ef_scalar[y] * egg.fry.surv.orig
+        egg.fry.surv <- egg.fry.surv.orig * ef_scalar[y]
         N <- subbasin(mat = N)
       }
       
       # 100 year run
       for (y in 1:years) { # length(surv_df$waterYear)
         
-        egg.fry.surv <- ef_scalar[y] * egg.fry.surv.orig
+        egg.fry.surv <- egg.fry.surv.orig * ef_scalar[y] 
         
         N <- subbasin(mat = N)
         
-        model.all.pf[c, y, , store_stages_spp, pop, n] <- t(N[store_stages_spp, ])
-        model.all.pf[c, y, , "ef_scalar", pop, n] <- ef_scalar[y]
+        model.all.pf[c, y, , store_stages_spp, pop, habitat.file[n]] <- t(N[store_stages_spp, ])
+        model.all.pf[c, y, , "ef_scalar", pop, habitat.file[n]] <- ef_scalar[y]
         
       }
     }
@@ -182,7 +184,7 @@ for (pop in pops) {
 
 model.all.df <- model.all.pf %>%
   as.data.frame.table() %>%
-  rename(run = Var1, 
+  rename(climate = Var1, 
          year = Var2, 
          subbasin = Var3, 
          lifestage = Var4, 
@@ -190,20 +192,20 @@ model.all.df <- model.all.pf %>%
          scenario = Var6, 
          n = Freq) %>%
   filter(n > 0) %>%
+  separate(climate, into = c('era', 'climate'), sep = '-', fill = 'right') %>%
   mutate(year = as.numeric(year),
          scenario = str_remove(scenario, '.csv'),
          lifestage = case_when(
            str_detect(lifestage, '.ocean') ~ paste0('ocean',str_extract(lifestage, '([0-9]+)')),
            TRUE ~ as.character(lifestage)),
          era = case_when(
-           run == 1 ~ 'Current',
-           run %in% c(2,4) ~ 'Mid-century',
-           run %in% c(3,5) ~ 'Late-century'),
-         era = factor(era, levels = c('Current', 'Mid-century', 'Late-century')),
+           era == 2050 ~ 'Mid-century',
+           era == 2080 ~ 'Late-century',
+           TRUE ~ era),
+         #era = factor(era, levels = c('Current', 'Mid-century', 'Late-century')),
          climate = case_when(
-           run == 1 ~ 'Current',
-           run %in% c(2,3) ~ 'RCP 4.5',
-           run %in% c(4,5) ~ 'RCP 8.5'),
+           is.na(climate) ~ 'Current',
+           !is.na(climate) ~ paste('RCP', climate)),
          species = recode_factor(species,
                                  coho = 'Coho',
                                  spring.chinook = 'Spring Chinook',
@@ -212,7 +214,7 @@ model.all.df <- model.all.pf %>%
 
 x <- model.all.df %>%
   filter(lifestage == 'spawners') %>%
-  group_by(run, year, species, scenario, climate, era) %>%
+  group_by(year, species, scenario, climate, era) %>%
   summarize(n = sum(n)) %>%
   group_by(species, scenario) %>%
   mutate(diff = n - median(n[era == 'Current']),

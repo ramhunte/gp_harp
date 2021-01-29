@@ -31,7 +31,7 @@ fl_plot <- fl %>%
   filter(!is.na(width_bin))
 
 p1 <- ggplot() +
-  theme_void() +
+  theme_bw() +
   geom_sf(data = fl_plot,
           aes(size = width_bin), 
           color = 'gray60') + #'dodgerblue4'
@@ -43,15 +43,17 @@ p1 <- ggplot() +
           color = 'gray20',
           fill = 'gray70') +
   geom_sf(data = porter_sf, 
-          shape = 24, #24, 
+          shape = 24, 
           fill = 'black', 
           size = 5) +
   scale_size_manual(values = seq(0.1, 1, length.out = 6)) +
-  theme(legend.position = "none") +
+  theme(legend.position = "none",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
   annotation_scale(location = "bl", width_hint = .4) +
   annotation_north_arrow(location = "bl", which_north = "true", 
                          pad_x = unit(0.1, "in"), pad_y = unit(0.5, "in"),
-                         style = north_arrow_minimal) 
+                         style = north_arrow_minimal)
 
 
 p2 <- ggplot() +
@@ -65,7 +67,7 @@ p2 <- ggplot() +
 
 p_full <- ggdraw() +
   draw_plot(p1) +
-  draw_plot(p2, x = 0.52, y = 0.65, width = 0.3, height = 0.3)
+  draw_plot(p2, x = 0.55, y = 0.65, width = 0.3, height = 0.3)
 
 save_plot('docs/future_flows/Fig1_sitemap.tiff', p_full, compression = 'lzw', dpi = 300)
 

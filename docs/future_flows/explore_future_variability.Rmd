@@ -1,0 +1,210 @@
+---
+title: "Explore variability in future change estimates"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    code_folding: hide
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r badges, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+cur_branch <- system2('git', c('branch', '--show-current'), stdout = TRUE)
+branch_display <- str_replace_all(cur_branch, '-', '--') %>% 
+  str_replace_all('_', '__')
+branch_shield <- paste0('https://img.shields.io/badge/branch-', branch_display,'-blue')
+branch_http <- file.path('https://nwcgit.nwfsc.noaa.gov/cnicol/crp/-/tree', cur_branch)
+
+cur_commit <- system2('git', c('describe', '--tag'), stdout = TRUE)
+cur_commit_short <- system2('git', c('rev-parse', '--short', 'HEAD'), stdout = TRUE)
+cur_commit_display <- str_replace_all(cur_commit, '-', '--')
+commit_shield <- paste0('https://img.shields.io/badge/commit-',cur_commit_display,'-blue')
+commit_http <- file.path('https://nwcgit.nwfsc.noaa.gov/cnicol/crp/-/commit', cur_commit_short)
+
+chk_dirty <- system2('git', c('describe', '--tag', '--dirty'), stdout = TRUE) %>% str_detect('dirty')
+git_shield <- ifelse(!chk_dirty, 
+                     'https://img.shields.io/badge/git-clean-brightgreen',
+                     'https://img.shields.io/badge/git-dirty-red')
+```
+
+[![Branch](`r branch_shield`)](`r branch_http`)
+[![Commit](`r commit_shield`)](`r commit_http`)
+![git](`r git_shield`)
+
+
+# Purpose
+
+Here we are exploring the variability in estimates of change in rainfall and flow in the Chehalis. 
+
+CIG released two memos with further discussions about variability. The two memos are attached here: https://trello.com/c/Qgt2DFuY
+
+
+The goal is to create two new plots:
+
+1. Show the VIC and DHSVM estimates in Figure 5 of the peak flow paper
+2. Show the rainfall estimates from the end of Chehalis_Old_v_New_GFDL_2019-11-15.pdf plotted with the change in peak flow
+
+# Figure 5 - peak flow changes
+
+## Original
+
+```{r render doc, include=FALSE}
+rmarkdown::render('docs/future_flows/future_flows.Rmd', quiet = TRUE)
+```
+
+
+```{r, fig.cap='Original Fig 5. Each point is the average of DHSVM and VIC mean estimates.'}
+
+p5
+```
+
+
+## Updated
+
+```{r, fig.cap='Updated Fig 5. Each point is the average of either DHSVM and VIC, and the lines show the range of the min and max.'}
+cig_plot <- cig_dat %>% 
+  ungroup %>%
+  mutate(climate_model = ifelse(climate_model == 4.5, 'RCP 4.5', 'RCP 8.5'),
+         era = ifelse(era == 2050, 'Mid-century', 'Late-century'),
+         era = factor(era, levels = c('Mid-century', 'Late-century')),
+         value = value/100,
+         ri = as.numeric(as.character(ri)),
+         hydro_model = fct_relevel(hydro_model, 'VIC')) %>%
+  filter(site.name == 'ChehalisR-atPorter',
+         !is.na(value),
+         !is.na(climate_model), 
+         ri < 500) %>%
+  select(site.name, era, ri, hydro_model, climate_model, metric, value) %>%
+  pivot_wider(names_from = metric, values_from = value)
+  
+
+ggplot(cig_plot) +
+  cowplot::theme_half_open() +
+  theme(strip.background = element_blank(),
+        panel.border = element_rect(colour = "black")) +
+  geom_pointrange(aes(ri, 
+                      avg, 
+                      color = hydro_model,
+                      ymin = min,
+                      #shape = metric,
+                      ymax = max),
+                  position = position_dodge(width = 3),
+                  size = 0.75) +
+  geom_line(data = mods_pred, 
+            aes(ri, value)) +
+  geom_text(data = df_coeffs,
+            aes(20,
+                2, 
+                label = paste0(`(Intercept)`,"~+~",`log(ri)`,"*log[e]*'(RI)'")),
+            parse = TRUE,
+            size = 3) +
+  facet_grid(era~climate_model) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_color_manual(values = c('black', 'grey60')) +
+  labs(x = 'Recurrence interval (years)',
+       y = 'Change from current',
+       color = NULL) +
+  theme(legend.position = c(.8, .95))
+```
+
+# Rainfall changes
+
+Here we show the data from the end of the memo `Chehalis_Old_v_New_GFDL_2019-11-15.pdf`.
+
+```{r gather memo data}
+# Wrangle data from pages 23 - 30 of Chehalis_Old_v_New_GFDL_2019-11-15.pdf
+
+memo_txt <- pdftools::pdf_text('C:/Users/colin.nicol/Downloads/Chehalis_Old_v_New_GFDL_2019-11-15.pdf')
+
+y <- strsplit(memo_txt[23:30], split = '     ') %>%
+  lapply(function(x) str_subset(x, '\\(')) %>%
+  lapply(function(x) str_subset(x, '\\%')) %>%
+  lapply(function(x) trimws(x)) %>%
+  unlist %>% 
+  strsplit(' ') %>%
+  lapply(function(x) x[1:3]) %>% 
+  lapply(function(x) str_remove_all(x, '\\(|\\)|,|%|\\+|\\r|\\n')) %>% 
+  lapply(as.numeric)
+
+
+
+z <- as.data.frame(do.call(rbind, y))
+colnames(z) <- c('ave', 'min', 'max')
+
+
+station <- c('Wynoochee Dam',
+             'Skookumchuck Dam',
+             'Satsop',
+             'Newaukum NF',
+             'Pe Ell',
+             'Onalaska')
+
+station <- factor(station, station)
+
+period <- paste0(c(6, 12, 24), '-hr')
+period <- factor(period, period)
+
+ri <- c(2, 10, 25, 100)
+
+era <- paste0(c('Mid','Late'), '-century')
+era <- factor(era, era)
+
+
+df_memo <- crossing(station,
+         period,
+         ri,
+         era) %>%
+  arrange(era, ri, period, station) %>%
+  bind_cols(z)
+
+```
+
+
+```{r, fig.cap='Change in rainfall (points) vs change in peak flow (lines).'}
+df_memo %>%
+  mutate(ri = as.factor(as.character(ri)),
+         ri = fct_relevel(ri, levels = as.character(c(2, 10, 25, 50, 100)))) %>%
+  ggplot() +
+  cowplot::theme_cowplot() +
+  geom_pointrange(aes(ri,
+                      ave/100,
+                      ymin = min/100,
+                      ymax = max/100,
+                      color = station),
+                  position = position_dodge(width = .3),
+                  #color = 'black',
+                  alpha = 0.5) +
+  geom_pointrange(data = cig_plot %>%
+                    filter(climate_model == 'RCP 8.5') %>%
+                    mutate(ri = as.factor(as.character(ri)),
+                           ri = fct_relevel(ri, levels = as.character(c(2, 10, 25, 50, 100)))) ,
+                  aes(ri,
+                      avg,
+                      ymin = min,
+                      ymax = max,
+                      fill = hydro_model),
+                  position = position_dodge(width = .3),
+                  shape = 22,
+                  alpha = 0.5) +
+  # geom_path(data = filter(mods_pred, climate_model == 'RCP 8.5'),
+  #           aes(ri,
+  #               value,
+  #               group = climate_model,
+  #               lty = climate_model)) +
+  facet_grid(period ~ era) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = 'Recurrence interval (years)',
+       y = 'Change from current',
+       color = 'Rainfall (RCP 8.5)',
+       fill = 'Hydrology model (RCP 8.5)',
+       lty = 'Peak flow') +
+  theme(panel.grid.major.y = element_line(color = "grey80"))
+  #theme(legend.position = 'bottom')
+
+```
+
+
