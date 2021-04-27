@@ -12,7 +12,18 @@ flowline_noculv <- flowline %>%
          Habitat = case_when(!Reach %in% mainstem_reaches ~ as.character(Habitat),
                              Reach %in% mainstem_reaches & Subbasin_num == 49 ~ "Tidal",
                              Reach %in% mainstem_reaches & !Subbasin_num == 49 ~ "LgRiver")) %>%
-  gather(species, spawn_dist, coho:steelhead) %>%
+  gather(species, spawn_dist, coho:steelhead)
+
+if (fishtype == 'anadromous_network') {
+  flowline_noculv <- flowline_noculv %>%
+    filter(spawn_dist == 'Yes') %>%
+    select(-species) %>%
+    distinct() %>%
+    mutate(species = 'anadromous_network')
+} else {flowline_noculv <- flowline_noculv %>%
+  filter(species == fishtype)}
+
+flowline_noculv <- flowline_noculv %>%
   filter(species == fishtype) %>%
   left_join(., all_temps, by = 'noaaid') %>%
   left_join(., edt_width %>%
@@ -104,4 +115,4 @@ if (fishtype == 'fall_chinook') {
     mutate(chino_mult = 1)
 }
 
-rm(flowline_noculv, all_temps, culvs)
+rm(flowline_noculv, culvs)

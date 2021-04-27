@@ -52,6 +52,14 @@ culvs <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern =
 flowline <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "flowline", full.names = T) %>%
   read.csv(.)
 
+if (fishtype == 'anadromous_network') {
+  anadromous_network <- flowline %>%
+    mutate(anadromous_network = ifelse((cohospawn == 'Yes' | fallspawn == 'Yes' | chumspawn == 'Yes' | sprspawn == 'Yes' | steelspawn == 'Yes'),
+           'Yes',
+           'No')) %>%
+    select(noaaid, anadromous_network)
+}
+
 # Large river spawning riffles.  Hand digitized ----
 riff <- list.files(path = file.path(Inputs, "spatial_model_outputs"), pattern = "Riffles", full.names = T) %>%
   read.csv(.)

@@ -46,7 +46,7 @@ if (clear_env == 'yes') {
 }
 
 # Which species to run?
-spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum')
+spp <- c('all_species', 'coho', 'spring_chinook', 'fall_chinook', 'steelhead', 'chum', 'anadromous_network')
 fishtype <- spp[menu(spp,title = "Choose a species", graphics = TRUE)]
 
 
@@ -115,6 +115,9 @@ if (fishtype == 'all_species') {
     print(paste0("finished ", s))
   }
   
+} else if(fishtype == 'anadromous_network') {
+  unlink(file.path('outputs', fishtype), recursive = TRUE)
+  source('hab/R_files/0-Run_Habitat_Model.R')
 } else {
   
   unlink(file.path("outputs", fishtype), recursive = TRUE) # WARNING -- Entire outptus folder for species will be deleted
