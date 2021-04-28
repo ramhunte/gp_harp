@@ -1,0 +1,154 @@
+---
+title: "Temperature Paper Figures"
+author: "Caleb Fogel"
+date: "4/23/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(sf)
+library(scales)
+# library(gridExtra)
+```
+
+This document creates the datasets and figures needed for the temperature paper for submission to PLOS One.  
+
+### Tables 1-4
+Tables 1-4 are created manually.
+
+
+### Table 5
+Table 5 is filled manually with the data from the following table:
+
+```{r}
+# Set up run parameters
+fishtype <- 'andadromous_network'
+run_stochastic_eggtofry <- 'no'
+sensitivity.mode <- 'no'
+branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
+
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+os <- get_os()
+getwd()
+
+# source("../../asrp/hab/R_files/0-Run_Habitat_Model.R")
+
+table_5 <- read.csv('asrp_reach_data.csv') %>%
+  mutate(temp_bin = case_when(asrp_temp >= 24 ~ 'high',
+                              asrp_temp >= 18 & asrp_temp < 24 ~ 'med',
+                              TRUE ~ 'low')) %>%
+  filter(Scenario_num %in% c('cc_only', 'rip_and_climate', 'fp_temp', 'rip_and_flp', 'Current', 'Historical')) %>%
+  group_by(Scenario_num, temp_bin, year) %>%
+  tally() %>%
+  unite(col = 'scenario', Scenario_num, year, sep = '_') %>%
+  spread(temp_bin, n) %>%
+  mutate(perc_high = high / (high + low + med) * 100,
+         perc_med = med / (high + low + med) * 100,
+         perc_low = low / (high + low + med) * 100) %>%
+  select(scenario, perc_low, perc_med, perc_high)
+
+table_5
+
+write.csv(table_5, 'figures/table_5_temp_bins.csv')
+```
+
+### Figure 1
+Created manually in ArcGIS.  It is stored in "//nwcfile/FE/watershed/Chehalis/Reports/Temperature Paper/Submission Figures/fig1_study_area.  An ArcMAP package is compressed and stored with map and all components included.
+
+
+### Figure 2
+Created manually in ArcGIS.  It is stored in 
+
+
+### Figure 3
+Figure 3 is created in "C:/caleb/asrp/asrp/docs/new_thermalscape_data/new_thermalscape_conversions.Rmd"
+
+### Figure 4
+```{r}
+bowerman <- function(t,
+                        phos = 0,
+                        b0 = -9.053,
+                        b1 = .387,
+                        b2 = .029) {
+  1 - plogis(logit_psm <- b0 + b1 * t + b2 * phos)
+}
+coho <- function(t){
+                 ifelse(t < 17,
+           1,
+           ifelse(t >= 17 & t < 28,
+                  -(1/11) * t + 2.54,
+                  0))
+}
+chinook <- function(t){
+  ifelse(t < (18/.98),
+         1,
+         ifelse(t >= (18/.98) & t <(24/.98),
+                -(1/(6/.98)) * t + (4),
+                0))
+}
+sthd <- function(t) {
+  ifelse(t <= 17,
+           t/t,
+           (97.8846 / (1 + exp(-((t - 24.3522) / -.5033)))) / 100 )
+}
+
+ggplot(data.frame(x = c(12, 32)), aes(x = x)) +
+  stat_function(fun = coho,aes(color = 'Coho juvenile\n summer rearing', linetype = 'coho juvenile summer rearing'), size = 1)+
+  stat_function(fun = chinook,  aes(color = 'Chinook salmon juvenile\n outmigration', linetype ='chinook juvenile outmigration'), size = 1)+
+  stat_function(fun = sthd,  aes(color = 'Steelhead juvenile\n summer rearing', linetype = 'steelhead juvenile summer rearing'), size = 1)+
+  stat_function(fun = bowerman, aes(color = 'Spring-run Chinook salmon\n prespawning', linetype = 'spring-run Chinook prespawning'), size = 1)+
+  theme_bw()+
+  xlab('Temperature (7-DADM, in °C)')+
+  ylab('Capacity/Productivity Multiplier')+
+  scale_linetype_manual(values = c('solid', 'dashed', 'dotdash', 'dotted'), 
+                        guide = FALSE) +
+  scale_color_manual(
+                     values = c('firebrick1', 'maroon', 'darkorange4', 'navy'),
+                     guide = guide_legend(override.aes = list(
+                       linetype = c('solid', 'dashed', 'dotdash', 'dotted'))))+
+  theme(legend.position = c(.2, .25),
+        legend.key.size = unit(1.25, 'cm'),
+        legend.text = element_text(size = 14)
+        )+#c(.88, .92)) +
+  # theme(legend.background = element_rect(fill = 'white',
+                                         # size = .25, linetype = 'solid', colour = 'black'))+
+  theme(legend.title = element_blank())+
+  theme(legend.text = element_text(size = 12))+
+  theme(axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+ggsave('figures/fig4_temp_funcs.tiff', width = 8, height = 6, dpi = 300, compression = 'lzw')
+```
+
+
+### Figure 5 - 7
+Figures 5-7 are created in "C:/caleb/asrp/asrp/temp_paper/create_temp_figures.Rmd.Rmd"
+
+### Figure 8
+Figure 8 is created when the model is run for fishtype == "all_species".  The code that creates this figure is in "C:/caleb/asrp/asrp/temp_paper/spawner_plots.R".  This script also creates a csv with percent change in spawner abundance from Current for each scenario and era.  This csv is used to populate some of the text in the paper. 
+
+### Figure 9
+Figure 9 is created using "C:/caleb/asrp/asrp/temp_paper/fig9_edr.Rmd".  Before figure 9 is created, the model should be run with fishtype == "all_species".
+
+

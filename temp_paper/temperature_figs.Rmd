@@ -1,0 +1,268 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+```{r}
+library(tidyverse)
+library(sf)
+library(scales)
+library(ggplot2)
+```
+
+```{r}
+gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20191204/Inputs.gdb'
+gdb_out <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20191204/Outputs.gdb'
+
+sub <- st_read(gdb_in, 'NOAA_subbasins_w_fp') %>% st_geometry()
+fl_raw <- st_read(gdb_out, 'flowline')
+fl_temps <- read.csv('asrp_reach_data.csv')
+```
+```{r}
+fl <- fl_raw %>%
+  select(noaaid) %>%
+  left_join(., fl_temps %>%
+              select(noaaid, asrp_temp, Scenario_num, year), by = 'noaaid') %>%
+  mutate(Scenario = case_when(
+    Scenario_num == 'Current' ~ 'Current',
+    Scenario_num == 'Historical' ~ 'Historical',
+    Scenario_num == 'cc_only' & year == 2040 ~ 'Mid-century no-action',
+    Scenario_num == 'cc_only' & year == 2080 ~ 'Late century no-action',
+    Scenario_num == 'rip_and_climate' & year == 2040 ~ 'Mid-century riparian restoration',
+    Scenario_num == 'rip_and_climate' & year == 2080 ~ 'Late century riparian restoration',
+    Scenario_num == 'fp_temp' & year == 2040 ~ 'Mid-century floodplain restoration',
+    Scenario_num == 'fp_temp' & year == 2080 ~ 'Late century floodplain restoration',
+    Scenario_num == 'rip_and_flp' & year == 2040 ~ 'Mid-century combined',
+    Scenario_num == 'rip_and_flp' & year == 2080 ~ 'Late century combined'
+  )) %>%
+  mutate(Temperature = case_when(
+    asrp_temp < 18 ~ '< 18°',
+    asrp_temp >= 18 & asrp_temp < 21 ~ '18° - 21°',
+    asrp_temp >= 21 & asrp_temp < 24 ~ '21° - 24°',
+    asrp_temp >= 24 & asrp_temp < 26 ~ '24° - 26°',
+    asrp_temp >= 26 ~ '> 26°'
+    )) %>%
+  filter(!is.na(Temperature))
+
+fl$Scenario <- factor(fl$Scenario, levels = c('Historical', 'Current', 'Mid-century no-action', 'Late century no-action', 'Mid-century riparian restoration', 'Late century riparian restoration', 'Mid-century floodplain restoration', 'Late century floodplain restoration', 'Mid-century combined', 'Late century combined'))
+
+fl$Temperature <- factor(fl$Temperature, levels = c('< 18°', '18° - 21°', '21° - 24°', '24° - 26°', '> 26°'))
+
+```
+```{r}
+plot_1 <- fl %>% filter(Scenario %in% c('Historical', 'Current', 'Mid-century no-action', 'Late century no-action'))
+
+temp_plot_1 <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = plot_1, aes(color = Temperature), size = .55, show.legend = 'line') +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c('< 18°', '18° - 21°', '21° - 24°', '24° - 26°', '> 26°'),
+                      values = c('#00C5FF', '#FFFF00', '#FFAA00', '#E60000', '#730000'),
+                     guide = guide_legend(
+                       title = 'Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 10),
+                       override.aes = list(size = 2))) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        legend.position = 'bottom')
+print(temp_plot_1)
+  
+ggsave('figures/fig5_no_action_temps.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
+  
+```
+```{r}
+cc_mid = 1.024
+cc_late = 2.049
+fig_supplement_data <- fl_raw %>% 
+  select(noaaid) %>%
+  left_join(., fl_temps %>%
+  select(Scenario_num, year, asrp_temp, noaaid) %>%
+  unite(Scenario_num, year, col = Scenario, sep = '_') %>%
+  spread(Scenario, asrp_temp) %>%
+  mutate(rip_diff_mid = rip_and_climate_2040 - Current_2019 - cc_mid,
+         rip_diff_late = rip_and_climate_2080 - Current_2019 - cc_late,
+         fp_diff_mid = fp_temp_2040 - cc_only_2040,
+         fp_diff_late = fp_temp_2080 - cc_only_2080,
+         comb_diff_mid = rip_and_flp_2040 - Current_2019 - cc_mid,
+         comb_diff_late = rip_and_flp_2080 - Current_2019 - cc_late), by = 'noaaid') %>%
+  gather(Scenario, temp_diff, rip_diff_mid:comb_diff_late) %>%
+  select(Scenario, temp_diff, noaaid) %>%
+  mutate(Scenario = case_when(Scenario == 'rip_diff_mid' ~ 'Mid-century riparian restoration',
+                              Scenario == 'rip_diff_late' ~ 'Late century riparian restoration',
+                              Scenario == 'fp_diff_mid' ~ 'Mid-century floodplain restoration',
+                              Scenario == 'fp_diff_late' ~ 'Late century floodplain restoration',
+                              Scenario == 'comb_diff_mid' ~ 'Mid-century combined',
+                              Scenario == 'comb_diff_late' ~ 'Late century combined')) %>%
+  filter(!is.na(temp_diff)) %>%
+  mutate(
+    temp_diff = case_when(
+      temp_diff < -2.5 ~ '> 2.5°',
+      temp_diff >= -2.5 & temp_diff < -1.5 ~ '2.5° — 1.5°',
+      temp_diff >= -1.5 & temp_diff < -.5 ~ '1.5° — 0.5°',
+      temp_diff >= -.5  ~ '0.5° — 0°'),
+    width = ifelse(temp_diff == '0.5° — 0°',
+                   'low', 
+                   'high'))
+
+fig_supplement_data$Scenario = factor(fig_supplement_data$Scenario, levels = c('Mid-century riparian restoration', 'Late century riparian restoration', 'Mid-century floodplain restoration', 'Late century floodplain restoration', 'Mid-century combined', 'Late century combined'))
+
+fig_supplement_data$temp_diff = factor(fig_supplement_data$temp_diff, levels = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'))
+fig_supplement_data$width = factor(fig_supplement_data$width, levels = c('low', 'high'))
+
+
+temp_chg_plt_rip <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = fig_supplement_data %>% filter(Scenario %in% c('Mid-century riparian restoration', 'Late century riparian restoration')),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                      values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 10),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.25, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+         strip.text = element_text(size = 12),
+        legend.position = 'bottom')
+print(temp_chg_plt_rip)
+  
+ggsave('figures/fig_s2_riparian.tiff', dpi = 300, height = 4, width = 7, compression = 'lzw')
+
+```
+```{r}
+
+temp_chg_plt_fp <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = fig_supplement_data %>% filter(Scenario %in% c('Mid-century floodplain restoration')) %>% mutate(Scenario = 'Floodplain restoration'),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                      values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 12),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.1, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+         strip.text = element_text(size = 12),
+        legend.position = 'bottom')
+print(temp_chg_plt_fp)
+  
+ggsave('figures/fig_s3_fp.tiff', dpi = 300, height = 4, width = 3.5, compression = 'lzw')
+```
+```{r}
+
+temp_chg_plt_comb <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = fig_supplement_data %>% filter(Scenario %in% c('Mid-century combined', 'Late century combined')),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                      values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 12),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.25, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+         strip.text = element_text(size = 12),
+        legend.position = 'bottom')
+print(temp_chg_plt_comb)
+  
+ggsave('figures/fig_s3_combined.tiff', dpi = 300, height = 4, width = 7, compression = 'lzw')
+```
+
+
+```{r}
+plot_temp_rest <- fl %>% filter(!Scenario %in% c('Historical', 'Current', 'Mid-century no-action', 'Late century no-action'))
+
+temp_plot_rest <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = plot_temp_rest, aes(color = Temperature), size = .55, show.legend = 'line') +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c('< 18°', '18° - 21°', '21° - 24°', '24° - 26°', '> 26°'),
+                      values = c('#00C5FF', '#FFFF00', '#FFAA00', '#E60000', '#730000'),
+                     guide = guide_legend(
+                       title = 'Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 12),
+                       override.aes = list(size = 2))) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        legend.position = 'bottom')
+print(temp_plot_rest)
+  
+ggsave('figures/fig7_rest_temp_reduction.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
+```
+```{r}
+temp_chg_plt_late <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = fig_supplement_data %>% filter(Scenario %in% c('Late century riparian restoration', 'Late century floodplain restoration', 'Late century combined')),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 1) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                      values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 10),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.25, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        legend.position = 'bottom')
+print(temp_chg_plt_late)
+
+ggsave('figures/fig6_temp_reduction.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
+```
+
+

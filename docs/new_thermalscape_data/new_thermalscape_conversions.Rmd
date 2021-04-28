@@ -248,7 +248,8 @@ lm_mdm_rear <- lm(mdm_rear ~ mean_new, data = mdm_rear_comp)
 summary(lm_mdm_rear)
 
 conversion_plot <-plot_grid(mwmt_comp_plot, NULL, mdm_rear_comp_plot, ncol = 3, rel_widths = c(1, .15, 1)) 
+print(conversion_plot)
 
 # ggsave('../../temp_paper/conversion_plots.jpg', dpi = 300, width = 6, height = 8)
-save_plot('../../temp_paper/conversion_plots_update.tiff', conversion_plot, ncol = 2, base_asp = 1.1, compression = 'lzw')
+save_plot('../../temp_paper/figures/fig3_conversion_plots.tiff', conversion_plot, ncol = 2, base_asp = 1.1, compression = 'lzw')
 ```

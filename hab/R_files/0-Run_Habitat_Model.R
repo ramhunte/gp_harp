@@ -38,5 +38,9 @@ if (fishtype != 'anadromous_network') {
   
   if (!branch %in% c('dev','master')) {
     source("hab/R_files/22-compare_scenarios.R")
+    
   }
+if (fishtype == 'all_species') {
+  source("temp_paper/spawner_plots.R")
+}
 }
