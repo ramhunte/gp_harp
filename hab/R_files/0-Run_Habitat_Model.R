@@ -12,8 +12,14 @@ if (dir.exists(file.path(outputs_hab, "outputs_long")) == F) {
   dir.create(file.path(outputs_hab, "outputs_long"), recursive = T)
 }
 
+outputs_temp_paper <- file.path("outputs", fishtype, "temp_paper") 
+if (dir.exists(outputs_temp_paper) == F) {
+  dir.create(outputs_temp_paper, recursive = TRUE)
+}
+
 source('temp_paper/fp_temp_reduction.R')
-if (fishtype != 'anadromous_network') {source(file.path("hab", "R_files", '1-species_input_files', paste0(fishtype, "_inputs.R")))} #source fish specific variables (density, etc)
+if (fishtype != 'anadromous_network') {
+  source(file.path("hab", "R_files", '1-species_input_files', paste0(fishtype, "_inputs.R")))} #source fish specific variables (density, etc)
 source("hab/R_files/2-read_in_data.R")
 source("hab/R_files/3-temperature.R")
 source("hab/R_files/4-inputs.R")
@@ -38,9 +44,6 @@ if (fishtype != 'anadromous_network') {
   
   if (!branch %in% c('dev','master')) {
     source("hab/R_files/22-compare_scenarios.R")
-    
+
   }
-if (fishtype == 'all_species') {
-  source("temp_paper/spawner_plots.R")
-}
 }

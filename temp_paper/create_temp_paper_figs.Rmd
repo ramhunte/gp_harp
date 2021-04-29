@@ -1,0 +1,1002 @@
+---
+title: "temperature_figs"
+author: "Caleb Fogel"
+date: "4/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+library(tidyverse)
+library(sf)
+library(scales)
+library(cowplot)
+# library(gridExtra)
+```
+
+# Introduction and description of other figures not included in document
+
+This document creates the datasets and figures needed for the temperature paper for submission to PLOS One.  Knit this document to run the model and create figures, tables, and datasets used in the Temperature Paper manuscript.  
+
+## Tables
+Tables 1-4 are created manually in the manuscript and do not rely on model data, therefore these tables are not included in this document.
+Table 5 is manually created in the manuscript using model data.  Model data used in table 5 are created in this document.
+
+## Figures
+Figures 1 and 2 are created manually in ArcGIS.  These figures are saved as ArcMAP package files on the shared drive:
+
+Figure 1: "//nwcfile/FE/watershed/Chehalis/Reports/Temperature Paper/Submission Figures/fig1_study_area
+Figure 2: "//nwcfile/FE/watershed/Chehalis/Reports/Temperature Paper/Submission Figures/fig2_edr
+
+Figures 3-9, S1-1, S2-1, S3-1, and S4-1 are all created in this document.
+
+## Data
+A data table called "perc_chg.csv" is created in this document and data from this document are used manually in the Results section of the manuscript.
+
+
+
+# Misc temp prep, data, tables, and figures
+Run model for anadromous network
+```{r run anadromous network, include = FALSE, eval = TRUE}
+# Clear the environment
+rm(list = ls())
+
+# set up run parameters
+run_stochastic_eggtofry <- 'no'
+run_single_action <- 'no'
+sensitivity.mode <- 'no'
+branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
+
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+os <- get_os()
+
+# Load packages ----
+
+global.pkgs <- c('tidyverse', 'magrittr', 'lubridate', 'zoo')
+lapply(global.pkgs, require, character.only = TRUE)
+
+# Run the model
+fishtype <- "anadromous_network"
+source("hab/R_files/0-Run_Habitat_Model.R")
+print("finished anadromous network")
+```
+
+
+## Table 5
+Table 5 is filled manually with the data from the following table:
+
+```{r table 5}
+table_5 <- asrp_reach_data %>%
+  mutate(temp_bin = case_when(asrp_temp >= 24 ~ 'high',
+                              asrp_temp >= 18 & asrp_temp < 24 ~ 'med',
+                              TRUE ~ 'low')) %>%
+  filter(Scenario_num %in% c('cc_only', 'rip_and_climate', 'fp_temp', 'rip_and_flp', 'Current', 'Historical')) %>%
+  group_by(Scenario_num, temp_bin, year) %>%
+  tally() %>%
+  unite(col = 'scenario', Scenario_num, year, sep = '_') %>%
+  spread(temp_bin, n) %>%
+  mutate(perc_high = high / (high + low + med) * 100,
+         perc_med = med / (high + low + med) * 100,
+         perc_low = low / (high + low + med) * 100) %>%
+  select(scenario, perc_low, perc_med, perc_high)
+
+write.csv(table_5, 'temp_paper/figures/table_5_temp_bins.csv')
+
+print(table_5)
+```
+
+## Figure 3
+This figure was originally created in "C:/caleb/asrp/asrp/docs/new_thermalscape_data/new_thermalscape_conversions.Rmd"
+
+```{r figure 3 prep data}
+# Read in thermalscape dataset.  
+# This dataset is in long form and needs to be converted to wide form, creating a column of temperature for each time period
+
+thermalscape_raw <- st_read('docs/new_thermalscape_data/chehalis_thermalscape/chehalis_thermalscape_project.shp')
+st_geometry(thermalscape_raw) <- NULL
+
+thermalscape_fl <- st_read('docs/new_thermalscape_data/chehalis_thermalscape/thermalscape_fl.shp')
+st_geometry(thermalscape_fl) <- NULL
+
+# Convert to wide form and calculate mean baseline temperature from the 7 baseline years
+thermalscape_wide <- thermalscape_raw %>%
+  mutate(year_nm = paste0('temp_', Year_)) %>%
+  select(OBSPRED_ID, Mean, year_nm) %>%
+  pivot_wider(names_from = year_nm, values_from = Mean) %>%
+  mutate(mean_new = rowMeans(select(.,temp_2013:temp_2019)))
+
+thermalscape_data <- read.delim('docs/new_thermalscape_data/chehalis_thermalscape/thermalscape_noaaid.txt', header = TRUE, sep = ',') %>%
+  left_join(thermalscape_fl %>%
+              select(noaaid, OBSPRED_ID, Reach)) %>%
+  left_join(thermalscape_wide) %>%
+  group_by(noaaid) %>%
+  summarize(mean_new = mean(mean_new, na.rm = T),
+            mean_old = mean(meanT, na.rm = T),
+            mean_2040 = mean(temp_2040, na.rm = T),
+            mean_2080 = mean(temp_2080, na.rm = T))
+
+riverscape_df <- '//nwcfile/FE/watershed/Chehalis/Data/3b-Temperature/Chehalis Temperature Data for NOAA'
+riverscape_files <- list.files(path = riverscape_df, pattern = '\\.txt$')
+riverscape_data <- lapply(riverscape_files, function(x){
+  read.delim(file.path(paste0(riverscape_df, '/', x)), header = TRUE, sep = '\t')
+}) %>%
+  do.call('rbind',.)
+
+riverscape_locs <- st_read('docs/new_thermalscape_data/chehalis_thermalscape/riverscape_thermalscape_join.shp')
+st_geometry(riverscape_locs) <- NULL
+riverscape_siteid <- unique(riverscape_locs$Site_ID)
+```
+
+```{r figure 3 mwmt conversion function}
+# mwmt (7-DADM)
+mwmt <- riverscape_data %>% 
+  filter(Month == 8) %>%
+  group_by(Site_ID, Year, Day) %>%
+  mutate(mdmean = mean(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  mutate(mwmt = zoo::rollmean(Temperature, 7, na.pad = TRUE, align = 'right')) %>%
+  summarize(mwmt = max(mwmt, na.rm = T),
+            mdmean = mean(mdmean, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(mwmt = max(mwmt, na.rm = T),
+            mdmean = max(mdmean, na.rm = T)) %>%
+  mutate(temp_diff = mwmt - mdmean)
+
+mwmt_comp <- mwmt %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(., riverscape_locs) %>%
+  left_join(thermalscape_wide)
+
+mwmt_comp_plot <- ggplot(mwmt_comp, aes(x = mean_new, y = mwmt)) +
+  geom_point() + 
+  geom_smooth(method = 'lm', se = TRUE, level = .95) +
+  ylim(12, 28) +
+  xlim(12, 28) +
+  annotate("text", x = 25, y = 15, label = 'y = 1.18x + 1.01') +
+  annotate("text", x = 25, y = 14, label = expression(paste(R^2, ' = 0.90'))) +
+  annotate("text", x = 25, y = 13, label = "p ~ 0.00") +
+  xlab("August ADA") +
+  ylab("7-DADM") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(size = 10),
+    axis.title.x = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 12),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    aspect.ratio = 1,
+    legend.position = 'none')
+print(mwmt_comp_plot + labs(y = '7-DADM', x = 'August ADA'))
+
+lm_mwmt <- lm(mwmt ~ mean_new, data = mwmt_comp)
+summary(lm_mwmt)
+```
+
+```{r figure 3 June 1-21 ADM conversion function}
+adm_rear <- riverscape_data %>%
+  filter(Month == 6,
+         Day %in% 1:21) %>%
+  group_by(Site_ID, Day, Year) %>%
+  summarize(max_temp = max(Temperature, na.rm = T)) %>%
+  group_by(Site_ID, Year) %>%
+  summarize(adm_rear = mean(max_temp, na.rm = T)) %>%
+  group_by(Site_ID) %>%
+  summarize(adm_rear = max(adm_rear, na.rm = T))
+
+adm_rear_comp <- adm_rear %>%
+  filter(Site_ID %in% riverscape_siteid) %>%
+  full_join(riverscape_locs) %>%
+  left_join(thermalscape_wide)
+
+adm_rear_comp_plot <- ggplot(adm_rear_comp, aes(x = mean_new, y = adm_rear)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = TRUE, level = .95) +
+  ylim(12, 28) + 
+  xlim(12, 28) +
+  annotate('text', x = 25, y = 15, label = 'y = 1.12x - 2.23') +
+  annotate('text', x = 25, y = 14, label = expression(paste(R^2, ' = 0.84'))) +
+  annotate('text', x = 25, y = 13, label = 'p ~ 0.00') +
+  xlab('August ADA') +
+  ylab('June 1-21 ADM') +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(size = 10),
+    axis.title.x = element_text(size = 12),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 12),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    aspect.ratio = 1,
+    legend.position = 'none')
+
+print(adm_rear_comp_plot + labs(y = 'June 1-21 Adm', x = 'August ADA')) 
+
+lm_adm_rear <- lm(adm_rear ~ mean_new, data = adm_rear_comp)
+summary(lm_adm_rear)
+```
+
+```{r create figure 3}
+fig_3 <- plot_grid(mwmt_comp_plot, NULL, adm_rear_comp_plot, ncol = 3, rel_widths = c(1, .15, 1))
+print(fig_3)
+
+# ggsave('temp_paper/figures/fig3_conversion_plots.tiff', width = 6, height = 6, dpi = 300, compression = 'lzw')
+save_plot('temp_paper/figures/fig3_conversion_plots.tiff', fig_3, ncol = 2, base_asp = 1.1, compression = 'lzw', dpi = 300)
+```
+
+
+
+
+## Figure 4
+
+```{r figure 4}
+bowerman <- function(t,
+                        phos = 0,
+                        b0 = -9.053,
+                        b1 = .387,
+                        b2 = .029) {
+  1 - plogis(logit_psm <- b0 + b1 * t + b2 * phos)
+}
+coho <- function(t){
+                 ifelse(t < 17,
+           1,
+           ifelse(t >= 17 & t < 28,
+                  -(1/11) * t + 2.54,
+                  0))
+}
+chinook <- function(t){
+  ifelse(t < (18/.98),
+         1,
+         ifelse(t >= (18/.98) & t <(24/.98),
+                -(1/(6/.98)) * t + (4),
+                0))
+}
+sthd <- function(t) {
+  ifelse(t <= 17,
+           t/t,
+           (97.8846 / (1 + exp(-((t - 24.3522) / -.5033)))) / 100 )
+}
+
+ggplot(data.frame(x = c(12, 32)), aes(x = x)) +
+  stat_function(fun = coho,aes(color = 'Coho juvenile\n summer rearing', linetype = 'coho juvenile summer rearing'), size = 1)+
+  stat_function(fun = chinook,  aes(color = 'Chinook salmon juvenile\n outmigration', linetype ='chinook juvenile outmigration'), size = 1)+
+  stat_function(fun = sthd,  aes(color = 'Steelhead juvenile\n summer rearing', linetype = 'steelhead juvenile summer rearing'), size = 1)+
+  stat_function(fun = bowerman, aes(color = 'Spring-run Chinook salmon\n prespawning', linetype = 'spring-run Chinook prespawning'), size = 1)+
+  theme_bw()+
+  xlab('Temperature (7-DADM, in °C)')+
+  ylab('Capacity/Productivity Multiplier')+
+  scale_linetype_manual(values = c('solid', 'dashed', 'dotdash', 'dotted'), 
+                        guide = FALSE) +
+  scale_color_manual(
+                     values = c('firebrick1', 'maroon', 'darkorange4', 'navy'),
+                     guide = guide_legend(override.aes = list(
+                       linetype = c('solid', 'dashed', 'dotdash', 'dotted'))))+
+  theme(legend.position = c(.2, .25),
+        legend.key.size = unit(1.25, 'cm'),
+        legend.text = element_text(size = 14)
+        )+#c(.88, .92)) +
+  # theme(legend.background = element_rect(fill = 'white',
+                                         # size = .25, linetype = 'solid', colour = 'black'))+
+  theme(legend.title = element_blank())+
+  theme(legend.text = element_text(size = 12))+
+  theme(axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+ggsave('temp_paper/figures/fig4_temp_funcs.tiff', width = 8, height = 6, dpi = 300, compression = 'lzw')
+```
+
+
+# Temperature maps
+```{r prep temperature map spatial data}
+# Prep spatial data
+
+#Issues with 20210301 files but temperature data comes from asrp_reach_data df rather than input/output GIS files so it is ok to use 20191204 versions
+gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20191204/Inputs.gdb' 
+gdb_out <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20191204/Outputs.gdb'
+
+sub <- st_read(gdb_in, 'NOAA_subbasins_w_fp') %>% st_geometry()
+fl_raw <- st_read(gdb_out, 'flowline') %>%
+  select(noaaid)
+fl_temps <- asrp_reach_data
+
+# Prep reach level temperatures
+fl <- fl_raw %>%
+  left_join(., fl_temps %>%
+              select(noaaid, asrp_temp, Scenario_num, year), by = 'noaaid') %>%
+  mutate(Scenario = case_when(
+    Scenario_num == 'Current' ~ 'Current',
+    Scenario_num == 'Historical' ~ 'Historical',
+    Scenario_num == 'cc_only' & year == 2040 ~ 'Mid-century no-action',
+    Scenario_num == 'cc_only' & year == 2080 ~ 'Late century no-action',
+    Scenario_num == 'rip_and_climate' & year == 2040 ~ 'Mid-century riparian restoration',
+    Scenario_num == 'rip_and_climate' & year == 2080 ~ 'Late century riparian restoration',
+    Scenario_num == 'fp_temp' & year == 2040 ~ 'Mid-century floodplain restoration',
+    Scenario_num == 'fp_temp' & year == 2080 ~ 'Late century floodplain restoration',
+    Scenario_num == 'rip_and_flp' & year == 2040 ~ 'Mid-century combined',
+    Scenario_num == 'rip_and_flp' & year == 2080 ~ 'Late century combined'
+  )) %>%
+  mutate(Temperature = case_when(
+    asrp_temp < 18 ~ '< 18°',
+    asrp_temp >= 18 & asrp_temp < 21 ~ '18° - 21°',
+    asrp_temp >= 21 & asrp_temp < 24 ~ '21° - 24°',
+    asrp_temp >= 24 & asrp_temp < 26 ~ '24° - 26°',
+    asrp_temp >= 26 ~ '> 26°'
+    )) %>%
+  filter(!is.na(Temperature))
+
+fl$Scenario <- factor(fl$Scenario, levels = c('Historical', 'Current', 'Mid-century no-action', 'Late century no-action', 'Mid-century riparian restoration', 'Late century riparian restoration', 'Mid-century floodplain restoration', 'Late century floodplain restoration', 'Mid-century combined', 'Late century combined'))
+
+fl$Temperature <- factor(fl$Temperature, levels = c('< 18°', '18° - 21°', '21° - 24°', '24° - 26°', '> 26°'))
+
+cc_mid <- 1.15
+cc_late <- 3
+temp_chg_data <- fl_raw %>%
+  left_join(., fl_temps %>%
+              select(Scenario_num, year, asrp_temp, noaaid) %>%
+              unite(Scenario_num, year, col = Scenario, sep = '_') %>%
+              spread(Scenario, asrp_temp) %>%
+              mutate(rip_diff_mid = rip_and_climate_2040 - Current_2019 - cc_mid,
+                     rip_diff_late = rip_and_climate_2080 - Current_2019 - cc_late,
+                     fp_diff_mid = fp_temp_2040 - cc_only_2040,
+                     fp_diff_late = fp_temp_2080 - cc_only_2080,
+                     comb_diff_mid = rip_and_flp_2040 - Current_2019 - cc_mid,
+                     comb_diff_late = rip_and_flp_2080 - Current_2019 - cc_late), by = 'noaaid') %>%
+  gather(Scenario, temp_diff, rip_diff_mid:comb_diff_late) %>%
+  select(Scenario, temp_diff, noaaid) %>%
+  mutate(Scenario = case_when(Scenario == 'rip_diff_mid' ~ 'Mid-century riparian restoration',
+                              Scenario == 'rip_diff_late' ~ 'Late century riparian restoration',
+                              Scenario == 'fp_diff_mid' ~ 'Mid-century floodplain restoration',
+                              Scenario == 'fp_diff_late' ~ 'Late century floodplain restoration',
+                              Scenario == 'comb_diff_mid' ~ 'Mid-century combined',
+                              Scenario == 'comb_diff_late' ~ 'Late century combined')) %>%
+  filter(!is.na(temp_diff)) %>%
+  mutate(
+    temp_diff = case_when(
+      temp_diff < -2.5 ~ '> 2.5°',
+      temp_diff >= -2.5 & temp_diff < -1.5 ~ '2.5° — 1.5°',
+      temp_diff >= -1.5 & temp_diff < -.5 ~ '1.5° — 0.5°',
+      temp_diff >= -.5  ~ '0.5° — 0°'),
+    width = ifelse(temp_diff == '0.5° — 0°',
+                   'low', 
+                   'high'))
+
+temp_chg_data$Scenario = factor(temp_chg_data$Scenario, levels = c('Mid-century riparian restoration', 'Late century riparian restoration', 'Mid-century floodplain restoration', 'Late century floodplain restoration', 'Mid-century combined', 'Late century combined'))
+
+temp_chg_data$temp_diff = factor(temp_chg_data$temp_diff, levels = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'))
+temp_chg_data$width = factor(temp_chg_data$width, levels = c('low', 'high'))
+```
+
+## Figure 5: Natural potential, current, mid-century, and late century no action temperature map
+```{r figure 5}
+fig5_fl <- fl %>% 
+  filter(Scenario %in% c('Historical', 'Current', 'Mid-century no-action', 'Late century no-action'))
+
+fig5 <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = fig5_fl, aes(color = Temperature), size = .55, show.legend = 'line') +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c('< 18°', '18° - 21°', '21° - 24°', '24° - 26°', '> 26°'),
+                      values = c('#00C5FF', '#FFFF00', '#FFAA00', '#E60000', '#730000'),
+                     guide = guide_legend(
+                       title = 'Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 10),
+                       override.aes = list(size = 2))) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        legend.position = 'bottom')
+print(fig5)
+  
+ggsave('temp_paper/figures/fig5_no_action_temps.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
+
+```
+
+## Figure 6: Late century reduction in temperature from each restoration action
+
+```{r figure 6}
+fig6 <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = temp_chg_data %>%
+            filter(Scenario %in% c('Late century riparian restoration', 'Late century floodplain restoration', 'Late century combined')),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 1) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                     values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 10),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.25, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        legend.position = 'bottom')
+print(fig6)
+
+ggsave('temp_paper/figures/fig6_temp_reduction.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
+```
+
+## Figure 7: Mid- and late century temperatures for riparian, floodplain, and combined scenarios
+
+```{r figure 7}
+fig7_fl <- fl %>% 
+  filter(!Scenario %in% c('Historical', 'Current', 'Mid-century no-action', 'Late century no-action'))
+
+fig7 <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = fig7_fl, aes(color = Temperature), size = .55, show.legend = 'line') +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c('< 18°', '18° - 21°', '21° - 24°', '24° - 26°', '> 26°'),
+                     values = c('#00C5FF', '#FFFF00', '#FFAA00', '#E60000', '#730000'),
+                     guide = guide_legend(
+                       title = 'Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 12),
+                       override.aes = list(size = 2))) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        legend.position = 'bottom')
+print(fig7)
+  
+ggsave('temp_paper/figures/fig7_rest_temp_reduction.tiff', dpi = 300, height = 10, width = 8, compression = 'lzw')
+```
+
+## Figure S2-1: Temperature change under riparian scenario
+
+```{r figure s2}
+fig_s2 <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = temp_chg_data %>% filter(Scenario %in% c('Mid-century riparian restoration', 'Late century riparian restoration')),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                     values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 10),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.25, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        strip.text = element_text(size = 12),
+        legend.position = 'bottom')
+print(fig_s2)
+
+ggsave('temp_paper/figures/fig_s2_riparian.tiff', dpi = 300, height = 4, width = 7, compression = 'lzw')
+```
+
+## Figure S3-1: Temperature change under floodplain scenario
+```{r figure s3}
+fig_s3 <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = temp_chg_data %>% filter(Scenario %in% c('Mid-century floodplain restoration')) %>% mutate(Scenario = 'Floodplain restoration'),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                     values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 12),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.1, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        strip.text = element_text(size = 12),
+        legend.position = 'bottom')
+print(fig_s3)
+
+ggsave('temp_paper/figures/fig_s3_fp.tiff', dpi = 300, height = 4, width = 3.5, compression = 'lzw')
+```
+
+## Figure S4-1: Temperature change under combined scenario
+```{r figure s4}
+fig_s4 <- ggplot() +
+  theme_void() +
+  geom_sf(data = st_union(sub), size = .2, color = 'gray20', fill = '#E1E1E1') +
+  geom_sf(data = temp_chg_data %>% filter(Scenario %in% c('Mid-century combined', 'Late century combined')),
+          aes(color = temp_diff, size = width)) +
+  facet_wrap(~Scenario, ncol = 2) + 
+  scale_color_manual(breaks = c( '0.5° — 0°', '1.5° — 0.5°', '2.5° — 1.5°', '> 2.5°'),
+                     values = c( '#808080','#BEFFE8', '#00C5FF', '#004DA8'),
+                     guide = guide_legend(
+                       title = 'Reduction in Temperature (°C)',
+                       title.position = 'top',
+                       title.hjust = .5,
+                       title.theme = element_text(size = 12),
+                       label = TRUE,
+                       label.position = 'bottom',
+                       direction = 'horizontal',
+                       keywidth = unit(2, 'cm'),
+                       label.theme = element_text(size = 12),
+                       reverse = TRUE,
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = c(.25, .75), guide = FALSE) +
+  theme(strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        strip.text = element_text(size = 12),
+        legend.position = 'bottom')
+print(fig_s4)
+
+ggsave('temp_paper/figures/fig_s4_combined.tiff', dpi = 300, height = 4, width = 7, compression = 'lzw')
+```
+
+# Spawner abundance figures
+
+```{r run all species}
+# Clear environment
+rm(list = ls())
+
+# Set up run params
+run_stochastic_eggtofry <- 'no'
+run_single_action <- 'no'
+sensitivity.mode <- 'no'
+branch <- system(command = "git rev-parse --abbrev-ref HEAD", intern = TRUE)
+
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+os <- get_os()
+
+# Load packages ----
+
+global.pkgs <- c('tidyverse', 'magrittr', 'lubridate', 'zoo')
+lapply(global.pkgs, require, character.only = TRUE)
+
+# Delete existing outputs folder
+unlink("outputs", recursive = TRUE)
+
+# Run the model for all species included in temperature paper (all except chum)
+for (s in c('coho', 'spring_chinook', 'fall_chinook', 'steelhead')) {
+  fishtype <- s
+  source("hab/R_files/0-Run_Habitat_Model.R")
+  source("lcm/LCM.sim.R")
+  print(paste0("finished ", s))
+}
+
+```
+
+## Figure 8: Spawner abundance change from current conditions
+```{r figure 8}
+spawners_paper_all <- lapply(c("spring_chinook", "fall_chinook", "coho", "steelhead"), function(s) {
+  read.csv(paste0('outputs/', s, '/temp_paper/spawners_paper_', s, '.csv'), header = TRUE) %>%
+    mutate(species = s)}) %>%
+  do.call('rbind',.) %>%
+  mutate(species = case_when(
+    species == "spring_chinook" ~ "Spring chinook",
+    species == "fall_chinook" ~ "Fall chinook",
+    species == "coho" ~ "Coho",
+    species == "steelhead" ~ "Steelhead"
+  ))
+
+species_order <- c('Spring chinook', 'Coho', 'Steelhead', 'Fall chinook')
+year_order <- c('Current', 'Mid-century', 'Late-century')
+scenario_order <- c('Climate Change', 'Riparian', 'Floodplain', 'Combined')
+
+spawners_paper_all$species <- factor(spawners_paper_all$species, levels = species_order)
+spawners_paper_all$year <- factor(spawners_paper_all$year, levels = year_order)
+spawners_paper_all$scenario.label.nm <- factor(spawners_paper_all$scenario.label.nm, levels = scenario_order)
+
+label_df_all <- lapply(c("spring_chinook", "fall_chinook", "coho", "steelhead"), function(s) {
+  read.csv(paste0('outputs/', s, '/temp_paper/label_df_paper_', s, '.csv'), header = TRUE) %>%
+    mutate(species = s)}) %>%
+  do.call('rbind',.) %>%
+  mutate(species = case_when(species == 'spring_chinook' ~ "Spring chinook",
+                            species == 'fall_chinook' ~ "Fall chinook",
+                            species == 'coho' ~ 'Coho',
+                            species == 'steelhead' ~ 'Steelhead',
+                            TRUE ~ "error"))
+
+label_df_all$year <- factor(label_df_all$year, levels = year_order)
+label_df_all$species <- factor(label_df_all$species, levels = species_order)
+label_df_all$scenario.label.nm <- factor(label_df_all$scenario.label.nm, levels = scenario_order)
+
+colors_paper_all <- c('midnightblue', 'midnightblue', 'royalblue', 'royalblue', 'mediumblue', 'mediumblue', 'lightblue', 'lightblue')
+
+ggplot() +
+  theme_bw() +
+  geom_bar(data = spawners_paper_all %>% filter(!scenario.label == 'Current'),
+           aes(scenario.label.nm, prcnt.change, fill = scenario.label),
+           color = 'black',
+           stat = 'summary',
+           fun.y = 'mean') +
+  ylim(-100, 100) +
+  facet_grid(species~year) +
+  theme(panel.spacing = unit(1.5, 'lines'))+
+  geom_text(size = 3,
+            data = label_df_all, 
+            aes(x = scenario.label.nm , 
+                y = prcnt.change + 10 * sign(prcnt.change), 
+                label = spawners.change)) + #,
+            # vjust = -0.5) +
+  # scale_fill_grey() +
+
+  scale_x_discrete(drop = T) + 
+  scale_fill_manual(values = colors_paper_all, drop = F, name = 'Scenario') +
+
+  # scale_y_continuous(labels = comma, 
+  #                    expand = c(0, 0,.05,0)) +
+  labs(x = 'Scenario',
+       y = paste0('Percent Change in Spawners from Current Conditons')
+  ) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1),
+        text = element_text( size = 12)) +
+  theme(legend.position = 'none')
+ggsave(file.path(paste0('temp_paper/figures/fig8_spawner_abundance','.tiff')), dpi = 300, width = 6, height = 8, compression = 'lzw')
+
+
+perc_chg <- spawners_paper_all %>% 
+  ungroup() %>% 
+  select(year, scenario.label.nm, prcnt.change, species, n) %>% 
+  mutate(scenario.label.nm = ifelse(scenario.label.nm == 'Climate Change',
+                                    'cc',
+                                    as.character(scenario.label.nm))) %>%
+  gather(param, value, c(prcnt.change, n)) %>%
+  spread(scenario.label.nm, value) %>%
+  # filter(year != 'current') %>%
+  mutate(rip_diff = Riparian - cc,
+         fp_diff = Floodplain - cc,
+         combined_diff = Combined - cc)
+
+write.csv(perc_chg, 'temp_paper/figures/perc_chg.csv')
+
+```
+
+## Figure 9: Spawner abundance by EDR
+```{r figure 9 prep spatial data}
+results <- 'outputs'
+
+# Spatial data on shared drive
+gdb_in <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190604/Inputs.gdb'
+gdb_out <- '//nwcfile/FE/watershed/Chehalis/Data/10-Habitat data layers/SpatialModel_Archive/20190604/Outputs.gdb'
+
+# Subbasin names and EDRs
+Subbasin_names <- read.csv('lcm/data/Subbasin_names.csv') %>%
+  mutate(EcoRegion = ifelse(str_detect(Subbasin, 'Estuary'),'Estuary', as.character(EcoRegion)))
+
+# Plot colors and labels
+plot.params <- read.csv('lcm/data/scenarios.csv') %>% 
+  select(scenario, scenario.label, color) %>%
+  mutate_if(is.factor, as.character) %>%
+  rowid_to_column()
+
+# Flowline has spawning distributions)
+fl <- st_read(gdb_out, 'flowline')
+
+# Subbasin layer
+sub <- st_read(gdb_in, 'NOAA_subbasins_w_fp') %>% st_geometry()
+```
+
+Gather up data
+```{r figure 9 gather data}
+# List all results by EDR files
+edr_paths <- list.files(results,
+                        recursive = TRUE,
+                        pattern = 'abundance_by_EDR',
+                        full.names = TRUE)
+
+# Create list of species to attach to each file
+spp <- edr_paths %>%
+  dirname %>%
+  dirname %>%
+  basename()
+
+
+edr_df <- edr_paths %>%
+  map_dfr(.id = 'species', read.csv) %>%
+  select(-X) %>%
+  mutate(species = spp[as.numeric(species)]) %>%
+  group_by(species, EcoRegion) %>%
+  mutate(baseline = basinwide_spawners[scenario == 'ASRP.cc.only.2080'],
+         diff = basinwide_spawners - baseline,
+         diff_perc = diff/baseline,
+         diff_bin = cut(diff, 
+                        c(-Inf, 200, 5000, 10000, Inf),
+                        c('< 200', '200 - 5,000', '5,000 - 10,000', '> 10,000'))) %>%
+  ungroup %>%
+  mutate(presence = case_when( # create NAs for spring chinook basins
+    str_detect(species, 'spring') & 
+      str_detect(EcoRegion, 'Mainstem|Cascade|Willapa', negate = TRUE) ~ 'no fish'),
+    diff_prcnt2 = ifelse(!is.na(presence), NA,
+                         ifelse(is.na(diff_perc), 0, 
+                                ifelse(diff_perc > 1, 1, diff_perc))),
+    diff2 = ifelse(!is.na(presence), NA,
+                   ifelse(is.na(diff), 0, diff)),
+    diff_prcnt2_bin = cut(diff_prcnt2, 
+                        c(-Inf, 0.05, .1, .25, .50, Inf),
+                        c('< 5%', '5 - 10%', '10-25%', '25 - 50%', '> 50%')),
+    species2 = case_when(
+           species == 'coho'  ~ 'Coho',
+           species == 'fall_chinook'  ~ 'Fall Chinook',
+           species == 'spring_chinook'   ~ 'Spring Chinook',
+           species == 'steelhead' ~ 'Steelhead',
+           species == 'chum'  ~ 'Chum')
+  )
+
+sub_edr <- st_read(dsn = gdb_in, layer = 'NOAA_subbasins_w_fp') %>%
+  rename(Subbasin_num = noaa_sub_num) %>%
+  left_join(Subbasin_names) %>%
+  group_by(EcoRegion) %>%
+  summarize(Area_km2 = sum(Area_km2)) %>%
+  ungroup()
+```
+
+Join spawner data to new EDR layer.  Also join the `plot.param` data
+```{r figure 9 join spawner data to edr layer}
+sub_plot_diag <- sub_edr %>%
+  left_join(edr_df) %>%
+  filter(str_detect(EcoRegion, 'Estuary|Upper Sk', negate = TRUE),
+         str_detect(scenario, 'rip|fp.temp'),
+         str_detect(scenario, '2040', negate = TRUE),
+         species != 'chum') %>%
+  left_join(plot.params) %>%
+  mutate(scenario = case_when(
+    scenario == 'ASRP.rip.and.climate.2080' ~ 'Riparian',
+    scenario == 'ASRP.fp.temp.2080' ~ 'Floodplain',
+    scenario == 'ASRP.rip.and.flp.2080' ~ 'Combined',
+    TRUE ~ 'NA'
+  ))
+```
+
+Create figure with 'standard' results of change in EDR as a percent of the EDR under current conditions.
+
+```{r figure 9 creation}
+edr_df2 <- edr_df %>%
+  filter(str_detect(EcoRegion, 'Estuary|Upper Sk', negate = TRUE),
+         str_detect(scenario, 'rip|fp.temp'),
+         str_detect(scenario, '2040', negate = TRUE),
+         species != 'chum') %>%
+  mutate(diff_perc2 = ifelse(diff_perc > 1, 1, 
+                             ifelse(diff_perc < 0, 0, 
+                                    diff_perc)),
+         diff_perc_bin = cut(diff_perc,
+                             c(-Inf, seq(.1,.9, .1), Inf)))
+
+sub_plot <- sub_edr %>% #st_drop_geometry()
+  #left_join(one_edr_df) %>%
+  left_join(edr_df2) %>%
+  filter(!is.na(scenario),
+         !is.na(species2)) %>%
+  mutate(scenario = case_when(
+    scenario == 'LR' ~ "Large River",
+    TRUE ~ str_replace(scenario, '\\.', ' ') %>% tools::toTitleCase(.)
+  ))
+
+sub_plot_diag$scenario <- factor(sub_plot_diag$scenario, levels = c('Riparian', 'Floodplain', 'Combined'))
+sub_plot_diag2 <- sub_plot_diag %>%
+  mutate(scenario = recode(scenario, 'Riparian' = ' ', 'Floodplain' = '  ', 'Combined' = '   '))
+
+
+p_coho <- ggplot() +
+  theme_void() +
+  geom_sf(data = sub_plot_diag2 %>% 
+            filter(species2 == 'Coho'),
+          aes(fill = diff2),
+          color = 'black',
+          lwd = 0.01) +
+  geom_sf(data = filter(sub_edr, str_detect(EcoRegion, 'Estuary|Upper Sk')),
+          fill = 'gray50',
+          color = 'black',
+          lwd = 0.01) +
+  facet_grid(species2~scenario, switch = 'y') +
+  scale_fill_viridis_c(
+      label = scales::label_comma()) +
+    labs(fill = '                  ') +
+    guides(fill = guide_colorbar(barwidth = .75,
+                                 barheight = 4,
+                                 label.theme = element_text(size = 8))) +
+    theme(
+      # strip.text.x = element_blank(),
+      strip.text.x = element_text(margin = margin(0,0,.1,0, "cm")),
+          plot.tag.position = c(0.02, .9))
+
+p_spring <- ggplot() +
+  theme_void() +
+  geom_sf(data = sub_plot_diag %>% 
+            filter(species2 == 'Spring Chinook'),
+          aes(fill = diff2),
+          color = 'black',
+          lwd = 0.01) +
+  geom_sf(data = filter(sub_edr, str_detect(EcoRegion, 'Estuary|Upper Sk')),
+          fill = 'gray50',
+          color = 'black',
+          lwd = 0.01) +
+  facet_grid(species2~scenario, switch = 'y') +
+  scale_fill_viridis_c(
+      label = scales::label_comma()) +
+    labs(fill = 'Change in\nspawners') +
+    guides(fill = guide_colorbar(barwidth = .75,
+                                 barheight = 4,
+                                 label.theme = element_text(size = 8))) +
+    theme(
+      # strip.text.x = element_blank(),
+      strip.text.x = element_text(margin = margin(0,0,.1,0, "cm")),
+          plot.tag.position = c(0.02, .9))
+
+p_fall <- ggplot() +
+  theme_void() +
+  geom_sf(data = sub_plot_diag2 %>% 
+            filter(species2 == 'Fall Chinook'),
+          aes(fill = diff2),
+          color = 'black',
+          lwd = 0.01) +
+  geom_sf(data = filter(sub_edr, str_detect(EcoRegion, 'Estuary|Upper Sk')),
+          fill = 'gray50',
+          color = 'black',
+          lwd = 0.01) +
+  facet_grid(species2~scenario, switch = 'y') +
+  scale_fill_viridis_c(
+      label = scales::label_comma()) +
+    labs(fill = '                  ') +
+    guides(fill = guide_colorbar(barwidth = .75,
+                                 barheight = 4,
+                                 label.theme = element_text(size = 8))) +
+    theme(
+      # strip.text.x = element_blank(),
+      strip.text.x = element_text(margin = margin(0,0,.1,0, "cm")),
+          plot.tag.position = c(0.02, .9))
+
+p_steel <- ggplot() +
+  theme_void() +
+  geom_sf(data = sub_plot_diag2 %>% 
+            filter(species2 == 'Steelhead'),
+          aes(fill = diff2),
+          color = 'black',
+          lwd = 0.01) +
+  geom_sf(data = filter(sub_edr, str_detect(EcoRegion, 'Estuary|Upper Sk')),
+          fill = 'gray50',
+          color = 'black',
+          lwd = 0.01) +
+  facet_grid(species2~scenario, switch = 'y') + 
+  scale_fill_viridis_c(
+      label = scales::label_comma()) +
+    labs(fill = '                  ') +
+    guides(fill = guide_colorbar(barwidth = .75,
+                                 barheight = 4,
+                                 label.theme = element_text(size = 8))) +
+    theme(
+      # strip.text.x = element_blank(),
+      strip.text.x = element_text(margin = margin(0,0,.1,0, "cm")),
+          plot.tag.position = c(0.02, .9))
+
+edr_plt <- cowplot::plot_grid(p1 = p_spring,
+                              p2 = p_coho,
+                              p3 = p_steel,
+                              p4 = p_fall,
+                              nrow = 4,
+                              align = 'v')
+
+ggsave('temp_paper/figures/fig9_edr.tiff',
+      edr_plt,
+       width = 6,
+       height = 8,
+       dpi = 500,
+       compression = "lzw")
+
+print(edr_plt)
+```
+
+# Other Figures
+
+## Figure S1-1 Distribution map
+
+```{r figure s1}
+streamlines <- fl %>%
+  select(noaaid, noaa_sub_num, cohospawn:steelspawn, wet_width) %>%
+  gather(species, presence, cohospawn:steelspawn) %>%
+  mutate(species = case_when(
+    species == 'cohospawn' ~ 'Coho',
+    species == 'fallspawn' ~ 'Fall Chinook',
+    species == 'sprspawn' ~ 'Spring Chinook',
+    species == 'steelspawn' ~ 'Steelhead'
+  )) %>%
+  filter(species != 'chumspawn') %>%
+  mutate(distribution = case_when(
+    (noaa_sub_num %in% 52:63) & presence == 'No' ~ 'Rearing and outmigration',
+    (noaa_sub_num %in% 52:63) & presence == 'Yes' ~ 'Spawning and rearing',
+    !(noaa_sub_num %in% 52:63) & presence == 'Yes' ~ 'Spawning and rearing',
+    !(noaa_sub_num %in% 52:63) & presence ==  'No' ~ 'No'),
+    width_bin = cut(wet_width, c(-Inf, 5, 10, 20, 30, 50, Inf))) %>%
+  filter(!is.na(width_bin))
+
+streamlines$species <- factor(streamlines$species, levels = c('Spring Chinook', 'Coho', 'Fall Chinook', 'Steelhead'))
+
+fig_s1 <- ggplot() + 
+  theme_void() + 
+  geom_sf(data = st_union(sub), size = .2, color = 'grey20', fill =NA) +
+  geom_sf(data = streamlines, aes(color = distribution, size = width_bin), show.legend = 'line')+
+  facet_wrap(~species) +
+  scale_color_manual(breaks = c('Spawning and rearing', 'Rearing and outmigration'),
+                     values = c('gray70', '#CC79A7', '#0072B2'),
+                     guide = guide_legend(
+                       label.position = 'right',
+                       direction = 'horizontal',
+                       keywidth = unit(1.5, 'cm'),
+                       label.theme = element_text(size = 10),
+                       override.aes = list(size = 2))) +
+  scale_size_manual(values = seq(0.1, 1, length.out = 6), guide = FALSE) +
+  theme(legend.position = 'bottom',
+        strip.text.x = element_text(margin = margin(0, 0, .1, 0, 'cm'), size = 12),
+        strip.text = element_text(size = 12),
+        legend.text = element_text( size = 12)) +  
+  labs(color = NULL)
+ggsave('temp_paper/figures/fig_s1_distributions.tiff', dpi = 300, height = 7, width = 7, compression = 'lzw')
+print(fig_s1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
