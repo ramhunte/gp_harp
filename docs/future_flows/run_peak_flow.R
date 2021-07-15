@@ -285,6 +285,8 @@ summary_tab %>%
   ungroup() %>% 
   filter(scenario == 'Current', era != 'Current') %>%
   select(-scenario) %>% 
+  mutate(era = factor(era, levels = c('Mid-century', 'Late-century'))) %>%
+  arrange(species, era, climate) %>%
   write.csv('docs/future_flows/Table3.csv')
 
 
